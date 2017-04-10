@@ -1,0 +1,109 @@
+import os
+import sys
+base_dir = os.environ["SEM_PYTHON_DIR"]
+
+sys.path.append(base_dir + "src/base")
+from enums import PhaseType
+
+sys.path.append(base_dir + "src/utilities")
+from conversion_utilities import stringToBool, stringToInt, stringToFloat, stringToFunction
+from error_utilities import error
+
+## Class for declaring and retrieving input parameters
+class Parameters(object):
+  def __init__(self):
+    self.descriptions = dict()
+    self.values = dict()
+    self.types = dict()
+    self.string_selections = dict()
+
+  ## Retrieves an input parameter
+  # @param name  the name of the input parameter to retrieve
+  # @return the value of the parameter
+  def get(self, name):
+    if name in self.values:
+      return self.values[name]
+    else:
+      if name in self.descriptions:
+        error("The parameter '" + name + "' was not set and does not have a default.")
+      else:
+        error("'" + name + "' is not a registered parameter.")
+
+  ## Sets an input parameter
+  # @param name  name of the parameter to set
+  # @param value  value of the parameter as a string
+  def set(self, name, value):
+    if name in self.descriptions:
+      if self.types[name] == "bool":
+        self.values[name] = stringToBool(value)
+      elif self.types[name] == "int":
+        self.values[name] = stringToInt(value)
+      elif self.types[name] == "float":
+        self.values[name] = stringToFloat(value)
+      elif self.types[name] == "function":
+        self.values[name] = stringToFunction(value)
+      elif self.types[name] == "string":
+        self.values[name] = value
+      elif self.types[name] == "StringSelection":
+        if value in self.string_selections[name]:
+          self.values[name] = value
+        else:
+          selection_list_string = ""
+          for acceptable_value in self.string_selections[name]:
+            selection_list_string += "\n  " + acceptable_value
+          error("The parameter '" + name + "' must take one of the following values:" + selection_list_string)
+      elif self.types[name] == "PhaseType":
+        if value == PhaseType.First or value == PhaseType.Second:
+          self.values[name] = value
+        else:
+          error("The parameter '" + name + "' must be of type 'PhaseType'.")
+    else:
+      error("The parameter '" + name + "' is not registered.")
+
+  def registerParameter(self, name, description, default=None):
+    if name == "type":
+      error("'type' is a reserved name and cannot be used for a parameter name.")
+    if name in self.descriptions:
+      error("The parameter '" + name + "' has already been registered.")
+    else:
+      self.descriptions[name] = description
+      if default != None:
+        self.values[name] = default
+
+  def registerBoolParameter(self, name, description, default=None):
+    self.registerParameter(name, description, default)
+    self.types[name] = "bool"
+
+  def registerIntParameter(self, name, description, default=None):
+    self.registerParameter(name, description, default)
+    self.types[name] = "int"
+
+  def registerFloatParameter(self, name, description, default=None):
+    self.registerParameter(name, description, default)
+    self.types[name] = "float"
+
+  def registerFunctionParameter(self, name, description, default=None):
+    self.registerParameter(name, description, default)
+    self.types[name] = "function"
+
+  def registerStringParameter(self, name, description, default=None):
+    self.registerParameter(name, description, default)
+    self.types[name] = "string"
+
+  ## Registers a string parameter that has a selection of values
+  # @param name  name of the parameter
+  # @param selection  list of acceptable values
+  # @param description  description of the parameter
+  # @param default  optional default value
+  def registerStringSelectionParameter(self, name, selection, description, default=None):
+    self.registerParameter(name, description, default)
+    self.types[name] = "StringSelection"
+    self.string_selections[name] = selection
+
+  ## Registers a PhaseType parameter
+  # @param name  name of the parameter
+  # @param description  description of the parameter
+  # @param default  optional default value
+  def registerPhaseTypeParameter(self, name, description, default=None):
+    self.registerParameter(name, description, default)
+    self.types[name] = "PhaseType"

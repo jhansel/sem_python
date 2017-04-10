@@ -1,0 +1,61 @@
+[Model]
+  model = 1phase
+[]
+
+[Physics]
+  gravity = 0
+[]
+
+[Mesh]
+  type = UniformMesh
+  x_min = 0
+  length = 1
+  n_cell = 5
+[]
+
+[EoS]
+  [air]
+    type = IdealGasEoS
+    gamma = 1.4
+    R = 290
+  []
+[]
+
+[IC]
+  p = 1.0e5
+  T = 300
+  u = 1
+[]
+
+[BC]
+  [inlet]
+    type = InletRhoUBC
+    rho = 5
+    u = 1
+    boundary = left
+    phase = air
+  []
+  [outlet]
+    type = OutletBC
+    p = 1.0e5
+    boundary = right
+    phase = air
+  []
+[]
+
+[Executioner]
+  type = SteadyStateExecutioner
+[]
+
+[NonlinearSolver]
+  verbose = False
+  absolute_tolerance = 1e-5
+  max_iterations = 10
+[]
+
+[Output]
+  plot_solution = False
+  print_solution = False
+  save_solution = True
+  solution_file = tests/solution/one_phase_ss/solution.csv
+[]

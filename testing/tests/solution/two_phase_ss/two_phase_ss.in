@@ -1,0 +1,82 @@
+
+[Model]
+  model = 2phase # (1phase|2phase_noninteracting|2phase)
+[]
+
+[Physics]
+  gravity = 9.81
+[]
+
+[InterfaceClosures]
+  chi = 0.5
+  pressure_relaxation_time = 1.0e-5
+[]
+
+[Mesh]
+  type = UniformMesh
+  x_min = 0
+  length = 12
+  n_cell = 2
+[]
+
+[EoS]
+  # Liquid water stiffened gas parameters:
+  #   gamma = 2.35
+  #   cv = 1816
+  #   q = -1.167e6
+  #   p_inf = 1e9
+  # Steam stiffened gas parameters:
+  #   gamma = 1.43
+  #   cv = 1040
+  #   q = 2.03e6
+  #   p_inf = 0
+  [liquid]
+    type = IdealGasEoS
+    gamma = 1.0005
+    R = 290
+  []
+  [vapor]
+    type = IdealGasEoS
+    gamma = 1.4
+    R = 290 # 290 for air
+  []
+[]
+
+[IC]
+  vf1 = 0.8
+  p1 = 1.0e5
+  T1 = 300
+  u1 = 10
+  p2 = 1.0e5
+  T2 = 300
+  u2 = 1
+[]
+
+[BC]
+  [inlet]
+    type = InletRhoUBC
+    rho = 1000
+    u = 10
+    boundary = left
+    phase = liquid
+  []
+[]
+
+[Executioner]
+  type = SteadyStateExecutioner
+[]
+
+[NonlinearSolver]
+  absolute_tolerance = 1e-5
+  max_iterations = 10
+  debug_jacobian = False
+  finite_difference_eps = 1e-5
+[]
+
+[Output]
+  plot_solution = True
+  plot_file = myplot.pdf
+  output_solution = True
+  solution_file = mysolution.csv
+  print_solution = False
+[]
