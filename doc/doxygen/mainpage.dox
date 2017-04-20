@@ -1,0 +1,32 @@
+/*!
+\mainpage
+\tableofcontents
+
+<!----------------------------------------------------------------------------->
+\section intro_sec Introduction
+<!----------------------------------------------------------------------------->
+
+This code solves the Seven-Equation Model (SEM) of two-phase flow.
+This system is 1-D in space and consists of the inviscid Euler equations for
+both fluid phases, coupled with interphase source terms and a volume fraction
+propagation equation. The system is closed with equations of state and various
+closure relations for the interphase transfer terms.
+
+<!----------------------------------------------------------------------------->
+\section setup_sec Setup
+<!----------------------------------------------------------------------------->
+
+There are a few python modules that are required (to be listed later):
+
+The code relies on an environment variable called `SEM_PYTHON_DIR`, so
+one needs to put the following line in their `.bashrc` or equivalent startup
+file:
+```
+export SEM_PYTHON_DIR=/path/to/sem.py
+```
+where `/path/to/sem.py` is the path to the base directory of the repository,
+which contains `sem.py`.
+
+
+
+*/
