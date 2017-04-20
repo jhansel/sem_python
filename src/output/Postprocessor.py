@@ -56,8 +56,8 @@ class Postprocessor(object):
     eos1 = self.eos_map[PhaseType.First]
     p1 = eos1.p(v1, e1)[0]
     if (self.model_type != ModelType.OnePhase):
-      rho2 = [computeDensity(vf2[k], arho2[k])[0] for k in xrange(n)]
-      u2 = [computeVelocity(arho2[k], arhou2[k])[0] for k in xrange(n)]
+      rho2 = computeDensity(vf2, arho2)[0]
+      u2 = computeVelocity(arho2, arhou2)[0]
       v2 = computeSpecificVolume(rho2)[0]
       E2 = computeSpecificTotalEnergy(arho2, arhoE2)[0]
       e2 = computeSpecificInternalEnergy(u2, E2)[0]
