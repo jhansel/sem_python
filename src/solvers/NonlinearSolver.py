@@ -18,7 +18,7 @@ class NonlinearSolverParameters(Parameters):
     self.registerFloatParameter("absolute_tolerance", "Absolute tolerance for nonlinear solve", 1e-6)
     self.registerIntParameter("max_iterations", "Maximum number of nonlinear iterations", 10)
     self.registerBoolParameter("debug_jacobian", "Option to debug the Jacobian", False)
-    self.registerFloatParameter("finite_difference_eps", "Parameter for the FD debug Jacobian", 1e-8)
+    self.registerFloatParameter("finite_difference_eps", "Parameter for the FD debug Jacobian", 1e-4)
     self.registerBoolParameter("verbose", "Option to print out iterations", True)
 
 class NonlinearSolver(object):
@@ -43,11 +43,12 @@ class NonlinearSolver(object):
         # compute finite difference Jacobian
         n = r.size
         J_fd = np.zeros(shape=(n, n))
-        for i in xrange(n):
+        for j in xrange(n):
           U_forward = deepcopy(U)
-          U_forward[i] *= (1 + self.fd_eps)
+          U_eps = max(self.fd_eps, abs(U[j] * self.fd_eps))
+          U_forward[j] += U_eps
           r_forward, J_unused = self.assembleSystem(U_forward)
-          J_fd[:,i] = (r_forward - r) / (self.fd_eps * U[i])
+          J_fd[:,j] = (r_forward - r) / U_eps
 
         # print the matrices
         print("\nHand-coded Jacobian:")
@@ -58,7 +59,7 @@ class NonlinearSolver(object):
         printMatrix(J - J_fd)
         print("\nRelative Difference:")
         J_relative_difference = computeRelativeDifferenceMatrix(J, J_fd)
-        printMatrix(J_relative_difference, 1e-3, 1e-7)
+        printMatrix(J_relative_difference, 1e-1, 1e-3)
 
         # exit
         sys.exit()
