@@ -19,6 +19,7 @@ class InputFileParser(object):
 
     self.block_data = dict()
     self.subblock_data = dict()
+    self.subblock_list = dict()
 
     # regular expressions
     self.comment_regex = re.compile(r'\#.*')
@@ -93,6 +94,7 @@ class InputFileParser(object):
       else:
         self.block_data[self.block] = dict()
         self.subblock_data[self.block] = dict()
+        self.subblock_list[self.block] = list()
     # else a sub-block was entered
     else:
       # check that sub-block name has not already been used
@@ -100,6 +102,7 @@ class InputFileParser(object):
         inputError(self.i_line, "The sub-block name '" + self.subblock + "' has already been used.")
       else:
         self.subblock_data[self.block][self.subblock] = dict()
+        self.subblock_list[self.block].append(self.subblock)
 
   ## Processes a line matching a block end marker
   def processBlockEnd(self):
@@ -164,12 +167,11 @@ class InputFileParser(object):
     self.assertSubblockExists(block, subblock)
     return self.subblock_data[block][subblock]
 
-  ## Gets list of names of sub-blocks for a given block
+  ## Gets list of names of sub-blocks for a given block in order of occurrence
   # @param block  block for which to get the names of sub-blocks
   def getSubblockNames(self, block):
     self.assertBlockExists(block)
-    subblock_list = [subblock for subblock in self.subblock_data[block]]
-    return subblock_list
+    return self.subblock_list[block]
 
   ## Asserts that a block exists
   # @param block  block for which to assert existence
