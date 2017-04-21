@@ -13,7 +13,18 @@ def computeRelativeDifferenceMatrix(A, B):
         C[i,j] = (A[i,j] - B[i,j]) / B[i,j]
   return C
 
-def printMatrix(A, red_threshold=None, yellow_threshold=None):
+def printMatrix(A):
+  n = A.shape[0]
+  for i in xrange(n):
+    for j in xrange(n):
+      if (abs(A[i,j]) > 1e-14):
+        sys.stdout.write(colored("   %11.4e" % (A[i,j]), "blue"))
+      else:
+        sys.stdout.write("   %11.4e" % (A[i,j]))
+    sys.stdout.write("\n")
+  sys.stdout.flush()
+
+def printMatrixDifference(A, red_threshold=None, yellow_threshold=None):
   n = A.shape[0]
   for i in xrange(n):
     for j in xrange(n):
@@ -21,6 +32,8 @@ def printMatrix(A, red_threshold=None, yellow_threshold=None):
         sys.stdout.write(colored("   %11.4e" % (A[i,j]), "red"))
       elif (yellow_threshold and abs(A[i,j]) >= yellow_threshold):
         sys.stdout.write(colored("   %11.4e" % (A[i,j]), "yellow"))
+      elif (abs(A[i,j]) > 1e-14):
+        sys.stdout.write(colored("   %11.4e" % (A[i,j]), "green"))
       else:
         sys.stdout.write("   %11.4e" % (A[i,j]))
     sys.stdout.write("\n")

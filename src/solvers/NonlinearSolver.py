@@ -1,6 +1,7 @@
 from copy import deepcopy
 import numpy as np
 from numpy.linalg import matrix_rank
+from termcolor import colored
 
 import os
 import sys
@@ -10,7 +11,8 @@ sys.path.append(base_dir + "src/input")
 from Parameters import Parameters
 
 sys.path.append(base_dir + "src/utilities")
-from display_utilities import computeRelativeDifferenceMatrix, printMatrix
+from display_utilities import computeRelativeDifferenceMatrix, printMatrix, printMatrixDifference
+from error_utilities import errorNoTraceback
 
 class NonlinearSolverParameters(Parameters):
   def __init__(self):
@@ -34,6 +36,7 @@ class NonlinearSolver(object):
     # begin Newton solve
     it = 1
     converged = False
+    r_norm_old = 1e15
     while it <= self.max_iterations:
       # compute the residual and Jacobian
       r, J = self.assembleSystem(U)
@@ -56,10 +59,10 @@ class NonlinearSolver(object):
         print("\nFinite Difference Jacobian:")
         printMatrix(J_fd)
         print("\nAbsolute Difference:")
-        printMatrix(J - J_fd)
+        printMatrixDifference(J - J_fd)
         print("\nRelative Difference:")
         J_relative_difference = computeRelativeDifferenceMatrix(J, J_fd)
-        printMatrix(J_relative_difference, 1e-1, 1e-3)
+        printMatrixDifference(J_relative_difference, 1e-1, 1e-3)
 
         # exit
         sys.exit()
@@ -67,12 +70,17 @@ class NonlinearSolver(object):
       # report nonlinear residual
       r_norm = np.linalg.norm(r, 2)
       if self.verbose:
-        print "Iter %i: res = %.3e" % (it, r_norm)
+        if (r_norm < r_norm_old):
+          color = "green"
+        else:
+          color = "red"
+        sys.stdout.write("Iter %2i: " % (it)
+                         + colored("res = %.3e\n" % (r_norm), color))
 
       # check for convergence
       if (r_norm <= self.absolute_tol):
         if self.verbose:
-          print "Solution converged!"
+          print colored("Solution converged!", "green")
         converged = True
         break
 
@@ -83,12 +91,11 @@ class NonlinearSolver(object):
         n = r.size
         Jr = np.concatenate((J, -r.reshape((n, 1))), axis=1)
         if (matrix_rank(Jr) == matrix_rank(J)):
-          print('Infinitely many solutions!')
+          errorNoTraceback("Infinitely many solutions!")
         elif (matrix_rank(Jr) == matrix_rank(J) + 1):
-          print('No solutions!')
+          errorNoTraceback("No solutions!")
         else:
-          print('Unknown number of solutions!')
-        sys.exit()
+          errorNoTraceback("Unknown number of solutions!")
 
       # update solution
       U += dU
@@ -96,8 +103,10 @@ class NonlinearSolver(object):
       # increment iteration index
       it += 1
 
+      # save old residual norm
+      r_norm_old = r_norm
+
     if (not converged):
-      print("\nSolution did not converge in " + str(self.max_iterations) + " iterations.")
-      sys.exit()
+      errorNoTraceback("Solution did not converge in " + str(self.max_iterations) + " iterations.")
 
     return U
