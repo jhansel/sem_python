@@ -1,0 +1,88 @@
+[Model]
+  model = 2phase_noninteracting
+[]
+
+[Physics]
+  gravity = 0
+[]
+
+[InterfaceClosures]
+  chi = 0.5
+  pressure_relaxation_time = 1.0e-5
+[]
+
+[Mesh]
+  type = UniformMesh
+  x_min = 0
+  length = 1
+  n_cell = 1
+[]
+
+[EoS]
+  [liquid]
+    type = IdealGasEoS
+    gamma = 1.4
+    R = 290
+  []
+  [vapor]
+    type = IdealGasEoS
+    gamma = 1.5
+    R = 100
+  []
+[]
+
+[IC]
+  vf1 = 0.8
+  p1 = 1.0e5
+  T1 = 300
+  u1 = 10
+  p2 = 1.0e5
+  T2 = 300
+  u2 = 1
+[]
+
+[BC]
+  [inlet_liquid]
+    type = InletRhoUBC
+    rho = 1
+    u = 10
+    boundary = left
+    phase = liquid
+  []
+  [outlet_liquid]
+    type = OutletBC
+    p = 1.0e5
+    boundary = right
+    phase = liquid
+  []
+  [inlet_vapor]
+    type = InletRhoUBC
+    rho = 1
+    u = 1
+    boundary = left
+    phase = vapor
+  []
+  [outlet_vapor]
+    type = OutletBC
+    p = 1.0e5
+    boundary = right
+    phase = vapor
+  []
+[]
+
+[Executioner]
+  type = SteadyStateExecutioner
+[]
+
+[NonlinearSolver]
+  verbose = False
+  absolute_tolerance = 1e-5
+  max_iterations = 10
+[]
+
+[Output]
+  plot_solution = False
+  print_solution = False
+  save_solution = True
+  solution_file = tests/solution/two_phase_noninteracting_ss/solution.csv
+[]
