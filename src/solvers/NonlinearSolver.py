@@ -1,6 +1,6 @@
 from copy import deepcopy
 import numpy as np
-from numpy.linalg import matrix_rank
+from numpy.linalg import matrix_rank, inv
 from termcolor import colored
 
 import os
@@ -21,6 +21,7 @@ class NonlinearSolverParameters(Parameters):
     self.registerIntParameter("max_iterations", "Maximum number of nonlinear iterations", 10)
     self.registerBoolParameter("debug_jacobian", "Option to debug the Jacobian", False)
     self.registerFloatParameter("finite_difference_eps", "Parameter for the FD debug Jacobian", 1e-4)
+    self.registerBoolParameter("print_jacobian_inverse", "Option to print the inverse of the Jacobian", False)
     self.registerBoolParameter("verbose", "Option to print out iterations", True)
 
 class NonlinearSolver(object):
@@ -30,6 +31,7 @@ class NonlinearSolver(object):
     self.absolute_tol = params.get("absolute_tolerance")
     self.debug_jacobian = params.get("debug_jacobian")
     self.fd_eps = params.get("finite_difference_eps")
+    self.print_jacobian_inverse = params.get("print_jacobian_inverse")
     self.verbose = params.get("verbose")
 
   def solve(self, U):
@@ -40,6 +42,15 @@ class NonlinearSolver(object):
     while it <= self.max_iterations:
       # compute the residual and Jacobian
       r, J = self.assembleSystem(U)
+
+      # print the Jacobian inverse if specified
+      if (self.print_jacobian_inverse):
+        print("\nJacobian:")
+        printMatrix(J)
+        print("\nJacobian inverse:")
+        printMatrix(inv(J))
+
+        sys.exit()
 
       # compare Jacobian to finite difference Jacobian if in debug mode
       if (self.debug_jacobian):
