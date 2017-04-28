@@ -29,6 +29,15 @@ class Parameters(object):
       else:
         error("'" + name + "' is not a registered parameter.")
 
+  ## Returns whether or not a parameter is available
+  # @param name  the name of the parameter for which to check existence
+  # @return whether or not the parameter is available
+  def has(self, name):
+    if name in self.values:
+      return True
+    else:
+      return False
+
   ## Sets an input parameter
   # @param name  name of the parameter to set
   # @param value  value of the parameter as a string
