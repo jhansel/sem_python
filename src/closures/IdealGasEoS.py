@@ -22,9 +22,6 @@ class IdealGasEoS(EoS):
   def rho(self, p, T):
     return p / (self.gamma - 1) / self.cv / T
 
-  def e_from_p_T(self, p, T):
-    return self.cv * T
-
   def e(self, v, p):
     e_value = 1.0 / (self.gamma - 1) * v * p
     de_dv = 1.0 / (self.gamma - 1) * p

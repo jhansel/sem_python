@@ -19,10 +19,6 @@ class EoS(object):
     pass
 
   @abstractmethod
-  def e_from_p_T(self, p, T):
-    pass
-
-  @abstractmethod
   def e(self, v, p):
     pass
 

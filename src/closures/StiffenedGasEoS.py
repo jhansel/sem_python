@@ -24,9 +24,6 @@ class StiffenedGasEoS(EoS):
   def rho(self, p, T):
     return (p + self.p_inf) / ((self.gamma - 1) * self.cv * T)
 
-  def e_from_p_T(self, p, T):
-    return (p + self.gamma * self.p_inf) / (p + self.p_inf) * self.cv * T + self.q
-
   def e(self, v, p):
     e_value = (p + self.gamma * self.p_inf) / (self.gamma - 1) * v + self.q
     de_dv = (p + self.gamma * self.p_inf) / (self.gamma - 1)
