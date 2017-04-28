@@ -2,6 +2,8 @@ import os
 import sys
 base_dir = os.environ["SEM_PYTHON_DIR"]
 
+from collections import OrderedDict
+
 sys.path.append(base_dir + "src/base")
 from enums import ModelType, PhaseType
 
@@ -24,7 +26,7 @@ class PostprocessorParameters(Parameters):
     self.registerBoolParameter("print_solution", "Option to print solution to console", False)
     self.registerBoolParameter("save_solution", "Option to save solution to a file", False)
     self.registerStringParameter("solution_file", "Name of solution output file", "solution.csv")
-    self.registerIntParameter("output_precision", "Precision used in solution output file", 10)
+    self.registerIntParameter("output_precision", "Precision used in solution output file", 5)
     self.registerBoolParameter("plot_solution", "Option to plot solution", False)
     self.registerStringParameter("plot_file", "Name of plot file", "solution.pdf")
 
@@ -83,21 +85,21 @@ class Postprocessor(object):
     # save solution to file
     if self.save_solution:
       # create the data dictionary
-      data = dict()
+      data = OrderedDict()
       data["x"] = self.mesh.x
       if self.model_type == ModelType.OnePhase:
         data["rho"] = rho1
         data["u"] = u1
         data["p"] = p1
       else:
+        if self.model_type == ModelType.TwoPhase:
+          data["vf1"] = vf1
         data["rho1"] = rho1
         data["u1"] = u1
         data["p1"] = p1
         data["rho2"] = rho2
         data["u2"] = u2
         data["p2"] = p2
-        if self.model_type == ModelType.TwoPhase:
-          data["vf1"] = vf1
 
       # write to file
       writeCSVFile(data, self.solution_file, self.output_precision)
