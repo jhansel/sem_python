@@ -17,7 +17,7 @@ def printMatrix(A):
   n = A.shape[0]
   for i in xrange(n):
     for j in xrange(n):
-      if (abs(A[i,j]) > 1e-14):
+      if (abs(A[i,j]) > 0):
         sys.stdout.write(colored("   %11.4e" % (A[i,j]), "blue"))
       else:
         sys.stdout.write("   %11.4e" % (A[i,j]))
@@ -32,7 +32,7 @@ def printMatrixDifference(A, red_threshold=None, yellow_threshold=None):
         sys.stdout.write(colored("   %11.4e" % (A[i,j]), "red"))
       elif (yellow_threshold and abs(A[i,j]) >= yellow_threshold):
         sys.stdout.write(colored("   %11.4e" % (A[i,j]), "yellow"))
-      elif (abs(A[i,j]) > 1e-14):
+      elif (abs(A[i,j]) > 0):
         sys.stdout.write(colored("   %11.4e" % (A[i,j]), "green"))
       else:
         sys.stdout.write("   %11.4e" % (A[i,j]))
