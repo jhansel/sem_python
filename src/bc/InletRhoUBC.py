@@ -24,9 +24,8 @@ class InletRhoUBC(OnePhaseBC):
     self.rho = params.get("rho")
     self.u = params.get("u")
 
-  def apply(self, U, r, J):
+  def applyWeakBC(self, U, r, J):
     vf, dvf_dvf1 = self.dof_handler.getVolumeFraction(U, self.k, self.phase)
-    arho = U[self.i_arho]
     arhoE = U[self.i_arhoE]
 
     arhoBC = vf * self.rho
@@ -48,13 +47,6 @@ class InletRhoUBC(OnePhaseBC):
     dp_dvf1 = dp_de * de_dvf1
     dp_darhoE = dp_de * de_darhoE
 
-    # mass
-    r[self.i_arho] = arho - arhoBC
-    J[self.i_arho,:] = 0
-    if (self.model_type == ModelType.TwoPhase):
-      J[self.i_arho,self.i_vf1] = - darhoBC_dvf1
-    J[self.i_arho,self.i_arho] = 1
-
     # momentum
     r[self.i_arhou] += (arhouBC * self.u + vf * p) * self.nx
     if (self.model_type == ModelType.TwoPhase):
@@ -66,3 +58,17 @@ class InletRhoUBC(OnePhaseBC):
     if (self.model_type == ModelType.TwoPhase):
       J[self.i_arhoE,self.i_vf1] += self.u * (dvf_dvf1 * p + vf * dp_dvf1) * self.nx
     J[self.i_arhoE,self.i_arhoE] += self.u * (1 + vf * dp_darhoE) * self.nx
+
+  def applyStrongBC(self, U, r, J):
+    vf, dvf_dvf1 = self.dof_handler.getVolumeFraction(U, self.k, self.phase)
+    arho = U[self.i_arho]
+
+    arhoBC = vf * self.rho
+    darhoBC_dvf1 = self.rho * dvf_dvf1
+
+    # mass
+    r[self.i_arho] = arho - arhoBC
+    J[self.i_arho,:] = 0
+    if (self.model_type == ModelType.TwoPhase):
+      J[self.i_arho,self.i_vf1] = - darhoBC_dvf1
+    J[self.i_arho,self.i_arho] = 1

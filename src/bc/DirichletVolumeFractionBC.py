@@ -16,7 +16,10 @@ class DirichletVolumeFractionBC(VolumeFractionBC):
 
     self.vf1 = params.get("vf1")
 
-  def apply(self, U, r, J):
+  def applyWeakBC(self, U, r, J):
+    pass
+
+  def applyStrongBC(self, U, r, J):
     vf1 = U[self.i_vf1]
 
     r[self.i_vf1] = vf1 - self.vf1

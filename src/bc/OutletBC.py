@@ -22,7 +22,25 @@ class OutletBC(OnePhaseBC):
     OnePhaseBC.__init__(self, params, dof_handler, eos_map)
     self.p = params.get("p")
 
-  def apply(self, U, r, J):
+  def applyWeakBC(self, U, r, J):
+    vf, dvf_dvf1 = self.dof_handler.getVolumeFraction(U, self.k, self.phase)
+    arho = U[self.i_arho]
+    arhou = U[self.i_arhou]
+
+    u, du_darho, du_darhou = computeVelocity(arho, arhou)
+
+    # mass
+    r[self.i_arho] += arhou * self.nx
+    J[self.i_arho,self.i_arhou] += self.nx
+
+    # momentum
+    r[self.i_arhou] += (arhou * u + vf * self.p) * self.nx
+    if (self.model_type == ModelType.TwoPhase):
+      J[self.i_arhou,self.i_vf1] += dvf_dvf1 * self.p * self.nx
+    J[self.i_arhou,self.i_arho] += arhou * du_darho * self.nx
+    J[self.i_arhou,self.i_arhou] += (arhou * du_darhou + u) * self.nx
+
+  def applyStrongBC(self, U, r, J):
     vf, dvf_dvf1 = self.dof_handler.getVolumeFraction(U, self.k, self.phase)
     arho = U[self.i_arho]
     arhou = U[self.i_arhou]
@@ -45,17 +63,6 @@ class OutletBC(OnePhaseBC):
     darhoE_dvf1 = arho * de_dv * dv_dvf1
     darhoE_darho = (e + 0.5 * u * u) + arho * (de_dv * dv_darho + u * du_darho)
     darhoE_darhou = arho * u * du_darhou
-
-    # mass
-    r[self.i_arho] += arhou * self.nx
-    J[self.i_arho,self.i_arhou] += self.nx
-
-    # momentum
-    r[self.i_arhou] += (arhou * u + vf * self.p) * self.nx
-    if (self.model_type == ModelType.TwoPhase):
-      J[self.i_arhou,self.i_vf1] += dvf_dvf1 * self.p * self.nx
-    J[self.i_arhou,self.i_arho] += arhou * du_darho * self.nx
-    J[self.i_arhou,self.i_arhou] += (arhou * du_darhou + u) * self.nx
 
     # energy
     r[self.i_arhoE] = arhoE_solution - arhoE

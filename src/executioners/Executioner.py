@@ -100,8 +100,8 @@ class Executioner(object):
     for k in xrange(self.dof_handler.n_node):
       self.U[self.dof_handler.i(k, VariableName.VF1)] = ics.vf0(self.mesh.x[k])
 
-  # computes the steady-state residual and Jacobian
-  def assembleSteadyStateSystem(self, U):
+  # computes the steady-state residual and Jacobian without applying strong BC
+  def assembleSteadyStateSystemWithoutStrongBC(self, U):
     r = np.zeros(self.dof_handler.n_dof)
     J = np.zeros(shape=(self.dof_handler.n_dof, self.dof_handler.n_dof))
 
@@ -112,11 +112,22 @@ class Executioner(object):
     if (self.model_type == ModelType.TwoPhase):
       self.addSteadyStateSystemVolumeFraction(U, r, J)
 
-    # boundary terms
+    # weak boundary terms
     for bc in self.bcs:
-      bc.apply(U, r, J)
+      bc.applyWeakBC(U, r, J)
 
     return (r, J)
+
+  # computes the full steady-state residual and Jacobian (strong BC applied)
+  def assembleSteadyStateSystem(self, U):
+    r, J = self.assembleSteadyStateSystemWithoutStrongBC(U)
+    self.applyStrongBC(U, r, J)
+    return (r, J)
+
+  # applies strong BC
+  def applyStrongBC(self, U, r, J):
+    for bc in self.bcs:
+      bc.applyStrongBC(U, r, J)
 
   # computes the steady-state residual and Jacobian for a phase
   def addSteadyStateSystemPhase(self, U, phase, r, J):

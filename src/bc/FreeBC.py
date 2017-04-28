@@ -20,7 +20,7 @@ class FreeBC(OnePhaseBC):
   def __init__(self, params, dof_handler, eos_map):
     OnePhaseBC.__init__(self, params, dof_handler, eos_map)
 
-  def apply(self, U, r, J):
+  def applyWeakBC(self, U, r, J):
     vf, dvf_dvf1 = self.dof_handler.getVolumeFraction(U, self.k, self.phase)
     arho = U[self.i_arho]
     arhou = U[self.i_arhou]
@@ -67,3 +67,6 @@ class FreeBC(OnePhaseBC):
     J[self.i_arhoE,self.i_arho] += ((arhoE + vf * p) * du_darho + vf * dp_darho * u) * self.nx
     J[self.i_arhoE,self.i_arhou] += ((arhoE + vf * p) * du_darhou + vf * dp_darhou * u) * self.nx
     J[self.i_arhoE,self.i_arhoE] += (1 + vf * dp_darhoE) * u * self.nx
+
+  def applyStrongBC(self, U, r, J):
+    pass

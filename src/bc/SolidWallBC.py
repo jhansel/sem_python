@@ -13,7 +13,10 @@ class SolidWallBC(OnePhaseBC):
   def __init__(self, params, dof_handler, eos_map):
     OnePhaseBC.__init__(self, params, dof_handler, eos_map)
 
-  def apply(self, U, r, J):
+  def applyWeakBC(self, U, r, J):
+    pass
+
+  def applyStrongBC(self, U, r, J):
     arhou = U[self.i_arhou]
 
     r[self.i_arhou] = arhou
