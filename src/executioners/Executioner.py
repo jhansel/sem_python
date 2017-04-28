@@ -35,18 +35,18 @@ class Executioner(object):
     self.quadrature = Quadrature()
     self.fe_values = FEValues(self.quadrature, dof_handler, mesh)
 
-    self.initializeSolution(ics)
-
-  def initializeSolution(self, ics):
+    # initialize the solution
     self.U = np.zeros(self.dof_handler.n_dof)
-    self.initializePhaseSolution(ics, PhaseType.First)
-    if (self.model_type != ModelType.OnePhase):
-      self.initializePhaseSolution(ics, PhaseType.Second)
-    if (self.model_type == ModelType.TwoPhase):
-      for k in xrange(self.dof_handler.n_node):
-        self.U[self.dof_handler.i(k, VariableName.VF1)] = ics.vf0(self.mesh.x[k])
+    if self.model_type == ModelType.OnePhase:
+      self.initializeOnePhaseSolution(ics)
+    else:
+      self.initializeTwoPhaseSolution(ics, PhaseType.First)
+      self.initializeTwoPhaseSolution(ics, PhaseType.Second)
+      if self.model_type == ModelType.TwoPhase:
+        self.initializeVolumeFractionSolution(ics)
 
-  def initializePhaseSolution(self, ics, phase):
+  def initializeOnePhaseSolution(self, ics):
+    phase = PhaseType.First
     p0 = ics.p0[phase]
     T0 = ics.T0[phase]
     u0 = ics.u0[phase]
@@ -61,6 +61,32 @@ class Executioner(object):
       self.U[self.dof_handler.i(k, VariableName.ARho, phase)] = rho
       self.U[self.dof_handler.i(k, VariableName.ARhoU, phase)] = rho * u
       self.U[self.dof_handler.i(k, VariableName.ARhoE, phase)] = rho * E
+
+  def initializeTwoPhaseSolution(self, ics, phase):
+    vf0 = ics.vf0
+    p0 = ics.p0[phase]
+    T0 = ics.T0[phase]
+    u0 = ics.u0[phase]
+    eos = self.eos_map[phase]
+    for k in xrange(self.dof_handler.n_node):
+      vf1 = vf0(self.mesh.x[k])
+      if phase == PhaseType.First:
+        vf = vf1
+      else:
+        vf = 1 - vf1
+      p = p0(self.mesh.x[k])
+      T = T0(self.mesh.x[k])
+      u = u0(self.mesh.x[k])
+      rho = eos.rho(p, T)
+      e = eos.e_from_p_T(p, T)
+      E = e + 0.5 * u * u
+      self.U[self.dof_handler.i(k, VariableName.ARho, phase)] = vf * rho
+      self.U[self.dof_handler.i(k, VariableName.ARhoU, phase)] = vf * rho * u
+      self.U[self.dof_handler.i(k, VariableName.ARhoE, phase)] = vf * rho * E
+
+  def initializeVolumeFractionSolution(self, ics):
+    for k in xrange(self.dof_handler.n_node):
+      self.U[self.dof_handler.i(k, VariableName.VF1)] = ics.vf0(self.mesh.x[k])
 
   # computes the steady-state residual and Jacobian
   def assembleSteadyStateSystem(self, U):
