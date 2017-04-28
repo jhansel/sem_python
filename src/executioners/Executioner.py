@@ -48,15 +48,21 @@ class Executioner(object):
   def initializeOnePhaseSolution(self, ics):
     phase = PhaseType.First
     p0 = ics.p0[phase]
-    T0 = ics.T0[phase]
+    if ics.specified_rho:
+      rho0 = ics.rho0[phase]
+    else:
+      T0 = ics.T0[phase]
     u0 = ics.u0[phase]
     eos = self.eos_map[phase]
     for k in xrange(self.dof_handler.n_node):
       p = p0(self.mesh.x[k])
-      T = T0(self.mesh.x[k])
       u = u0(self.mesh.x[k])
-      rho = eos.rho(p, T)
-      e = eos.e_from_p_T(p, T)
+      if ics.specified_rho:
+        rho = rho0(self.mesh.x[k])
+      else:
+        T = T0(self.mesh.x[k])
+        rho = eos.rho(p, T)
+      e = eos.e(1.0 / rho, p)[0]
       E = e + 0.5 * u * u
       self.U[self.dof_handler.i(k, VariableName.ARho, phase)] = rho
       self.U[self.dof_handler.i(k, VariableName.ARhoU, phase)] = rho * u
@@ -65,7 +71,10 @@ class Executioner(object):
   def initializeTwoPhaseSolution(self, ics, phase):
     vf0 = ics.vf0
     p0 = ics.p0[phase]
-    T0 = ics.T0[phase]
+    if ics.specified_rho:
+      rho0 = ics.rho0[phase]
+    else:
+      T0 = ics.T0[phase]
     u0 = ics.u0[phase]
     eos = self.eos_map[phase]
     for k in xrange(self.dof_handler.n_node):
@@ -75,10 +84,13 @@ class Executioner(object):
       else:
         vf = 1 - vf1
       p = p0(self.mesh.x[k])
-      T = T0(self.mesh.x[k])
       u = u0(self.mesh.x[k])
-      rho = eos.rho(p, T)
-      e = eos.e_from_p_T(p, T)
+      if ics.specified_rho:
+        rho = rho0(self.mesh.x[k])
+      else:
+        T = T0(self.mesh.x[k])
+        rho = eos.rho(p, T)
+      e = eos.e(1.0 / rho, p)[0]
       E = e + 0.5 * u * u
       self.U[self.dof_handler.i(k, VariableName.ARho, phase)] = vf * rho
       self.U[self.dof_handler.i(k, VariableName.ARhoU, phase)] = vf * rho * u
@@ -233,7 +245,7 @@ class Executioner(object):
       dv2_darho2 = dv2_drho2 * drho2_darho2
 
       u1, du1_darho1, du1_darhou1 = computeVelocity(arho1, arhou1)
-      u2, du1_darho2, du1_darhou2 = computeVelocity(arho2, arhou2)
+      u2, du2_darho2, du2_darhou2 = computeVelocity(arho2, arhou2)
 
       E1, dE1_darho1, dE1_darhoE1 = computeSpecificTotalEnergy(arho1, arhoE1)
       E2, dE2_darho2, dE2_darhoE2 = computeSpecificTotalEnergy(arho2, arhoE2)
@@ -333,7 +345,7 @@ class Executioner(object):
             # volume fraction
             J_cell[i_vf1,j_vf1] += (uI[q] * grad_phi[l_local,q] \
               - dtheta_dvf1[q] * (p1[q] - p2[q]) * phi[l_local,q] \
-              - theta[q] * (dp1_dvf1[q] - dp2_dvf2[q] * dvf2_dvf1[q]) * phi[l_local,q]) * phi[k_local,q] * JxW[q]
+              - theta[q] * (dp1_dvf1[q] - dp2_dvf1[q]) * phi[l_local,q]) * phi[k_local,q] * JxW[q]
             J_cell[i_vf1,j_arho1] += (duI_darho1[q] * dvf1_dx[q] - dtheta_darho1[q] * (p1[q] - p2[q]) \
               - theta[q] * dp1_darho1[q]) * phi[l_local,q] * phi[k_local,q] * JxW[q]
             J_cell[i_vf1,j_arhou1] += (duI_darhou1[q] * dvf1_dx[q] - dtheta_darhou1[q] * (p1[q] - p2[q]) \

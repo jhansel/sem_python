@@ -8,9 +8,13 @@ from enums import PhaseType
 sys.path.append(base_dir + "src/input")
 from Parameters import Parameters
 
+sys.path.append(base_dir + "src/utilities")
+from error_utilities import error
+
 class InitialConditions1PhaseParameters(Parameters):
   def __init__(self):
     Parameters.__init__(self)
+    self.registerFunctionParameter("rho", "Density")
     self.registerFunctionParameter("p", "Pressure")
     self.registerFunctionParameter("T", "Temperature")
     self.registerFunctionParameter("u", "Velocity")
@@ -18,5 +22,16 @@ class InitialConditions1PhaseParameters(Parameters):
 class InitialConditions1Phase(object):
   def __init__(self, params):
     self.p0 = {PhaseType.First : params.get("p")}
-    self.T0 = {PhaseType.First : params.get("T")}
     self.u0 = {PhaseType.First : params.get("u")}
+
+    # one may supply either rho or T, but not both
+    if params.has("rho") and params.has("T"):
+      error("ICs cannot specify both T and rho.")
+    elif params.has("rho"):
+      self.rho0 = {PhaseType.First : params.get("rho")}
+      self.specified_rho = True
+    elif params.has("T"):
+      self.T0 = {PhaseType.First : params.get("T")}
+      self.specified_rho = False
+    else:
+      error("Either 'rho' or 'T' must be specified for IC.")
