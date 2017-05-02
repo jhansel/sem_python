@@ -8,10 +8,10 @@ sys.path.append(base_dir + "src/base")
 from enums import ModelType, PhaseType, VariableName
 
 class DoFHandler(object):
-  def __init__(self, n_cell, model_type):
+  def __init__(self, mesh, model_type, ics):
     # counts
-    self.n_cell = n_cell
-    self.n_dof_per_var = n_cell + 1
+    self.n_cell = mesh.n_cell
+    self.n_dof_per_var = self.n_cell + 1
     self.n_node = self.n_dof_per_var
     self.n_dof_per_cell_per_var = 2
 
@@ -54,6 +54,12 @@ class DoFHandler(object):
     self.n_dof_per_cell = self.n_dof_per_cell_per_var * self.n_var
     self.n_dof = self.n_dof_per_var * self.n_var
 
+    # create array for volume fraction if two-phase non-interacting
+    if self.model_type == ModelType.TwoPhaseNonInteracting:
+      self.vf1 = np.zeros(self.n_node)
+      for k in xrange(self.n_node):
+        self.vf1[k] = ics.vf0(mesh.x[k])
+
   # DoF index
   def i(self, k, variable_name, phase=PhaseType.First):
     return k * self.n_var + self.variable_index[variable_name][phase]
@@ -71,8 +77,16 @@ class DoFHandler(object):
       else:
         vf = 1.0 - vf1
         dvf_dvf1 = -1.0
-    else:
-      vf = 1.0
+    elif (self.model_type == ModelType.TwoPhaseNonInteracting):
+      vf1 = self.vf1[k]
+      if phase == PhaseType.First:
+        vf = vf1
+        dvf_dvf1 = float("NaN")
+      else:
+        vf = 1 - vf1
+        dvf_dvf1 = float("NaN")
+    elif self.model_type == ModelType.OnePhase:
+      vf = 1
       dvf_dvf1 = float("NaN")
     return (vf, dvf_dvf1)
 

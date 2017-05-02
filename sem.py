@@ -88,7 +88,7 @@ def run(input_file, mods=list()):
     ics = factory.createObject("InitialConditions2Phase", ic_param_data)
 
   # DoF handler
-  dof_handler = DoFHandler(mesh.n_cell, model_type)
+  dof_handler = DoFHandler(mesh, model_type, ics)
 
   # boundary conditions
   bcs = list()
