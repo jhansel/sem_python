@@ -18,7 +18,7 @@ class SteadyStateExecutioner(Executioner):
 
   def run(self):
     nonlinear_solver = NonlinearSolver(self.nonlinear_solver_params,
-      self.assembleSteadyStateSystem)
+      self.assembleSteadyStateSystem, self.dof_handler)
     nonlinear_solver.solve(self.U)
 
     return self.U

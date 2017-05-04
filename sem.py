@@ -96,7 +96,8 @@ def run(input_file, mods=list()):
   for bc_subblock in bc_subblocks:
     bc_param_data = input_file_parser.getSubblockData("BC", bc_subblock)
     bc_class = bc_param_data["type"]
-    bc_param_data["phase"] = phase_name_to_type[bc_param_data["phase"]]
+    if "phase" in bc_param_data:
+      bc_param_data["phase"] = phase_name_to_type[bc_param_data["phase"]]
     bc_args = (dof_handler, eos_map)
     bc = factory.createObject(bc_class, bc_param_data, bc_args)
     bcs.append(bc)

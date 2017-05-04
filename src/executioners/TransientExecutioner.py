@@ -86,7 +86,9 @@ class TransientExecutioner(Executioner):
     return (M_dUdt, self.M)
 
   def run(self):
-    nonlinear_solver = NonlinearSolver(self.nonlinear_solver_params, self.assembleSystem)
+    nonlinear_solver = NonlinearSolver(self.nonlinear_solver_params,
+                                       self.assembleSystem,
+                                       self.dof_handler)
 
     transient_incomplete = True
     t = 0.0
