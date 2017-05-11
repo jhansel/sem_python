@@ -11,10 +11,10 @@ from error_utilities import error
 class InitialConditions1PhaseParameters(Parameters):
   def __init__(self):
     Parameters.__init__(self)
-    self.registerFunctionParameter("rho", "Density")
-    self.registerFunctionParameter("p", "Pressure")
-    self.registerFunctionParameter("T", "Temperature")
-    self.registerFunctionParameter("u", "Velocity")
+    self.registerParsedFunctionParameter("rho", "Density")
+    self.registerParsedFunctionParameter("p", "Pressure")
+    self.registerParsedFunctionParameter("T", "Temperature")
+    self.registerParsedFunctionParameter("u", "Velocity")
 
 class InitialConditions1Phase(object):
   def __init__(self, params):

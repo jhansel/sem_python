@@ -47,6 +47,8 @@ class Parameters(object):
       elif self.types[name] == "float":
         self.values[name] = stringToFloat(value)
       elif self.types[name] == "function":
+        self.values[name] = value
+      elif self.types[name] == "parsed_function":
         self.values[name] = stringToFunction(value)
       elif self.types[name] == "string":
         self.values[name] = value
@@ -86,6 +88,10 @@ class Parameters(object):
   def registerFunctionParameter(self, name, description, default=None):
     self.registerParameter(name, description, default)
     self.types[name] = "function"
+
+  def registerParsedFunctionParameter(self, name, description, default=None):
+    self.registerParameter(name, description, default)
+    self.types[name] = "parsed_function"
 
   def registerStringParameter(self, name, description, default=None):
     self.registerParameter(name, description, default)

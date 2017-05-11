@@ -11,15 +11,15 @@ from error_utilities import error
 class InitialConditions2PhaseParameters(Parameters):
   def __init__(self):
     Parameters.__init__(self)
-    self.registerFunctionParameter("vf1", "Volume fraction of phase 1")
-    self.registerFunctionParameter("rho1", "Density of phase 1")
-    self.registerFunctionParameter("p1", "Pressure of phase 1")
-    self.registerFunctionParameter("T1", "Temperature of phase 1")
-    self.registerFunctionParameter("u1", "Velocity of phase 1")
-    self.registerFunctionParameter("rho2", "Density of phase 2")
-    self.registerFunctionParameter("p2", "Pressure of phase 2")
-    self.registerFunctionParameter("T2", "Temperature of phase 2")
-    self.registerFunctionParameter("u2", "Velocity of phase 2")
+    self.registerParsedFunctionParameter("vf1", "Volume fraction of phase 1")
+    self.registerParsedFunctionParameter("rho1", "Density of phase 1")
+    self.registerParsedFunctionParameter("p1", "Pressure of phase 1")
+    self.registerParsedFunctionParameter("T1", "Temperature of phase 1")
+    self.registerParsedFunctionParameter("u1", "Velocity of phase 1")
+    self.registerParsedFunctionParameter("rho2", "Density of phase 2")
+    self.registerParsedFunctionParameter("p2", "Pressure of phase 2")
+    self.registerParsedFunctionParameter("T2", "Temperature of phase 2")
+    self.registerParsedFunctionParameter("u2", "Velocity of phase 2")
 
 class InitialConditions2Phase(object):
   def __init__(self, params):
