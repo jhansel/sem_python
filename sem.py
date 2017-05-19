@@ -126,7 +126,7 @@ def run(input_file, mods=list()):
   # create and run the executioner
   executioner_param_data = input_file_parser.getBlockData("Executioner")
   executioner_type = executioner_param_data["type"]
-  executioner_args = (model_type, ics, bcs, eos, interface_closures, gravity, dof_handler, mesh, nonlinear_solver_params)
+  executioner_args = (model_type, ics, bcs, eos, interface_closures, gravity, dof_handler, mesh, nonlinear_solver_params, factory)
   executioner = factory.createObject(executioner_type, executioner_param_data, executioner_args)
   U = executioner.run()
 

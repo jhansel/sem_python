@@ -2,6 +2,18 @@ import os
 import sys
 base_dir = os.environ["SEM_PYTHON_DIR"]
 
+# aux
+sys.path.append(base_dir + "src/aux")
+from Density import Density, DensityParameters
+from Pressure import Pressure, PressureParameters
+from SpecificInternalEnergy import SpecificInternalEnergy, SpecificInternalEnergyParameters
+from SpecificTotalEnergy import SpecificTotalEnergy, SpecificTotalEnergyParameters
+from SpecificVolume import SpecificVolume, SpecificVolumeParameters
+from Velocity import Velocity, VelocityParameters
+from VolumeFraction1Phase import VolumeFraction1Phase, VolumeFraction1PhaseParameters
+from VolumeFractionPhase1 import VolumeFractionPhase1, VolumeFractionPhase1Parameters
+from VolumeFractionPhase2 import VolumeFractionPhase2, VolumeFractionPhase2Parameters
+
 # bc
 sys.path.append(base_dir + "src/bc")
 from FreeBC import FreeBC, FreeBCParameters

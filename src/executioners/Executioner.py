@@ -24,7 +24,7 @@ class ExecutionerParameters(Parameters):
     Parameters.__init__(self)
 
 class Executioner(object):
-  def __init__(self, params, model_type, ics, bcs, eos, interface_closures, gravity, dof_handler, mesh, nonlinear_solver_params):
+  def __init__(self, params, model_type, ics, bcs, eos, interface_closures, gravity, dof_handler, mesh, nonlinear_solver_params, factory):
     self.model_type = model_type
     self.bcs = bcs
     self.eos = eos
@@ -35,6 +35,7 @@ class Executioner(object):
     self.nonlinear_solver_params = nonlinear_solver_params
     self.quadrature = Quadrature()
     self.fe_values = FEValues(self.quadrature, dof_handler, mesh)
+    self.factory = factory
 
     # initialize the solution
     self.U = np.zeros(self.dof_handler.n_dof)
@@ -43,6 +44,11 @@ class Executioner(object):
       self.initializePhaseSolution(ics, 1)
     if self.model_type == ModelType.TwoPhase:
       self.initializeVolumeFractionSolution(ics)
+
+    # create aux quantities
+    self.aux1 = self.createAuxQuantities(0)
+    if self.model_type != ModelType.OnePhase:
+      self.aux2 = self.createAuxQuantities(1)
 
   def initializePhaseSolution(self, ics, phase):
     # get appropriate volume fraction function
@@ -86,15 +92,38 @@ class Executioner(object):
     for k in xrange(self.dof_handler.n_node):
       self.U[self.dof_handler.i(k, VariableName.VF1)] = ics.vf1(self.mesh.x[k])
 
+  def createAuxQuantities(self, phase):
+    # create list of aux quantities to create
+    aux_names_phase = list()
+    if phase == 0:
+      if self.model_type == ModelType.OnePhase:
+        aux_names_phase.append("VolumeFraction1Phase")
+      else:
+        aux_names_phase.append("VolumeFractionPhase1")
+    else:
+      aux_names_phase.append("VolumeFractionPhase2")
+    aux_names_phase += ["Velocity", "SpecificTotalEnergy", "Density", \
+                           "SpecificVolume", "SpecificInternalEnergy", "Pressure"]
+
+    # create parameters
+    params = {"p_function" : self.eos[phase].p}
+
+    # create the aux quantities for this phase
+    aux_list = list()
+    for aux_name in aux_names_phase:
+      aux_list.append(self.factory.createObject(aux_name, params))
+
+    return aux_list
+
   # computes the steady-state residual and Jacobian without applying strong BC
   def assembleSteadyStateSystemWithoutStrongBC(self, U):
     r = np.zeros(self.dof_handler.n_dof)
     J = np.zeros(shape=(self.dof_handler.n_dof, self.dof_handler.n_dof))
 
     # volumetric terms
-    self.addSteadyStateSystemPhase(U, 0, r, J)
+    self.addSteadyStateSystemPhase(U, self.aux1, 0, r, J)
     if (self.model_type != ModelType.OnePhase):
-      self.addSteadyStateSystemPhase(U, 1, r, J)
+      self.addSteadyStateSystemPhase(U, self.aux2, 1, r, J)
     if (self.model_type == ModelType.TwoPhase):
       self.addSteadyStateSystemVolumeFraction(U, r, J)
 
@@ -116,46 +145,29 @@ class Executioner(object):
       bc.applyStrongBC(U, r, J)
 
   # computes the steady-state residual and Jacobian for a phase
-  def addSteadyStateSystemPhase(self, U, phase, r, J):
-    phi = self.fe_values.get_phi()
+  def addSteadyStateSystemPhase(self, U, aux_list, phase, r, J):
+    data = dict()
+    der = dict()
+
+    data["phi"] = self.fe_values.get_phi()
+    data["g"] = self.gravity
 
     for elem in xrange(self.dof_handler.n_cell):
       r_cell = np.zeros(self.dof_handler.n_dof_per_cell)
       J_cell = np.zeros(shape=(self.dof_handler.n_dof_per_cell, self.dof_handler.n_dof_per_cell))
 
-      grad_phi = self.fe_values.get_grad_phi(elem)
+      data["grad_phi"] = self.fe_values.get_grad_phi(elem)
       JxW = self.fe_values.get_JxW(elem)
 
       # compute solution
-      vf1 = self.fe_values.computeLocalVolumeFractionSolution(U, elem)
-      arho = self.fe_values.computeLocalSolution(U, VariableName.ARho, phase, elem)
-      arhou = self.fe_values.computeLocalSolution(U, VariableName.ARhoU, phase, elem)
-      arhoE = self.fe_values.computeLocalSolution(U, VariableName.ARhoE, phase, elem)
+      data["vf1"] = self.fe_values.computeLocalVolumeFractionSolution(U, elem)
+      data["arho"] = self.fe_values.computeLocalSolution(U, VariableName.ARho, phase, elem)
+      data["arhou"] = self.fe_values.computeLocalSolution(U, VariableName.ARhoU, phase, elem)
+      data["arhoE"] = self.fe_values.computeLocalSolution(U, VariableName.ARhoE, phase, elem)
 
       # compute auxiliary quantities
-      vf, dvf_dvf1 = computeVolumeFraction(vf1, phase, self.model_type)
-
-      u, du_darho, du_darhou = computeVelocity(arho, arhou)
-
-      rho, drho_dvf, drho_darho = computeDensity(vf, arho)
-      drho_dvf1 = drho_dvf * dvf_dvf1
-
-      v, dv_drho = computeSpecificVolume(rho)
-      dv_dvf1 = dv_drho * drho_dvf1
-      dv_darho = dv_drho * drho_darho
-
-      E, dE_darho, dE_darhoE = computeSpecificTotalEnergy(arho, arhoE)
-
-      e, de_du, de_dE = computeSpecificInternalEnergy(u, E)
-      de_darho = de_du * du_darho + de_dE * dE_darho
-      de_darhou = de_du * du_darhou
-      de_darhoE = de_dE * dE_darhoE
-
-      p, dp_dv, dp_de = self.eos[phase].p(v, e)
-      dp_dvf1 = dp_dv * dv_dvf1
-      dp_darho = dp_dv * dv_darho + dp_de * de_darho
-      dp_darhou = dp_de * de_darhou
-      dp_darhoE = dp_de * de_darhoE
+      for aux in aux_list:
+        aux.compute(data, der)
 
       # compute the residual and Jacobian
       for k_local in xrange(self.dof_handler.n_dof_per_cell_per_var):
@@ -165,9 +177,9 @@ class Executioner(object):
 
         # compute local residual
         for q in xrange(self.quadrature.n_q):
-          r_cell[i_arho] += - arhou[q] * grad_phi[k_local,q] * JxW[q]
-          r_cell[i_arhou] += (- (arhou[q] * u[q] + vf[q] * p[q]) * grad_phi[k_local,q] - arho[q] * self.gravity * phi[k_local,q]) * JxW[q]
-          r_cell[i_arhoE] += (- u[q] * (arhoE[q] + vf[q] * p[q]) * grad_phi[k_local,q] - arhou[q] * self.gravity * phi[k_local,q]) * JxW[q]
+          r_cell[i_arho] += - data["arhou"][q] * data["grad_phi"][k_local,q] * JxW[q]
+          r_cell[i_arhou] += (- (data["arhou"][q] * data["u"][q] + data["vf"][q] * data["p"][q]) * data["grad_phi"][k_local,q] - data["arho"][q] * data["g"] * data["phi"][k_local,q]) * JxW[q]
+          r_cell[i_arhoE] += (- data["u"][q] * (data["arhoE"][q] + data["vf"][q] * data["p"][q]) * data["grad_phi"][k_local,q] - data["arhou"][q] * data["g"] * data["phi"][k_local,q]) * JxW[q]
 
         # compute local Jacobian
         for l_local in xrange(self.dof_handler.n_dof_per_cell_per_var):
@@ -178,23 +190,23 @@ class Executioner(object):
           j_arhoE = self.dof_handler.i(l_local, VariableName.ARhoE, phase)
           for q in xrange(self.quadrature.n_q):
             # mass
-            J_cell[i_arho,j_arhou] += - phi[l_local,q] * grad_phi[k_local,q] * JxW[q]
+            J_cell[i_arho,j_arhou] += - data["phi"][l_local,q] * data["grad_phi"][k_local,q] * JxW[q]
 
             # momentum
             if (self.model_type == ModelType.TwoPhase):
-              J_cell[i_arhou,j_vf1] += - (dvf_dvf1[q] * p[q] + vf[q] * dp_dvf1[q]) * phi[l_local,q] * grad_phi[k_local,q] * JxW[q]
-            J_cell[i_arhou,j_arho] += (- (arhou[q] * du_darho[q] + vf[q] * dp_darho[q]) * phi[l_local,q] * grad_phi[k_local,q] \
-              - self.gravity * phi[l_local,q] * phi[k_local,q]) * JxW[q]
-            J_cell[i_arhou,j_arhou] += - (u[q] + arhou[q] * du_darhou[q] + vf[q] * dp_darhou[q]) * phi[l_local,q] * grad_phi[k_local,q] * JxW[q]
-            J_cell[i_arhou,j_arhoE] += - vf[q] * dp_darhoE[q] * phi[l_local,q] * grad_phi[k_local,q] * JxW[q]
+              J_cell[i_arhou,j_vf1] += - (der["vf"]["vf1"][q] * data["p"][q] + data["vf"][q] * der["p"][vf1][q]) * data["phi"][l_local,q] * data["grad_phi"][k_local,q] * JxW[q]
+            J_cell[i_arhou,j_arho] += (- (data["arhou"][q] * der["u"]["arho"][q] + data["vf"][q] * der["p"]["arho"][q]) * data["phi"][l_local,q] * data["grad_phi"][k_local,q] \
+              - data["g"] * data["phi"][l_local,q] * data["phi"][k_local,q]) * JxW[q]
+            J_cell[i_arhou,j_arhou] += - (data["u"][q] + data["arhou"][q] * der["u"]["arhou"][q] + data["vf"][q] * der["p"]['arhou'][q]) * data["phi"][l_local,q] * data["grad_phi"][k_local,q] * JxW[q]
+            J_cell[i_arhou,j_arhoE] += - data["vf"][q] * der["p"]["arhoE"][q] * data["phi"][l_local,q] * data["grad_phi"][k_local,q] * JxW[q]
 
             # energy
             if (self.model_type == ModelType.TwoPhase):
-              J_cell[i_arhoE,j_vf1] += - u[q] * (vf[q] * dp_dvf1[q] + dvf_dvf1[q] * p[q]) * phi[l_local,q] * grad_phi[k_local,q] * JxW[q]
-            J_cell[i_arhoE,j_arho] += - (u[q] * (vf[q] * dp_darho[q]) + du_darho[q] * (arhoE[q] + vf[q] * p[q])) * phi[l_local,q] * grad_phi[k_local,q] * JxW[q]
-            J_cell[i_arhoE,j_arhou] += (- (u[q] * (vf[q] * dp_darhou[q]) + du_darhou[q] * (arhoE[q] + vf[q] * p[q])) * phi[l_local,q] * grad_phi[k_local,q] \
-              - self.gravity * phi[l_local,q] * phi[k_local,q]) * JxW[q]
-            J_cell[i_arhoE,j_arhoE] += - u[q] * (1 + vf[q] * dp_darhoE[q]) * phi[l_local,q] * grad_phi[k_local,q] * JxW[q]
+              J_cell[i_arhoE,j_vf1] += - data["u"][q] * (data["vf"][q] * der["p"]["vf1"][q] + der["vf"]["vf1"][q] * data["p"][q]) * data["phi"][l_local,q] * data["grad_phi"][k_local,q] * JxW[q]
+            J_cell[i_arhoE,j_arho] += - (data["u"][q] * (data["vf"][q] * der["p"]["arho"][q]) + der["u"]["arho"][q] * (data["arhoE"][q] + data["vf"][q] * data["p"][q])) * data["phi"][l_local,q] * data["grad_phi"][k_local,q] * JxW[q]
+            J_cell[i_arhoE,j_arhou] += (- (data["u"][q] * (data["vf"][q] * der["p"]["arhou"][q]) + der["u"]["arhou"][q] * (data["arhoE"][q] + data["vf"][q] * data["p"][q])) * data["phi"][l_local,q] * data["grad_phi"][k_local,q] \
+              - data["g"] * data["phi"][l_local,q] * data["phi"][k_local,q]) * JxW[q]
+            J_cell[i_arhoE,j_arhoE] += - data["u"][q] * (1 + data["vf"][q] * der["p"]["arhoE"][q]) * data["phi"][l_local,q] * data["grad_phi"][k_local,q] * JxW[q]
 
       # aggregate cell residual and matrix into global residual and matrix
       self.dof_handler.aggregateLocalVector(r, r_cell, elem)
