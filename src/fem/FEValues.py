@@ -1,12 +1,5 @@
 import numpy as np
 
-import os
-import sys
-base_dir = os.environ["SEM_PYTHON_DIR"]
-
-sys.path.append(base_dir + "src/base")
-from enums import PhaseType
-
 class FEValues(object):
   def __init__(self, quadrature, dof_handler, mesh):
     self.quadrature = quadrature

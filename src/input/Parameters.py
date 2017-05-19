@@ -2,9 +2,6 @@ import os
 import sys
 base_dir = os.environ["SEM_PYTHON_DIR"]
 
-sys.path.append(base_dir + "src/base")
-from enums import PhaseType
-
 sys.path.append(base_dir + "src/utilities")
 from conversion_utilities import stringToBool, stringToInt, stringToFloat, stringToFunction
 from error_utilities import error
@@ -61,11 +58,6 @@ class Parameters(object):
           for acceptable_value in self.string_selections[name]:
             selection_list_string += "\n  " + acceptable_value
           error("The parameter '" + name + "' must take one of the following values:" + selection_list_string)
-      elif self.types[name] == "PhaseType":
-        if value == PhaseType.First or value == PhaseType.Second:
-          self.values[name] = value
-        else:
-          error("The parameter '" + name + "' must be of type 'PhaseType'.")
     else:
       error("The parameter '" + name + "' is not registered.")
 
@@ -108,11 +100,3 @@ class Parameters(object):
     self.registerParameter(name, description, default)
     self.types[name] = "StringSelection"
     self.string_selections[name] = selection
-
-  ## Registers a PhaseType parameter
-  # @param name  name of the parameter
-  # @param description  description of the parameter
-  # @param default  optional default value
-  def registerPhaseTypeParameter(self, name, description, default=None):
-    self.registerParameter(name, description, default)
-    self.types[name] = "PhaseType"

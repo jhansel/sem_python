@@ -6,7 +6,7 @@ import sys
 base_dir = os.environ["SEM_PYTHON_DIR"]
 
 sys.path.append(base_dir + "src/base")
-from enums import ModelType, PhaseType, VariableName
+from enums import ModelType, VariableName
 
 sys.path.append(base_dir + "src/executioners")
 from Executioner import Executioner, ExecutionerParameters
@@ -32,9 +32,9 @@ class TransientExecutioner(Executioner):
   def computeMassMatrix(self):
     M = np.zeros(shape=(self.dof_handler.n_dof, self.dof_handler.n_dof))
 
-    self.addMassMatrixPhase(M, PhaseType.First)
+    self.addMassMatrixPhase(M, 0)
     if (self.model_type != ModelType.OnePhase):
-      self.addMassMatrixPhase(M, PhaseType.Second)
+      self.addMassMatrixPhase(M, 1)
     if (self.model_type == ModelType.TwoPhase):
       self.addMassMatrixVolumeFraction(M)
 

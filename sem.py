@@ -31,7 +31,7 @@ from InputFileParser import InputFileParser
 # utilities
 sys.path.append(base_dir + "src/utilities")
 from DoFHandler import DoFHandler
-from enums import ModelType, PhaseType
+from enums import ModelType
 from error_utilities import error
 
 ## Runs the code with the given input file
@@ -70,15 +70,13 @@ def run(input_file, mods=list()):
   else:
     if len(eos_subblocks) != 2:
       error("Model type '" + model_type + "' should have exactly 2 equations of state.")
-  eos_map = dict()
-  phase_name_to_type = dict()
-  phase_number_to_type = {0: PhaseType.First, 1: PhaseType.Second}
+  eos = list()
+  phase_name_to_index = dict()
   for k, eos_subblock in enumerate(eos_subblocks):
-    phase_name_to_type[eos_subblock] = phase_number_to_type[k]
+    phase_name_to_index[eos_subblock] = k
     eos_param_data = input_file_parser.getSubblockData("EoS", eos_subblock)
     eos_class = eos_param_data["type"]
-    eos = factory.createObject(eos_class, eos_param_data)
-    eos_map[phase_number_to_type[k]] = eos
+    eos.append(factory.createObject(eos_class, eos_param_data))
 
   # initial conditions / initial guess
   ic_param_data = input_file_parser.getBlockData("IC")
@@ -97,8 +95,8 @@ def run(input_file, mods=list()):
     bc_param_data = input_file_parser.getSubblockData("BC", bc_subblock)
     bc_class = bc_param_data["type"]
     if "phase" in bc_param_data:
-      bc_param_data["phase"] = phase_name_to_type[bc_param_data["phase"]]
-    bc_args = (dof_handler, eos_map)
+      bc_param_data["phase"] = phase_name_to_index[bc_param_data["phase"]]
+    bc_args = (dof_handler, eos)
     bc = factory.createObject(bc_class, bc_param_data, bc_args)
     bcs.append(bc)
 
@@ -121,13 +119,13 @@ def run(input_file, mods=list()):
   # create and run the executioner
   executioner_param_data = input_file_parser.getBlockData("Executioner")
   executioner_type = executioner_param_data["type"]
-  executioner_args = (model_type, ics, bcs, eos_map, interface_closures, gravity, dof_handler, mesh, nonlinear_solver_params)
+  executioner_args = (model_type, ics, bcs, eos, interface_closures, gravity, dof_handler, mesh, nonlinear_solver_params)
   executioner = factory.createObject(executioner_type, executioner_param_data, executioner_args)
   U = executioner.run()
 
   # create and run the postprocessor
   postprocessor_param_data = input_file_parser.getBlockData("Output")
-  postprocessor_args = (model_type, eos_map, dof_handler, mesh)
+  postprocessor_args = (model_type, eos, dof_handler, mesh)
   postprocessor = factory.createObject("Postprocessor", postprocessor_param_data, postprocessor_args)
   postprocessor.run(U)
 

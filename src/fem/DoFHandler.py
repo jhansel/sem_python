@@ -5,7 +5,7 @@ import sys
 base_dir = os.environ["SEM_PYTHON_DIR"]
 
 sys.path.append(base_dir + "src/base")
-from enums import ModelType, PhaseType, VariableName
+from enums import ModelType, VariableName
 
 class DoFHandler(object):
   def __init__(self, mesh, model_type, ics):
@@ -19,93 +19,56 @@ class DoFHandler(object):
 
     # variable ordering
     if (self.model_type == ModelType.OnePhase):
-      self.arho_index = {PhaseType.First: 0}
-      self.arhou_index = {PhaseType.First: 2}
-      self.arhoE_index = {PhaseType.First: 1}
-      self.variable_index = {
-        VariableName.ARho: self.arho_index,
-        VariableName.ARhoU: self.arhou_index,
-        VariableName.ARhoE: self.arhoE_index}
-      self.n_var = 3
-      self.variable_names = [None] * self.n_var
-      self.variable_names[self.arho_index[PhaseType.First]] = "arho"
-      self.variable_names[self.arhou_index[PhaseType.First]] = "arhou"
-      self.variable_names[self.arhoE_index[PhaseType.First]] = "arhoE"
-      self.index_to_variable = [None] * self.n_var
-      self.index_to_variable[self.arho_index[PhaseType.First]] = VariableName.ARho
-      self.index_to_variable[self.arhou_index[PhaseType.First]] = VariableName.ARhoU
-      self.index_to_variable[self.arhoE_index[PhaseType.First]] = VariableName.ARhoE
-      self.index_to_phase = [None] * self.n_var
-      self.index_to_phase[self.arho_index[PhaseType.First]] = PhaseType.First
-      self.index_to_phase[self.arhou_index[PhaseType.First]] = PhaseType.First
-      self.index_to_phase[self.arhoE_index[PhaseType.First]] = PhaseType.First
+      n_phases = 1
+      n_vf_equations = 0
     elif (self.model_type == ModelType.TwoPhaseNonInteracting):
-      self.arho_index = {PhaseType.First: 0, PhaseType.Second: 3}
-      self.arhou_index = {PhaseType.First: 2, PhaseType.Second: 5}
-      self.arhoE_index = {PhaseType.First: 1, PhaseType.Second: 4}
-      self.variable_index = {
-        VariableName.ARho: self.arho_index,
-        VariableName.ARhoU: self.arhou_index,
-        VariableName.ARhoE: self.arhoE_index}
-      self.n_var = 6
-      self.variable_names = [None] * self.n_var
-      self.variable_names[self.arho_index[PhaseType.First]] = "arho1"
-      self.variable_names[self.arhou_index[PhaseType.First]] = "arhou1"
-      self.variable_names[self.arhoE_index[PhaseType.First]] = "arhoE1"
-      self.variable_names[self.arho_index[PhaseType.Second]] = "arho2"
-      self.variable_names[self.arhou_index[PhaseType.Second]] = "arhou2"
-      self.variable_names[self.arhoE_index[PhaseType.Second]] = "arhoE2"
-      self.index_to_variable = [None] * self.n_var
-      self.index_to_variable[self.arho_index[PhaseType.First]] = VariableName.ARho
-      self.index_to_variable[self.arhou_index[PhaseType.First]] = VariableName.ARhoU
-      self.index_to_variable[self.arhoE_index[PhaseType.First]] = VariableName.ARhoE
-      self.index_to_variable[self.arho_index[PhaseType.Second]] = VariableName.ARho
-      self.index_to_variable[self.arhou_index[PhaseType.Second]] = VariableName.ARhoU
-      self.index_to_variable[self.arhoE_index[PhaseType.Second]] = VariableName.ARhoE
-      self.index_to_phase = [None] * self.n_var
-      self.index_to_phase[self.arho_index[PhaseType.First]] = PhaseType.First
-      self.index_to_phase[self.arhou_index[PhaseType.First]] = PhaseType.First
-      self.index_to_phase[self.arhoE_index[PhaseType.First]] = PhaseType.First
-      self.index_to_phase[self.arho_index[PhaseType.Second]] = PhaseType.Second
-      self.index_to_phase[self.arhou_index[PhaseType.Second]] = PhaseType.Second
-      self.index_to_phase[self.arhoE_index[PhaseType.Second]] = PhaseType.Second
+      n_phases = 2
+      n_vf_equations = 0
     elif (self.model_type == ModelType.TwoPhase):
-      self.vf1_index = {PhaseType.First: 0}
-      self.arho_index = {PhaseType.First: 1, PhaseType.Second: 4}
-      self.arhou_index = {PhaseType.First: 3, PhaseType.Second: 6}
-      self.arhoE_index = {PhaseType.First: 2, PhaseType.Second: 5}
-      self.variable_index = {
-        VariableName.VF1: self.vf1_index,
-        VariableName.ARho: self.arho_index,
-        VariableName.ARhoU: self.arhou_index,
-        VariableName.ARhoE: self.arhoE_index}
-      self.n_var = 7
-      self.variable_names = [None] * self.n_var
-      self.variable_names[self.vf1_index[PhaseType.First]] = "vf1"
-      self.variable_names[self.arho_index[PhaseType.First]] = "arho1"
-      self.variable_names[self.arhou_index[PhaseType.First]] = "arhou1"
-      self.variable_names[self.arhoE_index[PhaseType.First]] = "arhoE1"
-      self.variable_names[self.arho_index[PhaseType.Second]] = "arho2"
-      self.variable_names[self.arhou_index[PhaseType.Second]] = "arhou2"
-      self.variable_names[self.arhoE_index[PhaseType.Second]] = "arhoE2"
-      self.index_to_variable = [None] * self.n_var
-      self.index_to_variable[self.vf1_index[PhaseType.First]] = VariableName.VF1
-      self.index_to_variable[self.arho_index[PhaseType.First]] = VariableName.ARho
-      self.index_to_variable[self.arhou_index[PhaseType.First]] = VariableName.ARhoU
-      self.index_to_variable[self.arhoE_index[PhaseType.First]] = VariableName.ARhoE
-      self.index_to_variable[self.arho_index[PhaseType.Second]] = VariableName.ARho
-      self.index_to_variable[self.arhou_index[PhaseType.Second]] = VariableName.ARhoU
-      self.index_to_variable[self.arhoE_index[PhaseType.Second]] = VariableName.ARhoE
-      self.index_to_phase = [None] * self.n_var
-      self.index_to_phase[self.vf1_index[PhaseType.First]] = PhaseType.First
-      self.index_to_phase[self.arho_index[PhaseType.First]] = PhaseType.First
-      self.index_to_phase[self.arhou_index[PhaseType.First]] = PhaseType.First
-      self.index_to_phase[self.arhoE_index[PhaseType.First]] = PhaseType.First
-      self.index_to_phase[self.arho_index[PhaseType.Second]] = PhaseType.Second
-      self.index_to_phase[self.arhou_index[PhaseType.Second]] = PhaseType.Second
-      self.index_to_phase[self.arhoE_index[PhaseType.Second]] = PhaseType.Second
+      n_phases = 2
+      n_vf_equations = 1
     else:
       raise NotImplementedError("Selected model type not implemented")
+
+    arho_index_phase = 0
+    arhou_index_phase = 2
+    arhoE_index_phase = 1
+    self.n_var = n_vf_equations + n_phases * 3
+    self.arho_index = list()
+    self.arhou_index = list()
+    self.arhoE_index = list()
+    self.variable_names = dict()
+    self.index_to_variable = dict()
+    self.index_to_phase = dict()
+    for phase in xrange(n_phases):
+      self.arho_index.append(n_vf_equations + phase * 3 + arho_index_phase)
+      self.arhou_index.append(n_vf_equations + phase * 3 + arhou_index_phase)
+      self.arhoE_index.append(n_vf_equations + phase * 3 + arhoE_index_phase)
+
+      self.variable_names[self.arho_index[phase]] = "arho" + str(phase+1)
+      self.variable_names[self.arhou_index[phase]] = "arhou" + str(phase+1)
+      self.variable_names[self.arhoE_index[phase]] = "arhoE" + str(phase+1)
+
+      self.index_to_variable[self.arho_index[phase]] = VariableName.ARho
+      self.index_to_variable[self.arhou_index[phase]] = VariableName.ARhoU
+      self.index_to_variable[self.arhoE_index[phase]] = VariableName.ARhoE
+
+      self.index_to_phase[self.arho_index[phase]] = phase
+      self.index_to_phase[self.arhou_index[phase]] = phase
+      self.index_to_phase[self.arhoE_index[phase]] = phase
+
+    self.variable_index = {
+      VariableName.ARho: self.arho_index,
+      VariableName.ARhoU: self.arhou_index,
+      VariableName.ARhoE: self.arhoE_index}
+
+    if self.model_type == ModelType.TwoPhase:
+      self.vf1_index = [0]
+      phase1 = 0
+      self.variable_index[VariableName.VF1] = self.vf1_index
+      self.variable_names[self.vf1_index[phase]] = "vf1"
+      self.index_to_variable[self.vf1_index[phase]] = VariableName.VF1
+      self.index_to_phase[self.vf1_index[phase]] = phase
 
     # total number of DoFs
     self.n_dof_per_cell = self.n_dof_per_cell_per_var * self.n_var
@@ -118,7 +81,7 @@ class DoFHandler(object):
         self.vf1[k] = ics.vf0(mesh.x[k])
 
   # DoF index
-  def i(self, k, variable_name, phase=PhaseType.First):
+  def i(self, k, variable_name, phase):
     return k * self.n_var + self.variable_index[variable_name][phase]
 
   # global node index
@@ -128,7 +91,7 @@ class DoFHandler(object):
   def getVolumeFraction(self, U, k, phase):
     if (self.model_type == ModelType.TwoPhase):
       vf1 = U[self.i(k, VariableName.VF1)]
-      if (phase == PhaseType.First):
+      if phase == 0:
         vf = vf1
         dvf_dvf1 = 1.0
       else:
@@ -136,7 +99,7 @@ class DoFHandler(object):
         dvf_dvf1 = -1.0
     elif (self.model_type == ModelType.TwoPhaseNonInteracting):
       vf1 = self.vf1[k]
-      if phase == PhaseType.First:
+      if phase == 0:
         vf = vf1
         dvf_dvf1 = float("NaN")
       else:

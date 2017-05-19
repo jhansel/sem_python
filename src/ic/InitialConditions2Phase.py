@@ -2,9 +2,6 @@ import os
 import sys
 base_dir = os.environ["SEM_PYTHON_DIR"]
 
-sys.path.append(base_dir + "src/base")
-from enums import PhaseType
-
 sys.path.append(base_dir + "src/input")
 from Parameters import Parameters
 
@@ -27,8 +24,8 @@ class InitialConditions2PhaseParameters(Parameters):
 class InitialConditions2Phase(object):
   def __init__(self, params):
     self.vf0 = params.get("vf1")
-    self.p0 = {PhaseType.First : params.get("p1"), PhaseType.Second : params.get("p2")}
-    self.u0 = {PhaseType.First : params.get("u1"), PhaseType.Second : params.get("u2")}
+    self.p0 = [params.get("p1"), params.get("p2")]
+    self.u0 = [params.get("u1"), params.get("u2")]
 
     # one may supply either rho or T, but not both
     if params.has("rho1") and params.has("rho2"):
@@ -44,10 +41,10 @@ class InitialConditions2Phase(object):
     elif has_rho and has_T:
       error("ICs cannot specify both T and rho.")
     elif has_rho:
-      self.rho0 = {PhaseType.First : params.get("rho1"), PhaseType.Second : params.get("rho2")}
+      self.rho0 = [params.get("rho1"), params.get("rho2")]
       self.specified_rho = True
     elif has_T:
-      self.T0 = {PhaseType.First : params.get("T1"), PhaseType.Second : params.get("T2")}
+      self.T0 = [params.get("T1"), params.get("T2")]
       self.specified_rho = False
     else:
       error("Either 'rho' or 'T' for each phase must be specified for IC.")

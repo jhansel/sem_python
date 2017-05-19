@@ -5,7 +5,7 @@ import sys
 base_dir = os.environ["SEM_PYTHON_DIR"]
 
 sys.path.append(base_dir + "src/base")
-from enums import ModelType, PhaseType, VariableName
+from enums import ModelType, VariableName
 
 sys.path.append(base_dir + "src/closures")
 from thermodynamic_functions import computeVelocity, computeDensity, \
@@ -23,10 +23,10 @@ class ExecutionerParameters(Parameters):
     Parameters.__init__(self)
 
 class Executioner(object):
-  def __init__(self, params, model_type, ics, bcs, eos_map, interface_closures, gravity, dof_handler, mesh, nonlinear_solver_params):
+  def __init__(self, params, model_type, ics, bcs, eos, interface_closures, gravity, dof_handler, mesh, nonlinear_solver_params):
     self.model_type = model_type
     self.bcs = bcs
-    self.eos_map = eos_map
+    self.eos = eos
     self.interface_closures = interface_closures
     self.gravity = gravity
     self.dof_handler = dof_handler
@@ -40,20 +40,20 @@ class Executioner(object):
     if self.model_type == ModelType.OnePhase:
       self.initializeOnePhaseSolution(ics)
     else:
-      self.initializeTwoPhaseSolution(ics, PhaseType.First)
-      self.initializeTwoPhaseSolution(ics, PhaseType.Second)
+      self.initializeTwoPhaseSolution(ics, 0)
+      self.initializeTwoPhaseSolution(ics, 1)
       if self.model_type == ModelType.TwoPhase:
         self.initializeVolumeFractionSolution(ics)
 
   def initializeOnePhaseSolution(self, ics):
-    phase = PhaseType.First
+    phase = 0
     p0 = ics.p0[phase]
     if ics.specified_rho:
       rho0 = ics.rho0[phase]
     else:
       T0 = ics.T0[phase]
     u0 = ics.u0[phase]
-    eos = self.eos_map[phase]
+    eos_phase = self.eos[phase]
     for k in xrange(self.dof_handler.n_node):
       p = p0(self.mesh.x[k])
       u = u0(self.mesh.x[k])
@@ -61,8 +61,8 @@ class Executioner(object):
         rho = rho0(self.mesh.x[k])
       else:
         T = T0(self.mesh.x[k])
-        rho = eos.rho(p, T)
-      e = eos.e(1.0 / rho, p)[0]
+        rho = eos_phase.rho(p, T)
+      e = eos_phase.e(1.0 / rho, p)[0]
       E = e + 0.5 * u * u
       self.U[self.dof_handler.i(k, VariableName.ARho, phase)] = rho
       self.U[self.dof_handler.i(k, VariableName.ARhoU, phase)] = rho * u
@@ -76,10 +76,10 @@ class Executioner(object):
     else:
       T0 = ics.T0[phase]
     u0 = ics.u0[phase]
-    eos = self.eos_map[phase]
+    eos_phase = self.eos[phase]
     for k in xrange(self.dof_handler.n_node):
       vf1 = vf0(self.mesh.x[k])
-      if phase == PhaseType.First:
+      if phase == 0:
         vf = vf1
       else:
         vf = 1 - vf1
@@ -89,8 +89,8 @@ class Executioner(object):
         rho = rho0(self.mesh.x[k])
       else:
         T = T0(self.mesh.x[k])
-        rho = eos.rho(p, T)
-      e = eos.e(1.0 / rho, p)[0]
+        rho = eos_phase.rho(p, T)
+      e = eos_phase.e(1.0 / rho, p)[0]
       E = e + 0.5 * u * u
       self.U[self.dof_handler.i(k, VariableName.ARho, phase)] = vf * rho
       self.U[self.dof_handler.i(k, VariableName.ARhoU, phase)] = vf * rho * u
@@ -106,9 +106,9 @@ class Executioner(object):
     J = np.zeros(shape=(self.dof_handler.n_dof, self.dof_handler.n_dof))
 
     # volumetric terms
-    self.addSteadyStateSystemPhase(U, PhaseType.First, r, J)
+    self.addSteadyStateSystemPhase(U, 0, r, J)
     if (self.model_type != ModelType.OnePhase):
-      self.addSteadyStateSystemPhase(U, PhaseType.Second, r, J)
+      self.addSteadyStateSystemPhase(U, 1, r, J)
     if (self.model_type == ModelType.TwoPhase):
       self.addSteadyStateSystemVolumeFraction(U, r, J)
 
@@ -163,7 +163,7 @@ class Executioner(object):
       de_darhou = de_du * du_darhou
       de_darhoE = de_dE * dE_darhoE
 
-      p, dp_dv, dp_de = self.eos_map[phase].p(v, e)
+      p, dp_dv, dp_de = self.eos[phase].p(v, e)
       dp_dvf1 = dp_dv * dv_dvf1
       dp_darho = dp_dv * dv_darho + dp_de * de_darho
       dp_darhou = dp_de * de_darhou
@@ -223,10 +223,10 @@ class Executioner(object):
       grad_phi = self.fe_values.get_grad_phi(elem)
       JxW = self.fe_values.get_JxW(elem)
 
-      phase1 = PhaseType.First
-      phase2 = PhaseType.Second
-      eos1 = self.eos_map[phase1]
-      eos2 = self.eos_map[phase2]
+      phase1 = 0
+      phase2 = 1
+      eos1 = self.eos[phase1]
+      eos2 = self.eos[phase2]
 
       # compute solution
       vf1 = self.fe_values.computeLocalSolution(U, VariableName.VF1, phase1, elem)

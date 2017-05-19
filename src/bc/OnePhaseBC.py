@@ -11,13 +11,13 @@ from BC import BC, BCParameters
 class OnePhaseBCParameters(BCParameters):
   def __init__(self):
     BCParameters.__init__(self)
-    self.registerPhaseTypeParameter("phase", "Phase to which BC is applied")
+    self.registerIntParameter("phase", "Index of phase to which BC is applied")
 
 class OnePhaseBC(BC):
-  def __init__(self, params, dof_handler, eos_map):
-    BC.__init__(self, params, dof_handler, eos_map)
+  def __init__(self, params, dof_handler, eos):
+    BC.__init__(self, params, dof_handler, eos)
     self.phase = params.get("phase")
-    self.eos = eos_map[self.phase]
+    self.eos = eos[self.phase]
 
     # DoF indices for the conserved variables
     if (self.model_type == ModelType.TwoPhase):

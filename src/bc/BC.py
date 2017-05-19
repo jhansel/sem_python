@@ -11,10 +11,10 @@ class BCParameters(Parameters):
     self.registerStringSelectionParameter("boundary", ["left", "right"], "Which boundary to apply boundary condition on")
 
 class BC(object):
-  def __init__(self, params, dof_handler, eos_map):
+  def __init__(self, params, dof_handler, eos):
     self.boundary = params.get("boundary")
     self.dof_handler = dof_handler
-    self.eos_map = eos_map
+    self.eos = eos
     self.model_type = self.dof_handler.model_type
     if self.boundary == "left":
       self.nx = -1.0

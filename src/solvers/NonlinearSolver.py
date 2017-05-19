@@ -8,7 +8,7 @@ import sys
 base_dir = os.environ["SEM_PYTHON_DIR"]
 
 sys.path.append(base_dir + "src/base")
-from enums import PhaseType, VariableName
+from enums import VariableName
 
 sys.path.append(base_dir + "src/input")
 from Parameters import Parameters
@@ -52,10 +52,10 @@ class NonlinearSolver(object):
     self.verbose = params.get("verbose")
 
     self.scaling = dict()
-    self.scaling[VariableName.VF1] = {PhaseType.First: params.get("scaling_vf1")}
-    self.scaling[VariableName.ARho] = {PhaseType.First: params.get("scaling_arho1"), PhaseType.Second: params.get("scaling_arho2")}
-    self.scaling[VariableName.ARhoU] = {PhaseType.First: params.get("scaling_arhou1"), PhaseType.Second: params.get("scaling_arhou2")}
-    self.scaling[VariableName.ARhoE] = {PhaseType.First: params.get("scaling_arhoE1"), PhaseType.Second: params.get("scaling_arhoE2")}
+    self.scaling[VariableName.VF1] = [params.get("scaling_vf1")]
+    self.scaling[VariableName.ARho] = [params.get("scaling_arho1"), params.get("scaling_arho2")]
+    self.scaling[VariableName.ARhoU] = [params.get("scaling_arhou1"), params.get("scaling_arhou2")]
+    self.scaling[VariableName.ARhoE] = [params.get("scaling_arhoE1"), params.get("scaling_arhoE2")]
 
   def solve(self, U):
     # begin Newton solve

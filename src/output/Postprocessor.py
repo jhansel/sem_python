@@ -5,7 +5,7 @@ base_dir = os.environ["SEM_PYTHON_DIR"]
 from collections import OrderedDict
 
 sys.path.append(base_dir + "src/base")
-from enums import ModelType, PhaseType
+from enums import ModelType
 
 sys.path.append(base_dir + "src/closures")
 from thermodynamic_functions import computeDensity, computeVelocity, computeSpecificVolume, \
@@ -31,7 +31,7 @@ class PostprocessorParameters(Parameters):
     self.registerStringParameter("plot_file", "Name of plot file", "solution.pdf")
 
 class Postprocessor(object):
-  def __init__(self, params, model_type, eos_map, dof_handler, mesh):
+  def __init__(self, params, model_type, eos, dof_handler, mesh):
     self.print_solution = params.get("print_solution")
     self.save_solution = params.get("save_solution")
     self.solution_file = params.get("solution_file")
@@ -39,14 +39,14 @@ class Postprocessor(object):
     self.plot_solution = params.get("plot_solution")
     self.plot_file = params.get("plot_file")
     self.model_type = model_type
-    self.eos_map = eos_map
+    self.eos = eos
     self.dof_handler = dof_handler
     self.mesh = mesh
 
   def run(self, U):
-    vf1, arho1, arhou1, arhoE1 = self.dof_handler.getPhaseSolution(U, PhaseType.First)
+    vf1, arho1, arhou1, arhoE1 = self.dof_handler.getPhaseSolution(U, 0)
     if (self.model_type != ModelType.OnePhase):
-      vf2, arho2, arhou2, arhoE2 = self.dof_handler.getPhaseSolution(U, PhaseType.Second)
+      vf2, arho2, arhou2, arhoE2 = self.dof_handler.getPhaseSolution(U, 1)
 
     # compute aux quantities
     n = self.dof_handler.n_node
@@ -55,7 +55,7 @@ class Postprocessor(object):
     v1 = computeSpecificVolume(rho1)[0]
     E1 = computeSpecificTotalEnergy(arho1, arhoE1)[0]
     e1 = computeSpecificInternalEnergy(u1, E1)[0]
-    eos1 = self.eos_map[PhaseType.First]
+    eos1 = self.eos[0]
     p1 = eos1.p(v1, e1)[0]
     if (self.model_type != ModelType.OnePhase):
       rho2 = computeDensity(vf2, arho2)[0]
@@ -63,7 +63,7 @@ class Postprocessor(object):
       v2 = computeSpecificVolume(rho2)[0]
       E2 = computeSpecificTotalEnergy(arho2, arhoE2)[0]
       e2 = computeSpecificInternalEnergy(u2, E2)[0]
-      eos2 = self.eos_map[PhaseType.Second]
+      eos2 = self.eos[1]
       p2 = eos2.p(v2, e2)[0]
 
     # print solution
