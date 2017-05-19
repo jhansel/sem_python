@@ -78,7 +78,7 @@ class DoFHandler(object):
     if self.model_type == ModelType.TwoPhaseNonInteracting:
       self.vf1 = np.zeros(self.n_node)
       for k in xrange(self.n_node):
-        self.vf1[k] = ics.vf0(mesh.x[k])
+        self.vf1[k] = ics.vf1(mesh.x[k])
 
   # DoF index
   def i(self, k, variable_name, phase):

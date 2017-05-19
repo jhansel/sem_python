@@ -23,9 +23,9 @@ class InitialConditions2PhaseParameters(Parameters):
 
 class InitialConditions2Phase(object):
   def __init__(self, params):
-    self.vf0 = params.get("vf1")
-    self.p0 = [params.get("p1"), params.get("p2")]
-    self.u0 = [params.get("u1"), params.get("u2")]
+    self.vf1 = params.get("vf1")
+    self.p = [params.get("p1"), params.get("p2")]
+    self.u = [params.get("u1"), params.get("u2")]
 
     # one may supply either rho or T, but not both
     if params.has("rho1") and params.has("rho2"):
@@ -41,10 +41,10 @@ class InitialConditions2Phase(object):
     elif has_rho and has_T:
       error("ICs cannot specify both T and rho.")
     elif has_rho:
-      self.rho0 = [params.get("rho1"), params.get("rho2")]
+      self.rho = [params.get("rho1"), params.get("rho2")]
       self.specified_rho = True
     elif has_T:
-      self.T0 = [params.get("T1"), params.get("T2")]
+      self.T = [params.get("T1"), params.get("T2")]
       self.specified_rho = False
     else:
       error("Either 'rho' or 'T' for each phase must be specified for IC.")

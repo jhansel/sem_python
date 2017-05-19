@@ -18,17 +18,17 @@ class InitialConditions1PhaseParameters(Parameters):
 
 class InitialConditions1Phase(object):
   def __init__(self, params):
-    self.p0 = [params.get("p")]
-    self.u0 = [params.get("u")]
+    self.p = [params.get("p")]
+    self.u = [params.get("u")]
 
     # one may supply either rho or T, but not both
     if params.has("rho") and params.has("T"):
       error("ICs cannot specify both T and rho.")
     elif params.has("rho"):
-      self.rho0 = [params.get("rho")]
+      self.rho = [params.get("rho")]
       self.specified_rho = True
     elif params.has("T"):
-      self.T0 = [params.get("T")]
+      self.T = [params.get("T")]
       self.specified_rho = False
     else:
       error("Either 'rho' or 'T' must be specified for IC.")

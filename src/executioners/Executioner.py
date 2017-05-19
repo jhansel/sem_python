@@ -37,58 +37,43 @@ class Executioner(object):
 
     # initialize the solution
     self.U = np.zeros(self.dof_handler.n_dof)
+    self.initializePhaseSolution(ics, 0)
+    if self.model_type != ModelType.OnePhase:
+      self.initializePhaseSolution(ics, 1)
+    if self.model_type == ModelType.TwoPhase:
+      self.initializeVolumeFractionSolution(ics)
+
+  def initializePhaseSolution(self, ics, phase):
+    # get appropriate volume fraction function
     if self.model_type == ModelType.OnePhase:
-      self.initializeOnePhaseSolution(ics)
+      def initial_vf(x):
+        return 1
     else:
-      self.initializeTwoPhaseSolution(ics, 0)
-      self.initializeTwoPhaseSolution(ics, 1)
-      if self.model_type == ModelType.TwoPhase:
-        self.initializeVolumeFractionSolution(ics)
-
-  def initializeOnePhaseSolution(self, ics):
-    phase = 0
-    p0 = ics.p0[phase]
-    if ics.specified_rho:
-      rho0 = ics.rho0[phase]
-    else:
-      T0 = ics.T0[phase]
-    u0 = ics.u0[phase]
-    eos_phase = self.eos[phase]
-    for k in xrange(self.dof_handler.n_node):
-      p = p0(self.mesh.x[k])
-      u = u0(self.mesh.x[k])
-      if ics.specified_rho:
-        rho = rho0(self.mesh.x[k])
-      else:
-        T = T0(self.mesh.x[k])
-        rho = eos_phase.rho(p, T)
-      e = eos_phase.e(1.0 / rho, p)[0]
-      E = e + 0.5 * u * u
-      self.U[self.dof_handler.i(k, VariableName.ARho, phase)] = rho
-      self.U[self.dof_handler.i(k, VariableName.ARhoU, phase)] = rho * u
-      self.U[self.dof_handler.i(k, VariableName.ARhoE, phase)] = rho * E
-
-  def initializeTwoPhaseSolution(self, ics, phase):
-    vf0 = ics.vf0
-    p0 = ics.p0[phase]
-    if ics.specified_rho:
-      rho0 = ics.rho0[phase]
-    else:
-      T0 = ics.T0[phase]
-    u0 = ics.u0[phase]
-    eos_phase = self.eos[phase]
-    for k in xrange(self.dof_handler.n_node):
-      vf1 = vf0(self.mesh.x[k])
+      initial_vf1 = ics.vf1
       if phase == 0:
-        vf = vf1
+        initial_vf = initial_vf1
       else:
-        vf = 1 - vf1
-      p = p0(self.mesh.x[k])
-      u = u0(self.mesh.x[k])
+        def initial_vf(x):
+          return 1 - initial_vf1(x)
+
+    # get relevant IC functions
+    initial_p = ics.p[phase]
+    initial_u = ics.u[phase]
+    if ics.specified_rho:
+      initial_rho = ics.rho[phase]
+    else:
+      initial_T = ics.T[phase]
+
+    # compute IC
+    eos_phase = self.eos[phase]
+    for k in xrange(self.dof_handler.n_node):
+      vf = initial_vf(self.mesh.x[k])
+      p = initial_p(self.mesh.x[k])
+      u = initial_u(self.mesh.x[k])
       if ics.specified_rho:
-        rho = rho0(self.mesh.x[k])
+        rho = initial_rho(self.mesh.x[k])
       else:
-        T = T0(self.mesh.x[k])
+        T = initial_T(self.mesh.x[k])
         rho = eos_phase.rho(p, T)
       e = eos_phase.e(1.0 / rho, p)[0]
       E = e + 0.5 * u * u
@@ -98,7 +83,7 @@ class Executioner(object):
 
   def initializeVolumeFractionSolution(self, ics):
     for k in xrange(self.dof_handler.n_node):
-      self.U[self.dof_handler.i(k, VariableName.VF1)] = ics.vf0(self.mesh.x[k])
+      self.U[self.dof_handler.i(k, VariableName.VF1)] = ics.vf1(self.mesh.x[k])
 
   # computes the steady-state residual and Jacobian without applying strong BC
   def assembleSteadyStateSystemWithoutStrongBC(self, U):
