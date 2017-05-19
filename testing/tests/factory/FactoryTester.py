@@ -33,7 +33,9 @@ class FactoryTester(unittest.TestCase):
 
   ## Tests the createObject() function when arguments in addition to input parameters are required
   def testCreateObjectWithExtraArgs(self):
-    dof_handler = DoFHandler(5, ModelType.OnePhase)
+    mesh_params = {"n_cell" : "5"}
+    mesh = self.factory.createObject("UniformMesh", mesh_params)
+    dof_handler = DoFHandler(mesh, ModelType.OnePhase, None)
     eos_params = {"gamma" : "1.4", "R" : "200"}
     eos = self.factory.createParametersObject("IdealGasEoS", eos_params)
     eos_map = {PhaseType.First : eos}
