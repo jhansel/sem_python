@@ -9,8 +9,9 @@ sys.path.append(base_dir + "src/bc")
 from OnePhaseBC import OnePhaseBC, OnePhaseBCParameters
 
 sys.path.append(base_dir + "src/closures")
-from thermodynamic_functions import computeDensity, computeSpecificVolume,\
-  computeVelocity, computeSpecificTotalEnergy, computeSpecificInternalEnergy
+from thermodynamic_functions import computeVolumeFraction, computeDensity, \
+  computeSpecificVolume, computeVelocity, computeSpecificTotalEnergy, \
+  computeSpecificInternalEnergy
 
 class FreeBCParameters(OnePhaseBCParameters):
   def __init__(self):
@@ -21,7 +22,8 @@ class FreeBC(OnePhaseBC):
     OnePhaseBC.__init__(self, params, dof_handler, eos_map)
 
   def applyWeakBC(self, U, r, J):
-    vf, dvf_dvf1 = self.dof_handler.getVolumeFraction(U, self.k, self.phase)
+    vf1 = self.dof_handler.getVolumeFraction(U, self.k)
+    vf, dvf_dvf1 = computeVolumeFraction(vf1, self.phase, self.model_type)
     arho = U[self.i_arho]
     arhou = U[self.i_arhou]
     arhoE = U[self.i_arhoE]

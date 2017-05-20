@@ -1,3 +1,23 @@
+import os
+import sys
+base_dir = os.environ["SEM_PYTHON_DIR"]
+
+sys.path.append(base_dir + "src/base")
+from enums import ModelType, VariableName
+
+def computeVolumeFraction(vf1, phase, model_type):
+  if model_type == ModelType.OnePhase:
+    vf = 0 * vf1 + 1
+    dvf_dvf1 = float("NaN")
+  else:
+    if phase == 0:
+      vf = vf1
+      dvf_dvf1 = 0 * vf1 + 1
+    else:
+      vf = 1 - vf1
+      dvf_dvf1 = 0 * vf1 - 1
+  return (vf, dvf_dvf1)
+
 def computeSpecificVolume(rho):
   v = 1.0 / rho
   dv_drho = - 1.0 / rho / rho

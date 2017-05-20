@@ -9,7 +9,8 @@ sys.path.append(base_dir + "src/bc")
 from OnePhaseBC import OnePhaseBC, OnePhaseBCParameters
 
 sys.path.append(base_dir + "src/closures")
-from thermodynamic_functions import computeDensity, computeVelocity, computeSpecificVolume
+from thermodynamic_functions import computeVolumeFraction, computeDensity, \
+  computeVelocity, computeSpecificVolume
 
 ## Parameters class for OutletBC
 class OutletBCParameters(OnePhaseBCParameters):
@@ -23,7 +24,8 @@ class OutletBC(OnePhaseBC):
     self.p = params.get("p")
 
   def applyWeakBC(self, U, r, J):
-    vf, dvf_dvf1 = self.dof_handler.getVolumeFraction(U, self.k, self.phase)
+    vf1 = self.dof_handler.getVolumeFraction(U, self.k)
+    vf, dvf_dvf1 = computeVolumeFraction(vf1, self.phase, self.model_type)
     arho = U[self.i_arho]
     arhou = U[self.i_arhou]
 
@@ -41,7 +43,8 @@ class OutletBC(OnePhaseBC):
     J[self.i_arhou,self.i_arhou] += (arhou * du_darhou + u) * self.nx
 
   def applyStrongBC(self, U, r, J):
-    vf, dvf_dvf1 = self.dof_handler.getVolumeFraction(U, self.k, self.phase)
+    vf1 = self.dof_handler.getVolumeFraction(U, self.k)
+    vf, dvf_dvf1 = computeVolumeFraction(vf1, self.phase, self.model_type)
     arho = U[self.i_arho]
     arhou = U[self.i_arhou]
     arhoE_solution = U[self.i_arhoE]

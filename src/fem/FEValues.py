@@ -29,28 +29,14 @@ class FEValues(object):
   def get_JxW(self, e):
     return [self.quadrature.JxW_divided_by_h[q] * self.mesh.h[e] for q in xrange(self.quadrature.n_q)]
 
-  def computeLocalVolumeFractionSolution(self, U, phase, e):
-    vf = np.zeros(self.quadrature.n_q)
-    dvf_dvf1 = np.zeros(self.quadrature.n_q)
+  def computeLocalVolumeFractionSolution(self, U, e):
+    vf1 = np.zeros(self.quadrature.n_q)
     for q in xrange(self.quadrature.n_q):
       for k_local in xrange(self.dof_handler.n_dof_per_cell_per_var):
         k = self.dof_handler.k(e, k_local)
-        vf_k, dvf_dvf1_k = self.dof_handler.getVolumeFraction(U, k, phase)
-        vf[q] += vf_k * self.phi[k_local, q]
-        dvf_dvf1[q] += dvf_dvf1_k * self.phi[k_local, q]
-    return (vf, dvf_dvf1)
-
-  def computeLocalVolumeFractionSolutionGradient(self, U, phase, e):
-    dvf_dx = np.zeros(self.quadrature.n_q)
-    dvf_dx_dvf1 = np.zeros(self.quadrature.n_q)
-    Jac = self.quadrature.Jac_divided_by_h * self.mesh.h[e]
-    for q in xrange(self.quadrature.n_q):
-      for k_local in xrange(self.dof_handler.n_dof_per_cell_per_var):
-        k = self.dof_handler.k(e, k_local)
-        vf_k, dvf_dvf1_k = self.dof_handler.getVolumeFraction(U, k, phase)
-        dvf_dx[q] += vf_k * self.grad_phi[k_local, q] / Jac
-        dvf_dx_dvf1[q] += dvf_dvf1_k * self.grad_phi[k_local, q] / Jac
-    return (dvf_dx, dvf_dx_dvf1)
+        vf1_k = self.dof_handler.getVolumeFraction(U, k)
+        vf1[q] += vf1_k * self.phi[k_local, q]
+    return vf1
 
   def computeLocalSolution(self, U, variable_name, phase, e):
     solution = np.zeros(self.quadrature.n_q)

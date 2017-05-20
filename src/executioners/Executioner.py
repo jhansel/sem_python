@@ -8,8 +8,9 @@ sys.path.append(base_dir + "src/base")
 from enums import ModelType, VariableName
 
 sys.path.append(base_dir + "src/closures")
-from thermodynamic_functions import computeVelocity, computeDensity, \
-  computeSpecificVolume, computeSpecificTotalEnergy, computeSpecificInternalEnergy
+from thermodynamic_functions import computeVolumeFraction, computeVelocity, \
+  computeDensity, computeSpecificVolume, computeSpecificTotalEnergy, \
+  computeSpecificInternalEnergy
 
 sys.path.append(base_dir + "src/fem")
 from FEValues import FEValues
@@ -126,12 +127,14 @@ class Executioner(object):
       JxW = self.fe_values.get_JxW(elem)
 
       # compute solution
-      vf, dvf_dvf1 = self.fe_values.computeLocalVolumeFractionSolution(U, phase, elem)
+      vf1 = self.fe_values.computeLocalVolumeFractionSolution(U, elem)
       arho = self.fe_values.computeLocalSolution(U, VariableName.ARho, phase, elem)
       arhou = self.fe_values.computeLocalSolution(U, VariableName.ARhoU, phase, elem)
       arhoE = self.fe_values.computeLocalSolution(U, VariableName.ARhoE, phase, elem)
 
       # compute auxiliary quantities
+      vf, dvf_dvf1 = computeVolumeFraction(vf1, phase, self.model_type)
+
       u, du_darho, du_darhou = computeVelocity(arho, arhou)
 
       rho, drho_dvf, drho_darho = computeDensity(vf, arho)

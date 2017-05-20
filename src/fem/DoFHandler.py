@@ -7,6 +7,9 @@ base_dir = os.environ["SEM_PYTHON_DIR"]
 sys.path.append(base_dir + "src/base")
 from enums import ModelType, VariableName
 
+sys.path.append(base_dir + "src/closures")
+from thermodynamic_functions import computeVolumeFraction
+
 class DoFHandler(object):
   def __init__(self, mesh, model_type, ics):
     # counts
@@ -88,40 +91,25 @@ class DoFHandler(object):
   def k(self, e, k_local):
     return e + k_local
 
-  def getVolumeFraction(self, U, k, phase):
+  def getVolumeFraction(self, U, k):
     if (self.model_type == ModelType.TwoPhase):
       vf1 = U[self.i(k, VariableName.VF1)]
-      if phase == 0:
-        vf = vf1
-        dvf_dvf1 = 1.0
-      else:
-        vf = 1.0 - vf1
-        dvf_dvf1 = -1.0
     elif (self.model_type == ModelType.TwoPhaseNonInteracting):
       vf1 = self.vf1[k]
-      if phase == 0:
-        vf = vf1
-        dvf_dvf1 = float("NaN")
-      else:
-        vf = 1 - vf1
-        dvf_dvf1 = float("NaN")
-    elif self.model_type == ModelType.OnePhase:
-      vf = 1
-      dvf_dvf1 = float("NaN")
-    return (vf, dvf_dvf1)
+    else:
+      vf1 = 1
+    return vf1
 
   def getSolution(self, U, variable_name, phase):
     return np.array([U[self.i(k, variable_name, phase)] for k in xrange(self.n_node)])
 
   def getPhaseSolution(self, U, phase):
-    vf = np.array([self.getVolumeFraction(U, k, phase)[0] for k in xrange(self.n_node)])
+    vf1 = np.array([self.getVolumeFraction(U, k) for k in xrange(self.n_node)])
+    vf, _ = computeVolumeFraction(vf1, phase, self.model_type)
     arho = self.getSolution(U, VariableName.ARho, phase)
     arhou = self.getSolution(U, VariableName.ARhoU, phase)
     arhoE = self.getSolution(U, VariableName.ARhoE, phase)
     return (vf, arho, arhou, arhoE)
-
-  def getVolumeFractionSolution(self, U, phase):
-    return np.array([self.getVolumeFraction(U, k, phase)[0] for k in xrange(self.n_node)])
 
   # aggregates local vector into global vector
   def aggregateLocalVector(self, r, r_cell, e):

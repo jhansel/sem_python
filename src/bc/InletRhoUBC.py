@@ -9,8 +9,8 @@ sys.path.append(base_dir + "src/bc")
 from OnePhaseBC import OnePhaseBC, OnePhaseBCParameters
 
 sys.path.append(base_dir + "src/closures")
-from thermodynamic_functions import computeSpecificVolume, computeSpecificTotalEnergy, \
-  computeSpecificInternalEnergy
+from thermodynamic_functions import computeVolumeFraction, computeSpecificVolume, \
+  computeSpecificTotalEnergy, computeSpecificInternalEnergy
 
 class InletRhoUBCParameters(OnePhaseBCParameters):
   def __init__(self):
@@ -25,7 +25,8 @@ class InletRhoUBC(OnePhaseBC):
     self.u = params.get("u")
 
   def applyWeakBC(self, U, r, J):
-    vf, dvf_dvf1 = self.dof_handler.getVolumeFraction(U, self.k, self.phase)
+    vf1 = self.dof_handler.getVolumeFraction(U, self.k)
+    vf, dvf_dvf1 = computeVolumeFraction(vf1, self.phase, self.model_type)
     arhoE = U[self.i_arhoE]
 
     arhoBC = vf * self.rho
@@ -60,7 +61,8 @@ class InletRhoUBC(OnePhaseBC):
     J[self.i_arhoE,self.i_arhoE] += self.u * (1 + vf * dp_darhoE) * self.nx
 
   def applyStrongBC(self, U, r, J):
-    vf, dvf_dvf1 = self.dof_handler.getVolumeFraction(U, self.k, self.phase)
+    vf1 = self.dof_handler.getVolumeFraction(U, self.k)
+    vf, dvf_dvf1 = computeVolumeFraction(vf1, self.phase, self.model_type)
     arho = U[self.i_arho]
 
     arhoBC = vf * self.rho

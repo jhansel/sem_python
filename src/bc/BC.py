@@ -14,6 +14,7 @@ class BC(object):
   def __init__(self, params, dof_handler, eos):
     self.boundary = params.get("boundary")
     self.dof_handler = dof_handler
+    self.model_type = dof_handler.model_type
     self.eos = eos
     self.model_type = self.dof_handler.model_type
     if self.boundary == "left":
