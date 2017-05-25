@@ -1,6 +1,6 @@
 from inspect import getargspec
 
-class DerivativesTester(object):
+class FunctionDerivativesTester(object):
   def __init__(self, in_unittest_mode=True, use_debug_mode=False):
     self.in_unittest_mode = in_unittest_mode
     self.use_debug_mode = use_debug_mode

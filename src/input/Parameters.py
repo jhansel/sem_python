@@ -40,7 +40,9 @@ class Parameters(object):
   # @param value  value of the parameter as a string
   def set(self, name, value):
     if name in self.descriptions:
-      if self.types[name] == "bool":
+      if self.types[name] == "list":
+        self.values[name] = value
+      elif self.types[name] == "bool":
         self.values[name] = stringToBool(value)
       elif self.types[name] == "int":
         self.values[name] = stringToInt(value)
@@ -75,6 +77,10 @@ class Parameters(object):
       self.descriptions[name] = description
       if default != None:
         self.values[name] = default
+
+  def registerListParameter(self, name, description, default=None):
+    self.registerParameter(name, description, default)
+    self.types[name] = "list"
 
   def registerBoolParameter(self, name, description, default=None):
     self.registerParameterInternal(name, "bool", description, default)

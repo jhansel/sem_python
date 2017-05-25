@@ -5,14 +5,14 @@ import sys
 base_dir = os.environ["SEM_PYTHON_DIR"]
 
 sys.path.append(base_dir + "src/testing/src")
-from DerivativesTester import DerivativesTester
+from FunctionDerivativesTester import FunctionDerivativesTester
 
 sys.path.append(base_dir + "src/closures")
 from InterfaceClosures import InterfaceClosures, InterfaceClosuresParameters
 
-class InterfaceClosuresDerivativesTester(unittest.TestCase):
+class InterfaceClosuresFunctionDerivativesTester(unittest.TestCase):
   def setUp(self):
-    self.derivative_tester = DerivativesTester()
+    self.derivative_tester = FunctionDerivativesTester()
     params = InterfaceClosuresParameters()
     params.set("chi", 0.5)
     params.set("pressure_relaxation_time", 0.1)
@@ -49,7 +49,7 @@ if __name__ == "__main__":
   params.set("pressure_relaxation_time", 0.1)
   closures = InterfaceClosures(params)
 
-  tester = DerivativesTester(False)
+  tester = FunctionDerivativesTester(False)
   tester.checkDerivatives(closures.computeInterfaceVelocity, 3)
   tester.checkDerivatives(closures.computeInterfacePressure, 3)
   tester.checkDerivatives(closures.computeBeta, 2)

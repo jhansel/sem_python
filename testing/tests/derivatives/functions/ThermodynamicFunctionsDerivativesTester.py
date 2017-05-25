@@ -4,13 +4,13 @@ sys.path.append("../../../src/closures")
 
 import unittest
 
-from DerivativesTester import DerivativesTester
+from FunctionDerivativesTester import FunctionDerivativesTester
 from thermodynamic_functions import computeSpecificVolume, computeDensity, \
   computeVelocity, computeSpecificTotalEnergy, computeSpecificInternalEnergy
 
-class ThermodynamicFunctionsDerivativesTester(unittest.TestCase):
+class ThermodynamicFunctionsFunctionDerivativesTester(unittest.TestCase):
   def setUp(self):
-    self.derivative_tester = DerivativesTester()
+    self.derivative_tester = FunctionDerivativesTester()
 
   def testVelocity(self):
     reldiffs = self.derivative_tester.checkDerivatives(computeVelocity, 2)
@@ -38,7 +38,7 @@ class ThermodynamicFunctionsDerivativesTester(unittest.TestCase):
       self.assertLessEqual(reldiff, 1e-7)
 
 if __name__ == "__main__":
-  tester = DerivativesTester(False)
+  tester = FunctionDerivativesTester(False)
   tester.checkDerivatives(computeVelocity, 2)
   tester.checkDerivatives(computeDensity, 2)
   tester.checkDerivatives(computeSpecificVolume, 1)

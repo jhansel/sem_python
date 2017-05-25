@@ -7,16 +7,16 @@ sys.path.append("../../../src/utilities")
 
 import unittest
 
-from DerivativesTester import DerivativesTester
+from FunctionDerivativesTester import FunctionDerivativesTester
 from IdealGasEoS import IdealGasEoS, IdealGasEoSParameters
 
-class IdealGasEoSDerivativesTester(unittest.TestCase):
+class IdealGasEoSFunctionDerivativesTester(unittest.TestCase):
   def setUp(self):
     params = IdealGasEoSParameters()
     params.set("gamma", 1.4)
     params.set("R", 290.0)
     self.eos = IdealGasEoS(params)
-    self.derivative_tester = DerivativesTester()
+    self.derivative_tester = FunctionDerivativesTester()
 
   def testSpecificInternalEnergy(self):
     reldiffs = self.derivative_tester.checkDerivatives(self.eos.e, 2)
@@ -40,7 +40,7 @@ if __name__ == "__main__":
 
   eos = IdealGasEoS(params)
 
-  tester = DerivativesTester(False)
+  tester = FunctionDerivativesTester(False)
   tester.checkDerivatives(eos.e, 2)
   tester.checkDerivatives(eos.p, 2)
   tester.checkDerivatives(eos.T, 2)

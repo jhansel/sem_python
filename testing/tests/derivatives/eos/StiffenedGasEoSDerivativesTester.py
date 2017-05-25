@@ -7,10 +7,10 @@ sys.path.append("../../../src/utilities")
 
 import unittest
 
-from DerivativesTester import DerivativesTester
+from FunctionDerivativesTester import FunctionDerivativesTester
 from StiffenedGasEoS import StiffenedGasEoS, StiffenedGasEoSParameters
 
-class StiffenedGasEoSDerivativesTester(unittest.TestCase):
+class StiffenedGasEoSFunctionDerivativesTester(unittest.TestCase):
   def setUp(self):
     params = StiffenedGasEoSParameters()
     params.set("gamma", 1.4)
@@ -18,7 +18,7 @@ class StiffenedGasEoSDerivativesTester(unittest.TestCase):
     params.set("q", -5)
     params.set("p_inf", 10)
     self.eos = StiffenedGasEoS(params)
-    self.derivative_tester = DerivativesTester()
+    self.derivative_tester = FunctionDerivativesTester()
 
   def testSpecificInternalEnergy(self):
     reldiffs = self.derivative_tester.checkDerivatives(self.eos.e, 2)
@@ -44,7 +44,7 @@ if __name__ == "__main__":
 
   eos = StiffenedGasEoS(params)
 
-  tester = DerivativesTester(False)
+  tester = FunctionDerivativesTester(False)
   tester.checkDerivatives(eos.e, 2)
   tester.checkDerivatives(eos.p, 2)
   tester.checkDerivatives(eos.T, 2)
