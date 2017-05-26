@@ -91,7 +91,7 @@ def run(input_file, mods=list()):
   if model_type == ModelType.OnePhase:
     dof_handler = DoFHandler1Phase(mesh)
   elif model_type == ModelType.TwoPhaseNonInteracting:
-    dof_handler = DoFHandler2PhaseNonInteracting(mesh, ics)
+    dof_handler = DoFHandler2PhaseNonInteracting(mesh, ics.vf1)
   elif model_type == ModelType.TwoPhase:
     dof_handler = DoFHandler2Phase(mesh)
 
