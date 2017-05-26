@@ -1,5 +1,12 @@
 from inspect import getargspec
 
+import os
+import sys
+base_dir = os.environ["SEM_PYTHON_DIR"]
+
+sys.path.append(base_dir + "src/utilities")
+from numeric_utilities import computeRelativeDifference
+
 class FunctionDerivativesTester(object):
   def __init__(self, in_unittest_mode=True, use_debug_mode=False):
     self.in_unittest_mode = in_unittest_mode
@@ -52,10 +59,7 @@ class FunctionDerivativesTester(object):
 
       # compute absolute and relative difference
       absdiff = df_dU_coded[i] - df_dUi_fd
-      if (abs(df_dUi_fd) < 1e-15):
-        reldiff = abs(df_dU_coded[i] - df_dUi_fd)
-      else:
-        reldiff = abs((df_dU_coded[i] - df_dUi_fd) / df_dUi_fd)
+      reldiff = computeRelativeDifference(df_dU_coded[i], df_dUi_fd)
       reldiffs.append(reldiff)
 
       # print results
@@ -65,6 +69,6 @@ class FunctionDerivativesTester(object):
 
     # return relative differences if in unittest mode
     if self.in_unittest_mode:
-      return reldiffs
+      return abs(reldiffs)
     else:
       print "\n"

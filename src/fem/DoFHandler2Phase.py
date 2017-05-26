@@ -17,4 +17,4 @@ class DoFHandler2Phase(DoFHandler):
     self.setup()
 
   def getVolumeFraction(self, U, k):
-    return U[self.i(k, VariableName.VF1)]
+    return U[self.i(k, self.vf1_index[0])]

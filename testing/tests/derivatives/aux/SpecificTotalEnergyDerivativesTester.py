@@ -12,12 +12,12 @@ sys.path.append(base_dir + "testing/src/utilities")
 from AuxDerivativesTester import AuxDerivativesTester
 
 params = SpecificTotalEnergyParameters()
-params.set("p_function", None)
+params.set("phase", 0)
 test_aux = SpecificTotalEnergy(params)
-test_var = "E"
+test_var = "E1"
 other_aux = dict()
 other_vars = list()
-root_vars = ["arho", "arhoE"]
+root_vars = ["arho1", "arhoE1"]
 
 class SpecificTotalEnergyDerivativesTester(unittest.TestCase):
   def setUp(self):

@@ -14,6 +14,6 @@ class VolumeFractionPhase2(AuxQuantity1Phase):
     AuxQuantity1Phase.__init__(self, params)
 
   def compute(self, data, der):
-    data["vf"] = 1.0 - data["vf1"]
+    data[self.vf] = 1.0 - data["vf1"]
 
-    der["vf"] = {"vf1" : 0 * data["vf1"] - 1.0}
+    der[self.vf] = {"vf1" : 0 * data["vf1"] - 1.0}

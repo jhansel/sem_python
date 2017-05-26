@@ -46,9 +46,14 @@ class Executioner(object):
       self.initializeVolumeFractionSolution(ics)
 
     # create aux quantities
-    self.aux1 = self.createAuxQuantities(0)
+    self.aux1 = self.createIndependentPhaseAuxQuantities(0)
     if self.model_type != ModelType.OnePhase:
-      self.aux2 = self.createAuxQuantities(1)
+      self.aux2 = self.createIndependentPhaseAuxQuantities(1)
+
+    # create kernels
+    self.kernels1 = self.createIndependentPhaseKernels(0)
+    if self.model_type != ModelType.OnePhase:
+      self.kernels2 = self.createIndependentPhaseKernels(1)
 
   def initializePhaseSolution(self, ics, phase):
     # get appropriate volume fraction function
@@ -73,6 +78,9 @@ class Executioner(object):
 
     # compute IC
     eos_phase = self.eos[phase]
+    arho_index = self.dof_handler.variable_index[VariableName.ARho][phase]
+    arhou_index = self.dof_handler.variable_index[VariableName.ARhoU][phase]
+    arhoE_index = self.dof_handler.variable_index[VariableName.ARhoE][phase]
     for k in xrange(self.dof_handler.n_node):
       vf = initial_vf(self.mesh.x[k])
       p = initial_p(self.mesh.x[k])
@@ -84,15 +92,16 @@ class Executioner(object):
         rho = eos_phase.rho(p, T)
       e = eos_phase.e(1.0 / rho, p)[0]
       E = e + 0.5 * u * u
-      self.U[self.dof_handler.i(k, VariableName.ARho, phase)] = vf * rho
-      self.U[self.dof_handler.i(k, VariableName.ARhoU, phase)] = vf * rho * u
-      self.U[self.dof_handler.i(k, VariableName.ARhoE, phase)] = vf * rho * E
+      self.U[self.dof_handler.i(k, arho_index)] = vf * rho
+      self.U[self.dof_handler.i(k, arhou_index)] = vf * rho * u
+      self.U[self.dof_handler.i(k, arhoE_index)] = vf * rho * E
 
   def initializeVolumeFractionSolution(self, ics):
+    vf1_index = self.dof_handler.variable_index[VariableName.VF1]
     for k in xrange(self.dof_handler.n_node):
-      self.U[self.dof_handler.i(k, VariableName.VF1)] = ics.vf1(self.mesh.x[k])
+      self.U[self.dof_handler.i(k, vf1_index)] = ics.vf1(self.mesh.x[k])
 
-  def createAuxQuantities(self, phase):
+  def createIndependentPhaseAuxQuantities(self, phase):
     # create list of aux quantities to create
     aux_names_phase = list()
     if phase == 0:
@@ -105,15 +114,25 @@ class Executioner(object):
     aux_names_phase += ["Velocity", "SpecificTotalEnergy", "Density", \
                            "SpecificVolume", "SpecificInternalEnergy", "Pressure"]
 
-    # create parameters
-    params = {"p_function" : self.eos[phase].p}
-
     # create the aux quantities for this phase
     aux_list = list()
     for aux_name in aux_names_phase:
+      params = {"phase": phase}
+      if aux_name == "Pressure":
+        params["p_function"] = self.eos[phase].p
       aux_list.append(self.factory.createObject(aux_name, params))
 
     return aux_list
+
+  def createIndependentPhaseKernels(self, phase):
+    kernels = list()
+    params = dict()
+    params["phase"] = phase
+    args = tuple([self.dof_handler])
+    kernel_name_list = ["MassAdvection", "MomentumAdvection", "MomentumGravity", "EnergyAdvection", "EnergyGravity"]
+    for kernel_name in kernel_name_list:
+      kernels.append(self.factory.createObject(kernel_name, params, args))
+    return kernels
 
   # computes the steady-state residual and Jacobian without applying strong BC
   def assembleSteadyStateSystemWithoutStrongBC(self, U):
@@ -121,9 +140,9 @@ class Executioner(object):
     J = np.zeros(shape=(self.dof_handler.n_dof, self.dof_handler.n_dof))
 
     # volumetric terms
-    self.addSteadyStateSystemPhase(U, self.aux1, 0, r, J)
+    self.addSteadyStateSystemPhase(U, self.kernels1, self.aux1, 0, r, J)
     if (self.model_type != ModelType.OnePhase):
-      self.addSteadyStateSystemPhase(U, self.aux2, 1, r, J)
+      self.addSteadyStateSystemPhase(U, self.kernels2, self.aux2, 1, r, J)
     if (self.model_type == ModelType.TwoPhase):
       self.addSteadyStateSystemVolumeFraction(U, r, J)
 
@@ -145,68 +164,37 @@ class Executioner(object):
       bc.applyStrongBC(U, r, J)
 
   # computes the steady-state residual and Jacobian for a phase
-  def addSteadyStateSystemPhase(self, U, aux_list, phase, r, J):
+  def addSteadyStateSystemPhase(self, U, kernel_list, aux_list, phase, r, J):
     data = dict()
     der = dict()
 
     data["phi"] = self.fe_values.get_phi()
     data["g"] = self.gravity
 
+    arho_name = "arho" + str(phase + 1)
+    arhou_name = "arhou" + str(phase + 1)
+    arhoE_name = "arhoE" + str(phase + 1)
+
     for elem in xrange(self.dof_handler.n_cell):
       r_cell = np.zeros(self.dof_handler.n_dof_per_cell)
       J_cell = np.zeros(shape=(self.dof_handler.n_dof_per_cell, self.dof_handler.n_dof_per_cell))
 
       data["grad_phi"] = self.fe_values.get_grad_phi(elem)
-      JxW = self.fe_values.get_JxW(elem)
+      data["JxW"] = self.fe_values.get_JxW(elem)
 
       # compute solution
       data["vf1"] = self.fe_values.computeLocalVolumeFractionSolution(U, elem)
-      data["arho"] = self.fe_values.computeLocalSolution(U, VariableName.ARho, phase, elem)
-      data["arhou"] = self.fe_values.computeLocalSolution(U, VariableName.ARhoU, phase, elem)
-      data["arhoE"] = self.fe_values.computeLocalSolution(U, VariableName.ARhoE, phase, elem)
+      data[arho_name] = self.fe_values.computeLocalSolution(U, VariableName.ARho, phase, elem)
+      data[arhou_name] = self.fe_values.computeLocalSolution(U, VariableName.ARhoU, phase, elem)
+      data[arhoE_name] = self.fe_values.computeLocalSolution(U, VariableName.ARhoE, phase, elem)
 
       # compute auxiliary quantities
       for aux in aux_list:
         aux.compute(data, der)
 
-      # compute the residual and Jacobian
-      for k_local in xrange(self.dof_handler.n_dof_per_cell_per_var):
-        i_arho = self.dof_handler.i(k_local, VariableName.ARho, phase)
-        i_arhou = self.dof_handler.i(k_local, VariableName.ARhoU, phase)
-        i_arhoE = self.dof_handler.i(k_local, VariableName.ARhoE, phase)
-
-        # compute local residual
-        for q in xrange(self.quadrature.n_q):
-          r_cell[i_arho] += - data["arhou"][q] * data["grad_phi"][k_local,q] * JxW[q]
-          r_cell[i_arhou] += (- (data["arhou"][q] * data["u"][q] + data["vf"][q] * data["p"][q]) * data["grad_phi"][k_local,q] - data["arho"][q] * data["g"] * data["phi"][k_local,q]) * JxW[q]
-          r_cell[i_arhoE] += (- data["u"][q] * (data["arhoE"][q] + data["vf"][q] * data["p"][q]) * data["grad_phi"][k_local,q] - data["arhou"][q] * data["g"] * data["phi"][k_local,q]) * JxW[q]
-
-        # compute local Jacobian
-        for l_local in xrange(self.dof_handler.n_dof_per_cell_per_var):
-          if (self.model_type == ModelType.TwoPhase):
-            j_vf1 = self.dof_handler.i(l_local, VariableName.VF1)
-          j_arho = self.dof_handler.i(l_local, VariableName.ARho, phase)
-          j_arhou = self.dof_handler.i(l_local, VariableName.ARhoU, phase)
-          j_arhoE = self.dof_handler.i(l_local, VariableName.ARhoE, phase)
-          for q in xrange(self.quadrature.n_q):
-            # mass
-            J_cell[i_arho,j_arhou] += - data["phi"][l_local,q] * data["grad_phi"][k_local,q] * JxW[q]
-
-            # momentum
-            if (self.model_type == ModelType.TwoPhase):
-              J_cell[i_arhou,j_vf1] += - (der["vf"]["vf1"][q] * data["p"][q] + data["vf"][q] * der["p"][vf1][q]) * data["phi"][l_local,q] * data["grad_phi"][k_local,q] * JxW[q]
-            J_cell[i_arhou,j_arho] += (- (data["arhou"][q] * der["u"]["arho"][q] + data["vf"][q] * der["p"]["arho"][q]) * data["phi"][l_local,q] * data["grad_phi"][k_local,q] \
-              - data["g"] * data["phi"][l_local,q] * data["phi"][k_local,q]) * JxW[q]
-            J_cell[i_arhou,j_arhou] += - (data["u"][q] + data["arhou"][q] * der["u"]["arhou"][q] + data["vf"][q] * der["p"]['arhou'][q]) * data["phi"][l_local,q] * data["grad_phi"][k_local,q] * JxW[q]
-            J_cell[i_arhou,j_arhoE] += - data["vf"][q] * der["p"]["arhoE"][q] * data["phi"][l_local,q] * data["grad_phi"][k_local,q] * JxW[q]
-
-            # energy
-            if (self.model_type == ModelType.TwoPhase):
-              J_cell[i_arhoE,j_vf1] += - data["u"][q] * (data["vf"][q] * der["p"]["vf1"][q] + der["vf"]["vf1"][q] * data["p"][q]) * data["phi"][l_local,q] * data["grad_phi"][k_local,q] * JxW[q]
-            J_cell[i_arhoE,j_arho] += - (data["u"][q] * (data["vf"][q] * der["p"]["arho"][q]) + der["u"]["arho"][q] * (data["arhoE"][q] + data["vf"][q] * data["p"][q])) * data["phi"][l_local,q] * data["grad_phi"][k_local,q] * JxW[q]
-            J_cell[i_arhoE,j_arhou] += (- (data["u"][q] * (data["vf"][q] * der["p"]["arhou"][q]) + der["u"]["arhou"][q] * (data["arhoE"][q] + data["vf"][q] * data["p"][q])) * data["phi"][l_local,q] * data["grad_phi"][k_local,q] \
-              - data["g"] * data["phi"][l_local,q] * data["phi"][k_local,q]) * JxW[q]
-            J_cell[i_arhoE,j_arhoE] += - data["u"][q] * (1 + data["vf"][q] * der["p"]["arhoE"][q]) * data["phi"][l_local,q] * data["grad_phi"][k_local,q] * JxW[q]
+      # compute the local residual and Jacobian
+      for kernel in kernel_list:
+        kernel.apply(data, der, r_cell, J_cell)
 
       # aggregate cell residual and matrix into global residual and matrix
       self.dof_handler.aggregateLocalVector(r, r_cell, elem)
@@ -214,83 +202,98 @@ class Executioner(object):
 
   # computes the steady-state residual for the volume fraction equation
   def addSteadyStateSystemVolumeFraction(self, U, r, J):
-    phi = self.fe_values.get_phi()
+    data = dict()
+    der = dict()
+
+    data["phi"] = self.fe_values.get_phi()
+    data["g"] = self.gravity
+
+    vf1_index = self.dof_handler.variable_index[VariableName.VF1]
+    arho1_index = self.dof_handler.variable_index[VariableName.ARho][0]
+    arhou1_index = self.dof_handler.variable_index[VariableName.ARhoU][0]
+    arhoE1_index = self.dof_handler.variable_index[VariableName.ARhoE][0]
+    arho2_index = self.dof_handler.variable_index[VariableName.ARho][1]
+    arhou2_index = self.dof_handler.variable_index[VariableName.ARhoU][1]
+    arhoE2_index = self.dof_handler.variable_index[VariableName.ARhoE][1]
 
     for elem in xrange(self.dof_handler.n_cell):
       r_cell = np.zeros(self.dof_handler.n_dof_per_cell)
       J_cell = np.zeros(shape=(self.dof_handler.n_dof_per_cell, self.dof_handler.n_dof_per_cell))
 
-      grad_phi = self.fe_values.get_grad_phi(elem)
-      JxW = self.fe_values.get_JxW(elem)
-
-      phase1 = 0
-      phase2 = 1
-      eos1 = self.eos[phase1]
-      eos2 = self.eos[phase2]
+      data["grad_phi"] = self.fe_values.get_grad_phi(elem)
+      data["JxW"] = self.fe_values.get_JxW(elem)
 
       # compute solution
-      vf1 = self.fe_values.computeLocalSolution(U, VariableName.VF1, phase1, elem)
-      arho1 = self.fe_values.computeLocalSolution(U, VariableName.ARho, phase1, elem)
-      arhou1 = self.fe_values.computeLocalSolution(U, VariableName.ARhoU, phase1, elem)
-      arhoE1 = self.fe_values.computeLocalSolution(U, VariableName.ARhoE, phase1, elem)
-      arho2 = self.fe_values.computeLocalSolution(U, VariableName.ARho, phase2, elem)
-      arhou2 = self.fe_values.computeLocalSolution(U, VariableName.ARhoU, phase2, elem)
-      arhoE2 = self.fe_values.computeLocalSolution(U, VariableName.ARhoE, phase2, elem)
+      data["vf1"] = self.fe_values.computeLocalSolution(U, VariableName.VF1, 0, elem)
+      data["arho1"] = self.fe_values.computeLocalSolution(U, VariableName.ARho, 0, elem)
+      data["arhou1"] = self.fe_values.computeLocalSolution(U, VariableName.ARhoU, 0, elem)
+      data["arhoE1"] = self.fe_values.computeLocalSolution(U, VariableName.ARhoE, 0, elem)
+      data["arho2"] = self.fe_values.computeLocalSolution(U, VariableName.ARho, 1, elem)
+      data["arhou2"] = self.fe_values.computeLocalSolution(U, VariableName.ARhoU, 1, elem)
+      data["arhoE2"] = self.fe_values.computeLocalSolution(U, VariableName.ARhoE, 1, elem)
 
       # compute solution gradient
-      dvf1_dx = self.fe_values.computeLocalSolutionGradient(U, VariableName.VF1, phase1, elem)
+      data["dvf1_dx"] = self.fe_values.computeLocalSolutionGradient(U, VariableName.VF1, 0, elem)
 
       # compute auxiliary quantities
-      vf2 = 1 - vf1
-      dvf2_dvf1 = 0 * vf2 - 1
+      for aux in aux_list:
+        aux.compute(data, der)
 
-      rho1, drho1_dvf1, drho1_darho1 = computeDensity(vf1, arho1)
-      rho2, drho2_dvf2, drho2_darho2 = computeDensity(vf2, arho2)
-      drho2_dvf1 = drho2_dvf2 * dvf2_dvf1
+      # compute the local residual and Jacobian
+      for kernel in kernel_list:
+        kernel.apply(data, der, r_cell, J_cell)
 
-      v1, dv1_drho1 = computeSpecificVolume(rho1)
-      v2, dv2_drho2 = computeSpecificVolume(rho2)
-      dv1_dvf1 = dv1_drho1 * drho1_dvf1
-      dv2_dvf1 = dv2_drho2 * drho2_dvf1
-      dv1_darho1 = dv1_drho1 * drho1_darho1
-      dv2_darho2 = dv2_drho2 * drho2_darho2
-
-      u1, du1_darho1, du1_darhou1 = computeVelocity(arho1, arhou1)
-      u2, du2_darho2, du2_darhou2 = computeVelocity(arho2, arhou2)
-
-      E1, dE1_darho1, dE1_darhoE1 = computeSpecificTotalEnergy(arho1, arhoE1)
-      E2, dE2_darho2, dE2_darhoE2 = computeSpecificTotalEnergy(arho2, arhoE2)
-
-      e1, de1_du1, de1_dE1 = computeSpecificInternalEnergy(u1, E1)
-      e2, de2_du2, de2_dE2 = computeSpecificInternalEnergy(u2, E2)
-      de1_darho1 = de1_du1 * du1_darho1 + de1_dE1 * dE1_darho1
-      de2_darho2 = de2_du2 * du2_darho2 + de2_dE2 * dE2_darho2
-      de1_darhou1 = de1_du1 * du1_darhou1
-      de2_darhou2 = de2_du2 * du2_darhou2
-      de1_darhoE1 = de1_dE1 * dE1_darhoE1
-      de2_darhoE2 = de2_dE2 * dE2_darhoE2
-
-      p1, dp1_dv1, dp1_de1 = eos1.p(v1, e1)
-      p2, dp2_dv2, dp2_de2 = eos2.p(v2, e2)
-      dp1_dvf1 = dp1_dv1 * dv1_dvf1
-      dp2_dvf1 = dp2_dv2 * dv2_dvf1
-      dp1_darho1 = dp1_dv1 * dv1_darho1 + dp1_de1 * de1_darho1
-      dp2_darho2 = dp2_dv2 * dv2_darho2 + dp2_de2 * de2_darho2
-      dp1_darhou1 = dp1_de1 * de1_darhou1
-      dp2_darhou2 = dp2_de2 * de2_darhou2
-      dp1_darhoE1 = dp1_de1 * de1_darhoE1
-      dp2_darhoE2 = dp2_de2 * de2_darhoE2
-
-      T1, dT1_dv1, dT1_de1 = eos1.T(v1, e1)
-      T2, dT2_dv2, dT2_de2 = eos2.T(v2, e2)
-      dT1_dvf1 = dT1_dv1 * dv1_dvf1
-      dT2_dvf1 = dT2_dv2 * dv2_dvf1
-      dT1_darho1 = dT1_dv1 * dv1_darho1 + dT1_de1 * de1_darho1
-      dT2_darho2 = dT2_dv2 * dv2_darho2 + dT2_de2 * de2_darho2
-      dT1_darhou1 = dT1_de1 * de1_darhou1
-      dT2_darhou2 = dT2_de2 * de2_darhou2
-      dT1_darhoE1 = dT1_de1 * de1_darhoE1
-      dT2_darhoE2 = dT2_de2 * de2_darhoE2
+      # compute auxiliary quantities
+      # vf2 = 1 - vf1
+      # dvf2_dvf1 = 0 * vf2 - 1
+      #
+      # rho1, drho1_dvf1, drho1_darho1 = computeDensity(vf1, arho1)
+      # rho2, drho2_dvf2, drho2_darho2 = computeDensity(vf2, arho2)
+      # drho2_dvf1 = drho2_dvf2 * dvf2_dvf1
+      #
+      # v1, dv1_drho1 = computeSpecificVolume(rho1)
+      # v2, dv2_drho2 = computeSpecificVolume(rho2)
+      # dv1_dvf1 = dv1_drho1 * drho1_dvf1
+      # dv2_dvf1 = dv2_drho2 * drho2_dvf1
+      # dv1_darho1 = dv1_drho1 * drho1_darho1
+      # dv2_darho2 = dv2_drho2 * drho2_darho2
+      #
+      # u1, du1_darho1, du1_darhou1 = computeVelocity(arho1, arhou1)
+      # u2, du2_darho2, du2_darhou2 = computeVelocity(arho2, arhou2)
+      #
+      # E1, dE1_darho1, dE1_darhoE1 = computeSpecificTotalEnergy(arho1, arhoE1)
+      # E2, dE2_darho2, dE2_darhoE2 = computeSpecificTotalEnergy(arho2, arhoE2)
+      #
+      # e1, de1_du1, de1_dE1 = computeSpecificInternalEnergy(u1, E1)
+      # e2, de2_du2, de2_dE2 = computeSpecificInternalEnergy(u2, E2)
+      # de1_darho1 = de1_du1 * du1_darho1 + de1_dE1 * dE1_darho1
+      # de2_darho2 = de2_du2 * du2_darho2 + de2_dE2 * dE2_darho2
+      # de1_darhou1 = de1_du1 * du1_darhou1
+      # de2_darhou2 = de2_du2 * du2_darhou2
+      # de1_darhoE1 = de1_dE1 * dE1_darhoE1
+      # de2_darhoE2 = de2_dE2 * dE2_darhoE2
+      #
+      # p1, dp1_dv1, dp1_de1 = eos1.p(v1, e1)
+      # p2, dp2_dv2, dp2_de2 = eos2.p(v2, e2)
+      # dp1_dvf1 = dp1_dv1 * dv1_dvf1
+      # dp2_dvf1 = dp2_dv2 * dv2_dvf1
+      # dp1_darho1 = dp1_dv1 * dv1_darho1 + dp1_de1 * de1_darho1
+      # dp2_darho2 = dp2_dv2 * dv2_darho2 + dp2_de2 * de2_darho2
+      # dp1_darhou1 = dp1_de1 * de1_darhou1
+      # dp2_darhou2 = dp2_de2 * de2_darhou2
+      # dp1_darhoE1 = dp1_de1 * de1_darhoE1
+      # dp2_darhoE2 = dp2_de2 * de2_darhoE2
+      #
+      # T1, dT1_dv1, dT1_de1 = eos1.T(v1, e1)
+      # T2, dT2_dv2, dT2_de2 = eos2.T(v2, e2)
+      # dT1_dvf1 = dT1_dv1 * dv1_dvf1
+      # dT2_dvf1 = dT2_dv2 * dv2_dvf1
+      # dT1_darho1 = dT1_dv1 * dv1_darho1 + dT1_de1 * de1_darho1
+      # dT2_darho2 = dT2_dv2 * dv2_darho2 + dT2_de2 * de2_darho2
+      # dT1_darhou1 = dT1_de1 * de1_darhou1
+      # dT2_darhou2 = dT2_de2 * de2_darhou2
+      # dT1_darhoE1 = dT1_de1 * de1_darhoE1
+      # dT2_darhoE2 = dT2_de2 * de2_darhoE2
 
       beta, dbeta_darho1, dbeta_darho2 = self.interface_closures.computeBeta(arho1, arho2)
 
@@ -329,11 +332,11 @@ class Executioner(object):
 
       # compute the residual and Jacobian
       for k_local in xrange(self.dof_handler.n_dof_per_cell_per_var):
-        i_vf1 = self.dof_handler.i(k_local, VariableName.VF1, phase1)
-        i_arhou1 = self.dof_handler.i(k_local, VariableName.ARhoU, phase1)
-        i_arhoE1 = self.dof_handler.i(k_local, VariableName.ARhoE, phase1)
-        i_arhou2 = self.dof_handler.i(k_local, VariableName.ARhoU, phase2)
-        i_arhoE2 = self.dof_handler.i(k_local, VariableName.ARhoE, phase2)
+        i_vf1 = self.dof_handler.i(k_local, vf1_index)
+        i_arhou1 = self.dof_handler.i(k_local, arhou1_index)
+        i_arhoE1 = self.dof_handler.i(k_local, arhoE1_index)
+        i_arhou2 = self.dof_handler.i(k_local, arhou2_index)
+        i_arhoE2 = self.dof_handler.i(k_local, arhoE2_index)
 
         # compute local residual
         for q in xrange(self.quadrature.n_q):
@@ -345,13 +348,13 @@ class Executioner(object):
 
         # compute local Jacobian
         for l_local in xrange(self.dof_handler.n_dof_per_cell_per_var):
-          j_vf1 = self.dof_handler.i(l_local, VariableName.VF1, phase1)
-          j_arho1 = self.dof_handler.i(l_local, VariableName.ARho, phase1)
-          j_arhou1 = self.dof_handler.i(l_local, VariableName.ARhoU, phase1)
-          j_arhoE1 = self.dof_handler.i(l_local, VariableName.ARhoE, phase1)
-          j_arho2 = self.dof_handler.i(l_local, VariableName.ARho, phase2)
-          j_arhou2 = self.dof_handler.i(l_local, VariableName.ARhoU, phase2)
-          j_arhoE2 = self.dof_handler.i(l_local, VariableName.ARhoE, phase2)
+          j_vf1 = self.dof_handler.i(l_local, vf1_index)
+          j_arho1 = self.dof_handler.i(l_local, arho1_index)
+          j_arhou1 = self.dof_handler.i(l_local, arhou1_index)
+          j_arhoE1 = self.dof_handler.i(l_local, arhoE1_index)
+          j_arho2 = self.dof_handler.i(l_local, arho2_index)
+          j_arhou2 = self.dof_handler.i(l_local, arhou2_index)
+          j_arhoE2 = self.dof_handler.i(l_local, arhoE2_index)
           for q in xrange(self.quadrature.n_q):
             # volume fraction
             J_cell[i_vf1,j_vf1] += (uI[q] * grad_phi[l_local,q] \

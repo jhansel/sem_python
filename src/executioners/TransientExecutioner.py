@@ -43,19 +43,23 @@ class TransientExecutioner(Executioner):
   def addMassMatrixPhase(self, M, phase):
     phi = self.fe_values.get_phi()
 
+    arho_index = self.dof_handler.variable_index[VariableName.ARho][phase]
+    arhou_index = self.dof_handler.variable_index[VariableName.ARhoU][phase]
+    arhoE_index = self.dof_handler.variable_index[VariableName.ARhoE][phase]
+
     for e in xrange(self.dof_handler.n_cell):
       M_cell = np.zeros(shape=(self.dof_handler.n_dof_per_cell, self.dof_handler.n_dof_per_cell))
 
       JxW = self.fe_values.get_JxW(e)
       for q in xrange(self.quadrature.n_q):
         for k_local in xrange(self.dof_handler.n_dof_per_cell_per_var):
-          i_arho = self.dof_handler.i(k_local, VariableName.ARho, phase)
-          i_arhou = self.dof_handler.i(k_local, VariableName.ARhoU, phase)
-          i_arhoE = self.dof_handler.i(k_local, VariableName.ARhoE, phase)
+          i_arho = self.dof_handler.i(k_local, arho_index)
+          i_arhou = self.dof_handler.i(k_local, arhou_index)
+          i_arhoE = self.dof_handler.i(k_local, arhoE_index)
           for l_local in xrange(self.dof_handler.n_dof_per_cell_per_var):
-            j_arho = self.dof_handler.i(l_local, VariableName.ARho, phase)
-            j_arhou = self.dof_handler.i(l_local, VariableName.ARhoU, phase)
-            j_arhoE = self.dof_handler.i(l_local, VariableName.ARhoE, phase)
+            j_arho = self.dof_handler.i(l_local, arho_index)
+            j_arhou = self.dof_handler.i(l_local, arhou_index)
+            j_arhoE = self.dof_handler.i(l_local, arhoE_index)
 
             M_cell[i_arho,j_arho] += phi[k_local,q] * phi[l_local,q] * JxW[q]
             M_cell[i_arhou,j_arhou] += phi[k_local,q] * phi[l_local,q] * JxW[q]
@@ -67,15 +71,17 @@ class TransientExecutioner(Executioner):
   def addMassMatrixVolumeFraction(self, M):
     phi = self.fe_values.get_phi()
 
+    vf1_index = self.dof_handler.variable_index[VariableName.VF1]
+
     for e in xrange(self.dof_handler.n_cell):
       M_cell = np.zeros(shape=(self.dof_handler.n_dof_per_cell, self.dof_handler.n_dof_per_cell))
 
       JxW = self.fe_values.get_JxW(e)
       for q in xrange(self.quadrature.n_q):
         for k_local in xrange(self.dof_handler.n_dof_per_cell_per_var):
-          i_vf1 = self.dof_handler.i(k_local, VariableName.VF1)
+          i_vf1 = self.dof_handler.i(k_local, vf1_index)
           for l_local in xrange(self.dof_handler.n_dof_per_cell_per_var):
-            j_vf1 = self.dof_handler.i(l_local, VariableName.VF1)
+            j_vf1 = self.dof_handler.i(l_local, vf1_index)
             M_cell[i_vf1,j_vf1] += phi[k_local,q] * phi[l_local,q] * JxW[q]
 
       # aggregate cell matrix into global matrix

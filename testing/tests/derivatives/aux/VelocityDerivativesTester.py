@@ -11,12 +11,12 @@ sys.path.append(base_dir + "testing/src/utilities")
 from AuxDerivativesTester import AuxDerivativesTester
 
 params = VelocityParameters()
-params.set("p_function", None)
+params.set("phase", 0)
 test_aux = Velocity(params)
-test_var = "u"
+test_var = "u1"
 other_aux = dict()
 other_vars = list()
-root_vars = ["arho", "arhou"]
+root_vars = ["arho1", "arhou1"]
 
 class VelocityDerivativesTester(unittest.TestCase):
   def setUp(self):

@@ -14,10 +14,10 @@ class SpecificTotalEnergy(AuxQuantity1Phase):
     AuxQuantity1Phase.__init__(self, params)
 
   def compute(self, data, der):
-    arho = data["arho"]
-    arhoE = data["arhoE"]
-    data["E"] = arhoE / arho
+    arho = data[self.arho]
+    arhoE = data[self.arhoE]
+    data[self.E] = arhoE / arho
 
     dE_darho = - arhoE / arho / arho
     dE_darhoE = 1.0 / arho
-    der["E"] = {"arho" : dE_darho, "arhoE" : dE_darhoE}
+    der[self.E] = {self.arho : dE_darho, self.arhoE : dE_darhoE}

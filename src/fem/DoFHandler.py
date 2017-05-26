@@ -67,7 +67,7 @@ class DoFHandler(object):
 
     if self.model_type == ModelType.TwoPhase:
       self.vf1_index = [0]
-      phase1 = 0
+      phase = 0
       self.variable_index[VariableName.VF1] = self.vf1_index
       self.variable_names[self.vf1_index[phase]] = "vf1"
       self.index_to_variable[self.vf1_index[phase]] = VariableName.VF1
@@ -78,8 +78,8 @@ class DoFHandler(object):
     self.n_dof = self.n_dof_per_var * self.n_var
 
   # DoF index
-  def i(self, k, variable_name, phase):
-    return k * self.n_var + self.variable_index[variable_name][phase]
+  def i(self, k, var_index):
+    return k * self.n_var + var_index
 
   # global node index
   def k(self, e, k_local):
@@ -90,7 +90,8 @@ class DoFHandler(object):
     pass
 
   def getSolution(self, U, variable_name, phase):
-    return np.array([U[self.i(k, variable_name, phase)] for k in xrange(self.n_node)])
+    var_index = self.variable_index[variable_name][phase]
+    return np.array([U[self.i(k, var_index)] for k in xrange(self.n_node)])
 
   def getPhaseSolution(self, U, phase):
     vf1 = np.array([self.getVolumeFraction(U, k) for k in xrange(self.n_node)])
@@ -117,4 +118,4 @@ class DoFHandler(object):
       phase_m = self.index_to_phase[m]
       scaling_m = scaling[variable_m][phase_m]
       for k in xrange(self.n_node):
-        r[self.i(k, variable_m, phase_m)] *= scaling_m
+        r[self.i(k, m)] *= scaling_m

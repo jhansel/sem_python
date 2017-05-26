@@ -6,6 +6,7 @@ base_dir = os.environ["SEM_PYTHON_DIR"]
 sys.path.append(base_dir + "src/aux")
 from Density import Density, DensityParameters
 from Pressure import Pressure, PressureParameters
+from Temperature import Temperature, TemperatureParameters
 from SpecificInternalEnergy import SpecificInternalEnergy, SpecificInternalEnergyParameters
 from SpecificTotalEnergy import SpecificTotalEnergy, SpecificTotalEnergyParameters
 from SpecificVolume import SpecificVolume, SpecificVolumeParameters
@@ -42,6 +43,14 @@ from InitialConditions2Phase import InitialConditions2Phase, InitialConditions2P
 sys.path.append(base_dir + "src/input")
 from ModelParameters import ModelParameters
 from PhysicsParameters import PhysicsParameters
+
+# kernels
+sys.path.append(base_dir + "src/kernels")
+from MassAdvection import MassAdvection, MassAdvectionParameters
+from MomentumAdvection import MomentumAdvection, MomentumAdvectionParameters
+from MomentumGravity import MomentumGravity, MomentumGravityParameters
+from EnergyAdvection import EnergyAdvection, EnergyAdvectionParameters
+from EnergyGravity import EnergyGravity, EnergyGravityParameters
 
 # mesh
 sys.path.append(base_dir + "src/mesh")

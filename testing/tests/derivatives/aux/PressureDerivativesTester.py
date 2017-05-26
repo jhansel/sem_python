@@ -19,27 +19,28 @@ def computePressure(v, e):
 
 # pressure aux
 params = PressureParameters()
+params.set("phase", 0)
 params.set("p_function", computePressure)
 test_aux = Pressure(params)
-test_var = "p"
+test_var = "p1"
 
 # specific volume aux
 params = TestAuxParameters()
-params.set("var", "v")
-params.set("other_vars", ["vf1", "arho"])
+params.set("var", "v1")
+params.set("other_vars", ["vf1", "arho1"])
 params.set("coefs", [2.0, 3.0])
 v_aux = TestAux(params)
 
 # specific internal energy aux
 params = TestAuxParameters()
-params.set("var", "e")
-params.set("other_vars", ["arho", "arhou", "arhoE"])
+params.set("var", "e1")
+params.set("other_vars", ["arho1", "arhou1", "arhoE1"])
 params.set("coefs", [2.5, 3.5, 4.5])
 e_aux = TestAux(params)
 
-other_aux = {"v" : v_aux, "e" : e_aux}
-other_vars = ["v", "e"]
-root_vars = ["vf1", "arho", "arhou", "arhoE"]
+other_aux = {"v1" : v_aux, "e1" : e_aux}
+other_vars = ["v1", "e1"]
+root_vars = ["vf1", "arho1", "arhou1", "arhoE1"]
 
 class PressureDerivativesTester(unittest.TestCase):
   def setUp(self):

@@ -2,15 +2,19 @@ import numpy as np
 import sys
 from termcolor import colored
 
+import os
+import sys
+base_dir = os.environ["SEM_PYTHON_DIR"]
+
+sys.path.append(base_dir + "src/utilities")
+from numeric_utilities import computeRelativeDifference
+
 def computeRelativeDifferenceMatrix(A, B):
   n = A.shape[0]
   C = np.zeros(shape=(n, n))
   for i in xrange(n):
     for j in xrange(n):
-      if (abs(B[i,j]) <= 1e-15):
-        C[i,j] = A[i,j] - B[i,j]
-      else:
-        C[i,j] = (A[i,j] - B[i,j]) / B[i,j]
+      C[i,j] = computeRelativeDifference(A[i,j], B[i,j])
   return C
 
 def printMatrix(A):

@@ -14,10 +14,10 @@ class SpecificVolume(AuxQuantity1Phase):
     AuxQuantity1Phase.__init__(self, params)
 
   def compute(self, data, der):
-    rho = data["rho"]
-    data["v"] = 1.0 / rho
+    rho = data[self.rho]
+    data[self.v] = 1.0 / rho
 
     dv_drho = - 1.0 / rho / rho
-    dv_dvf1 = dv_drho * der["rho"]["vf1"]
-    dv_darho = dv_drho * der["rho"]["arho"]
-    der["v"] = {"vf1" : dv_dvf1, "arho" : dv_darho}
+    dv_dvf1 = dv_drho * der[self.rho]["vf1"]
+    dv_darho = dv_drho * der[self.rho][self.arho]
+    der[self.v] = {"vf1" : dv_dvf1, self.arho : dv_darho}

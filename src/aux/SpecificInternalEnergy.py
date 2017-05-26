@@ -14,13 +14,13 @@ class SpecificInternalEnergy(AuxQuantity1Phase):
     AuxQuantity1Phase.__init__(self, params)
 
   def compute(self, data, der):
-    u = data["u"]
-    E = data["E"]
-    data["e"] = E - 0.5 * u * u
+    u = data[self.u]
+    E = data[self.E]
+    data[self.e] = E - 0.5 * u * u
 
     de_dE = 1.0
     de_du = - u
-    de_darho = de_dE * der["E"]["arho"] + de_du * der["u"]["arho"]
-    de_darhou = de_du * der["u"]["arhou"]
-    de_darhoE = de_dE * der["E"]["arhoE"]
-    der["e"] = {"arho" : de_darho, "arhou" : de_darhou, "arhoE" : de_darhoE}
+    de_darho = de_dE * der[self.E][self.arho] + de_du * der[self.u][self.arho]
+    de_darhou = de_du * der[self.u][self.arhou]
+    de_darhoE = de_dE * der[self.E][self.arhoE]
+    der[self.e] = {self.arho : de_darho, self.arhou : de_darhou, self.arhoE : de_darhoE}

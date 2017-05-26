@@ -39,21 +39,23 @@ class FEValues(object):
     return vf1
 
   def computeLocalSolution(self, U, variable_name, phase, e):
+    var_index = self.dof_handler.variable_index[variable_name][phase]
     solution = np.zeros(self.quadrature.n_q)
     for q in xrange(self.quadrature.n_q):
       for k_local in xrange(self.dof_handler.n_dof_per_cell_per_var):
         k = self.dof_handler.k(e, k_local)
-        i = self.dof_handler.i(k, variable_name, phase)
+        i = self.dof_handler.i(k, var_index)
         solution[q] += U[i] * self.phi[k_local, q]
     return solution
 
   def computeLocalSolutionGradient(self, U, variable_name, phase, e):
+    var_index = self.dof_handler.variable_index[variable_name][phase]
     solution_grad = np.zeros(self.quadrature.n_q)
     Jac = self.quadrature.Jac_divided_by_h * self.mesh.h[e]
     for q in xrange(self.quadrature.n_q):
       for k_local in xrange(self.dof_handler.n_dof_per_cell_per_var):
         k = self.dof_handler.k(e, k_local)
-        i = self.dof_handler.i(k, variable_name, phase)
+        i = self.dof_handler.i(k, var_index)
         # compute gradient in real space, not reference space
         solution_grad[q] += U[i] * self.grad_phi[k_local, q] / Jac
     return solution_grad

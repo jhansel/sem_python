@@ -11,9 +11,9 @@ sys.path.append(base_dir + "testing/src/utilities")
 from AuxDerivativesTester import AuxDerivativesTester
 
 params = VolumeFractionPhase2Parameters()
-params.set("p_function", None)
+params.set("phase", 1)
 test_aux = VolumeFractionPhase2(params)
-test_var = "vf"
+test_var = "vf2"
 other_aux = dict()
 other_vars = list()
 root_vars = ["vf1"]

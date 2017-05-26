@@ -14,10 +14,10 @@ class Density(AuxQuantity1Phase):
     AuxQuantity1Phase.__init__(self, params)
 
   def compute(self, data, der):
-    vf = data["vf"]
-    data["rho"] = data["arho"] / vf
+    vf = data[self.vf]
+    data[self.rho] = data[self.arho] / vf
 
-    drho_dvf = - data["arho"] / vf / vf
-    drho_dvf1 = drho_dvf * der["vf"]["vf1"]
+    drho_dvf = - data[self.arho] / vf / vf
+    drho_dvf1 = drho_dvf * der[self.vf]["vf1"]
     drho_darho = 1.0 / vf
-    der["rho"] = {"vf1" : drho_dvf1, "arho" : drho_darho}
+    der[self.rho] = {"vf1" : drho_dvf1, self.arho : drho_darho}

@@ -7,6 +7,9 @@ base_dir = os.environ["SEM_PYTHON_DIR"]
 sys.path.append(base_dir + "src/aux")
 from TestAux import TestAux, TestAuxParameters
 
+sys.path.append(base_dir + "src/utilities")
+from numeric_utilities import computeRelativeDifference
+
 class AuxDerivativesTester(object):
   def __init__(self, verbose=False):
     self.verbose = verbose
@@ -35,10 +38,7 @@ class AuxDerivativesTester(object):
         other_aux[var].compute(data_perturbed, der)
       test_aux.compute(data_perturbed, der)
       fd_der[x] = (data_perturbed[test_var] - base) / fd_eps
-      if (abs(fd_der[x]) < 1e-15):
-        rel_diffs[x] = abs(hand_der[test_var][x] - fd_der[x])
-      else:
-        rel_diffs[x] = abs((hand_der[test_var][x] - fd_der[x]) / fd_der[x])
+      rel_diffs[x] = computeRelativeDifference(hand_der[test_var][x], fd_der[x])
 
     # print results
     if self.verbose:
@@ -49,4 +49,7 @@ class AuxDerivativesTester(object):
         print "  Finite difference =", fd_der[x]
         print "  Rel. difference   =", rel_diffs[x]
 
+    # take the absolute value of the relative differences
+    for x in rel_diffs:
+      rel_diffs[x] = abs(rel_diffs[x])
     return rel_diffs

@@ -6,23 +6,25 @@ import unittest
 
 sys.path.append(base_dir + "src/aux")
 from Density import Density, DensityParameters
-from TestAux import TestAux, TestAuxParameters
+from VolumeFractionPhase1 import VolumeFractionPhase1, VolumeFractionPhase1Parameters
 
 sys.path.append(base_dir + "testing/src/utilities")
 from AuxDerivativesTester import AuxDerivativesTester
 
 params = DensityParameters()
-params.set("p_function", None)
+params.set("phase", 0)
 test_aux = Density(params)
-test_var = "rho"
-params = TestAuxParameters()
-params.set("var", "vf")
-params.set("other_vars", ["vf1"])
-params.set("coefs", [2.0])
-vf_aux = TestAux(params)
-other_aux = {"vf" : vf_aux}
-other_vars = ["vf"]
-root_vars = ["vf1", "arho"]
+
+test_var = "rho1"
+
+params = VolumeFractionPhase1Parameters()
+params.set("phase", 0)
+vf_aux = VolumeFractionPhase1(params)
+other_aux = {"vf1" : vf_aux}
+
+other_vars = ["vf1"]
+
+root_vars = ["vf1", "arho1"]
 
 class DensityDerivativesTester(unittest.TestCase):
   def setUp(self):
