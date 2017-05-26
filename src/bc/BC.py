@@ -16,7 +16,6 @@ class BC(object):
     self.dof_handler = dof_handler
     self.model_type = dof_handler.model_type
     self.eos = eos
-    self.model_type = self.dof_handler.model_type
     if self.boundary == "left":
       self.nx = -1.0
       self.k = 0

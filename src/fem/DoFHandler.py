@@ -1,3 +1,4 @@
+from abc import ABCMeta, abstractmethod
 import numpy as np
 
 import os
@@ -11,16 +12,15 @@ sys.path.append(base_dir + "src/closures")
 from thermodynamic_functions import computeVolumeFraction
 
 class DoFHandler(object):
-  def __init__(self, mesh, model_type, ics):
+  __metaclass__ = ABCMeta
+  def __init__(self, mesh):
     # counts
     self.n_cell = mesh.n_cell
     self.n_dof_per_var = self.n_cell + 1
     self.n_node = self.n_dof_per_var
     self.n_dof_per_cell_per_var = 2
 
-    self.model_type = model_type
-
-    # variable ordering
+  def setup(self):
     if (self.model_type == ModelType.OnePhase):
       n_phases = 1
       n_vf_equations = 0
@@ -77,12 +77,6 @@ class DoFHandler(object):
     self.n_dof_per_cell = self.n_dof_per_cell_per_var * self.n_var
     self.n_dof = self.n_dof_per_var * self.n_var
 
-    # create array for volume fraction if two-phase non-interacting
-    if self.model_type == ModelType.TwoPhaseNonInteracting:
-      self.vf1 = np.zeros(self.n_node)
-      for k in xrange(self.n_node):
-        self.vf1[k] = ics.vf1(mesh.x[k])
-
   # DoF index
   def i(self, k, variable_name, phase):
     return k * self.n_var + self.variable_index[variable_name][phase]
@@ -91,14 +85,9 @@ class DoFHandler(object):
   def k(self, e, k_local):
     return e + k_local
 
+  @abstractmethod
   def getVolumeFraction(self, U, k):
-    if (self.model_type == ModelType.TwoPhase):
-      vf1 = U[self.i(k, VariableName.VF1)]
-    elif (self.model_type == ModelType.TwoPhaseNonInteracting):
-      vf1 = self.vf1[k]
-    else:
-      vf1 = 1
-    return vf1
+    pass
 
   def getSolution(self, U, variable_name, phase):
     return np.array([U[self.i(k, variable_name, phase)] for k in xrange(self.n_node)])

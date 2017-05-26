@@ -30,7 +30,9 @@ from InputFileParser import InputFileParser
 
 # utilities
 sys.path.append(base_dir + "src/utilities")
-from DoFHandler import DoFHandler
+from DoFHandler1Phase import DoFHandler1Phase
+from DoFHandler2PhaseNonInteracting import DoFHandler2PhaseNonInteracting
+from DoFHandler2Phase import DoFHandler2Phase
 from enums import ModelType
 from error_utilities import error
 
@@ -86,7 +88,12 @@ def run(input_file, mods=list()):
     ics = factory.createObject("InitialConditions2Phase", ic_param_data)
 
   # DoF handler
-  dof_handler = DoFHandler(mesh, model_type, ics)
+  if model_type == ModelType.OnePhase:
+    dof_handler = DoFHandler1Phase(mesh)
+  elif model_type == ModelType.TwoPhaseNonInteracting:
+    dof_handler = DoFHandler2PhaseNonInteracting(mesh, ics)
+  elif model_type == ModelType.TwoPhase:
+    dof_handler = DoFHandler2Phase(mesh)
 
   # boundary conditions
   bcs = list()

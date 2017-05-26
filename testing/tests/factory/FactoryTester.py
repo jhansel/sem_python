@@ -6,7 +6,7 @@ sys.path.append("../../../src/fem")
 
 import unittest
 
-from DoFHandler import DoFHandler
+from DoFHandler1Phase import DoFHandler1Phase
 from enums import ModelType
 from Factory import Factory
 
@@ -35,7 +35,7 @@ class FactoryTester(unittest.TestCase):
   def testCreateObjectWithExtraArgs(self):
     mesh_params = {"n_cell" : "5"}
     mesh = self.factory.createObject("UniformMesh", mesh_params)
-    dof_handler = DoFHandler(mesh, ModelType.OnePhase, None)
+    dof_handler = DoFHandler1Phase(mesh)
     eos_params = {"gamma" : "1.4", "R" : "200"}
     eos = [self.factory.createParametersObject("IdealGasEoS", eos_params)]
     bc_params = {"boundary" : "left", "p" : "1e5"}
