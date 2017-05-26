@@ -48,6 +48,8 @@ class Parameters(object):
         self.values[name] = stringToFloat(value)
       elif self.types[name] == "function":
         self.values[name] = value
+      elif self.types[name] == "general":
+        self.values[name] = value
       elif self.types[name] == "parsed_function":
         self.values[name] = stringToFunction(value)
       elif self.types[name] == "string":
@@ -63,7 +65,8 @@ class Parameters(object):
     else:
       error("The parameter '" + name + "' is not registered.")
 
-  def registerParameter(self, name, description, default=None):
+  def registerParameterInternal(self, name, param_type, description, default):
+    self.types[name] = param_type
     if name == "type":
       error("'type' is a reserved name and cannot be used for a parameter name.")
     if name in self.descriptions:
@@ -74,28 +77,25 @@ class Parameters(object):
         self.values[name] = default
 
   def registerBoolParameter(self, name, description, default=None):
-    self.registerParameter(name, description, default)
-    self.types[name] = "bool"
+    self.registerParameterInternal(name, "bool", description, default)
 
   def registerIntParameter(self, name, description, default=None):
-    self.registerParameter(name, description, default)
-    self.types[name] = "int"
+    self.registerParameterInternal(name, "int", description, default)
 
   def registerFloatParameter(self, name, description, default=None):
-    self.registerParameter(name, description, default)
-    self.types[name] = "float"
+    self.registerParameterInternal(name, "float", description, default)
 
   def registerFunctionParameter(self, name, description, default=None):
-    self.registerParameter(name, description, default)
-    self.types[name] = "function"
+    self.registerParameterInternal(name, "function", description, default)
+
+  def registerParameter(self, name, description, default=None):
+    self.registerParameterInternal(name, "general", description, default)
 
   def registerParsedFunctionParameter(self, name, description, default=None):
-    self.registerParameter(name, description, default)
-    self.types[name] = "parsed_function"
+    self.registerParameterInternal(name, "parsed_function", description, default)
 
   def registerStringParameter(self, name, description, default=None):
-    self.registerParameter(name, description, default)
-    self.types[name] = "string"
+    self.registerParameterInternal(name, "string", description, default)
 
   ## Registers a string parameter that has a selection of values
   # @param name  name of the parameter
@@ -103,6 +103,5 @@ class Parameters(object):
   # @param description  description of the parameter
   # @param default  optional default value
   def registerStringSelectionParameter(self, name, selection, description, default=None):
-    self.registerParameter(name, description, default)
-    self.types[name] = "StringSelection"
+    self.registerParameterInternal(name, "StringSelection", description, default)
     self.string_selections[name] = selection
