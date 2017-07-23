@@ -49,6 +49,8 @@ class Executioner(object):
     self.aux1 = self.createIndependentPhaseAuxQuantities(0)
     if self.model_type != ModelType.OnePhase:
       self.aux2 = self.createIndependentPhaseAuxQuantities(1)
+    if self.model_type == ModelType.TwoPhase:
+      self.aux_2phase = self.createPhaseInteractionAuxQuantities()
 
     # create kernels
     self.kernels1 = self.createIndependentPhaseKernels(0)
@@ -112,7 +114,7 @@ class Executioner(object):
     else:
       aux_names_phase.append("VolumeFractionPhase2")
     aux_names_phase += ["Velocity", "SpecificTotalEnergy", "Density", \
-                           "SpecificVolume", "SpecificInternalEnergy", "Pressure"]
+                           "SpecificVolume", "SpecificInternalEnergy", "Pressure", "Temperature"]
 
     # create the aux quantities for this phase
     aux_list = list()
@@ -120,7 +122,16 @@ class Executioner(object):
       params = {"phase": phase}
       if aux_name == "Pressure":
         params["p_function"] = self.eos[phase].p
+      elif aux_name == "Temperature"
+        params["T_function"] = self.eos[phase].T
       aux_list.append(self.factory.createObject(aux_name, params))
+
+    return aux_list
+
+  def createPhaseInteractionAuxQuantities(self):
+    interaction_aux = list()
+
+    aux_list = self.aux1 + self.aux2 + interaction_aux
 
     return aux_list
 
@@ -242,93 +253,6 @@ class Executioner(object):
       # compute the local residual and Jacobian
       for kernel in kernel_list:
         kernel.apply(data, der, r_cell, J_cell)
-
-      # compute auxiliary quantities
-      # vf2 = 1 - vf1
-      # dvf2_dvf1 = 0 * vf2 - 1
-      #
-      # rho1, drho1_dvf1, drho1_darho1 = computeDensity(vf1, arho1)
-      # rho2, drho2_dvf2, drho2_darho2 = computeDensity(vf2, arho2)
-      # drho2_dvf1 = drho2_dvf2 * dvf2_dvf1
-      #
-      # v1, dv1_drho1 = computeSpecificVolume(rho1)
-      # v2, dv2_drho2 = computeSpecificVolume(rho2)
-      # dv1_dvf1 = dv1_drho1 * drho1_dvf1
-      # dv2_dvf1 = dv2_drho2 * drho2_dvf1
-      # dv1_darho1 = dv1_drho1 * drho1_darho1
-      # dv2_darho2 = dv2_drho2 * drho2_darho2
-      #
-      # u1, du1_darho1, du1_darhou1 = computeVelocity(arho1, arhou1)
-      # u2, du2_darho2, du2_darhou2 = computeVelocity(arho2, arhou2)
-      #
-      # E1, dE1_darho1, dE1_darhoE1 = computeSpecificTotalEnergy(arho1, arhoE1)
-      # E2, dE2_darho2, dE2_darhoE2 = computeSpecificTotalEnergy(arho2, arhoE2)
-      #
-      # e1, de1_du1, de1_dE1 = computeSpecificInternalEnergy(u1, E1)
-      # e2, de2_du2, de2_dE2 = computeSpecificInternalEnergy(u2, E2)
-      # de1_darho1 = de1_du1 * du1_darho1 + de1_dE1 * dE1_darho1
-      # de2_darho2 = de2_du2 * du2_darho2 + de2_dE2 * dE2_darho2
-      # de1_darhou1 = de1_du1 * du1_darhou1
-      # de2_darhou2 = de2_du2 * du2_darhou2
-      # de1_darhoE1 = de1_dE1 * dE1_darhoE1
-      # de2_darhoE2 = de2_dE2 * dE2_darhoE2
-      #
-      # p1, dp1_dv1, dp1_de1 = eos1.p(v1, e1)
-      # p2, dp2_dv2, dp2_de2 = eos2.p(v2, e2)
-      # dp1_dvf1 = dp1_dv1 * dv1_dvf1
-      # dp2_dvf1 = dp2_dv2 * dv2_dvf1
-      # dp1_darho1 = dp1_dv1 * dv1_darho1 + dp1_de1 * de1_darho1
-      # dp2_darho2 = dp2_dv2 * dv2_darho2 + dp2_de2 * de2_darho2
-      # dp1_darhou1 = dp1_de1 * de1_darhou1
-      # dp2_darhou2 = dp2_de2 * de2_darhou2
-      # dp1_darhoE1 = dp1_de1 * de1_darhoE1
-      # dp2_darhoE2 = dp2_de2 * de2_darhoE2
-      #
-      # T1, dT1_dv1, dT1_de1 = eos1.T(v1, e1)
-      # T2, dT2_dv2, dT2_de2 = eos2.T(v2, e2)
-      # dT1_dvf1 = dT1_dv1 * dv1_dvf1
-      # dT2_dvf1 = dT2_dv2 * dv2_dvf1
-      # dT1_darho1 = dT1_dv1 * dv1_darho1 + dT1_de1 * de1_darho1
-      # dT2_darho2 = dT2_dv2 * dv2_darho2 + dT2_de2 * de2_darho2
-      # dT1_darhou1 = dT1_de1 * de1_darhou1
-      # dT2_darhou2 = dT2_de2 * de2_darhou2
-      # dT1_darhoE1 = dT1_de1 * de1_darhoE1
-      # dT2_darhoE2 = dT2_de2 * de2_darhoE2
-
-      beta, dbeta_darho1, dbeta_darho2 = self.interface_closures.computeBeta(arho1, arho2)
-
-      mu, dmu_dT1, dmu_dT2, dmu_dbeta = self.interface_closures.computeMu(T1, T2, beta)
-      dmu_dvf1 = dmu_dT1 * dT1_dvf1 + dmu_dT2 * dT2_dvf1
-      dmu_darho1 = dmu_dT1 * dT1_darho1 + dmu_dbeta * dbeta_darho1
-      dmu_darho2 = dmu_dT2 * dT2_darho2 + dmu_dbeta * dbeta_darho2
-      dmu_darhou1 = dmu_dT1 * dT1_darhou1
-      dmu_darhou2 = dmu_dT2 * dT2_darhou2
-      dmu_darhoE1 = dmu_dT1 * dT1_darhoE1
-      dmu_darhoE2 = dmu_dT2 * dT2_darhoE2
-
-      uI, duI_du1, duI_du2, duI_dbeta = self.interface_closures.computeInterfaceVelocity(u1, u2, beta)
-      duI_darho1 = duI_du1 * du1_darho1 + duI_dbeta * dbeta_darho1
-      duI_darho2 = duI_du2 * du2_darho2 + duI_dbeta * dbeta_darho2
-      duI_darhou1 = duI_du1 * du1_darhou1
-      duI_darhou2 = duI_du2 * du2_darhou2
-
-      pI, dpI_dp1, dpI_dp2, dpI_dmu = self.interface_closures.computeInterfacePressure(p1, p2, mu)
-      dpI_dvf1 = dpI_dp1 * dp1_dvf1 + dpI_dp2 * dp2_dvf1 + dpI_dmu * dmu_dvf1
-      dpI_darho1 = dpI_dp1 * dp1_darho1 + dpI_dmu * dmu_darho1
-      dpI_darho2 = dpI_dp2 * dp2_darho2 + dpI_dmu * dmu_darho2
-      dpI_darhou1 = dpI_dp1 * dp1_darhou1 + dpI_dmu * dmu_darhou1
-      dpI_darhou2 = dpI_dp2 * dp2_darhou2 + dpI_dmu * dmu_darhou2
-      dpI_darhoE1 = dpI_dp1 * dp1_darhoE1 + dpI_dmu * dmu_darhoE1
-      dpI_darhoE2 = dpI_dp2 * dp2_darhoE2 + dpI_dmu * dmu_darhoE2
-
-      theta, pdtheta_pdvf1, dtheta_dp1, dtheta_dp2 = self.interface_closures.computeTheta(vf1, p1, p2)
-      dtheta_dvf1 = pdtheta_pdvf1 + dtheta_dp1 * dp1_dvf1 + dtheta_dp2 * dp2_dvf1
-      dtheta_darho1 = dtheta_dp1 * dp1_darho1
-      dtheta_darho2 = dtheta_dp2 * dp2_darho2
-      dtheta_darhou1 = dtheta_dp1 * dp1_darhou1
-      dtheta_darhou2 = dtheta_dp2 * dp2_darhou2
-      dtheta_darhoE1 = dtheta_dp1 * dp1_darhoE1
-      dtheta_darhoE2 = dtheta_dp2 * dp2_darhoE2
 
       # compute the residual and Jacobian
       for k_local in xrange(self.dof_handler.n_dof_per_cell_per_var):

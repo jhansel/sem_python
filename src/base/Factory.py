@@ -14,6 +14,11 @@ from Velocity import Velocity, VelocityParameters
 from VolumeFraction1Phase import VolumeFraction1Phase, VolumeFraction1PhaseParameters
 from VolumeFractionPhase1 import VolumeFractionPhase1, VolumeFractionPhase1Parameters
 from VolumeFractionPhase2 import VolumeFractionPhase2, VolumeFractionPhase2Parameters
+from Beta import Beta, BetaParameters
+from Mu import Mu, MuParameters
+from Theta import Theta, ThetaParameters
+from InterfaceVelocity import InterfaceVelocity, InterfaceVelocityParameters
+from InterfacePressure import InterfacePressure, InterfacePressureParameters
 
 # bc
 sys.path.append(base_dir + "src/bc")
