@@ -30,6 +30,7 @@ class KernelDerivativesTester(object):
     self.verbose = verbose
 
   def checkDerivatives(self, kernel_name, model_type, phase, aux_dependencies, fd_eps=1e-8):
+    self.model_type = model_type
     self.phase = phase
 
     # mesh
@@ -38,13 +39,13 @@ class KernelDerivativesTester(object):
     mesh = UniformMesh(params)
 
     # DoF handler
-    if model_type == ModelType.OnePhase:
+    if self.model_type == ModelType.OnePhase:
       dof_handler = DoFHandler1Phase(mesh)
-    elif model_type == ModelType.TwoPhaseNonInteracting:
+    elif self.model_type == ModelType.TwoPhaseNonInteracting:
       def vf1_initial(x):
         return 0.3
       dof_handler = DoFHandler2PhaseNonInteracting(mesh, vf1_initial)
-    elif model_type == ModelType.TwoPhase:
+    elif self.model_type == ModelType.TwoPhase:
       dof_handler = DoFHandler2Phase(mesh)
 
     # quadrature
@@ -96,7 +97,7 @@ class KernelDerivativesTester(object):
     U = np.zeros(dof_handler.n_dof)
     for k in xrange(dof_handler.n_dof):
       U[k] = k + 1.0
-    self.computeSolutionDependentData(U, data, phase)
+    self.computeSolutionDependentData(U, data)
     for aux in aux_list:
       aux.compute(data, der)
 
@@ -114,7 +115,7 @@ class KernelDerivativesTester(object):
       U_perturbed = deepcopy(U)
       j_global = dof_handler.i(j, var_index)
       U_perturbed[j_global] += fd_eps
-      self.computeSolutionDependentData(U_perturbed, data, phase)
+      self.computeSolutionDependentData(U_perturbed, data)
       for aux in aux_list:
         aux.compute(data, der)
 
@@ -137,8 +138,13 @@ class KernelDerivativesTester(object):
       rel_diffs[x] = abs(rel_diffs[x])
     return rel_diffs
 
-  def computeSolutionDependentData(self, U, data, phase):
+  def computeSolutionDependentData(self, U, data):
     data["vf1"] = self.fe_values.computeLocalVolumeFractionSolution(U, self.elem)
-    data["arho" + str(phase + 1)] = self.fe_values.computeLocalSolution(U, VariableName.ARho, self.phase, self.elem)
-    data["arhou" + str(phase + 1)] = self.fe_values.computeLocalSolution(U, VariableName.ARhoU, self.phase, self.elem)
-    data["arhoE" + str(phase + 1)] = self.fe_values.computeLocalSolution(U, VariableName.ARhoE, self.phase, self.elem)
+    data["dvf1_dx"] = self.fe_values.computeLocalVolumeFractionSolutionGradient(U, self.elem)
+    data["arho1"] = self.fe_values.computeLocalSolution(U, VariableName.ARho, 0, self.elem)
+    data["arhou1"] = self.fe_values.computeLocalSolution(U, VariableName.ARhoU, 0, self.elem)
+    data["arhoE1"] = self.fe_values.computeLocalSolution(U, VariableName.ARhoE, 0, self.elem)
+    if self.model_type != ModelType.OnePhase:
+      data["arho2"] = self.fe_values.computeLocalSolution(U, VariableName.ARho, 1, self.elem)
+      data["arhou2"] = self.fe_values.computeLocalSolution(U, VariableName.ARhoU, 1, self.elem)
+      data["arhoE2"] = self.fe_values.computeLocalSolution(U, VariableName.ARhoE, 1, self.elem)

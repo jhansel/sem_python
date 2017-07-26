@@ -38,6 +38,16 @@ class FEValues(object):
         vf1[q] += vf1_k * self.phi[k_local, q]
     return vf1
 
+  def computeLocalVolumeFractionSolutionGradient(self, U, e):
+    vf1_grad = np.zeros(self.quadrature.n_q)
+    Jac = self.quadrature.Jac_divided_by_h * self.mesh.h[e]
+    for q in xrange(self.quadrature.n_q):
+      for k_local in xrange(self.dof_handler.n_dof_per_cell_per_var):
+        k = self.dof_handler.k(e, k_local)
+        vf1_k = self.dof_handler.getVolumeFraction(U, k)
+        vf1_grad[q] += vf1_k * self.grad_phi[k_local, q] / Jac
+    return vf1_grad
+
   def computeLocalSolution(self, U, variable_name, phase, e):
     var_index = self.dof_handler.variable_index[variable_name][phase]
     solution = np.zeros(self.quadrature.n_q)
