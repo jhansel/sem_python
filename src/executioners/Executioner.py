@@ -56,6 +56,8 @@ class Executioner(object):
     self.kernels1 = self.createIndependentPhaseKernels(0)
     if self.model_type != ModelType.OnePhase:
       self.kernels2 = self.createIndependentPhaseKernels(1)
+    if self.model_type == ModelType.TwoPhase:
+      self.kernels_2phase = self.createPhaseInteractionKernels()
 
   def initializePhaseSolution(self, ics, phase):
     # get appropriate volume fraction function
@@ -155,6 +157,23 @@ class Executioner(object):
     kernel_name_list = ["MassAdvection", "MomentumAdvection", "MomentumGravity", "EnergyAdvection", "EnergyGravity"]
     for kernel_name in kernel_name_list:
       kernels.append(self.factory.createObject(kernel_name, params, args))
+    return kernels
+
+  def createPhaseInteractionKernels(self):
+    kernels = list()
+
+    params1 = dict()
+    params2 = dict()
+    params1["phase"] = 0
+    params2["phase"] = 1
+    args = tuple([self.dof_handler])
+
+    kernels.append(self.factory.createObject("VolumeFractionAdvection", params1, args))
+    kernels.append(self.factory.createObject("MomentumVolumeFractionGradient", params1, args))
+    kernels.append(self.factory.createObject("MomentumVolumeFractionGradient", params2, args))
+    kernels.append(self.factory.createObject("EnergyVolumeFractionGradient", params1, args))
+    kernels.append(self.factory.createObject("EnergyVolumeFractionGradient", params2, args))
+
     return kernels
 
   # computes the steady-state residual and Jacobian without applying strong BC
