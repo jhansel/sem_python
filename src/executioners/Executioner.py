@@ -99,7 +99,7 @@ class Executioner(object):
       self.U[self.dof_handler.i(k, arhoE_index)] = vf * rho * E
 
   def initializeVolumeFractionSolution(self, ics):
-    vf1_index = self.dof_handler.variable_index[VariableName.VF1]
+    vf1_index = self.dof_handler.variable_index[VariableName.VF1][0]
     for k in xrange(self.dof_handler.n_node):
       self.U[self.dof_handler.i(k, vf1_index)] = ics.vf1(self.mesh.x[k])
 
@@ -122,18 +122,30 @@ class Executioner(object):
       params = {"phase": phase}
       if aux_name == "Pressure":
         params["p_function"] = self.eos[phase].p
-      elif aux_name == "Temperature"
+      elif aux_name == "Temperature":
         params["T_function"] = self.eos[phase].T
       aux_list.append(self.factory.createObject(aux_name, params))
 
     return aux_list
 
   def createPhaseInteractionAuxQuantities(self):
+    interaction_aux_names = ["Beta", "Mu", "Theta", "InterfaceVelocity", "InterfacePressure"]
     interaction_aux = list()
+    for aux_name in interaction_aux_names:
+      params = dict()
+      if aux_name == "Beta":
+        params["beta_function"] = self.interface_closures.computeBeta
+      elif aux_name == "Mu":
+        params["mu_function"] = self.interface_closures.computeMu
+      elif aux_name == "Theta":
+        params["theta_function"] = self.interface_closures.computeTheta
+      elif aux_name == "InterfaceVelocity":
+        params["uI_function"] = self.interface_closures.computeInterfaceVelocity
+      elif aux_name == "InterfacePressure":
+        params["pI_function"] = self.interface_closures.computeInterfacePressure
+      interaction_aux.append(self.factory.createObject(aux_name, params))
 
-    aux_list = self.aux1 + self.aux2 + interaction_aux
-
-    return aux_list
+    return interaction_aux
 
   def createIndependentPhaseKernels(self, phase):
     kernels = list()
@@ -219,14 +231,6 @@ class Executioner(object):
     data["phi"] = self.fe_values.get_phi()
     data["g"] = self.gravity
 
-    vf1_index = self.dof_handler.variable_index[VariableName.VF1]
-    arho1_index = self.dof_handler.variable_index[VariableName.ARho][0]
-    arhou1_index = self.dof_handler.variable_index[VariableName.ARhoU][0]
-    arhoE1_index = self.dof_handler.variable_index[VariableName.ARhoE][0]
-    arho2_index = self.dof_handler.variable_index[VariableName.ARho][1]
-    arhou2_index = self.dof_handler.variable_index[VariableName.ARhoU][1]
-    arhoE2_index = self.dof_handler.variable_index[VariableName.ARhoE][1]
-
     for elem in xrange(self.dof_handler.n_cell):
       r_cell = np.zeros(self.dof_handler.n_dof_per_cell)
       J_cell = np.zeros(shape=(self.dof_handler.n_dof_per_cell, self.dof_handler.n_dof_per_cell))
@@ -247,88 +251,12 @@ class Executioner(object):
       data["dvf1_dx"] = self.fe_values.computeLocalSolutionGradient(U, VariableName.VF1, 0, elem)
 
       # compute auxiliary quantities
-      for aux in aux_list:
+      for aux in self.aux_2phase:
         aux.compute(data, der)
 
       # compute the local residual and Jacobian
-      for kernel in kernel_list:
+      for kernel in self.kernels_2phase:
         kernel.apply(data, der, r_cell, J_cell)
-
-      # compute the residual and Jacobian
-      for k_local in xrange(self.dof_handler.n_dof_per_cell_per_var):
-        i_vf1 = self.dof_handler.i(k_local, vf1_index)
-        i_arhou1 = self.dof_handler.i(k_local, arhou1_index)
-        i_arhoE1 = self.dof_handler.i(k_local, arhoE1_index)
-        i_arhou2 = self.dof_handler.i(k_local, arhou2_index)
-        i_arhoE2 = self.dof_handler.i(k_local, arhoE2_index)
-
-        # compute local residual
-        for q in xrange(self.quadrature.n_q):
-          r_cell[i_vf1] += (uI[q] * dvf1_dx[q] - theta[q] * (p1[q] - p2[q])) * phi[k_local,q] * JxW[q]
-          r_cell[i_arhou1] += - pI[q] * dvf1_dx[q] * phi[k_local,q] * JxW[q]
-          r_cell[i_arhoE1] += - pI[q] * uI[q] * dvf1_dx[q] * phi[k_local,q] * JxW[q]
-          r_cell[i_arhou2] += pI[q] * dvf1_dx[q] * phi[k_local,q] * JxW[q]
-          r_cell[i_arhoE2] += pI[q] * uI[q] * dvf1_dx[q] * phi[k_local,q] * JxW[q]
-
-        # compute local Jacobian
-        for l_local in xrange(self.dof_handler.n_dof_per_cell_per_var):
-          j_vf1 = self.dof_handler.i(l_local, vf1_index)
-          j_arho1 = self.dof_handler.i(l_local, arho1_index)
-          j_arhou1 = self.dof_handler.i(l_local, arhou1_index)
-          j_arhoE1 = self.dof_handler.i(l_local, arhoE1_index)
-          j_arho2 = self.dof_handler.i(l_local, arho2_index)
-          j_arhou2 = self.dof_handler.i(l_local, arhou2_index)
-          j_arhoE2 = self.dof_handler.i(l_local, arhoE2_index)
-          for q in xrange(self.quadrature.n_q):
-            # volume fraction
-            J_cell[i_vf1,j_vf1] += (uI[q] * grad_phi[l_local,q] \
-              - dtheta_dvf1[q] * (p1[q] - p2[q]) * phi[l_local,q] \
-              - theta[q] * (dp1_dvf1[q] - dp2_dvf1[q]) * phi[l_local,q]) * phi[k_local,q] * JxW[q]
-            J_cell[i_vf1,j_arho1] += (duI_darho1[q] * dvf1_dx[q] - dtheta_darho1[q] * (p1[q] - p2[q]) \
-              - theta[q] * dp1_darho1[q]) * phi[l_local,q] * phi[k_local,q] * JxW[q]
-            J_cell[i_vf1,j_arhou1] += (duI_darhou1[q] * dvf1_dx[q] - dtheta_darhou1[q] * (p1[q] - p2[q]) \
-              - theta[q] * dp1_darhou1[q]) * phi[l_local,q] * phi[k_local,q] * JxW[q]
-            J_cell[i_vf1,j_arhoE1] += (- dtheta_darhoE1[q] * (p1[q] - p2[q]) \
-              - theta[q] * dp1_darhoE1[q]) * phi[l_local,q] * phi[k_local,q] * JxW[q]
-            J_cell[i_vf1,j_arho2] += (duI_darho2[q] * dvf1_dx[q] - dtheta_darho2[q] * (p1[q] - p2[q]) \
-              + theta[q] * dp2_darho2[q]) * phi[l_local,q] * phi[k_local,q] * JxW[q]
-            J_cell[i_vf1,j_arhou2] += (duI_darhou2[q] * dvf1_dx[q] - dtheta_darhou2[q] * (p1[q] - p2[q]) \
-              + theta[q] * dp2_darhou2[q]) * phi[l_local,q] * phi[k_local,q] * JxW[q]
-            J_cell[i_vf1,j_arhoE2] += (- dtheta_darhoE2[q] * (p1[q] - p2[q]) \
-              + theta[q] * dp2_darhoE2[q]) * phi[l_local,q] * phi[k_local,q] * JxW[q]
-
-            # momentum
-            J[i_arhou1,j_vf1] += (- dpI_dvf1[q] * dvf1_dx[q] * phi[l_local,q] - pI[q] * grad_phi[l_local,q]) * phi[k_local,q] * JxW[q]
-            J[i_arhou2,j_vf1] += (  dpI_dvf1[q] * dvf1_dx[q] * phi[l_local,q] + pI[q] * grad_phi[l_local,q]) * phi[k_local,q] * JxW[q]
-            aux = dvf1_dx[q] * phi[l_local,q] * phi[k_local,q] * JxW[q]
-            J[i_arhou1,j_arho1]  += - dpI_darho1[q]  * aux
-            J[i_arhou2,j_arho1]  +=   dpI_darho1[q]  * aux
-            J[i_arhou1,j_arhou1] += - dpI_darhou1[q] * aux
-            J[i_arhou2,j_arhou1] +=   dpI_darhou1[q] * aux
-            J[i_arhou1,j_arhoE1] += - dpI_darhoE1[q] * aux
-            J[i_arhou2,j_arhoE1] +=   dpI_darhoE1[q] * aux
-            J[i_arhou1,j_arho2]  += - dpI_darho2[q]  * aux
-            J[i_arhou2,j_arho2]  +=   dpI_darho2[q]  * aux
-            J[i_arhou1,j_arhou2] += - dpI_darhou2[q] * aux
-            J[i_arhou2,j_arhou2] +=   dpI_darhou2[q] * aux
-            J[i_arhou1,j_arhoE2] += - dpI_darhoE2[q] * aux
-            J[i_arhou2,j_arhoE2] +=   dpI_darhoE2[q] * aux
-
-            # energy
-            J[i_arhoE1,j_vf1] += (- dpI_dvf1[q] * uI[q] * dvf1_dx[q] * phi[l_local,q] - pI[q] * uI[q] * grad_phi[l_local,q]) * phi[k_local,q] * JxW[q]
-            J[i_arhoE2,j_vf1] += (  dpI_dvf1[q] * uI[q] * dvf1_dx[q] * phi[l_local,q] + pI[q] * uI[q] * grad_phi[l_local,q]) * phi[k_local,q] * JxW[q]
-            J[i_arhoE1,j_arho1]  += - (dpI_darho1[q]  * uI[q] + pI[q] * duI_darho1[q])  * aux
-            J[i_arhoE2,j_arho1]  +=   (dpI_darho1[q]  * uI[q] + pI[q] * duI_darho1[q])  * aux
-            J[i_arhoE1,j_arhou1] += - (dpI_darhou1[q] * uI[q] + pI[q] * duI_darhou1[q]) * aux
-            J[i_arhoE2,j_arhou1] +=   (dpI_darhou1[q] * uI[q] + pI[q] * duI_darhou1[q]) * aux
-            J[i_arhoE1,j_arhoE1] += -  dpI_darhoE1[q] * uI[q]                           * aux
-            J[i_arhoE2,j_arhoE1] +=    dpI_darhoE1[q] * uI[q]                           * aux
-            J[i_arhoE1,j_arho2]  += - (dpI_darho2[q]  * uI[q] + pI[q] * duI_darho2[q])  * aux
-            J[i_arhoE2,j_arho2]  +=   (dpI_darho2[q]  * uI[q] + pI[q] * duI_darho2[q])  * aux
-            J[i_arhoE1,j_arhou2] += - (dpI_darhou2[q] * uI[q] + pI[q] * duI_darhou2[q]) * aux
-            J[i_arhoE2,j_arhou2] +=   (dpI_darhou2[q] * uI[q] + pI[q] * duI_darhou2[q]) * aux
-            J[i_arhoE1,j_arhoE2] += -  dpI_darhoE2[q] * uI[q]                           * aux
-            J[i_arhoE2,j_arhoE2] +=    dpI_darhoE2[q] * uI[q]                           * aux
 
       # aggregate cell residual and matrix into global residual and matrix
       self.dof_handler.aggregateLocalVector(r, r_cell, elem)

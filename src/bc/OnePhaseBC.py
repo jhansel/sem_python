@@ -21,8 +21,8 @@ class OnePhaseBC(BC):
 
     # DoF indices for the conserved variables
     if (self.model_type == ModelType.TwoPhase):
-      vf1_index = self.dof_handler.variable_index[VariableName.VF1]
-      self.i_vf1 = self.dof_handler.i(self.k, VariableName.VF1)
+      vf1_index = self.dof_handler.variable_index[VariableName.VF1][0]
+      self.i_vf1 = self.dof_handler.i(self.k, vf1_index)
 
     arho_index = dof_handler.variable_index[VariableName.ARho][self.phase]
     arhou_index = dof_handler.variable_index[VariableName.ARhoU][self.phase]

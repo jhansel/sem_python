@@ -71,7 +71,7 @@ class TransientExecutioner(Executioner):
   def addMassMatrixVolumeFraction(self, M):
     phi = self.fe_values.get_phi()
 
-    vf1_index = self.dof_handler.variable_index[VariableName.VF1]
+    vf1_index = self.dof_handler.variable_index[VariableName.VF1][0]
 
     for e in xrange(self.dof_handler.n_cell):
       M_cell = np.zeros(shape=(self.dof_handler.n_dof_per_cell, self.dof_handler.n_dof_per_cell))
