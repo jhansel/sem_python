@@ -72,7 +72,8 @@ class Plotter(object):
 
     def fixNearConstantPlot(self, dy_min=1.0):
       ymin, ymax = self.ax.get_ylim()
-      if (ymax - ymin < dy_min):
+      rel_diff = (ymax - ymin) / max(1e-15, abs(ymax))
+      if (rel_diff < 1e-15):
         yavg = 0.5 * (ymin + ymax)
         ymin_new = yavg - 0.5 * dy_min
         ymax_new = yavg + 0.5 * dy_min
