@@ -1,0 +1,94 @@
+[Model]
+  model = 2phase
+[]
+
+[Physics]
+  gravity = 9.81
+[]
+
+[InterfaceClosures]
+  chi = 0.5
+  pressure_relaxation_time = 5.0e-4
+[]
+
+[Mesh]
+  type = UniformMesh
+  x_min = 0
+  length = 12
+  n_cell = 50
+[]
+
+[EoS]
+  [liquid]
+    type = IdealGasEoS
+    gamma = 1.0005
+    R = 1
+  []
+  [vapor]
+    type = IdealGasEoS
+    gamma = 1.4
+    R = 1
+  []
+[]
+
+[IC]
+  vf1 = 0.8
+  p1 = 1.0e5
+  rho1 = 1.0e3
+  u1 = 10
+  p2 = 1.0e5
+  rho2 = 1
+  u2 = 0
+[]
+
+[BC]
+  [inlet_vf]
+    type = DirichletVolumeFractionBC
+    boundary = left
+    vf1 = 0.8
+  []
+  [inlet_liquid]
+    type = InletRhoUBC
+    rho = 1.0e3
+    u = 10
+    boundary = left
+    phase = liquid
+  []
+  [outlet_liquid]
+    type = OutletBC
+    p = 1.0e5
+    boundary = right
+    phase = liquid
+  []
+  [inlet_vapor]
+    type = InletRhoUBC
+    rho = 1
+    u = 0
+    boundary = left
+    phase = vapor
+  []
+  [outlet_vapor]
+    type = OutletBC
+    p = 1.0e5
+    boundary = right
+    phase = vapor
+  []
+[]
+
+[Executioner]
+  type = ImplicitEulerExecutioner
+  dt = 0.001
+  end_time = 0.5
+[]
+
+[NonlinearSolver]
+  verbose = True
+  absolute_tolerance = 1e-5
+  max_iterations = 10
+[]
+
+[Output]
+  plot_solution = True
+  save_solution = True
+  solution_file = solution.csv
+[]

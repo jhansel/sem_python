@@ -1,0 +1,60 @@
+[Model]
+  model = 1phase
+[]
+
+[Physics]
+  gravity = -9.8
+[]
+
+[Mesh]
+  type = UniformMesh
+  x_min = 0
+  length = 1
+  n_cell = 50
+[]
+
+[EoS]
+  [air]
+    type = IdealGasEoS
+    gamma = 1.0005
+    R = 290
+  []
+[]
+
+[IC]
+  p = 1.0e5
+  T = 300
+  u = 0
+[]
+
+[BC]
+  [left]
+    type = SolidWallBC
+    boundary = left
+    phase = air
+  []
+  [right]
+    type = SolidWallBC
+    boundary = right
+    phase = air
+  []
+[]
+
+[Executioner]
+  type = ImplicitEulerExecutioner
+  dt = 0.01
+  end_time = 0.01
+[]
+
+[NonlinearSolver]
+  verbose = True
+  absolute_tolerance = 1e-5
+  max_iterations = 10
+[]
+
+[Output]
+  plot_solution = True
+  print_solution = False
+  save_solution = True
+  solution_file = solution.csv
+[]
