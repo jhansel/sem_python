@@ -69,6 +69,6 @@ class FunctionDerivativesTester(object):
 
     # return relative differences if in unittest mode
     if self.in_unittest_mode:
-      return abs(reldiffs)
+      return [abs(x) for x in reldiffs]
     else:
       print "\n"
