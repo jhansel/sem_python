@@ -57,6 +57,7 @@ class Postprocessor(object):
     e1 = computeSpecificInternalEnergy(u1, E1)[0]
     eos1 = self.eos[0]
     p1 = eos1.p(v1, e1)[0]
+    T1 = eos1.T(v1, e1)[0]
     if (self.model_type != ModelType.OnePhase):
       rho2 = computeDensity(vf2, arho2)[0]
       u2 = computeVelocity(arho2, arhou2)[0]
@@ -65,6 +66,7 @@ class Postprocessor(object):
       e2 = computeSpecificInternalEnergy(u2, E2)[0]
       eos2 = self.eos[1]
       p2 = eos2.p(v2, e2)[0]
+      T2 = eos2.T(v2, e2)[0]
 
     # print solution
     if (self.print_solution):
@@ -108,7 +110,7 @@ class Postprocessor(object):
     if (self.plot_solution):
       x_label = "Position, $x$"
       if (self.model_type == ModelType.OnePhase):
-        plotter = Plotter("", "Density, $\\rho$", 3)
+        plotter = Plotter("", "Density, $\\rho$", (2,2))
         plotter.setXRange(self.mesh.x_min, self.mesh.x_max)
         plotter.addSet(self.mesh.x, rho1, "$\\rho$")
         plotter.fixNearConstantPlot()
@@ -117,6 +119,9 @@ class Postprocessor(object):
         plotter.fixNearConstantPlot()
         plotter.nextSubplot(x_label, "Pressure, $p$ [kPa]")
         plotter.addSet(self.mesh.x, p1, "$p$", scale=1e-3)
+        plotter.fixNearConstantPlot()
+        plotter.nextSubplot(x_label, "Temperature, $T$ [K]")
+        plotter.addSet(self.mesh.x, T1, "$T$")
         plotter.fixNearConstantPlot()
       elif (self.model_type == ModelType.TwoPhaseNonInteracting):
         plotter = Plotter(x_label, "Density, $\\rho$", (2,2))
