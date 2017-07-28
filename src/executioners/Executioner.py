@@ -50,7 +50,7 @@ class Executioner(object):
     if self.model_type != ModelType.OnePhase:
       self.aux2 = self.createIndependentPhaseAuxQuantities(1)
     if self.model_type == ModelType.TwoPhase:
-      self.aux_2phase = self.createPhaseInteractionAuxQuantities()
+      self.aux_2phase = self.aux1 + self.aux2 + self.createPhaseInteractionAuxQuantities()
 
     # create kernels
     self.kernels1 = self.createIndependentPhaseKernels(0)
