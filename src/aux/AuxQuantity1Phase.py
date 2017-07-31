@@ -13,17 +13,38 @@ class AuxQuantity1PhaseParameters(AuxQuantityParameters):
 class AuxQuantity1Phase(AuxQuantity):
   def __init__(self, params):
     AuxQuantity.__init__(self)
-    phase = str(params.get("phase") + 1)
-    self.phase = phase
-    self.vf = "vf" + phase
-    self.arho = "arho" + phase
-    self.arhou = "arhou" + phase
-    self.arhoE = "arhoE" + phase
-    self.rho = "rho" + phase
-    self.u = "u" + phase
-    self.E = "E" + phase
-    self.e = "e" + phase
-    self.v = "v" + phase
-    self.p = "p" + phase
-    self.T = "T" + phase
-    self.c = "c" + phase
+    self.phase_int = params.get("phase")
+    self.phase = str(self.phase_int + 1)
+    if self.phase_int == 0:
+      self.sign = 1.0
+      self.dgrad_vf_dgrad_vf1 = 1.0
+    else:
+      self.sign = -1.0
+      self.dgrad_vf_dgrad_vf1 = -1.0
+
+    self.vf = "vf" + self.phase
+    self.arho = "arho" + self.phase
+    self.arhou = "arhou" + self.phase
+    self.arhoE = "arhoE" + self.phase
+    self.rho = "rho" + self.phase
+    self.u = "u" + self.phase
+    self.E = "E" + self.phase
+    self.e = "e" + self.phase
+    self.v = "v" + self.phase
+    self.p = "p" + self.phase
+    self.T = "T" + self.phase
+    self.c = "c" + self.phase
+
+    self.grad_arho = "grad_" + self.arho
+    self.grad_vf = "grad_" + self.vf
+    self.grad_rho = "grad_" + self.rho
+
+    self.visccoef_vf = "visccoef_" + self.vf
+    self.visccoef_arho = "visccoef_" + self.arho
+    self.visccoef_arhou = "visccoef_" + self.arhou
+    self.visccoef_arhoE = "visccoef_" + self.arhoE
+
+    self.viscflux_vf = "viscflux_" + self.vf
+    self.viscflux_arho = "viscflux_" + self.arho
+    self.viscflux_arhou = "viscflux_" + self.arhou
+    self.viscflux_arhoE = "viscflux_" + self.arhoE
