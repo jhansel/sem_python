@@ -14,6 +14,7 @@ class AuxQuantity1Phase(AuxQuantity):
   def __init__(self, params):
     AuxQuantity.__init__(self)
     phase = str(params.get("phase") + 1)
+    self.phase = phase
     self.vf = "vf" + phase
     self.arho = "arho" + phase
     self.arhou = "arhou" + phase

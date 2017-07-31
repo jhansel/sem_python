@@ -14,9 +14,9 @@ class AuxDerivativesTester(object):
   def __init__(self, verbose=False):
     self.verbose = verbose
 
-  def checkDerivatives(self, test_aux, test_var, other_aux, other_vars, root_vars, fd_eps=1e-8):
+  def checkDerivatives(self, test_aux, test_var, other_aux, other_vars, root_vars, constant_data=dict(), fd_eps=1e-8):
     # setup input data
-    data = dict()
+    data = constant_data
     for i,x in enumerate(root_vars):
       data[x] = i + 2.0
     der = dict()
