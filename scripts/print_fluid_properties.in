@@ -1,0 +1,18 @@
+# This input file is to be used with the script of the same name. It defines
+# an equation of state and a thermodynamic state at which to view property
+# values.
+
+# fluid properties that will be interrogated
+[EoS]
+  type = StiffenedGasEoS
+  gamma = 1.4
+  cv = 1
+  p_inf = 0
+  q = 0
+[]
+
+# values defining the thermodynamic state
+[ThermodynamicState]
+  rho = 1
+  p = 1e5
+[]

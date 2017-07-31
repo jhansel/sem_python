@@ -33,6 +33,7 @@ sys.path.append(base_dir + "src/closures")
 from IdealGasEoS import IdealGasEoS, IdealGasEoSParameters
 from StiffenedGasEoS import StiffenedGasEoS, StiffenedGasEoSParameters
 from InterfaceClosures import InterfaceClosures, InterfaceClosuresParameters
+from ThermodynamicState import ThermodynamicState, ThermodynamicStateParameters
 
 # executioners
 sys.path.append(base_dir + "src/executioners")
