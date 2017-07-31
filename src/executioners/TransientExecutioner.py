@@ -24,8 +24,8 @@ class TransientExecutionerParameters(ExecutionerParameters):
     self.registerBoolParameter("lump_mass_matrix", "Lump the mass matrix?", False)
 
 class TransientExecutioner(Executioner):
-  def __init__(self, params, model_type, ics, bcs, eos_map, interface_closures, gravity, dof_handler, mesh, nonlinear_solver_params, stabilization, factory):
-    Executioner.__init__(self, params, model_type, ics, bcs, eos_map, interface_closures, gravity, dof_handler, mesh, nonlinear_solver_params, stabilization, factory)
+  def __init__(self, params, model, ics, bcs, eos_map, interface_closures, gravity, dof_handler, mesh, nonlinear_solver_params, stabilization, factory):
+    Executioner.__init__(self, params, model, ics, bcs, eos_map, interface_closures, gravity, dof_handler, mesh, nonlinear_solver_params, stabilization, factory)
 
     # determine how time step size is determined
     if params.has("dt") and params.has("cfl"):

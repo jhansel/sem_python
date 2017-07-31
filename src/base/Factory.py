@@ -37,6 +37,10 @@ from AmbrosoPressureRelaxationCoef import AmbrosoPressureRelaxationCoef, Ambroso
 from AmbrosoInterfaceVelocity import AmbrosoInterfaceVelocity, AmbrosoInterfaceVelocityParameters
 from AmbrosoInterfacePressure import AmbrosoInterfacePressure, AmbrosoInterfacePressureParameters
 
+# base
+sys.path.append(base_dir + "src/base")
+from Model import Model, ModelParameters
+
 # bc
 sys.path.append(base_dir + "src/bc")
 from FreeBC import FreeBC, FreeBCParameters
@@ -66,7 +70,6 @@ from InitialConditions2Phase import InitialConditions2Phase, InitialConditions2P
 
 # input
 sys.path.append(base_dir + "src/input")
-from ModelParameters import ModelParameters
 from PhysicsParameters import PhysicsParameters
 
 # kernels
