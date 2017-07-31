@@ -52,12 +52,14 @@ from PhysicsParameters import PhysicsParameters
 # kernels
 sys.path.append(base_dir + "src/kernels")
 from VolumeFractionAdvection import VolumeFractionAdvection, VolumeFractionAdvectionParameters
+from VolumeFractionPressureRelaxation import VolumeFractionPressureRelaxation, VolumeFractionPressureRelaxationParameters
 from MassAdvection import MassAdvection, MassAdvectionParameters
 from MomentumAdvection import MomentumAdvection, MomentumAdvectionParameters
 from MomentumGravity import MomentumGravity, MomentumGravityParameters
 from MomentumVolumeFractionGradient import MomentumVolumeFractionGradient, MomentumVolumeFractionGradientParameters
 from EnergyAdvection import EnergyAdvection, EnergyAdvectionParameters
 from EnergyGravity import EnergyGravity, EnergyGravityParameters
+from EnergyPressureRelaxation import EnergyPressureRelaxation, EnergyPressureRelaxationParameters
 from EnergyVolumeFractionGradient import EnergyVolumeFractionGradient, EnergyVolumeFractionGradientParameters
 
 # mesh

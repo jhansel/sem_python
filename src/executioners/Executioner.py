@@ -169,8 +169,11 @@ class Executioner(object):
     args = tuple([self.dof_handler])
 
     kernels.append(self.factory.createObject("VolumeFractionAdvection", params1, args))
+    kernels.append(self.factory.createObject("VolumeFractionPressureRelaxation", params1, args))
     kernels.append(self.factory.createObject("MomentumVolumeFractionGradient", params1, args))
     kernels.append(self.factory.createObject("MomentumVolumeFractionGradient", params2, args))
+    kernels.append(self.factory.createObject("EnergyPressureRelaxation", params1, args))
+    kernels.append(self.factory.createObject("EnergyPressureRelaxation", params2, args))
     kernels.append(self.factory.createObject("EnergyVolumeFractionGradient", params1, args))
     kernels.append(self.factory.createObject("EnergyVolumeFractionGradient", params2, args))
 
