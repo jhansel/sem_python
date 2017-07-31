@@ -25,3 +25,4 @@ class AuxQuantity1Phase(AuxQuantity):
     self.v = "v" + phase
     self.p = "p" + phase
     self.T = "T" + phase
+    self.c = "c" + phase

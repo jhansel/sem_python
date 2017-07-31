@@ -5,24 +5,24 @@ base_dir = os.environ["SEM_PYTHON_DIR"]
 import unittest
 
 sys.path.append(base_dir + "src/aux")
-from Temperature import Temperature, TemperatureParameters
+from SoundSpeed import SoundSpeed, SoundSpeedParameters
 from TestAux import TestAux, TestAuxParameters
 
 sys.path.append(base_dir + "testing/src/utilities")
 from AuxDerivativesTester import AuxDerivativesTester
 
-def computeTemperature(v, e):
+def computeSoundSpeed(v, e):
   v_slope = 2.0
   e_slope = 3.0
-  T = v_slope * v + e_slope * e
-  return (T, v_slope, e_slope)
+  c = v_slope * v + e_slope * e
+  return (c, v_slope, e_slope)
 
-# temperature aux
-params = TemperatureParameters()
+# sound speed aux
+params = SoundSpeedParameters()
 params.set("phase", 0)
-params.set("T_function", computeTemperature)
-test_aux = Temperature(params)
-test_var = "T1"
+params.set("c_function", computeSoundSpeed)
+test_aux = SoundSpeed(params)
+test_var = "c1"
 
 # specific volume aux
 params = TestAuxParameters()
@@ -42,7 +42,7 @@ other_aux = {"v1" : v_aux, "e1" : e_aux}
 other_vars = ["v1", "e1"]
 root_vars = ["vf1", "arho1", "arhou1", "arhoE1"]
 
-class TemperatureDerivativesTester(unittest.TestCase):
+class SoundSpeedDerivativesTester(unittest.TestCase):
   def setUp(self):
     self.derivatives_tester = AuxDerivativesTester()
 

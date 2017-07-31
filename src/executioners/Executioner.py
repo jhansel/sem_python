@@ -116,7 +116,7 @@ class Executioner(object):
     else:
       aux_names_phase.append("VolumeFractionPhase2")
     aux_names_phase += ["Velocity", "SpecificTotalEnergy", "Density", \
-                           "SpecificVolume", "SpecificInternalEnergy", "Pressure", "Temperature"]
+      "SpecificVolume", "SpecificInternalEnergy", "Pressure", "Temperature", "SoundSpeed"]
 
     # create the aux quantities for this phase
     aux_list = list()
@@ -126,6 +126,8 @@ class Executioner(object):
         params["p_function"] = self.eos[phase].p
       elif aux_name == "Temperature":
         params["T_function"] = self.eos[phase].T
+      elif aux_name == "SoundSpeed":
+        params["c_function"] = self.eos[phase].c
       aux_list.append(self.factory.createObject(aux_name, params))
 
     return aux_list

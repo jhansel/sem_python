@@ -10,7 +10,7 @@ import unittest
 from FunctionDerivativesTester import FunctionDerivativesTester
 from StiffenedGasEoS import StiffenedGasEoS, StiffenedGasEoSParameters
 
-class StiffenedGasEoSFunctionDerivativesTester(unittest.TestCase):
+class StiffenedGasEoSDerivativesTester(unittest.TestCase):
   def setUp(self):
     params = StiffenedGasEoSParameters()
     params.set("gamma", 1.4)
@@ -35,6 +35,11 @@ class StiffenedGasEoSFunctionDerivativesTester(unittest.TestCase):
     for reldiff in reldiffs:
       self.assertLessEqual(reldiff, 1e-6)
 
+  def testSoundSpeed(self):
+    reldiffs = self.derivative_tester.checkDerivatives(self.eos.c, 2)
+    for reldiff in reldiffs:
+      self.assertLessEqual(reldiff, 1e-6)
+
 if __name__ == "__main__":
   params = StiffenedGasEoSParameters()
   params.set("gamma", 1.4)
@@ -48,3 +53,4 @@ if __name__ == "__main__":
   tester.checkDerivatives(eos.e, 2)
   tester.checkDerivatives(eos.p, 2)
   tester.checkDerivatives(eos.T, 2)
+  tester.checkDerivatives(eos.c, 2)

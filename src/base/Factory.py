@@ -7,6 +7,7 @@ sys.path.append(base_dir + "src/aux")
 from Density import Density, DensityParameters
 from Pressure import Pressure, PressureParameters
 from Temperature import Temperature, TemperatureParameters
+from SoundSpeed import SoundSpeed, SoundSpeedParameters
 from SpecificInternalEnergy import SpecificInternalEnergy, SpecificInternalEnergyParameters
 from SpecificTotalEnergy import SpecificTotalEnergy, SpecificTotalEnergyParameters
 from SpecificVolume import SpecificVolume, SpecificVolumeParameters

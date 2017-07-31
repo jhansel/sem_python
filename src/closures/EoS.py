@@ -29,3 +29,7 @@ class EoS(object):
   @abstractmethod
   def T(self, v, e):
     pass
+
+  @abstractmethod
+  def c(self, v, e):
+    pass

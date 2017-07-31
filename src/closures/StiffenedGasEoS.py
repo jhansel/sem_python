@@ -1,3 +1,5 @@
+from numpy import sqrt
+
 import os
 import sys
 base_dir = os.environ["SEM_PYTHON_DIR"]
@@ -41,3 +43,9 @@ class StiffenedGasEoS(EoS):
     dT_dv = - self.p_inf / self.cv
     dT_de = 1.0 / self.cv
     return (T_value, dT_dv, dT_de)
+
+  def c(self, v, p):
+    c_value = sqrt(self.gamma * (p + self.p_inf) * v)
+    dc_dv = 0.5 / sqrt(self.gamma * (p + self.p_inf) * v) * self.gamma * (p + self.p_inf)
+    dc_dp = 0.5 / sqrt(self.gamma * (p + self.p_inf) * v) * self.gamma * v
+    return (c_value, dc_dv, dc_dp)
