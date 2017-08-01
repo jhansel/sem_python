@@ -12,7 +12,7 @@ class AuxQuantity1PhaseParameters(AuxQuantityParameters):
 
 class AuxQuantity1Phase(AuxQuantity):
   def __init__(self, params):
-    AuxQuantity.__init__(self)
+    AuxQuantity.__init__(self, params)
     self.phase_int = params.get("phase")
     self.phase = str(self.phase_int + 1)
     if self.phase_int == 0:

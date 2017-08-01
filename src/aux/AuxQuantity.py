@@ -13,6 +13,10 @@ class AuxQuantityParameters(Parameters):
 
 class AuxQuantity(object):
   __metaclass__ = ABCMeta
+
+  def __init__(self, params):
+    pass
+
   @abstractmethod
   def compute(self, data, der):
     pass

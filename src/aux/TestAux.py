@@ -18,7 +18,7 @@ class TestAuxParameters(AuxQuantityParameters):
 
 class TestAux(AuxQuantity):
   def __init__(self, params):
-    AuxQuantity.__init__(self)
+    AuxQuantity.__init__(self, params)
     self.var = params.get("var")
     self.other_vars = params.get("other_vars")
     self.coefs = params.get("coefs")
