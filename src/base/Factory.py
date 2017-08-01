@@ -6,6 +6,7 @@ base_dir = os.environ["SEM_PYTHON_DIR"]
 sys.path.append(base_dir + "src/aux")
 from Density import Density, DensityParameters
 from LaxFriedrichsCoefficient import LaxFriedrichsCoefficient, LaxFriedrichsCoefficientParameters
+from EntropyMinimumMassFlux import EntropyMinimumMassFlux, EntropyMinimumMassFluxParameters
 from EntropyMinimumVolumeFractionFlux import EntropyMinimumVolumeFractionFlux, EntropyMinimumVolumeFractionFluxParameters
 from Pressure import Pressure, PressureParameters
 from Temperature import Temperature, TemperatureParameters
