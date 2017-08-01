@@ -81,6 +81,10 @@ from Postprocessor import Postprocessor, PostprocessorParameters
 sys.path.append(base_dir + "src/solvers")
 from NonlinearSolver import NonlinearSolver, NonlinearSolverParameters
 
+# stabilization
+sys.path.append(base_dir + "src/stabilization")
+from NoStabilization import NoStabilization, NoStabilizationParameters
+
 # utilities
 sys.path.append(base_dir + "src/utilities")
 from error_utilities import error

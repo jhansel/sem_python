@@ -24,7 +24,7 @@ class ExecutionerParameters(Parameters):
     Parameters.__init__(self)
 
 class Executioner(object):
-  def __init__(self, params, model_type, ics, bcs, eos, interface_closures, gravity, dof_handler, mesh, nonlinear_solver_params, factory):
+  def __init__(self, params, model_type, ics, bcs, eos, interface_closures, gravity, dof_handler, mesh, nonlinear_solver_params, stabilization, factory):
     self.model_type = model_type
     self.bcs = bcs
     self.eos = eos
@@ -36,6 +36,7 @@ class Executioner(object):
     self.quadrature = Quadrature()
     self.fe_values = FEValues(self.quadrature, dof_handler, mesh)
     self.factory = factory
+    self.need_solution_gradients = stabilization.needSolutionGradients()
 
     # initialize the solution
     self.U = np.zeros(self.dof_handler.n_dof)
@@ -46,18 +47,19 @@ class Executioner(object):
       self.initializeVolumeFractionSolution(ics)
 
     # create aux quantities
-    self.aux1 = self.createIndependentPhaseAuxQuantities(0)
+    self.aux1 = self.createIndependentPhaseAuxQuantities(0) + stabilization.createIndependentPhaseAuxQuantities(0)
     if self.model_type != ModelType.OnePhase:
-      self.aux2 = self.createIndependentPhaseAuxQuantities(1)
+      self.aux2 = self.createIndependentPhaseAuxQuantities(1) + stabilization.createIndependentPhaseAuxQuantities(1)
     if self.model_type == ModelType.TwoPhase:
-      self.aux_2phase = self.aux1 + self.aux2 + self.createPhaseInteractionAuxQuantities()
+      self.aux_2phase = self.aux1 + self.aux2 + self.createPhaseInteractionAuxQuantities() \
+        + stabilization.createPhaseInteractionAuxQuantities()
 
     # create kernels
-    self.kernels1 = self.createIndependentPhaseKernels(0)
+    self.kernels1 = self.createIndependentPhaseKernels(0) + stabilization.createIndependentPhaseKernels(0)
     if self.model_type != ModelType.OnePhase:
-      self.kernels2 = self.createIndependentPhaseKernels(1)
+      self.kernels2 = self.createIndependentPhaseKernels(1) + stabilization.createIndependentPhaseKernels(1)
     if self.model_type == ModelType.TwoPhase:
-      self.kernels_2phase = self.createPhaseInteractionKernels()
+      self.kernels_2phase = self.createPhaseInteractionKernels() + stabilization.createPhaseInteractionKernels()
 
   def initializePhaseSolution(self, ics, phase):
     # get appropriate volume fraction function
@@ -234,6 +236,11 @@ class Executioner(object):
       data[arho_name] = self.fe_values.computeLocalSolution(U, VariableName.ARho, phase, elem)
       data[arhou_name] = self.fe_values.computeLocalSolution(U, VariableName.ARhoU, phase, elem)
       data[arhoE_name] = self.fe_values.computeLocalSolution(U, VariableName.ARhoE, phase, elem)
+      if self.need_solution_gradients:
+        data["grad_vf1"] = self.fe_values.computeLocalVolumeFractionSolutionGradient(U, elem)
+        data["grad_" + arho_name] = self.fe_values.computeLocalSolutionGradient(U, VariableName.ARho, phase, elem)
+        data["grad_" + arhou_name] = self.fe_values.computeLocalSolutionGradient(U, VariableName.ARhoU, phase, elem)
+        data["grad_" + arhoE_name] = self.fe_values.computeLocalSolutionGradient(U, VariableName.ARhoE, phase, elem)
 
       # compute auxiliary quantities
       for aux in aux_list:

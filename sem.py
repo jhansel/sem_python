@@ -123,10 +123,20 @@ def run(input_file, mods=list()):
   nonlinear_solver_param_data = input_file_parser.getBlockData("NonlinearSolver")
   nonlinear_solver_params = factory.createParametersObject("NonlinearSolver", nonlinear_solver_param_data)
 
+  # stabilization
+  if input_file_parser.blockExists("Stabilization"):
+    stabilization_param_data = input_file_parser.getBlockData("Stabilization")
+    stabilization_param_data["factory"] = factory
+    stabilization_class = stabilization_param_data["type"]
+  else:
+    stabilization_param_data = {"factory": factory}
+    stabilization_class = "NoStabilization"
+  stabilization = factory.createObject(stabilization_class, stabilization_param_data)
+
   # create and run the executioner
   executioner_param_data = input_file_parser.getBlockData("Executioner")
   executioner_type = executioner_param_data["type"]
-  executioner_args = (model_type, ics, bcs, eos, interface_closures, gravity, dof_handler, mesh, nonlinear_solver_params, factory)
+  executioner_args = (model_type, ics, bcs, eos, interface_closures, gravity, dof_handler, mesh, nonlinear_solver_params, stabilization, factory)
   executioner = factory.createObject(executioner_type, executioner_param_data, executioner_args)
   U = executioner.run()
 
