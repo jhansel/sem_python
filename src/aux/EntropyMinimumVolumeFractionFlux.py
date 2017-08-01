@@ -36,4 +36,4 @@ class EntropyMinimumVolumeFractionFlux(AuxQuantity1Phase):
 
     data[self.viscflux_vf] = l
     der[self.viscflux_vf] = {"vf1" : dl_dvf1, self.arho : dl_darho, self.arhou : dl_darhou,
-      self.arhoE : dl_darhoE, "grad_vf1" : dl_dgrad_vf1}
+      self.arhoE : dl_darhoE, "grad_vf1" : dl_dgrad_vf1, self.grad_arho: 0, self.grad_arhou: 0, self.grad_arhoE: 0}

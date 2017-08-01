@@ -46,4 +46,4 @@ class EntropyMinimumMomentumFlux(AuxQuantity1Phase):
     data[self.viscflux_arhou] = g
     der[self.viscflux_arhou] = {"vf1" : dg_dvf1, self.arho : dg_darho, self.arhou : dg_darhou,
       self.arhoE : dg_darhoE, "grad_vf1" : dg_dgrad_vf1, self.grad_arho : dg_dgrad_arho,
-      self.grad_arhou : dg_dgrad_arhou}
+      self.grad_arhou : dg_dgrad_arhou, self.grad_arhoE: 0}

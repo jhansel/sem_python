@@ -29,7 +29,7 @@ class KernelDerivativesTester(object):
   def __init__(self, verbose=False):
     self.verbose = verbose
 
-  def checkDerivatives(self, kernel_name, model_type, phase, aux_dependencies, fd_eps=1e-8):
+  def checkDerivatives(self, kernel_name, model_type, phase, aux_dependencies, kernel_params=dict(), fd_eps=1e-8):
     self.model_type = model_type
     self.phase = phase
 
@@ -58,9 +58,9 @@ class KernelDerivativesTester(object):
     factory = Factory()
 
     # kernel
-    params = {"phase": phase}
+    kernel_params["phase"] = phase
     args = tuple([dof_handler])
-    kernel = factory.createObject(kernel_name, params, args)
+    kernel = factory.createObject(kernel_name, kernel_params, args)
 
     # aux
     aux_list = list()
@@ -140,11 +140,17 @@ class KernelDerivativesTester(object):
 
   def computeSolutionDependentData(self, U, data):
     data["vf1"] = self.fe_values.computeLocalVolumeFractionSolution(U, self.elem)
-    data["grad_vf1"] = self.fe_values.computeLocalVolumeFractionSolutionGradient(U, self.elem)
     data["arho1"] = self.fe_values.computeLocalSolution(U, VariableName.ARho, 0, self.elem)
     data["arhou1"] = self.fe_values.computeLocalSolution(U, VariableName.ARhoU, 0, self.elem)
     data["arhoE1"] = self.fe_values.computeLocalSolution(U, VariableName.ARhoE, 0, self.elem)
+    data["grad_vf1"] = self.fe_values.computeLocalVolumeFractionSolutionGradient(U, self.elem)
+    data["grad_arho1"] = self.fe_values.computeLocalSolutionGradient(U, VariableName.ARho, 0, self.elem)
+    data["grad_arhou1"] = self.fe_values.computeLocalSolutionGradient(U, VariableName.ARhoU, 0, self.elem)
+    data["grad_arhoE1"] = self.fe_values.computeLocalSolutionGradient(U, VariableName.ARhoE, 0, self.elem)
     if self.model_type != ModelType.OnePhase:
       data["arho2"] = self.fe_values.computeLocalSolution(U, VariableName.ARho, 1, self.elem)
       data["arhou2"] = self.fe_values.computeLocalSolution(U, VariableName.ARhoU, 1, self.elem)
       data["arhoE2"] = self.fe_values.computeLocalSolution(U, VariableName.ARhoE, 1, self.elem)
+      data["grad_arho2"] = self.fe_values.computeLocalSolutionGradient(U, VariableName.ARho, 1, self.elem)
+      data["grad_arhou2"] = self.fe_values.computeLocalSolutionGradient(U, VariableName.ARhoU, 1, self.elem)
+      data["grad_arhoE2"] = self.fe_values.computeLocalSolutionGradient(U, VariableName.ARhoE, 1, self.elem)
