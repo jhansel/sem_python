@@ -272,7 +272,7 @@ class Executioner(object):
       data["arhoE2"] = self.fe_values.computeLocalSolution(U, VariableName.ARhoE, 1, elem)
 
       # compute solution gradient
-      data["dvf1_dx"] = self.fe_values.computeLocalSolutionGradient(U, VariableName.VF1, 0, elem)
+      data["grad_vf1"] = self.fe_values.computeLocalSolutionGradient(U, VariableName.VF1, 0, elem)
 
       # compute auxiliary quantities
       for aux in self.aux_2phase:

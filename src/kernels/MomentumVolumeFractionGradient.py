@@ -17,14 +17,14 @@ class MomentumVolumeFractionGradient(Kernel2Phase):
     Kernel2Phase.__init__(self, params, dof_handler, VariableName.ARhoU)
 
   def computeResidual(self, data, i):
-    return - self.sign * data["pI"] * data["dvf1_dx"] * data["phi"][i] * data["JxW"]
+    return - self.sign * data["pI"] * data["grad_vf1"] * data["phi"][i] * data["JxW"]
 
   def computeJacobian(self, data, der, var_index, i, j):
     if var_index == self.vf1_index:
-      return (-self.sign * der["pI"]["vf1"] * data["dvf1_dx"] * data["phi"][j] \
+      return (-self.sign * der["pI"]["vf1"] * data["grad_vf1"] * data["phi"][j] \
         - self.sign * data["pI"] * data["grad_phi"][j]) * data["phi"][i] * data["JxW"]
     else:
-      aux = - self.sign * data["dvf1_dx"] * data["phi"][j] * data["phi"][i] * data["JxW"]
+      aux = - self.sign * data["grad_vf1"] * data["phi"][j] * data["phi"][i] * data["JxW"]
       if var_index == self.arho1_index:
         return der["pI"]["arho1"]  * aux
       elif var_index == self.arhou1_index:

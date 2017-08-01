@@ -140,7 +140,7 @@ class KernelDerivativesTester(object):
 
   def computeSolutionDependentData(self, U, data):
     data["vf1"] = self.fe_values.computeLocalVolumeFractionSolution(U, self.elem)
-    data["dvf1_dx"] = self.fe_values.computeLocalVolumeFractionSolutionGradient(U, self.elem)
+    data["grad_vf1"] = self.fe_values.computeLocalVolumeFractionSolutionGradient(U, self.elem)
     data["arho1"] = self.fe_values.computeLocalSolution(U, VariableName.ARho, 0, self.elem)
     data["arhou1"] = self.fe_values.computeLocalSolution(U, VariableName.ARhoU, 0, self.elem)
     data["arhoE1"] = self.fe_values.computeLocalSolution(U, VariableName.ARhoE, 0, self.elem)
