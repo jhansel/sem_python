@@ -27,6 +27,7 @@ class AuxQuantity1Phase(AuxQuantity):
     self.arhou = "arhou" + self.phase
     self.arhoE = "arhoE" + self.phase
     self.rho = "rho" + self.phase
+    self.rhoe = "rhoe" + self.phase
     self.u = "u" + self.phase
     self.E = "E" + self.phase
     self.e = "e" + self.phase
@@ -37,9 +38,11 @@ class AuxQuantity1Phase(AuxQuantity):
 
     self.grad_arho = "grad_" + self.arho
     self.grad_arhou = "grad_" + self.arhou
+    self.grad_arhoE = "grad_" + self.arhoE
     self.grad_vf = "grad_" + self.vf
     self.grad_rho = "grad_" + self.rho
     self.grad_u = "grad_" + self.u
+    self.grad_rhoe = "grad_" + self.rhoe
 
     self.visccoef_vf = "visccoef_" + self.vf
     self.visccoef_arho = "visccoef_" + self.arho
