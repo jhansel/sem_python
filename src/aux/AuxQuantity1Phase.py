@@ -36,8 +36,10 @@ class AuxQuantity1Phase(AuxQuantity):
     self.c = "c" + self.phase
 
     self.grad_arho = "grad_" + self.arho
+    self.grad_arhou = "grad_" + self.arhou
     self.grad_vf = "grad_" + self.vf
     self.grad_rho = "grad_" + self.rho
+    self.grad_u = "grad_" + self.u
 
     self.visccoef_vf = "visccoef_" + self.vf
     self.visccoef_arho = "visccoef_" + self.arho
