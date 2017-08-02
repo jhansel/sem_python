@@ -25,6 +25,10 @@ class TransientExecutioner(Executioner):
     Executioner.__init__(self, params, model_type, ics, bcs, eos_map, interface_closures, gravity, dof_handler, mesh, nonlinear_solver_params, stabilization, factory)
     self.dt_nominal = params.get("dt")
     self.end_time = params.get("end_time")
+
+    # tolerance to prevent small final time steps due to floating point precision error
+    self.end_tolerance = 1e-12
+
     self.U_old = deepcopy(self.U)
 
     self.M = self.computeMassMatrix()
@@ -101,7 +105,7 @@ class TransientExecutioner(Executioner):
     time_step = 1
     while (transient_incomplete):
       # compute time step size
-      if (t + self.dt_nominal >= self.end_time):
+      if (t + self.dt_nominal + self.end_tolerance >= self.end_time):
         transient_incomplete = False
         self.dt = self.end_time - t
       else:
