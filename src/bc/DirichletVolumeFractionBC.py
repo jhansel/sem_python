@@ -19,9 +19,16 @@ class DirichletVolumeFractionBC(VolumeFractionBC):
   def applyWeakBC(self, U, r, J):
     pass
 
-  def applyStrongBC(self, U, r, J):
+  def applyStrongBCNonlinearSystem(self, U, r, J):
     vf1 = U[self.i_vf1]
 
     r[self.i_vf1] = vf1 - self.vf1
     J[self.i_vf1,:] = 0
     J[self.i_vf1,self.i_vf1] = 1
+
+  def applyStrongBCLinearSystemMatrix(self, A):
+    A[self.i_vf1,:] = 0
+    A[self.i_vf1,self.i_vf1] = 1
+
+  def applyStrongBCLinearSystemRHSVector(self, U_old, b):
+    b[self.i_vf1] = self.vf1

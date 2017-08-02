@@ -42,7 +42,7 @@ class OutletBC(OnePhaseBC):
     J[self.i_arhou,self.i_arho] += arhou * du_darho * self.nx
     J[self.i_arhou,self.i_arhou] += (arhou * du_darhou + u) * self.nx
 
-  def applyStrongBC(self, U, r, J):
+  def applyStrongBCNonlinearSystem(self, U, r, J):
     vf1 = self.dof_handler.getVolumeFraction(U, self.k)
     vf, dvf_dvf1 = computeVolumeFraction(vf1, self.phase, self.model_type)
     arho = U[self.i_arho]
@@ -75,3 +75,21 @@ class OutletBC(OnePhaseBC):
     J[self.i_arhoE,self.i_arho] = - darhoE_darho
     J[self.i_arhoE,self.i_arhou] = - darhoE_darhou
     J[self.i_arhoE,self.i_arhoE] = 1
+
+  def applyStrongBCLinearSystemMatrix(self, A):
+    A[self.i_arhoE,:] = 0
+    A[self.i_arhoE,self.i_arhoE] = 1
+
+  def applyStrongBCLinearSystemRHSVector(self, U_old, b):
+    vf1 = self.dof_handler.getVolumeFraction(U_old, self.k)
+    vf, dvf_dvf1 = computeVolumeFraction(vf1, self.phase, self.model_type)
+    arho = U_old[self.i_arho]
+    arhou = U_old[self.i_arhou]
+
+    u, du_darho, du_darhou = computeVelocity(arho, arhou)
+    rho, drho_dvf, drho_darho = computeDensity(vf, arho)
+    v, dv_drho = computeSpecificVolume(rho)
+    e, de_dv, de_dp = self.eos.e(v, self.p)
+    arhoE = arho * (e + 0.5 * u * u)
+
+    b[self.i_arhoE] = arhoE

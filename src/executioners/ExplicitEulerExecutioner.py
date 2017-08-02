@@ -1,3 +1,5 @@
+from copy import deepcopy
+
 import numpy as np
 
 import os
@@ -14,11 +16,22 @@ class ExplicitEulerExecutionerParameters(TransientExecutionerParameters):
 class ExplicitEulerExecutioner(TransientExecutioner):
   def __init__(self, params, model_type, ics, bcs, eos_map, interface_closures, gravity, dof_handler, mesh, nonlinear_solver_params, stabilization, factory):
     TransientExecutioner.__init__(self, params, model_type, ics, bcs, eos_map, interface_closures, gravity, dof_handler, mesh, nonlinear_solver_params, stabilization, factory)
+    # create a mass matrix modified for Dirichlet BC
+    self.M_modified = deepcopy(self.M)
+    self.applyStrongBCLinearSystemMatrix(self.M_modified)
 
-  def assembleSystem(self, U):
-    r_tr, J_tr = self.assembleTransientSystem(U)
+    # invert mass matrix only once and keep it
+    self.M_inv = np.linalg.inv(self.M_modified)
+
+  def solve(self):
+    # compute steady-state residual vector (as it would be on LHS)
     r_ss, J_ss = self.assembleSteadyStateSystemWithoutStrongBC(self.U_old)
-    r = r_tr + self.dt * r_ss
-    J = J_tr
-    self.applyStrongBC(U, r, J)
-    return (r, J)
+
+    # compute linear system RHS vector
+    b = np.matmul(self.M, self.U_old) - self.dt * r_ss
+
+    # modify RHS for Dirichlet BC
+    self.applyStrongBCLinearSystemRHSVector(self.U_old, b)
+
+    # compute the update
+    self.U = np.matmul(self.M_inv, b)

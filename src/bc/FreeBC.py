@@ -69,6 +69,3 @@ class FreeBC(OnePhaseBC):
     J[self.i_arhoE,self.i_arho] += ((arhoE + vf * p) * du_darho + vf * dp_darho * u) * self.nx
     J[self.i_arhoE,self.i_arhou] += ((arhoE + vf * p) * du_darhou + vf * dp_darhou * u) * self.nx
     J[self.i_arhoE,self.i_arhoE] += (1 + vf * dp_darhoE) * u * self.nx
-
-  def applyStrongBC(self, U, r, J):
-    pass

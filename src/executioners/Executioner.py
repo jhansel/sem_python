@@ -204,13 +204,34 @@ class Executioner(object):
   # computes the full steady-state residual and Jacobian (strong BC applied)
   def assembleSteadyStateSystem(self, U):
     r, J = self.assembleSteadyStateSystemWithoutStrongBC(U)
-    self.applyStrongBC(U, r, J)
+    self.applyStrongBCNonlinearSystem(U, r, J)
     return (r, J)
 
-  # applies strong BC
-  def applyStrongBC(self, U, r, J):
+  ## Applies strong BC to a nonlinear system solved with Newton's method
+  # @param[in] U  implicit solution vector
+  # @param[in] r  nonlinear system residual vector
+  # @param[in] J  nonlinear system Jacobian matrix
+  def applyStrongBCNonlinearSystem(self, U, r, J):
     for bc in self.bcs:
-      bc.applyStrongBC(U, r, J)
+      bc.applyStrongBCNonlinearSystem(U, r, J)
+
+  ## Applies strong BC to a linear system matrix.
+  #
+  # This is separated from the corresponding RHS vector modification function
+  # because the matrix needs to be modified only once; the RHS vector might
+  # depend on time or the solution vector.
+  #
+  # @param[in] A      linear system matrix
+  def applyStrongBCLinearSystemMatrix(self, A):
+    for bc in self.bcs:
+      bc.applyStrongBCLinearSystemMatrix(A)
+
+  ## Applies strong BC to a linear system RHS vector.
+  # @param[in] U_old  old solution, needed if Dirichlet values are solution-dependent
+  # @param[in] b      linear system RHS vector
+  def applyStrongBCLinearSystemRHSVector(self, U_old, b):
+    for bc in self.bcs:
+      bc.applyStrongBCLinearSystemRHSVector(U_old, b)
 
   # computes the steady-state residual and Jacobian for a phase
   def addSteadyStateSystemPhase(self, U, kernel_list, aux_list, phase, r, J):
@@ -301,3 +322,6 @@ class Executioner(object):
       # aggregate cell residual and matrix into global residual and matrix
       self.dof_handler.aggregateLocalVector(r, r_cell, elem)
       self.dof_handler.aggregateLocalMatrix(J, J_cell, elem)
+
+  def solve(self):
+    self.nonlinear_solver.solve(self.U)

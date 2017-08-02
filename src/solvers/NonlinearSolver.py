@@ -139,7 +139,7 @@ class NonlinearSolver(object):
       # check for convergence
       if (r_norm <= self.absolute_tol):
         if self.verbose:
-          print colored("Solution converged!", "green")
+          print colored("Solution converged!\n", "green")
         converged = True
         break
 
@@ -150,11 +150,11 @@ class NonlinearSolver(object):
         n = r.size
         Jr = np.concatenate((J, -r.reshape((n, 1))), axis=1)
         if (matrix_rank(Jr) == matrix_rank(J)):
-          errorNoTraceback("Infinitely many solutions!")
+          errorNoTraceback("Infinitely many solutions!\n")
         elif (matrix_rank(Jr) == matrix_rank(J) + 1):
-          errorNoTraceback("No solutions!")
+          errorNoTraceback("No solutions!\n")
         else:
-          errorNoTraceback("Unknown number of solutions!")
+          errorNoTraceback("Unknown number of solutions!\n")
 
       # update solution
       U += dU
@@ -166,6 +166,6 @@ class NonlinearSolver(object):
       r_norm_old = r_norm
 
     if (not converged):
-      errorNoTraceback("Solution did not converge in " + str(self.max_iterations) + " iterations.")
+      errorNoTraceback("Solution did not converge in " + str(self.max_iterations) + " iterations.\n")
 
     return U

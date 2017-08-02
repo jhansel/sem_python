@@ -22,3 +22,12 @@ class BC(object):
     else:
       self.nx = 1.0
       self.k = self.dof_handler.n_cell
+
+  def applyStrongBCNonlinearSystem(self, U, r, J):
+    pass
+
+  def applyStrongBCLinearSystemMatrix(self, A):
+    pass
+
+  def applyStrongBCLinearSystemRHSVector(self, U_old, b):
+    pass

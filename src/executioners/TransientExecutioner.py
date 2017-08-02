@@ -11,9 +11,6 @@ from enums import ModelType, VariableName
 sys.path.append(base_dir + "src/executioners")
 from Executioner import Executioner, ExecutionerParameters
 
-sys.path.append(base_dir + "src/solvers")
-from NonlinearSolver import NonlinearSolver
-
 sys.path.append(base_dir + "src/utilities")
 from error_utilities import error
 
@@ -180,13 +177,10 @@ class TransientExecutioner(Executioner):
     return self.cfl * dt_CFL
 
   def run(self):
-    nonlinear_solver = NonlinearSolver(self.nonlinear_solver_params,
-                                       self.assembleSystem,
-                                       self.dof_handler)
-
     transient_incomplete = True
     t = 0.0
     time_step = 1
+    print ""
     while (transient_incomplete):
       # compute time step size
       if self.use_cfl_dt:
@@ -204,11 +198,13 @@ class TransientExecutioner(Executioner):
       # update time
       t += self.dt
 
-      print "\nTime step %i: t = %g, dt = %g" % (time_step, t, self.dt)
+      print "Time step %i: t = %g, dt = %g" % (time_step, t, self.dt)
 
-      nonlinear_solver.solve(self.U)
+      # solve the time step
+      self.solve()
+
+      # save old solution and increment time step index
       self.U_old = deepcopy(self.U)
-
       time_step += 1
 
     return self.U
