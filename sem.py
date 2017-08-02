@@ -127,9 +127,10 @@ def run(input_file, mods=list()):
   if input_file_parser.blockExists("Stabilization"):
     stabilization_param_data = input_file_parser.getBlockData("Stabilization")
     stabilization_param_data["factory"] = factory
+    stabilization_param_data["dof_handler"] = dof_handler
     stabilization_class = stabilization_param_data["type"]
   else:
-    stabilization_param_data = {"factory": factory}
+    stabilization_param_data = {"factory": factory, "dof_handler": dof_handler}
     stabilization_class = "NoStabilization"
   stabilization = factory.createObject(stabilization_class, stabilization_param_data)
 

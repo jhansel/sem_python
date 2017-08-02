@@ -87,6 +87,7 @@ from NonlinearSolver import NonlinearSolver, NonlinearSolverParameters
 # stabilization
 sys.path.append(base_dir + "src/stabilization")
 from NoStabilization import NoStabilization, NoStabilizationParameters
+from LaxFriedrichsStabilization import LaxFriedrichsStabilization, LaxFriedrichsStabilizationParameters
 
 # utilities
 sys.path.append(base_dir + "src/utilities")

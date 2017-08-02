@@ -85,6 +85,13 @@ class DoFHandler(object):
   def k(self, e, k_local):
     return e + k_local
 
+  ## Converts variable enum to its string name with phase index
+  # @param[in] var  variable enum
+  # @param[in] phase  phase
+  def variableEnumToName(self, var, phase):
+    index = self.variable_index[var][phase]
+    return self.variable_names[index]
+
   @abstractmethod
   def getVolumeFraction(self, U, k):
     pass

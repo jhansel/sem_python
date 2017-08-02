@@ -230,6 +230,7 @@ class Executioner(object):
 
       data["grad_phi"] = self.fe_values.get_grad_phi(elem)
       data["JxW"] = self.fe_values.get_JxW(elem)
+      data["dx"] = self.mesh.h[elem]
 
       # compute solution
       data["vf1"] = self.fe_values.computeLocalVolumeFractionSolution(U, elem)
@@ -268,6 +269,7 @@ class Executioner(object):
 
       data["grad_phi"] = self.fe_values.get_grad_phi(elem)
       data["JxW"] = self.fe_values.get_JxW(elem)
+      data["dx"] = self.mesh.h[elem]
 
       # compute solution
       data["vf1"] = self.fe_values.computeLocalSolution(U, VariableName.VF1, 0, elem)
@@ -278,8 +280,15 @@ class Executioner(object):
       data["arhou2"] = self.fe_values.computeLocalSolution(U, VariableName.ARhoU, 1, elem)
       data["arhoE2"] = self.fe_values.computeLocalSolution(U, VariableName.ARhoE, 1, elem)
 
-      # compute solution gradient
+      # compute solution gradients
       data["grad_vf1"] = self.fe_values.computeLocalSolutionGradient(U, VariableName.VF1, 0, elem)
+      if self.need_solution_gradients:
+        data["grad_arho1"] = self.fe_values.computeLocalSolutionGradient(U, VariableName.ARho, 0, elem)
+        data["grad_arhou1"] = self.fe_values.computeLocalSolutionGradient(U, VariableName.ARhoU, 0, elem)
+        data["grad_arhoE1"] = self.fe_values.computeLocalSolutionGradient(U, VariableName.ARhoE, 0, elem)
+        data["grad_arho2"] = self.fe_values.computeLocalSolutionGradient(U, VariableName.ARho, 1, elem)
+        data["grad_arhou2"] = self.fe_values.computeLocalSolutionGradient(U, VariableName.ARhoU, 1, elem)
+        data["grad_arhoE2"] = self.fe_values.computeLocalSolutionGradient(U, VariableName.ARhoE, 1, elem)
 
       # compute auxiliary quantities
       for aux in self.aux_2phase:
