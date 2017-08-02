@@ -45,6 +45,7 @@ from ThermodynamicState import ThermodynamicState, ThermodynamicStateParameters
 
 # executioners
 sys.path.append(base_dir + "src/executioners")
+from ExplicitEulerExecutioner import ExplicitEulerExecutioner, ExplicitEulerExecutionerParameters
 from ImplicitEulerExecutioner import ImplicitEulerExecutioner, ImplicitEulerExecutionerParameters
 from SteadyStateExecutioner import SteadyStateExecutioner, SteadyStateExecutionerParameters
 
