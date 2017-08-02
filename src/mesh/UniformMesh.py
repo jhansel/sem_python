@@ -27,3 +27,6 @@ class UniformMesh(Mesh):
     self.x[0] = self.x_min
     for e in xrange(self.n_cell):
       self.x[e + 1] = self.x[e] + self.h[e]
+
+  def getMinimumCellWidth(self):
+    return self.L / self.n_cell

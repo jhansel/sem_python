@@ -1,3 +1,5 @@
+from abc import ABCMeta, abstractmethod
+
 import os
 import sys
 base_dir = os.environ["SEM_PYTHON_DIR"]
@@ -10,4 +12,7 @@ class MeshParameters(Parameters):
     Parameters.__init__(self)
 
 class Mesh(object):
-  pass
+  __metaclass__ = ABCMeta
+
+  def getMinimumCellWidth(self):
+    pass
