@@ -37,7 +37,7 @@ class AuxGradient(AuxQuantity):
     grad_aux_der = dict()
     for var in der_aux:
       grad_aux += der_aux[var] * data["grad_" + var]
-      grad_aux_der[var] = der_aux[var]
+      grad_aux_der["grad_" + var] = der_aux[var]
 
     data[self.grad_aux] = grad_aux
     der[self.grad_aux] = grad_aux_der
