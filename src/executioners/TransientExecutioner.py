@@ -19,12 +19,14 @@ class TransientExecutionerParameters(ExecutionerParameters):
     ExecutionerParameters.__init__(self)
     self.registerFloatParameter("dt", "Nominal time step size")
     self.registerFloatParameter("end_time", "End time")
+    self.registerBoolParameter("lump_mass_matrix", "Lump the mass matrix?", False)
 
 class TransientExecutioner(Executioner):
   def __init__(self, params, model_type, ics, bcs, eos_map, interface_closures, gravity, dof_handler, mesh, nonlinear_solver_params, stabilization, factory):
     Executioner.__init__(self, params, model_type, ics, bcs, eos_map, interface_closures, gravity, dof_handler, mesh, nonlinear_solver_params, stabilization, factory)
     self.dt_nominal = params.get("dt")
     self.end_time = params.get("end_time")
+    self.lump_mass_matrix = params.get("lump_mass_matrix")
 
     # tolerance to prevent small final time steps due to floating point precision error
     self.end_tolerance = 1e-12
@@ -61,13 +63,18 @@ class TransientExecutioner(Executioner):
           i_arhou = self.dof_handler.i(k_local, arhou_index)
           i_arhoE = self.dof_handler.i(k_local, arhoE_index)
           for l_local in xrange(self.dof_handler.n_dof_per_cell_per_var):
-            j_arho = self.dof_handler.i(l_local, arho_index)
-            j_arhou = self.dof_handler.i(l_local, arhou_index)
-            j_arhoE = self.dof_handler.i(l_local, arhoE_index)
+            if self.lump_mass_matrix:
+              M_cell[i_arho,i_arho] += phi[k_local,q] * phi[l_local,q] * JxW[q]
+              M_cell[i_arhou,i_arhou] += phi[k_local,q] * phi[l_local,q] * JxW[q]
+              M_cell[i_arhoE,i_arhoE] += phi[k_local,q] * phi[l_local,q] * JxW[q]
+            else:
+              j_arho = self.dof_handler.i(l_local, arho_index)
+              j_arhou = self.dof_handler.i(l_local, arhou_index)
+              j_arhoE = self.dof_handler.i(l_local, arhoE_index)
 
-            M_cell[i_arho,j_arho] += phi[k_local,q] * phi[l_local,q] * JxW[q]
-            M_cell[i_arhou,j_arhou] += phi[k_local,q] * phi[l_local,q] * JxW[q]
-            M_cell[i_arhoE,j_arhoE] += phi[k_local,q] * phi[l_local,q] * JxW[q]
+              M_cell[i_arho,j_arho] += phi[k_local,q] * phi[l_local,q] * JxW[q]
+              M_cell[i_arhou,j_arhou] += phi[k_local,q] * phi[l_local,q] * JxW[q]
+              M_cell[i_arhoE,j_arhoE] += phi[k_local,q] * phi[l_local,q] * JxW[q]
 
       # aggregate cell matrix into global matrix
       self.dof_handler.aggregateLocalMatrix(M, M_cell, e)
@@ -85,8 +92,11 @@ class TransientExecutioner(Executioner):
         for k_local in xrange(self.dof_handler.n_dof_per_cell_per_var):
           i_vf1 = self.dof_handler.i(k_local, vf1_index)
           for l_local in xrange(self.dof_handler.n_dof_per_cell_per_var):
-            j_vf1 = self.dof_handler.i(l_local, vf1_index)
-            M_cell[i_vf1,j_vf1] += phi[k_local,q] * phi[l_local,q] * JxW[q]
+            if self.lump_mass_matrix:
+              M_cell[i_vf1,i_vf1] += phi[k_local,q] * phi[l_local,q] * JxW[q]
+            else:
+              j_vf1 = self.dof_handler.i(l_local, vf1_index)
+              M_cell[i_vf1,j_vf1] += phi[k_local,q] * phi[l_local,q] * JxW[q]
 
       # aggregate cell matrix into global matrix
       self.dof_handler.aggregateLocalMatrix(M, M_cell, e)
