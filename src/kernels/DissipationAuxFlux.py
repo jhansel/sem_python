@@ -5,13 +5,13 @@ base_dir = os.environ["SEM_PYTHON_DIR"]
 sys.path.append(base_dir + "src/aux")
 from Kernel1Phase import Kernel1Phase, Kernel1PhaseParameters
 
-class DissipationParameters(Kernel1PhaseParameters):
+class DissipationAuxFluxParameters(Kernel1PhaseParameters):
   def __init__(self):
     Kernel1PhaseParameters.__init__(self)
     self.registerParameter("var", "Name of variable to which this kernel corresponds")
     self.registerStringParameter("flux_name", "Name of flux aux")
 
-## Dissipation.
+## Dissipation from an aux quantity flux.
 #
 # This dissipation is of the following form on the LHS:
 # \f[
@@ -25,7 +25,7 @@ class DissipationParameters(Kernel1PhaseParameters):
 # \f[
 #   (\mathbf{f}, \nabla\phi_i)_\Omega - (\mathbf{f}\cdot\mathbf{n}\phi_i)_{\partial\Omega} .
 # \f]
-class Dissipation(Kernel1Phase):
+class DissipationAuxFlux(Kernel1Phase):
   def __init__(self, params, dof_handler):
     Kernel1Phase.__init__(self, params, dof_handler, params.get("var"))
     self.flux = params.get("flux_name")

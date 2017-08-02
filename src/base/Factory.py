@@ -61,7 +61,8 @@ from PhysicsParameters import PhysicsParameters
 
 # kernels
 sys.path.append(base_dir + "src/kernels")
-from Dissipation import Dissipation, DissipationParameters
+from DissipationAuxFlux import DissipationAuxFlux, DissipationAuxFluxParameters
+from DissipationVariableGradient import DissipationVariableGradient, DissipationVariableGradientParameters
 from VolumeFractionAdvection import VolumeFractionAdvection, VolumeFractionAdvectionParameters
 from VolumeFractionPressureRelaxation import VolumeFractionPressureRelaxation, VolumeFractionPressureRelaxationParameters
 from MassAdvection import MassAdvection, MassAdvectionParameters

@@ -16,6 +16,7 @@ class Kernel1PhaseParameters(KernelParameters):
 class Kernel1Phase(Kernel):
   def __init__(self, params, dof_handler, var_name):
     phase = params.get("phase")
+    self.phase = phase
     params.set("var_index", dof_handler.variable_index[var_name][phase])
     Kernel.__init__(self, params, dof_handler)
 
