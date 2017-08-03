@@ -4,6 +4,7 @@ base_dir = os.environ["SEM_PYTHON_DIR"]
 
 # aux
 sys.path.append(base_dir + "src/aux")
+from AcousticImpedance import AcousticImpedance, AcousticImpedanceParameters
 from AuxGradient import AuxGradient, AuxGradientParameters
 from Density import Density, DensityParameters
 from LaxFriedrichsCoefficient import LaxFriedrichsCoefficient, LaxFriedrichsCoefficientParameters
