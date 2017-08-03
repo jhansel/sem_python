@@ -57,7 +57,7 @@ class NonlinearSolver(object):
     self.scaling[VariableName.ARhoU] = [params.get("scaling_arhou1"), params.get("scaling_arhou2")]
     self.scaling[VariableName.ARhoE] = [params.get("scaling_arhoE1"), params.get("scaling_arhoE2")]
 
-  def solve(self, U):
+  def solve(self, U, residual_factor=1.0):
     # begin Newton solve
     it = 1
     converged = False
@@ -101,11 +101,14 @@ class NonlinearSolver(object):
         # exit
         sys.exit()
 
+      # apply residual factor
+      r_scaled = r / residual_factor
+
       # apply scaling factors
-      self.dof_handler.applyScalingFactors(r, self.scaling)
+      self.dof_handler.applyScalingFactors(r_scaled, self.scaling)
 
       # report nonlinear residual
-      r_norm = np.linalg.norm(r, 2)
+      r_norm = np.linalg.norm(r_scaled, 2)
       if self.verbose:
         if (r_norm < r_norm_old):
           color = "green"
@@ -118,7 +121,7 @@ class NonlinearSolver(object):
           for m in xrange(self.dof_handler.n_var):
             r_m = np.zeros(self.dof_handler.n_node)
             for k in xrange(self.dof_handler.n_node):
-              r_m[k] = r[k * self.dof_handler.n_var + m]
+              r_m[k] = r_scaled[k * self.dof_handler.n_var + m]
             r_m_norm = np.linalg.norm(r_m, 2)
             print "%7s: res = %.3e" % (self.dof_handler.variable_names[m], r_m_norm)
           print ""
@@ -131,7 +134,7 @@ class NonlinearSolver(object):
           for k in xrange(self.dof_handler.n_node):
             res_k = list()
             for m in xrange(self.dof_handler.n_var):
-              res_k.append(r[k * self.dof_handler.n_var + m])
+              res_k.append(r_scaled[k * self.dof_handler.n_var + m])
             entry_items = (k,) + tuple(res_k)
             print entry_format % entry_items
           print ""

@@ -208,3 +208,10 @@ class TransientExecutioner(Executioner):
       time_step += 1
 
     return self.U
+
+  def solve(self):
+    if self.dt > 1e-15:
+      residual_factor = self.dt
+    else:
+      residual_factor = 1
+    self.nonlinear_solver.solve(self.U, residual_factor=residual_factor)
