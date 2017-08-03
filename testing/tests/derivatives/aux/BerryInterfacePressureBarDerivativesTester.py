@@ -14,7 +14,7 @@ from AuxDerivativesTester import AuxDerivativesTester
 # test aux
 params = BerryInterfacePressureBarParameters()
 test_aux = BerryInterfacePressureBar(params)
-test_var = "p_int_bar"
+test_var = "pI_bar"
 
 # phase-1 pressure
 params = TestAuxParameters()

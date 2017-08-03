@@ -14,7 +14,7 @@ from AuxDerivativesTester import AuxDerivativesTester
 # test aux
 params = BerryInterfaceVelocityBarParameters()
 test_aux = BerryInterfaceVelocityBar(params)
-test_var = "u_int_bar"
+test_var = "uI_bar"
 
 # phase-1 velocity
 params = TestAuxParameters()

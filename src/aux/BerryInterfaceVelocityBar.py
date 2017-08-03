@@ -20,7 +20,7 @@ class BerryInterfaceVelocityBar(AuxQuantity2Phase):
     z2 = data["z2"]
 
     numerator = (z1 * u1 + z2 * u2)
-    data["u_int_bar"] = numerator / (z1 + z2)
+    data["uI_bar"] = numerator / (z1 + z2)
 
     ddenominator = -1.0 / (z1 + z2)**2
     dvf1 = (der["z1"]["vf1"] * u1 + der["z2"]["vf1"] * u2) / (z1 + z2) \
@@ -36,5 +36,5 @@ class BerryInterfaceVelocityBar(AuxQuantity2Phase):
       + numerator * ddenominator * der["z2"]["arhou2"]
     darhoE2 = der["z2"]["arhoE2"] * u2 / (z1 + z2) + numerator * ddenominator * der["z2"]["arhoE2"]
 
-    der["u_int_bar"] = {"vf1": dvf1, "arho1": darho1, "arhou1": darhou1, "arhoE1": darhoE1,
+    der["uI_bar"] = {"vf1": dvf1, "arho1": darho1, "arhou1": darhou1, "arhoE1": darhoE1,
       "arho2": darho2, "arhou2": darhou2, "arhoE2": darhoE2}

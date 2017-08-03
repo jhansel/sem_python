@@ -14,14 +14,14 @@ from AuxDerivativesTester import AuxDerivativesTester
 # test aux
 params = BerryInterfaceVelocityParameters()
 test_aux = BerryInterfaceVelocity(params)
-test_var = "u_int"
+test_var = "uI"
 
 # bar interface velocity aux
 params = TestAuxParameters()
-params.set("var", "u_int_bar")
+params.set("var", "uI_bar")
 params.set("other_vars", ["vf1", "arho1", "arhou1", "arhoE1", "arho2", "arhou2", "arhoE2"])
 params.set("coefs", [1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7])
-u_int_bar_aux = TestAux(params)
+uI_bar_aux = TestAux(params)
 
 # phase-1 pressure aux
 params = TestAuxParameters()
@@ -51,8 +51,8 @@ params.set("other_vars", ["vf1", "arho2", "arhou2", "arhoE2"])
 params.set("coefs", [1.2, 3.2, 4.1, 2.4])
 z2_aux = TestAux(params)
 
-other_aux = {"u_int_bar": u_int_bar_aux, "p1": p1_aux, "p2": p2_aux, "z1": z1_aux, "z2": z2_aux}
-other_vars = ["u_int_bar", "p1", "p2", "z1", "z2"]
+other_aux = {"uI_bar": uI_bar_aux, "p1": p1_aux, "p2": p2_aux, "z1": z1_aux, "z2": z2_aux}
+other_vars = ["uI_bar", "p1", "p2", "z1", "z2"]
 root_vars = ["vf1", "arho1", "arhou1", "arhoE1", "arho2", "arhou2", "arhoE2"]
 constant_data_positive = {"grad_vf1": 0.6}
 constant_data_negative = {"grad_vf1": -0.6}
