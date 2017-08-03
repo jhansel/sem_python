@@ -151,6 +151,9 @@ class Executioner(object):
         params["pI_function"] = self.interface_closures.computeInterfacePressure
       interaction_aux.append(self.factory.createObject(aux_name, params))
 
+    params = {"original_aux": "pI", "copy_aux": "pI_bar"}
+    interaction_aux.append(self.factory.createObject("IdenticalAux", params))
+
     return interaction_aux
 
   def createIndependentPhaseKernels(self, phase):

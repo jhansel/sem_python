@@ -13,7 +13,7 @@ from KernelDerivativesTester import KernelDerivativesTester
 class EnergyPressureRelaxationDerivativesTester(unittest.TestCase):
   def setUp(self):
     self.derivatives_tester = KernelDerivativesTester()
-    self.aux = {"pI": ["vf1", "arho1", "arhou1", "arhoE1", "arho2", "arhou2", "arhoE2"],
+    self.aux = {"pI_bar": ["vf1", "arho1", "arhou1", "arhoE1", "arho2", "arhou2", "arhoE2"],
       "theta": ["vf1", "arho1", "arhou1", "arhoE1", "arho2", "arhou2", "arhoE2"],
       "p1": ["vf1", "arho1", "arhou1", "arhoE1"],
       "p2": ["vf1", "arho2", "arhou2", "arhoE2"]}
@@ -30,7 +30,7 @@ class EnergyPressureRelaxationDerivativesTester(unittest.TestCase):
 
 if __name__ == "__main__":
   derivatives_tester = KernelDerivativesTester(True)
-  aux = {"pI": ["vf1", "arho1", "arhou1", "arhoE1", "arho2", "arhou2", "arhoE2"],
+  aux = {"pI_bar": ["vf1", "arho1", "arhou1", "arhoE1", "arho2", "arhou2", "arhoE2"],
     "theta": ["vf1", "arho1", "arhou1", "arhoE1", "arho2", "arhou2", "arhoE2"],
     "p1": ["vf1", "arho1", "arhou1", "arhoE1"],
     "p2": ["vf1", "arho2", "arhou2", "arhoE2"]}
