@@ -23,11 +23,11 @@ from Velocity import Velocity, VelocityParameters
 from VolumeFraction1Phase import VolumeFraction1Phase, VolumeFraction1PhaseParameters
 from VolumeFractionPhase1 import VolumeFractionPhase1, VolumeFractionPhase1Parameters
 from VolumeFractionPhase2 import VolumeFractionPhase2, VolumeFractionPhase2Parameters
-from Beta import Beta, BetaParameters
-from Mu import Mu, MuParameters
-from Theta import Theta, ThetaParameters
-from InterfaceVelocity import InterfaceVelocity, InterfaceVelocityParameters
-from InterfacePressure import InterfacePressure, InterfacePressureParameters
+from AmbrosoBeta import AmbrosoBeta, AmbrosoBetaParameters
+from AmbrosoMu import AmbrosoMu, AmbrosoMuParameters
+from AmbrosoTheta import AmbrosoTheta, AmbrosoThetaParameters
+from AmbrosoInterfaceVelocity import AmbrosoInterfaceVelocity, AmbrosoInterfaceVelocityParameters
+from AmbrosoInterfacePressure import AmbrosoInterfacePressure, AmbrosoInterfacePressureParameters
 
 # bc
 sys.path.append(base_dir + "src/bc")
@@ -41,7 +41,7 @@ from SolidWallBC import SolidWallBC, SolidWallBCParameters
 sys.path.append(base_dir + "src/closures")
 from IdealGasEoS import IdealGasEoS, IdealGasEoSParameters
 from StiffenedGasEoS import StiffenedGasEoS, StiffenedGasEoSParameters
-from InterfaceClosures import InterfaceClosures, InterfaceClosuresParameters
+from AmbrosoInterfaceClosures import AmbrosoInterfaceClosures, AmbrosoInterfaceClosuresParameters
 from ThermodynamicState import ThermodynamicState, ThermodynamicStateParameters
 
 # executioners

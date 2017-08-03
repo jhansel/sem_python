@@ -5,19 +5,30 @@ base_dir = os.environ["SEM_PYTHON_DIR"]
 sys.path.append(base_dir + "src/aux")
 from AuxQuantity2Phase import AuxQuantity2Phase, AuxQuantity2PhaseParameters
 
-class ThetaParameters(AuxQuantity2PhaseParameters):
+class AmbrosoThetaParameters(AuxQuantity2PhaseParameters):
   def __init__(self):
     AuxQuantity2PhaseParameters.__init__(self)
-    self.registerParameter("theta_function", "Function for computing theta")
+    self.registerFloatParameter("pressure_relaxation_time", "Relaxation time for pressures")
 
-class Theta(AuxQuantity2Phase):
+class AmbrosoTheta(AuxQuantity2Phase):
   def __init__(self, params):
     AuxQuantity2Phase.__init__(self, params)
-    self.theta_function = params.get("theta_function")
+    self.pressure_relaxation_time = params.get("pressure_relaxation_time")
 
   def compute(self, data, der):
-    data["theta"], pdtheta_pdvf1, dtheta_dp1, dtheta_dp2 = self.theta_function(
-      data["vf1"], data["p1"], data["p2"])
+    vf1 = data["vf1"]
+    p1 = data["p1"]
+    p2 = data["p2"]
+
+    vf2 = 1 - vf1
+    dvf2_dvf1 = 0 * vf2 - 1
+
+    denominator = self.pressure_relaxation_time * (p1 + p2)
+    data["theta"] = vf1 * vf2 / denominator
+    dtheta_ddenominator = - vf1 * vf2 / denominator / denominator
+    pdtheta_pdvf1 = (vf2 + vf1 * dvf2_dvf1) / denominator
+    dtheta_dp1 = dtheta_ddenominator * self.pressure_relaxation_time
+    dtheta_dp2 = dtheta_ddenominator * self.pressure_relaxation_time
 
     dtheta_dvf1 = pdtheta_pdvf1 + dtheta_dp1 * der["p1"]["vf1"] + dtheta_dp2 * der["p2"]["vf1"]
     dtheta_darho1 = dtheta_dp1 * der["p1"]["arho1"]

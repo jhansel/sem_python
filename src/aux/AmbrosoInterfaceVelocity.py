@@ -5,18 +5,23 @@ base_dir = os.environ["SEM_PYTHON_DIR"]
 sys.path.append(base_dir + "src/aux")
 from AuxQuantity2Phase import AuxQuantity2Phase, AuxQuantity2PhaseParameters
 
-class InterfaceVelocityParameters(AuxQuantity2PhaseParameters):
+class AmbrosoInterfaceVelocityParameters(AuxQuantity2PhaseParameters):
   def __init__(self):
     AuxQuantity2PhaseParameters.__init__(self)
-    self.registerParameter("uI_function", "Function for computing interface velocity")
 
-class InterfaceVelocity(AuxQuantity2Phase):
+class AmbrosoInterfaceVelocity(AuxQuantity2Phase):
   def __init__(self, params):
     AuxQuantity2Phase.__init__(self, params)
-    self.uI_function = params.get("uI_function")
 
   def compute(self, data, der):
-    data["uI"], duI_du1, duI_du2, duI_dbeta = self.uI_function(data["u1"], data["u2"], data["beta"])
+    beta = data["beta"]
+    u1 = data["u1"]
+    u2 = data["u2"]
+
+    data["uI"] = beta * u1 + (1 - beta) * u2
+    duI_du1 = beta
+    duI_du2 = (1 - beta)
+    duI_dbeta = u1 - u2
 
     duI_darho1 = duI_du1 * der["u1"]["arho1"] + duI_dbeta * der["beta"]["arho1"]
     duI_darho2 = duI_du2 * der["u2"]["arho2"] + duI_dbeta * der["beta"]["arho2"]

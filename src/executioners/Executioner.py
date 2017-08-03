@@ -28,7 +28,6 @@ class Executioner(object):
     self.model_type = model_type
     self.bcs = bcs
     self.eos = eos
-    self.interface_closures = interface_closures
     self.gravity = gravity
     self.dof_handler = dof_handler
     self.mesh = mesh
@@ -51,7 +50,7 @@ class Executioner(object):
     if self.model_type != ModelType.OnePhase:
       self.aux2 = self.createIndependentPhaseAuxQuantities(1) + stabilization.createIndependentPhaseAuxQuantities(1)
     if self.model_type == ModelType.TwoPhase:
-      self.aux_2phase = self.aux1 + self.aux2 + self.createPhaseInteractionAuxQuantities() \
+      self.aux_2phase = self.aux1 + self.aux2 + interface_closures.createPhaseInteractionAuxQuantities() \
         + stabilization.createPhaseInteractionAuxQuantities()
 
     # create kernels
@@ -133,28 +132,6 @@ class Executioner(object):
       aux_list.append(self.factory.createObject(aux_name, params))
 
     return aux_list
-
-  def createPhaseInteractionAuxQuantities(self):
-    interaction_aux_names = ["Beta", "Mu", "Theta", "InterfaceVelocity", "InterfacePressure"]
-    interaction_aux = list()
-    for aux_name in interaction_aux_names:
-      params = dict()
-      if aux_name == "Beta":
-        params["beta_function"] = self.interface_closures.computeBeta
-      elif aux_name == "Mu":
-        params["mu_function"] = self.interface_closures.computeMu
-      elif aux_name == "Theta":
-        params["theta_function"] = self.interface_closures.computeTheta
-      elif aux_name == "InterfaceVelocity":
-        params["uI_function"] = self.interface_closures.computeInterfaceVelocity
-      elif aux_name == "InterfacePressure":
-        params["pI_function"] = self.interface_closures.computeInterfacePressure
-      interaction_aux.append(self.factory.createObject(aux_name, params))
-
-    params = {"original_aux": "pI", "copy_aux": "pI_bar"}
-    interaction_aux.append(self.factory.createObject("IdenticalAux", params))
-
-    return interaction_aux
 
   def createIndependentPhaseKernels(self, phase):
     kernels = list()

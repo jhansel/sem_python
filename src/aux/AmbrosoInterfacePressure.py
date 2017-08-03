@@ -5,18 +5,23 @@ base_dir = os.environ["SEM_PYTHON_DIR"]
 sys.path.append(base_dir + "src/aux")
 from AuxQuantity2Phase import AuxQuantity2Phase, AuxQuantity2PhaseParameters
 
-class InterfacePressureParameters(AuxQuantity2PhaseParameters):
+class AmbrosoInterfacePressureParameters(AuxQuantity2PhaseParameters):
   def __init__(self):
     AuxQuantity2PhaseParameters.__init__(self)
-    self.registerParameter("pI_function", "Function for computing interface pressure")
 
-class InterfacePressure(AuxQuantity2Phase):
+class AmbrosoInterfacePressure(AuxQuantity2Phase):
   def __init__(self, params):
     AuxQuantity2Phase.__init__(self, params)
-    self.pI_function = params.get("pI_function")
 
   def compute(self, data, der):
-    data["pI"], dpI_dp1, dpI_dp2, dpI_dmu = self.pI_function(data["p1"], data["p2"], data["mu"])
+    mu = data["mu"]
+    p1 = data["p1"]
+    p2 = data["p2"]
+
+    data["pI"] = mu * p1 + (1 - mu) * p2
+    dpI_dp1 = mu
+    dpI_dp2 = (1 - mu)
+    dpI_dmu = p1 - p2
 
     dpI_dvf1 = dpI_dp1 * der["p1"]["vf1"] + dpI_dp2 * der["p2"]["vf1"] + dpI_dmu * der["mu"]["vf1"]
     dpI_darho1 = dpI_dp1 * der["p1"]["arho1"] + dpI_dmu * der["mu"]["arho1"]

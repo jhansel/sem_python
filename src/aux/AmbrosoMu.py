@@ -5,18 +5,25 @@ base_dir = os.environ["SEM_PYTHON_DIR"]
 sys.path.append(base_dir + "src/aux")
 from AuxQuantity2Phase import AuxQuantity2Phase, AuxQuantity2PhaseParameters
 
-class MuParameters(AuxQuantity2PhaseParameters):
+class AmbrosoMuParameters(AuxQuantity2PhaseParameters):
   def __init__(self):
     AuxQuantity2PhaseParameters.__init__(self)
-    self.registerParameter("mu_function", "Function for computing mu")
 
-class Mu(AuxQuantity2Phase):
+class AmbrosoMu(AuxQuantity2Phase):
   def __init__(self, params):
     AuxQuantity2Phase.__init__(self, params)
-    self.mu_function = params.get("mu_function")
 
   def compute(self, data, der):
-    data["mu"], dmu_dT1, dmu_dT2, dmu_dbeta = self.mu_function(data["T1"], data["T2"], data["beta"])
+    beta = data["beta"]
+    T1 = data["T1"]
+    T2 = data["T2"]
+
+    denominator = beta * T1 + (1 - beta) * T2
+    data["mu"] = (1 - beta) * T2 / denominator
+    dmu_dT1 = - (1 - beta) * T2 / denominator / denominator * beta
+    dmu_dT2 = (1 - beta) / denominator - (1 - beta) * T2 / denominator / denominator * (1 - beta)
+    dmu_dbeta = - T2 / denominator - (1 - beta) * T2 / denominator / denominator * (T1 - T2)
+
     dmu_dvf1 = dmu_dT1 * der["T1"]["vf1"] + dmu_dT2 * der["T2"]["vf1"]
     dmu_darho1 = dmu_dT1 * der["T1"]["arho1"] + dmu_dbeta * der["beta"]["arho1"]
     dmu_darho2 = dmu_dT2 * der["T2"]["arho2"] + dmu_dbeta * der["beta"]["arho2"]

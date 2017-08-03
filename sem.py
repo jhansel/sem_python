@@ -109,8 +109,10 @@ def run(input_file, mods=list()):
 
   # interace closures
   if model_type == ModelType.TwoPhase:
-    closures_params = input_file_parser.getBlockData("InterfaceClosures")
-    interface_closures = factory.createObject("InterfaceClosures", closures_params)
+    interface_closures_params = input_file_parser.getBlockData("InterfaceClosures")
+    interface_closures_params["factory"] = factory
+    interface_closures_class = interface_closures_params["type"]
+    interface_closures = factory.createObject(interface_closures_class, interface_closures_params)
   else:
     interface_closures = None
 
