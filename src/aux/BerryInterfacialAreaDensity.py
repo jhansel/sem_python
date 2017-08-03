@@ -22,8 +22,8 @@ class BerryInterfacialAreaDensity(AuxQuantity2Phase):
 
   def compute(self, data, der):
     vf1 = data["vf1"]
-    data[self.a_int] = self.coef_A * vf1**2 + self.coef_B * vf1 + self.coef_C
+    data["a_int"] = self.coef_A * vf1**2 + self.coef_B * vf1 + self.coef_C
 
     da_int_dvf1 = 2 * self.coef_A * vf1 + self.coef_B
 
-    der[self.a_int] = {"vf1": da_int_dvf1}
+    der["a_int"] = {"vf1": da_int_dvf1}

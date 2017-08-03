@@ -12,4 +12,3 @@ class AuxQuantity2PhaseParameters(AuxQuantityParameters):
 class AuxQuantity2Phase(AuxQuantity):
   def __init__(self, params):
     AuxQuantity.__init__(self, params)
-    self.a_int = "a_int"
