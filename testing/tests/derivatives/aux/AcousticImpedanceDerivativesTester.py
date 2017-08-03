@@ -15,7 +15,7 @@ from AuxDerivativesTester import AuxDerivativesTester
 params = AcousticImpedanceParameters()
 params.set("phase", 0)
 test_aux = AcousticImpedance(params)
-test_var = "rhoc1"
+test_var = "z1"
 
 # density aux
 params = TestAuxParameters()

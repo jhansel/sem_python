@@ -35,7 +35,7 @@ class AuxQuantity1Phase(AuxQuantity):
     self.p = "p" + self.phase
     self.T = "T" + self.phase
     self.c = "c" + self.phase
-    self.rhoc = "rhoc" + self.phase
+    self.z = "z" + self.phase
 
     self.grad_arho = "grad_" + self.arho
     self.grad_arhou = "grad_" + self.arhou
