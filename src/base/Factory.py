@@ -6,6 +6,7 @@ base_dir = os.environ["SEM_PYTHON_DIR"]
 sys.path.append(base_dir + "src/aux")
 from AcousticImpedance import AcousticImpedance, AcousticImpedanceParameters
 from AuxGradient import AuxGradient, AuxGradientParameters
+from BerryInterfacePressure import BerryInterfacePressure, BerryInterfacePressureParameters
 from BerryInterfacePressureBar import BerryInterfacePressureBar, BerryInterfacePressureBarParameters
 from BerryInterfaceVelocity import BerryInterfaceVelocity, BerryInterfaceVelocityParameters
 from BerryInterfaceVelocityBar import BerryInterfaceVelocityBar, BerryInterfaceVelocityBarParameters
