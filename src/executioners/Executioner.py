@@ -46,11 +46,14 @@ class Executioner(object):
       self.initializeVolumeFractionSolution(ics)
 
     # create aux quantities
-    self.aux1 = self.createIndependentPhaseAuxQuantities(0) + stabilization.createIndependentPhaseAuxQuantities(0)
+    self.aux1 = self.createIndependentPhaseAuxQuantities(0) \
+      + stabilization.createIndependentPhaseAuxQuantities(0)
     if self.model_type != ModelType.OnePhase:
-      self.aux2 = self.createIndependentPhaseAuxQuantities(1) + stabilization.createIndependentPhaseAuxQuantities(1)
+      self.aux2 = self.createIndependentPhaseAuxQuantities(1) \
+        + stabilization.createIndependentPhaseAuxQuantities(1)
     if self.model_type == ModelType.TwoPhase:
-      self.aux_2phase = self.aux1 + self.aux2 + interface_closures.createPhaseInteractionAuxQuantities() \
+      self.aux_2phase = self.aux1 + self.aux2 \
+        + interface_closures.createAuxQuantities() \
         + stabilization.createPhaseInteractionAuxQuantities()
 
     # create kernels

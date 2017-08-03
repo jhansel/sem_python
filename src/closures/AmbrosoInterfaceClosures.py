@@ -17,7 +17,7 @@ class AmbrosoInterfaceClosures(InterfaceClosures):
     self.pressure_relaxation_time = params.get("pressure_relaxation_time")
     self.chi = params.get("chi") # should be in (0,1)
 
-  def createPhaseInteractionAuxQuantities(self):
+  def createAuxQuantities(self):
     interaction_aux_names = ["AmbrosoBeta", "AmbrosoVelocityRelaxationCoef", "AmbrosoPressureRelaxationCoef", "AmbrosoInterfaceVelocity", "AmbrosoInterfacePressure"]
     interaction_aux = list()
     for aux_name in interaction_aux_names:

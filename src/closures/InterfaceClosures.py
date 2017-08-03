@@ -19,5 +19,5 @@ class InterfaceClosures(object):
     self.factory = params.get("factory")
 
   @abstractmethod
-  def createPhaseInteractionAuxQuantities(self):
+  def createAuxQuantities(self):
     pass

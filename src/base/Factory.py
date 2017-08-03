@@ -50,6 +50,7 @@ sys.path.append(base_dir + "src/closures")
 from IdealGasEoS import IdealGasEoS, IdealGasEoSParameters
 from StiffenedGasEoS import StiffenedGasEoS, StiffenedGasEoSParameters
 from AmbrosoInterfaceClosures import AmbrosoInterfaceClosures, AmbrosoInterfaceClosuresParameters
+from BerryInterfaceClosures import BerryInterfaceClosures, BerryInterfaceClosuresParameters
 from ThermodynamicState import ThermodynamicState, ThermodynamicStateParameters
 
 # executioners
