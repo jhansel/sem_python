@@ -11,11 +11,11 @@ from TestAux import TestAux, TestAuxParameters
 sys.path.append(base_dir + "testing/src/utilities")
 from AuxDerivativesTester import AuxDerivativesTester
 
-# theta aux
+# pressure relaxation aux
 params = AmbrosoThetaParameters()
 params.set("pressure_relaxation_time", 2.0)
 test_aux = AmbrosoTheta(params)
-test_var = "theta"
+test_var = "p_relax"
 
 # phase-1 pressure aux
 params = TestAuxParameters()
