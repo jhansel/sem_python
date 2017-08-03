@@ -14,7 +14,7 @@ from AuxDerivativesTester import AuxDerivativesTester
 # interface pressure aux
 params = AmbrosoMuParameters()
 test_aux = AmbrosoMu(params)
-test_var = "mu"
+test_var = "u_relax"
 
 # phase-1 temperature aux
 params = TestAuxParameters()
