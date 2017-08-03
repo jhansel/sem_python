@@ -54,19 +54,26 @@ z2_aux = TestAux(params)
 other_aux = {"u_int_bar": u_int_bar_aux, "p1": p1_aux, "p2": p2_aux, "z1": z1_aux, "z2": z2_aux}
 other_vars = ["u_int_bar", "p1", "p2", "z1", "z2"]
 root_vars = ["vf1", "arho1", "arhou1", "arhoE1", "arho2", "arhou2", "arhoE2"]
-constant_data = {"grad_vf1": 0.6}
+constant_data_positive = {"grad_vf1": 0.6}
+constant_data_negative = {"grad_vf1": -0.6}
 
 class BerryInterfaceVelocityDerivativesTester(unittest.TestCase):
   def setUp(self):
     self.derivatives_tester = AuxDerivativesTester()
 
-  def test(self):
+  def testPositiveGradient(self):
     rel_diffs = self.derivatives_tester.checkDerivatives(
-      test_aux, test_var, other_aux, other_vars, root_vars, constant_data)
+      test_aux, test_var, other_aux, other_vars, root_vars, constant_data_positive)
+    for key in rel_diffs:
+      self.assertLessEqual(rel_diffs[key], 1e-6)
+
+  def testNegativeGradient(self):
+    rel_diffs = self.derivatives_tester.checkDerivatives(
+      test_aux, test_var, other_aux, other_vars, root_vars, constant_data_negative)
     for key in rel_diffs:
       self.assertLessEqual(rel_diffs[key], 1e-6)
 
 if __name__ == "__main__":
   derivatives_tester = AuxDerivativesTester(True)
   _ = derivatives_tester.checkDerivatives(
-    test_aux, test_var, other_aux, other_vars, root_vars, constant_data)
+    test_aux, test_var, other_aux, other_vars, root_vars, constant_data_negative)
