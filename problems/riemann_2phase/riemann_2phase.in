@@ -1,0 +1,115 @@
+# This is a 2-phase Riemann problem taken from Test 2 of the following reference:
+#
+# A. Ambroso, C. Chalons, and P.-A. Raviart
+# A Godunov-type method for the seven-equation model of compressible two-phase flow
+# Computers & Fluids 54 (2012) 67-91
+#
+# Both phases use ideal gas EOS with gamma = 1.4. Cv is chosen here to be 1,
+# though this isn't explicitly stated in the reference above, probably because
+# the temperature is irrelevant to this problem.
+#
+# Left state:              Right state:
+#   alpha_liquid = 0.8       alpha_liquid = 0.3
+#   rho_liquid   = 1.0       rho_liquid   = 1.0
+#   vel_liquid   = 0.0       vel_liquid   = 0.0
+#   p_liquid     = 1.0       p_liquid     = 1.0
+#   rho_vapor    = 0.2       rho_vapor    = 1.0
+#   vel_vapor    = 0.0       vel_vapor    = 0.0
+#   p_vapor      = 0.3       p_vapor      = 1.0
+#
+# The domain is (0,1) with the interface at 0.5.
+# Results are typically plotted at t = 0.2.
+
+[Model]
+  model = 2phase
+[]
+
+[Physics]
+  gravity = 0
+[]
+
+[InterfaceClosures]
+  type = AmbrosoInterfaceClosures
+  chi = 0.5
+  pressure_relaxation_time = 5.0e-3
+[]
+
+[Mesh]
+  type = UniformMesh
+  x_min = 0
+  length = 1.0
+  n_cell = 50
+[]
+
+[EoS]
+  [liquid]
+    type = StiffenedGasEoS
+    gamma = 1.4
+    cv = 1
+    q = 0
+    p_inf = 0
+  []
+  [vapor]
+    type = StiffenedGasEoS
+    gamma = 1.4
+    cv = 1
+    q = 0
+    p_inf = 0
+  []
+[]
+
+[IC]
+  vf1 = 0.8 if x < 0.5 else 0.3
+  p1 = 1.0
+  rho1 = 1.0
+  u1 = 0
+  p2 = 0.3 if x < 0.5 else 1.0
+  rho2 = 0.2 if x < 0.5 else 1.0
+  u2 = 0
+[]
+
+[BC]
+  [left_liquid]
+    type = SolidWallBC
+    boundary = left
+    phase = liquid
+  []
+  [right_liquid]
+    type = SolidWallBC
+    boundary = right
+    phase = liquid
+  []
+  [left_vapor]
+    type = SolidWallBC
+    boundary = left
+    phase = vapor
+  []
+  [right_vapor]
+    type = SolidWallBC
+    boundary = right
+    phase = vapor
+  []
+[]
+
+[Stabilization]
+  type = NoStabilization
+[]
+
+[Executioner]
+  type = ImplicitEulerExecutioner
+  dt = 0.01
+  end_time = 0.2
+  lump_mass_matrix = False
+[]
+
+[NonlinearSolver]
+  verbose = True
+  absolute_tolerance = 1e-5
+  max_iterations = 10
+[]
+
+[Output]
+  plot_solution = True
+  save_solution = True
+  solution_file = solution.csv
+[]

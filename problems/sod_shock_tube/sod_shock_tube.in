@@ -1,0 +1,83 @@
+# This test problem is the classic Sod shock tube test problem,
+# which is a Riemann problem with the following parameters:
+#   * domain = (0,1)
+#   * gravity = 0
+#   * fluid = air (ideal gas with gamma = 1.4, R = 287.058)
+#   * interface: x = 0.5
+#   * typical end time: 0.2
+# Left initial values:
+#   * rho = 1
+#   * u = 0
+#   * p = 1
+# Right initial values:
+#   * rho = 0.125
+#   * u = 0
+#   * p = 0.1
+
+[Model]
+  model = 1phase
+[]
+
+[Physics]
+  gravity = 0
+[]
+
+[Mesh]
+  type = UniformMesh
+  x_min = 0
+  length = 1
+  n_cell = 50
+[]
+
+[EoS]
+  [air]
+    type = IdealGasEoS
+    gamma = 1.4
+    R = 287.058
+  []
+[]
+
+[IC]
+  rho = 1 if x < 0.5 else 0.125
+  u = 0
+  p = 1 if x < 0.5 else 0.1
+[]
+
+[BC]
+  [left]
+    type = OutletBC
+    boundary = left
+    phase = air
+    p = 1
+  []
+  [right]
+    type = OutletBC
+    boundary = right
+    phase = air
+    p = 0.1
+  []
+[]
+
+[Stabilization]
+  type = NoStabilization
+[]
+
+[Executioner]
+  type = ImplicitEulerExecutioner
+  dt = 0.01
+  end_time = 0.2
+  lump_mass_matrix = False
+[]
+
+[NonlinearSolver]
+  verbose = True
+  absolute_tolerance = 1e-5
+  max_iterations = 10
+[]
+
+[Output]
+  plot_solution = True
+  print_solution = False
+  save_solution = True
+  solution_file = solution.csv
+[]
