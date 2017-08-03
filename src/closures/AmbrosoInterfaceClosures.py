@@ -18,13 +18,13 @@ class AmbrosoInterfaceClosures(InterfaceClosures):
     self.chi = params.get("chi") # should be in (0,1)
 
   def createPhaseInteractionAuxQuantities(self):
-    interaction_aux_names = ["AmbrosoBeta", "AmbrosoMu", "AmbrosoTheta", "AmbrosoInterfaceVelocity", "AmbrosoInterfacePressure"]
+    interaction_aux_names = ["AmbrosoBeta", "AmbrosoMu", "AmbrosoPressureRelaxationCoef", "AmbrosoInterfaceVelocity", "AmbrosoInterfacePressure"]
     interaction_aux = list()
     for aux_name in interaction_aux_names:
       params = dict()
       if aux_name == "AmbrosoBeta":
         params["chi"] = self.chi
-      elif aux_name == "AmbrosoTheta":
+      elif aux_name == "AmbrosoPressureRelaxationCoef":
         params["pressure_relaxation_time"] = self.pressure_relaxation_time
       interaction_aux.append(self.factory.createObject(aux_name, params))
 

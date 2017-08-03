@@ -5,16 +5,16 @@ base_dir = os.environ["SEM_PYTHON_DIR"]
 import unittest
 
 sys.path.append(base_dir + "src/aux")
-from AmbrosoTheta import AmbrosoTheta, AmbrosoThetaParameters
+from AmbrosoPressureRelaxationCoef import AmbrosoPressureRelaxationCoef, AmbrosoPressureRelaxationCoefParameters
 from TestAux import TestAux, TestAuxParameters
 
 sys.path.append(base_dir + "testing/src/utilities")
 from AuxDerivativesTester import AuxDerivativesTester
 
 # pressure relaxation aux
-params = AmbrosoThetaParameters()
+params = AmbrosoPressureRelaxationCoefParameters()
 params.set("pressure_relaxation_time", 2.0)
-test_aux = AmbrosoTheta(params)
+test_aux = AmbrosoPressureRelaxationCoef(params)
 test_var = "p_relax"
 
 # phase-1 pressure aux
@@ -35,7 +35,7 @@ other_aux = {"p1" : p1_aux, "p2" : p2_aux}
 other_vars = ["p1", "p2"]
 root_vars = ["vf1", "arho1", "arhou1", "arhoE1", "arho2", "arhou2", "arhoE2"]
 
-class AmbrosoThetaDerivativesTester(unittest.TestCase):
+class AmbrosoPressureRelaxationCoefDerivativesTester(unittest.TestCase):
   def setUp(self):
     self.derivatives_tester = AuxDerivativesTester()
 

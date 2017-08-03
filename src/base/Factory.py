@@ -33,7 +33,7 @@ from VolumeFractionPhase1 import VolumeFractionPhase1, VolumeFractionPhase1Param
 from VolumeFractionPhase2 import VolumeFractionPhase2, VolumeFractionPhase2Parameters
 from AmbrosoBeta import AmbrosoBeta, AmbrosoBetaParameters
 from AmbrosoMu import AmbrosoMu, AmbrosoMuParameters
-from AmbrosoTheta import AmbrosoTheta, AmbrosoThetaParameters
+from AmbrosoPressureRelaxationCoef import AmbrosoPressureRelaxationCoef, AmbrosoPressureRelaxationCoefParameters
 from AmbrosoInterfaceVelocity import AmbrosoInterfaceVelocity, AmbrosoInterfaceVelocityParameters
 from AmbrosoInterfacePressure import AmbrosoInterfacePressure, AmbrosoInterfacePressureParameters
 

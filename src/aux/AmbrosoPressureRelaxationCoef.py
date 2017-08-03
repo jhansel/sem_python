@@ -5,12 +5,12 @@ base_dir = os.environ["SEM_PYTHON_DIR"]
 sys.path.append(base_dir + "src/aux")
 from AuxQuantity2Phase import AuxQuantity2Phase, AuxQuantity2PhaseParameters
 
-class AmbrosoThetaParameters(AuxQuantity2PhaseParameters):
+class AmbrosoPressureRelaxationCoefParameters(AuxQuantity2PhaseParameters):
   def __init__(self):
     AuxQuantity2PhaseParameters.__init__(self)
     self.registerFloatParameter("pressure_relaxation_time", "Relaxation time for pressures")
 
-class AmbrosoTheta(AuxQuantity2Phase):
+class AmbrosoPressureRelaxationCoef(AuxQuantity2Phase):
   def __init__(self, params):
     AuxQuantity2Phase.__init__(self, params)
     self.pressure_relaxation_time = params.get("pressure_relaxation_time")
