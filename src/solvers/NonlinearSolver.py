@@ -21,6 +21,7 @@ class NonlinearSolverParameters(Parameters):
   def __init__(self):
     Parameters.__init__(self)
     self.registerFloatParameter("absolute_tolerance", "Absolute tolerance for nonlinear solve", 1e-6)
+    self.registerFloatParameter("relative_tolerance", "Relative tolerance for nonlinear solve", 1e-6)
     self.registerIntParameter("max_iterations", "Maximum number of nonlinear iterations", 10)
     self.registerBoolParameter("print_variable_residual_norms", "Option to print the individual variable residual norms", False)
     self.registerBoolParameter("print_residual", "Option to print the residual vector", False)
@@ -44,6 +45,7 @@ class NonlinearSolver(object):
 
     self.max_iterations = params.get("max_iterations")
     self.absolute_tol = params.get("absolute_tolerance")
+    self.relative_tol = params.get("relative_tolerance")
     self.print_variable_residual_norms = params.get("print_variable_residual_norms")
     self.print_residual = params.get("print_residual")
     self.debug_jacobian = params.get("debug_jacobian")
@@ -61,7 +63,7 @@ class NonlinearSolver(object):
     # begin Newton solve
     it = 1
     converged = False
-    r_norm_old = 1e15
+    r_norm_abs_old = 1e15
     while it <= self.max_iterations:
       # compute the residual and Jacobian
       r, J = self.assembleSystem(U)
@@ -107,15 +109,22 @@ class NonlinearSolver(object):
       # apply scaling factors
       self.dof_handler.applyScalingFactors(r_scaled, self.scaling)
 
-      # report nonlinear residual
-      r_norm = np.linalg.norm(r_scaled, 2)
+      # compute absolute nonlinear residual norm
+      r_norm_abs = np.linalg.norm(r_scaled, 2)
+      if it == 1:
+        r_norm_abs_initial = r_norm_abs
+
+      # compute relative nonlinear residual norm
+      r_norm_rel = r_norm_abs / r_norm_abs_initial
+
+      # report residual norms
       if self.verbose:
-        if (r_norm < r_norm_old):
+        if (r_norm_abs < r_norm_abs_old):
           color = "green"
         else:
           color = "red"
         sys.stdout.write("Iter %2i: " % (it)
-                         + colored("res = %.3e\n" % (r_norm), color))
+                         + colored("abs = %.3e, rel = %.3e\n" % (r_norm_abs, r_norm_rel), color))
         # print individual variable residual norms
         if self.print_variable_residual_norms:
           for m in xrange(self.dof_handler.n_var):
@@ -123,7 +132,7 @@ class NonlinearSolver(object):
             for k in xrange(self.dof_handler.n_node):
               r_m[k] = r_scaled[k * self.dof_handler.n_var + m]
             r_m_norm = np.linalg.norm(r_m, 2)
-            print "%7s: res = %.3e" % (self.dof_handler.variable_names[m], r_m_norm)
+            print "%7s: abs = %.3e" % (self.dof_handler.variable_names[m], r_m_norm)
           print ""
         # print residual vector
         if self.print_residual:
@@ -140,7 +149,7 @@ class NonlinearSolver(object):
           print ""
 
       # check for convergence
-      if (r_norm <= self.absolute_tol):
+      if r_norm_abs <= self.absolute_tol or r_norm_rel <= self.relative_tol:
         if self.verbose:
           print colored("Solution converged!\n", "green")
         converged = True
@@ -166,7 +175,7 @@ class NonlinearSolver(object):
       it += 1
 
       # save old residual norm
-      r_norm_old = r_norm
+      r_norm_abs_old = r_norm_abs
 
     if (not converged):
       errorNoTraceback("Solution did not converge in " + str(self.max_iterations) + " iterations.\n")
