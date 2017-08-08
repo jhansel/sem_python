@@ -1,4 +1,4 @@
-from numpy import sqrt
+from numpy import sqrt, vectorize
 
 import os
 import sys
@@ -6,6 +6,16 @@ base_dir = os.environ["SEM_PYTHON_DIR"]
 
 sys.path.append(base_dir + "src/closures")
 from EoS import EoS, EoSParameters
+
+sys.path.append(base_dir + "src/utilities")
+from error_utilities import error
+
+def assertNonNegativeSoundSpeedArgSingle(arg, p, v):
+  if arg < 0:
+    error("Sound speed: negative x in sqrt(x), where x = gamma * (p + p_inf) * v:\n" +
+      "p = " + str(p) + "\nv = " + str(v))
+
+assertNonNegativeSoundSpeedArg = vectorize(assertNonNegativeSoundSpeedArgSingle)
 
 class StiffenedGasEoSParameters(EoSParameters):
   def __init__(self):
@@ -45,7 +55,11 @@ class StiffenedGasEoS(EoS):
     return (T_value, dT_dv, dT_de)
 
   def c(self, v, p):
-    c_value = sqrt(self.gamma * (p + self.p_inf) * v)
+    # check for sqrt() of negative number
+    arg = self.gamma * (p + self.p_inf) * v
+    assertNonNegativeSoundSpeedArg(arg, p, v)
+
+    c_value = sqrt(arg)
     dc_dv = 0.5 / sqrt(self.gamma * (p + self.p_inf) * v) * self.gamma * (p + self.p_inf)
     dc_dp = 0.5 / sqrt(self.gamma * (p + self.p_inf) * v) * self.gamma * v
     return (c_value, dc_dv, dc_dp)
