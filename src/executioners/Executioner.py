@@ -45,23 +45,28 @@ class Executioner(object):
     if self.model_type == ModelType.TwoPhase:
       self.initializeVolumeFractionSolution(ics)
 
+    # set local solution update function
+    if self.model_type == ModelType.OnePhase:
+      self.computeLocalSolution = self.computeLocalSolutionOnePhase
+    else:
+      self.computeLocalSolution = self.computeLocalSolutionTwoPhase
+
     # create aux quantities
-    self.aux1 = self.createIndependentPhaseAuxQuantities(0) \
+    self.aux_list = self.createIndependentPhaseAuxQuantities(0) \
       + stabilization.createIndependentPhaseAuxQuantities(0)
     if self.model_type != ModelType.OnePhase:
-      self.aux2 = self.createIndependentPhaseAuxQuantities(1) \
+      self.aux_list += self.createIndependentPhaseAuxQuantities(1) \
         + stabilization.createIndependentPhaseAuxQuantities(1)
     if self.model_type == ModelType.TwoPhase:
-      self.aux_2phase = self.aux1 + self.aux2 \
-        + interface_closures.createAuxQuantities() \
+      self.aux_list += interface_closures.createAuxQuantities() \
         + stabilization.createPhaseInteractionAuxQuantities()
 
     # create kernels
-    self.kernels1 = self.createIndependentPhaseKernels(0) + stabilization.createIndependentPhaseKernels(0)
+    self.kernels = self.createIndependentPhaseKernels(0) + stabilization.createIndependentPhaseKernels(0)
     if self.model_type != ModelType.OnePhase:
-      self.kernels2 = self.createIndependentPhaseKernels(1) + stabilization.createIndependentPhaseKernels(1)
+      self.kernels += self.createIndependentPhaseKernels(1) + stabilization.createIndependentPhaseKernels(1)
     if self.model_type == ModelType.TwoPhase:
-      self.kernels_2phase = self.createPhaseInteractionKernels() + stabilization.createPhaseInteractionKernels()
+      self.kernels += self.createPhaseInteractionKernels() + stabilization.createPhaseInteractionKernels()
 
   def initializePhaseSolution(self, ics, phase):
     # get appropriate volume fraction function
@@ -172,11 +177,7 @@ class Executioner(object):
     J = np.zeros(shape=(self.dof_handler.n_dof, self.dof_handler.n_dof))
 
     # volumetric terms
-    self.addSteadyStateSystemPhase(U, self.kernels1, self.aux1, 0, r, J)
-    if (self.model_type != ModelType.OnePhase):
-      self.addSteadyStateSystemPhase(U, self.kernels2, self.aux2, 1, r, J)
-    if (self.model_type == ModelType.TwoPhase):
-      self.addSteadyStateSystemVolumeFraction(U, r, J)
+    self.addSteadyStateSystem(U, r, J)
 
     # weak boundary terms
     for bc in self.bcs:
@@ -216,51 +217,8 @@ class Executioner(object):
     for bc in self.bcs:
       bc.applyStrongBCLinearSystemRHSVector(U_old, b)
 
-  # computes the steady-state residual and Jacobian for a phase
-  def addSteadyStateSystemPhase(self, U, kernel_list, aux_list, phase, r, J):
-    data = dict()
-    der = dict()
-
-    data["phi"] = self.fe_values.get_phi()
-    data["g"] = self.gravity
-
-    arho_name = "arho" + str(phase + 1)
-    arhou_name = "arhou" + str(phase + 1)
-    arhoE_name = "arhoE" + str(phase + 1)
-
-    for elem in xrange(self.dof_handler.n_cell):
-      r_cell = np.zeros(self.dof_handler.n_dof_per_cell)
-      J_cell = np.zeros(shape=(self.dof_handler.n_dof_per_cell, self.dof_handler.n_dof_per_cell))
-
-      data["grad_phi"] = self.fe_values.get_grad_phi(elem)
-      data["JxW"] = self.fe_values.get_JxW(elem)
-      data["dx"] = self.mesh.h[elem]
-
-      # compute solution
-      data["vf1"] = self.fe_values.computeLocalVolumeFractionSolution(U, elem)
-      data[arho_name] = self.fe_values.computeLocalSolution(U, VariableName.ARho, phase, elem)
-      data[arhou_name] = self.fe_values.computeLocalSolution(U, VariableName.ARhoU, phase, elem)
-      data[arhoE_name] = self.fe_values.computeLocalSolution(U, VariableName.ARhoE, phase, elem)
-      if self.need_solution_gradients:
-        data["grad_vf1"] = self.fe_values.computeLocalVolumeFractionSolutionGradient(U, elem)
-        data["grad_" + arho_name] = self.fe_values.computeLocalSolutionGradient(U, VariableName.ARho, phase, elem)
-        data["grad_" + arhou_name] = self.fe_values.computeLocalSolutionGradient(U, VariableName.ARhoU, phase, elem)
-        data["grad_" + arhoE_name] = self.fe_values.computeLocalSolutionGradient(U, VariableName.ARhoE, phase, elem)
-
-      # compute auxiliary quantities
-      for aux in aux_list:
-        aux.compute(data, der)
-
-      # compute the local residual and Jacobian
-      for kernel in kernel_list:
-        kernel.apply(data, der, r_cell, J_cell)
-
-      # aggregate cell residual and matrix into global residual and matrix
-      self.dof_handler.aggregateLocalVector(r, r_cell, elem)
-      self.dof_handler.aggregateLocalMatrix(J, J_cell, elem)
-
-  # computes the steady-state residual for the volume fraction equation
-  def addSteadyStateSystemVolumeFraction(self, U, r, J):
+  ## Computes the steady-state residual and Jacobian
+  def addSteadyStateSystem(self, U, r, J):
     data = dict()
     der = dict()
 
@@ -276,35 +234,49 @@ class Executioner(object):
       data["dx"] = self.mesh.h[elem]
 
       # compute solution
-      data["vf1"] = self.fe_values.computeLocalSolution(U, VariableName.VF1, 0, elem)
-      data["arho1"] = self.fe_values.computeLocalSolution(U, VariableName.ARho, 0, elem)
-      data["arhou1"] = self.fe_values.computeLocalSolution(U, VariableName.ARhoU, 0, elem)
-      data["arhoE1"] = self.fe_values.computeLocalSolution(U, VariableName.ARhoE, 0, elem)
-      data["arho2"] = self.fe_values.computeLocalSolution(U, VariableName.ARho, 1, elem)
-      data["arhou2"] = self.fe_values.computeLocalSolution(U, VariableName.ARhoU, 1, elem)
-      data["arhoE2"] = self.fe_values.computeLocalSolution(U, VariableName.ARhoE, 1, elem)
-
-      # compute solution gradients
-      data["grad_vf1"] = self.fe_values.computeLocalSolutionGradient(U, VariableName.VF1, 0, elem)
-      if self.need_solution_gradients:
-        data["grad_arho1"] = self.fe_values.computeLocalSolutionGradient(U, VariableName.ARho, 0, elem)
-        data["grad_arhou1"] = self.fe_values.computeLocalSolutionGradient(U, VariableName.ARhoU, 0, elem)
-        data["grad_arhoE1"] = self.fe_values.computeLocalSolutionGradient(U, VariableName.ARhoE, 0, elem)
-        data["grad_arho2"] = self.fe_values.computeLocalSolutionGradient(U, VariableName.ARho, 1, elem)
-        data["grad_arhou2"] = self.fe_values.computeLocalSolutionGradient(U, VariableName.ARhoU, 1, elem)
-        data["grad_arhoE2"] = self.fe_values.computeLocalSolutionGradient(U, VariableName.ARhoE, 1, elem)
+      self.computeLocalSolution(U, elem, data)
 
       # compute auxiliary quantities
-      for aux in self.aux_2phase:
+      for aux in self.aux_list:
         aux.compute(data, der)
 
       # compute the local residual and Jacobian
-      for kernel in self.kernels_2phase:
+      for kernel in self.kernels:
         kernel.apply(data, der, r_cell, J_cell)
 
       # aggregate cell residual and matrix into global residual and matrix
       self.dof_handler.aggregateLocalVector(r, r_cell, elem)
       self.dof_handler.aggregateLocalMatrix(J, J_cell, elem)
+
+  ## Computes the local solution and gradients for 1-phase flow
+  def computeLocalSolutionOnePhase(self, U, elem, data):
+    data["vf1"] = self.fe_values.computeLocalVolumeFractionSolution(U, elem)
+    data["arho1"] = self.fe_values.computeLocalSolution(U, VariableName.ARho, 0, elem)
+    data["arhou1"] = self.fe_values.computeLocalSolution(U, VariableName.ARhoU, 0, elem)
+    data["arhoE1"] = self.fe_values.computeLocalSolution(U, VariableName.ARhoE, 0, elem)
+    if self.need_solution_gradients:
+      data["grad_vf1"] = self.fe_values.computeLocalVolumeFractionSolutionGradient(U, elem)
+      data["grad_arho1"] = self.fe_values.computeLocalSolutionGradient(U, VariableName.ARho, 0, elem)
+      data["grad_arhou1"] = self.fe_values.computeLocalSolutionGradient(U, VariableName.ARhoU, 0, elem)
+      data["grad_arhoE1"] = self.fe_values.computeLocalSolutionGradient(U, VariableName.ARhoE, 0, elem)
+
+  ## Computes the local solution and gradients for 2-phase flow
+  def computeLocalSolutionTwoPhase(self, U, elem, data):
+    data["vf1"] = self.fe_values.computeLocalVolumeFractionSolution(U, elem)
+    data["arho1"] = self.fe_values.computeLocalSolution(U, VariableName.ARho, 0, elem)
+    data["arhou1"] = self.fe_values.computeLocalSolution(U, VariableName.ARhoU, 0, elem)
+    data["arhoE1"] = self.fe_values.computeLocalSolution(U, VariableName.ARhoE, 0, elem)
+    data["arho2"] = self.fe_values.computeLocalSolution(U, VariableName.ARho, 1, elem)
+    data["arhou2"] = self.fe_values.computeLocalSolution(U, VariableName.ARhoU, 1, elem)
+    data["arhoE2"] = self.fe_values.computeLocalSolution(U, VariableName.ARhoE, 1, elem)
+    data["grad_vf1"] = self.fe_values.computeLocalVolumeFractionSolutionGradient(U, elem)
+    if self.need_solution_gradients:
+      data["grad_arho1"] = self.fe_values.computeLocalSolutionGradient(U, VariableName.ARho, 0, elem)
+      data["grad_arhou1"] = self.fe_values.computeLocalSolutionGradient(U, VariableName.ARhoU, 0, elem)
+      data["grad_arhoE1"] = self.fe_values.computeLocalSolutionGradient(U, VariableName.ARhoE, 0, elem)
+      data["grad_arho2"] = self.fe_values.computeLocalSolutionGradient(U, VariableName.ARho, 1, elem)
+      data["grad_arhou2"] = self.fe_values.computeLocalSolutionGradient(U, VariableName.ARhoU, 1, elem)
+      data["grad_arhoE2"] = self.fe_values.computeLocalSolutionGradient(U, VariableName.ARhoE, 1, elem)
 
   def solve(self):
     self.nonlinear_solver.solve(self.U)
