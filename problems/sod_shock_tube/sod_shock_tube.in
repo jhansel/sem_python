@@ -59,7 +59,7 @@
 []
 
 [Stabilization]
-  type = NoStabilization
+  type = LaxFriedrichsStabilization
 []
 
 [Executioner]
