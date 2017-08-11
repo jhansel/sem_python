@@ -1,5 +1,6 @@
 from copy import deepcopy
 import numpy as np
+from termcolor import colored
 
 import os
 import sys
@@ -200,8 +201,13 @@ class TransientExecutioner(Executioner):
 
       print "Time step %i: t = %g, dt = %g" % (time_step, t, self.dt)
 
-      # solve the time step
-      self.solve()
+      try:
+        # solve the time step
+        self.solve()
+      except:
+        # report failure and exit transient
+        print colored("Time step failed.", "red")
+        return self.U_old
 
       # save old solution and increment time step index
       self.U_old = deepcopy(self.U)
