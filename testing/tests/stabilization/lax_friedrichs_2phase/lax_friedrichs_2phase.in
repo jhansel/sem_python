@@ -1,0 +1,97 @@
+# This tests the solution of the two-phase model with Lax-Friedrichs stabilization.
+
+[Model]
+  model = 2phase
+[]
+
+[Physics]
+  gravity = 9.81
+[]
+
+[InterfaceClosures]
+  type = AmbrosoInterfaceClosures
+  chi = 0.5
+  pressure_relaxation_time = 5.0e-3
+[]
+
+[Mesh]
+  type = UniformMesh
+  x_min = 0
+  length = 7.5
+  n_cell = 5
+[]
+
+[EoS]
+  [liquid]
+    type = StiffenedGasEoS
+    gamma = 1.0005
+    cv = 1
+    q = 0
+    p_inf = 0
+  []
+  [vapor]
+    type = StiffenedGasEoS
+    gamma = 1.4
+    cv = 1
+    q = 0
+    p_inf = 0
+  []
+[]
+
+[IC]
+  vf1 = 0.5
+  p1 = 1.0e5
+  rho1 = 1.0e3
+  u1 = 0
+  p2 = 1.0e5
+  rho2 = 1
+  u2 = 0
+[]
+
+[BC]
+  [left_liquid]
+    type = SolidWallBC
+    boundary = left
+    phase = liquid
+  []
+  [right_liquid]
+    type = SolidWallBC
+    boundary = right
+    phase = liquid
+  []
+  [left_vapor]
+    type = SolidWallBC
+    boundary = left
+    phase = vapor
+  []
+  [right_vapor]
+    type = SolidWallBC
+    boundary = right
+    phase = vapor
+  []
+[]
+
+[Stabilization]
+  type = LaxFriedrichsStabilization
+[]
+
+[Executioner]
+  type = ImplicitEulerExecutioner
+  dt = 0.01
+  end_time = 0.01
+  verbose = False
+[]
+
+[NonlinearSolver]
+  verbose = False
+  absolute_tolerance = 1e-5
+  relative_tolerance = 1e-5
+  max_iterations = 10
+[]
+
+[Output]
+  plot_solution = False
+  print_solution = False
+  save_solution = True
+  solution_file = tests/stabilization/lax_friedrichs_2phase/solution.csv
+[]
