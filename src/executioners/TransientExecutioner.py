@@ -22,6 +22,7 @@ class TransientExecutionerParameters(ExecutionerParameters):
     self.registerFloatParameter("cfl", "CFL number to compute time step size")
     self.registerFloatParameter("end_time", "End time")
     self.registerBoolParameter("lump_mass_matrix", "Lump the mass matrix?", False)
+    self.registerBoolParameter("verbose", "Print time step information?", True)
 
 class TransientExecutioner(Executioner):
   def __init__(self, params):
@@ -42,6 +43,7 @@ class TransientExecutioner(Executioner):
 
     self.end_time = params.get("end_time")
     self.lump_mass_matrix = params.get("lump_mass_matrix")
+    self.verbose = params.get("verbose")
 
     # tolerance to prevent small final time steps due to floating point precision error
     self.end_tolerance = 1e-12
@@ -181,7 +183,8 @@ class TransientExecutioner(Executioner):
     transient_incomplete = True
     t = 0.0
     time_step = 1
-    print ""
+    if self.verbose:
+      print ""
     while (transient_incomplete):
       # compute time step size
       if self.use_cfl_dt:
@@ -199,14 +202,16 @@ class TransientExecutioner(Executioner):
       # update time
       t += self.dt
 
-      print "Time step %i: t = %g, dt = %g" % (time_step, t, self.dt)
+      if self.verbose:
+        print "Time step %i: t = %g, dt = %g" % (time_step, t, self.dt)
 
       try:
         # solve the time step
         self.solve()
       except:
         # report failure and exit transient
-        print colored("Time step failed.", "red")
+        if self.verbose:
+          print colored("Time step failed.", "red")
         return self.U_old
 
       # save old solution and increment time step index
