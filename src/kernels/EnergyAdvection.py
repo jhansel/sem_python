@@ -13,8 +13,9 @@ class EnergyAdvectionParameters(Kernel1PhaseParameters):
     Kernel1PhaseParameters.__init__(self)
 
 class EnergyAdvection(Kernel1Phase):
-  def __init__(self, params, dof_handler):
-    Kernel1Phase.__init__(self, params, dof_handler, VariableName.ARhoE)
+  def __init__(self, params):
+    params.set("var_enum", VariableName.ARhoE)
+    Kernel1Phase.__init__(self, params)
 
   def computeResidual(self, data, i):
     return -data[self.u] * (data[self.arhoE] + data[self.vf] * data[self.p]) * data["grad_phi"][i] * data["JxW"]

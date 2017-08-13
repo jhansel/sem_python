@@ -13,8 +13,9 @@ class EnergyPressureRelaxationParameters(Kernel2PhaseParameters):
     Kernel2PhaseParameters.__init__(self)
 
 class EnergyPressureRelaxation(Kernel2Phase):
-  def __init__(self, params, dof_handler):
-    Kernel2Phase.__init__(self, params, dof_handler, VariableName.ARhoE)
+  def __init__(self, params):
+    params.set("var_enum", VariableName.ARhoE)
+    Kernel2Phase.__init__(self, params)
 
   def computeResidual(self, data, i):
     return self.sign * data["pI_bar"] * data["p_relax"] * (data["p1"] - data["p2"]) * data["phi"][i] * data["JxW"]

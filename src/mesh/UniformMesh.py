@@ -16,7 +16,7 @@ class UniformMeshParameters(MeshParameters):
 
 class UniformMesh(Mesh):
   def __init__(self, params):
-    Mesh.__init__(self)
+    Mesh.__init__(self, params)
     self.n_cell = params.get("n_cell")
     self.L = params.get("length")
     self.x_min = params.get("x_min")

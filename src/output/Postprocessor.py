@@ -30,18 +30,25 @@ class PostprocessorParameters(Parameters):
     self.registerBoolParameter("plot_solution", "Option to plot solution", False)
     self.registerStringParameter("plot_file", "Name of plot file", "solution.pdf")
 
+    self.registerParameter("model", "Model")
+    self.registerParameter("eos", "Equation of state")
+    self.registerParameter("dof_handler", "Degree of freedom handler")
+    self.registerParameter("mesh", "Mesh")
+
 class Postprocessor(object):
-  def __init__(self, params, model_type, eos, dof_handler, mesh):
+  def __init__(self, params):
     self.print_solution = params.get("print_solution")
     self.save_solution = params.get("save_solution")
     self.solution_file = params.get("solution_file")
     self.output_precision = params.get("output_precision")
     self.plot_solution = params.get("plot_solution")
     self.plot_file = params.get("plot_file")
-    self.model_type = model_type
-    self.eos = eos
-    self.dof_handler = dof_handler
-    self.mesh = mesh
+
+    model = params.get("model")
+    self.model_type = model.model_type
+    self.eos = params.get("eos")
+    self.dof_handler = params.get("dof_handler")
+    self.mesh = params.get("mesh")
 
   def run(self, U):
     vf1, arho1, arhou1, arhoE1 = self.dof_handler.getPhaseSolution(U, 0)

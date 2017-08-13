@@ -13,8 +13,9 @@ class MomentumVolumeFractionGradientParameters(Kernel2PhaseParameters):
     Kernel2PhaseParameters.__init__(self)
 
 class MomentumVolumeFractionGradient(Kernel2Phase):
-  def __init__(self, params, dof_handler):
-    Kernel2Phase.__init__(self, params, dof_handler, VariableName.ARhoU)
+  def __init__(self, params):
+    params.set("var_enum", VariableName.ARhoU)
+    Kernel2Phase.__init__(self, params)
 
   def computeResidual(self, data, i):
     return - self.sign * data["pI"] * data["grad_vf1"] * data["phi"][i] * data["JxW"]

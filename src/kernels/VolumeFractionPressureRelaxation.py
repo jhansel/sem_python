@@ -13,8 +13,9 @@ class VolumeFractionPressureRelaxationParameters(Kernel2PhaseParameters):
     Kernel2PhaseParameters.__init__(self)
 
 class VolumeFractionPressureRelaxation(Kernel2Phase):
-  def __init__(self, params, dof_handler):
-    Kernel2Phase.__init__(self, params, dof_handler, VariableName.VF1)
+  def __init__(self, params):
+    params.set("var_enum", VariableName.VF1)
+    Kernel2Phase.__init__(self, params)
 
   def computeResidual(self, data, i):
     return -data["p_relax"] * (data["p1"] - data["p2"]) * data["phi"][i] * data["JxW"]

@@ -13,6 +13,8 @@ class MeshParameters(Parameters):
 
 class Mesh(object):
   __metaclass__ = ABCMeta
+  def __init__(self, params):
+    pass
 
   def getMinimumCellWidth(self):
     pass

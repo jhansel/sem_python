@@ -12,13 +12,6 @@ sys.path.append(base_dir + "src/base")
 from enums import ModelType, VariableName
 from Factory import Factory
 
-sys.path.append(base_dir + "src/fem")
-from DoFHandler1Phase import DoFHandler1Phase
-from DoFHandler2PhaseNonInteracting import DoFHandler2PhaseNonInteracting
-from DoFHandler2Phase import DoFHandler2Phase
-from FEValues import FEValues
-from Quadrature import Quadrature
-
 sys.path.append(base_dir + "src/mesh")
 from UniformMesh import UniformMesh, UniformMeshParameters
 
@@ -33,34 +26,39 @@ class KernelDerivativesTester(object):
     self.model_type = model_type
     self.phase = phase
 
+    # factory
+    factory = Factory()
+
     # mesh
     params = UniformMeshParameters()
     params.set("n_cell", 1)
     mesh = UniformMesh(params)
 
     # DoF handler
+    dof_handler_params = {"mesh": mesh}
     if self.model_type == ModelType.OnePhase:
-      dof_handler = DoFHandler1Phase(mesh)
+      dof_handler_class = "DoFHandler1Phase"
     elif self.model_type == ModelType.TwoPhaseNonInteracting:
+      dof_handler_class = "DoFHandler2PhaseNonInteracting"
       def vf1_initial(x):
         return 0.3
-      dof_handler = DoFHandler2PhaseNonInteracting(mesh, vf1_initial)
+      dof_handler_params["initial_vf1"] = vf1_initial
     elif self.model_type == ModelType.TwoPhase:
-      dof_handler = DoFHandler2Phase(mesh)
+      dof_handler_class = "DoFHandler2Phase"
+    dof_handler = factory.createObject(dof_handler_class, dof_handler_params)
 
     # quadrature
-    quadrature = Quadrature()
+    quadrature_params = {}
+    quadrature = factory.createObject("Quadrature", quadrature_params)
 
     # FE values
-    self.fe_values = FEValues(quadrature, dof_handler, mesh)
-
-    # factory
-    factory = Factory()
+    fe_values_params = {"quadrature": quadrature, "dof_handler": dof_handler, "mesh": mesh}
+    self.fe_values = factory.createObject("FEValues", fe_values_params)
 
     # kernel
     kernel_params["phase"] = phase
-    args = tuple([dof_handler])
-    kernel = factory.createObject(kernel_name, kernel_params, args)
+    kernel_params["dof_handler"] = dof_handler
+    kernel = factory.createObject(kernel_name, kernel_params)
 
     # aux
     aux_list = list()

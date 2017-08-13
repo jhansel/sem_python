@@ -12,31 +12,47 @@ from thermodynamic_functions import computeVolumeFraction, computeVelocity, \
   computeDensity, computeSpecificVolume, computeSpecificTotalEnergy, \
   computeSpecificInternalEnergy
 
-sys.path.append(base_dir + "src/fem")
-from FEValues import FEValues
-from Quadrature import Quadrature
-
 sys.path.append(base_dir + "src/input")
 from Parameters import Parameters
 
 class ExecutionerParameters(Parameters):
   def __init__(self):
     Parameters.__init__(self)
+    self.registerParameter("model", "Model")
+    self.registerParameter("ics", "Initial conditions")
+    self.registerParameter("bcs", "Boundary conditions")
+    self.registerParameter("eos", "Equation of state map")
+    self.registerParameter("interface_closures", "Interface closures")
+    self.registerFloatParameter("gravity", "Acceleration due to gravity")
+    self.registerParameter("dof_handler", "Degree of freedom handler")
+    self.registerParameter("mesh", "Mesh")
+    self.registerParameter("nonlinear_solver_params", "Nonlinear solver parameters")
+    self.registerParameter("stabilization", "Stabilization")
+    self.registerParameter("factory", "Factory")
 
 class Executioner(object):
-  def __init__(self, params, model, ics, bcs, eos, interface_closures, gravity, dof_handler, mesh, nonlinear_solver_params, stabilization, factory):
-    self.model = model
+  def __init__(self, params):
+    self.model = params.get("model")
+    ics = params.get("ics")
     self.model_type = self.model.model_type
-    self.bcs = bcs
-    self.eos = eos
-    self.gravity = gravity
-    self.dof_handler = dof_handler
-    self.mesh = mesh
-    self.nonlinear_solver_params = nonlinear_solver_params
-    self.quadrature = Quadrature()
-    self.fe_values = FEValues(self.quadrature, dof_handler, mesh)
-    self.factory = factory
+    self.bcs = params.get("bcs")
+    self.eos = params.get("eos")
+    interface_closures = params.get("interface_closures")
+    self.gravity = params.get("gravity")
+    self.dof_handler = params.get("dof_handler")
+    self.mesh = params.get("mesh")
+    self.nonlinear_solver_params = params.get("nonlinear_solver_params")
+    self.factory = params.get("factory")
+    stabilization = params.get("stabilization")
     self.need_solution_gradients = stabilization.needSolutionGradients()
+
+    # quadrature
+    quadrature_params = {}
+    self.quadrature = self.factory.createObject("Quadrature", quadrature_params)
+
+    # FE values
+    fe_values_params = {"quadrature": self.quadrature, "dof_handler": self.dof_handler, "mesh": self.mesh}
+    self.fe_values = self.factory.createObject("FEValues", fe_values_params)
 
     # initialize the solution
     self.U = np.zeros(self.dof_handler.n_dof)
@@ -144,31 +160,26 @@ class Executioner(object):
 
   def createIndependentPhaseKernels(self, phase):
     kernels = list()
-    params = dict()
-    params["phase"] = phase
-    args = tuple([self.dof_handler])
+    params = {"phase": phase, "dof_handler": self.dof_handler}
     kernel_name_list = ["MassAdvection", "MomentumAdvection", "MomentumGravity", "EnergyAdvection", "EnergyGravity"]
     for kernel_name in kernel_name_list:
-      kernels.append(self.factory.createObject(kernel_name, params, args))
+      kernels.append(self.factory.createObject(kernel_name, params))
     return kernels
 
   def createPhaseInteractionKernels(self):
     kernels = list()
 
-    params1 = dict()
-    params2 = dict()
-    params1["phase"] = 0
-    params2["phase"] = 1
-    args = tuple([self.dof_handler])
+    params1 = {"phase": 0, "dof_handler": self.dof_handler}
+    params2 = {"phase": 1, "dof_handler": self.dof_handler}
 
-    kernels.append(self.factory.createObject("VolumeFractionAdvection", params1, args))
-    kernels.append(self.factory.createObject("VolumeFractionPressureRelaxation", params1, args))
-    kernels.append(self.factory.createObject("MomentumVolumeFractionGradient", params1, args))
-    kernels.append(self.factory.createObject("MomentumVolumeFractionGradient", params2, args))
-    kernels.append(self.factory.createObject("EnergyPressureRelaxation", params1, args))
-    kernels.append(self.factory.createObject("EnergyPressureRelaxation", params2, args))
-    kernels.append(self.factory.createObject("EnergyVolumeFractionGradient", params1, args))
-    kernels.append(self.factory.createObject("EnergyVolumeFractionGradient", params2, args))
+    kernels.append(self.factory.createObject("VolumeFractionAdvection", params1))
+    kernels.append(self.factory.createObject("VolumeFractionPressureRelaxation", params1))
+    kernels.append(self.factory.createObject("MomentumVolumeFractionGradient", params1))
+    kernels.append(self.factory.createObject("MomentumVolumeFractionGradient", params2))
+    kernels.append(self.factory.createObject("EnergyPressureRelaxation", params1))
+    kernels.append(self.factory.createObject("EnergyPressureRelaxation", params2))
+    kernels.append(self.factory.createObject("EnergyVolumeFractionGradient", params1))
+    kernels.append(self.factory.createObject("EnergyVolumeFractionGradient", params2))
 
     return kernels
 

@@ -11,11 +11,21 @@ from enums import ModelType, VariableName
 sys.path.append(base_dir + "src/closures")
 from thermodynamic_functions import computeVolumeFraction
 
+sys.path.append(base_dir + "src/input")
+from Parameters import Parameters
+
+class DoFHandlerParameters(Parameters):
+  def __init__(self):
+    Parameters.__init__(self)
+    self.registerParameter("mesh", "Mesh")
+
 class DoFHandler(object):
   __metaclass__ = ABCMeta
-  def __init__(self, mesh):
+  def __init__(self, params):
+    self.mesh = params.get("mesh")
+
     # counts
-    self.n_cell = mesh.n_cell
+    self.n_cell = self.mesh.n_cell
     self.n_dof_per_var = self.n_cell + 1
     self.n_node = self.n_dof_per_var
     self.n_dof_per_cell_per_var = 2

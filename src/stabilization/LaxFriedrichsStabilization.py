@@ -58,26 +58,24 @@ class LaxFriedrichsStabilization(Stabilization):
 
   def createIndependentPhaseKernels(self, phase):
     kernels = list()
-    args = tuple([self.dof_handler])
     var_enums = [VariableName.ARho, VariableName.ARhoU, VariableName.ARhoE]
     for var_enum in var_enums:
       if self.use_simple_dissipation:
-        params = {"phase": phase, "var": var_enum}
-        kernels.append(self.factory.createObject("DissipationVariableGradient", params, args))
+        params = {"phase": phase, "dof_handler": self.dof_handler, "var_enum": var_enum}
+        kernels.append(self.factory.createObject("DissipationVariableGradient", params))
       else:
         var_name = self.dof_handler.variableEnumToName(var_enum, phase)
         flux_name = "viscflux_" + var_name
-        params = {"phase": phase, "var": var_enum, "flux_name": flux_name}
-        kernels.append(self.factory.createObject("DissipationAuxFlux", params, args))
+        params = {"phase": phase, "dof_handler": self.dof_handler, "var_enum": var_enum, "flux_name": flux_name}
+        kernels.append(self.factory.createObject("DissipationAuxFlux", params))
     return kernels
 
   def createPhaseInteractionKernels(self):
     kernels = list()
-    args = tuple([self.dof_handler])
     if self.use_simple_dissipation:
-      params = {"phase": 0, "var": VariableName.VF1}
-      kernels.append(self.factory.createObject("DissipationVariableGradient", params, args))
+      params = {"phase": 0, "dof_handler": self.dof_handler, "var_enum": VariableName.VF1}
+      kernels.append(self.factory.createObject("DissipationVariableGradient", params))
     else:
-      params = {"phase": 0, "var": VariableName.VF1, "flux_name": "viscflux_vf1"}
-      kernels.append(self.factory.createObject("DissipationAuxFlux", params, args))
+      params = {"phase": 0, "dof_handler": self.dof_handler, "var_enum": VariableName.VF1, "flux_name": "viscflux_vf1"}
+      kernels.append(self.factory.createObject("DissipationAuxFlux", params))
     return kernels

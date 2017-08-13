@@ -14,8 +14,8 @@ class ExplicitEulerExecutionerParameters(TransientExecutionerParameters):
     TransientExecutionerParameters.__init__(self)
 
 class ExplicitEulerExecutioner(TransientExecutioner):
-  def __init__(self, params, model_type, ics, bcs, eos_map, interface_closures, gravity, dof_handler, mesh, nonlinear_solver_params, stabilization, factory):
-    TransientExecutioner.__init__(self, params, model_type, ics, bcs, eos_map, interface_closures, gravity, dof_handler, mesh, nonlinear_solver_params, stabilization, factory)
+  def __init__(self, params):
+    TransientExecutioner.__init__(self, params)
     # create a mass matrix modified for Dirichlet BC
     self.M_modified = deepcopy(self.M)
     self.applyStrongBCLinearSystemMatrix(self.M_modified)

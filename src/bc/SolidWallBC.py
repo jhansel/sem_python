@@ -10,8 +10,8 @@ class SolidWallBCParameters(OnePhaseBCParameters):
     OnePhaseBCParameters.__init__(self)
 
 class SolidWallBC(OnePhaseBC):
-  def __init__(self, params, dof_handler, eos_map):
-    OnePhaseBC.__init__(self, params, dof_handler, eos_map)
+  def __init__(self, params):
+    OnePhaseBC.__init__(self, params)
 
   def applyWeakBC(self, U, r, J):
     pass

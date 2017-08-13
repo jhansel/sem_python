@@ -11,8 +11,8 @@ class DirichletVolumeFractionBCParameters(VolumeFractionBCParameters):
     self.registerFloatParameter("vf1", "Specified volume fraction of first phase")
 
 class DirichletVolumeFractionBC(VolumeFractionBC):
-  def __init__(self, params, dof_handler, eos_map):
-    VolumeFractionBC.__init__(self, params, dof_handler, eos_map)
+  def __init__(self, params):
+    VolumeFractionBC.__init__(self, params)
 
     self.vf1 = params.get("vf1")
 

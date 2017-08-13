@@ -13,8 +13,8 @@ class VolumeFractionBCParameters(BCParameters):
     BCParameters.__init__(self)
 
 class VolumeFractionBC(BC):
-  def __init__(self, params, dof_handler, eos_map):
-    BC.__init__(self, params, dof_handler, eos_map)
+  def __init__(self, params):
+    BC.__init__(self, params)
 
     vf1_index =self.dof_handler.variable_index[VariableName.VF1][0]
     self.i_vf1 = self.dof_handler.i(self.k, vf1_index)

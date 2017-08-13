@@ -1,13 +1,8 @@
 import sys
 sys.path.append("../../../src/base")
-sys.path.append("../../../src/bc")
-sys.path.append("../../../src/closures")
-sys.path.append("../../../src/fem")
 
 import unittest
 
-from DoFHandler1Phase import DoFHandler1Phase
-from enums import ModelType
 from Factory import Factory
 
 class FactoryTester(unittest.TestCase):
@@ -30,15 +25,3 @@ class FactoryTester(unittest.TestCase):
     params = {"type" : "IdealGasEoS", "gamma" : "1.4", "R" : "200"}
     object_class = params["type"]
     self.factory.createObject(object_class, params)
-
-  ## Tests the createObject() function when arguments in addition to input parameters are required
-  def testCreateObjectWithExtraArgs(self):
-    mesh_params = {"n_cell" : "5"}
-    mesh = self.factory.createObject("UniformMesh", mesh_params)
-    dof_handler = DoFHandler1Phase(mesh)
-    eos_params = {"gamma" : "1.4", "R" : "200"}
-    eos = [self.factory.createParametersObject("IdealGasEoS", eos_params)]
-    bc_params = {"boundary" : "left", "p" : "1e5"}
-    bc_params["phase"] = 0
-    args = (dof_handler, eos)
-    self.factory.createObject("OutletBC", bc_params, args)

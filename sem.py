@@ -22,6 +22,7 @@ base_dir = os.environ["SEM_PYTHON_DIR"]
 
 # base
 sys.path.append(base_dir + "src/base")
+from enums import ModelType
 from Factory import Factory
 
 # input
@@ -30,10 +31,6 @@ from InputFileParser import InputFileParser
 
 # utilities
 sys.path.append(base_dir + "src/utilities")
-from DoFHandler1Phase import DoFHandler1Phase
-from DoFHandler2PhaseNonInteracting import DoFHandler2PhaseNonInteracting
-from DoFHandler2Phase import DoFHandler2Phase
-from enums import ModelType
 from error_utilities import error
 
 ## Runs the code with the given input file
@@ -85,12 +82,15 @@ def run(input_file, mods=list()):
     ics = factory.createObject("InitialConditions2Phase", ic_param_data)
 
   # DoF handler
+  dof_handler_params = {"mesh": mesh}
   if model_type == ModelType.OnePhase:
-    dof_handler = DoFHandler1Phase(mesh)
+    dof_handler_class = "DoFHandler1Phase"
   elif model_type == ModelType.TwoPhaseNonInteracting:
-    dof_handler = DoFHandler2PhaseNonInteracting(mesh, ics.vf1)
+    dof_handler_class = "DoFHandler2PhaseNonInteracting"
+    dof_handler_params["initial_vf1"] = ics.vf1
   elif model_type == ModelType.TwoPhase:
-    dof_handler = DoFHandler2Phase(mesh)
+    dof_handler_class = "DoFHandler2Phase"
+  dof_handler = factory.createObject(dof_handler_class, dof_handler_params)
 
   # boundary conditions
   bcs = list()
@@ -100,8 +100,9 @@ def run(input_file, mods=list()):
     bc_class = bc_param_data["type"]
     if "phase" in bc_param_data:
       bc_param_data["phase"] = phase_name_to_index[bc_param_data["phase"]]
-    bc_args = (dof_handler, eos)
-    bc = factory.createObject(bc_class, bc_param_data, bc_args)
+    bc_param_data["dof_handler"] = dof_handler
+    bc_param_data["eos"] = eos
+    bc = factory.createObject(bc_class, bc_param_data)
     bcs.append(bc)
 
   # interace closures
@@ -119,8 +120,7 @@ def run(input_file, mods=list()):
   gravity = physics_params.get("gravity")
 
   # nonlinear solver options
-  nonlinear_solver_param_data = input_file_parser.getBlockData("NonlinearSolver")
-  nonlinear_solver_params = factory.createParametersObject("NonlinearSolver", nonlinear_solver_param_data)
+  nonlinear_solver_params = input_file_parser.getBlockData("NonlinearSolver")
 
   # stabilization
   if input_file_parser.blockExists("Stabilization"):
@@ -136,14 +136,27 @@ def run(input_file, mods=list()):
   # create and run the executioner
   executioner_param_data = input_file_parser.getBlockData("Executioner")
   executioner_type = executioner_param_data["type"]
-  executioner_args = (model, ics, bcs, eos, interface_closures, gravity, dof_handler, mesh, nonlinear_solver_params, stabilization, factory)
-  executioner = factory.createObject(executioner_type, executioner_param_data, executioner_args)
+  executioner_param_data["model"] = model
+  executioner_param_data["ics"] = ics
+  executioner_param_data["bcs"] = bcs
+  executioner_param_data["eos"] = eos
+  executioner_param_data["interface_closures"] = interface_closures
+  executioner_param_data["gravity"] = gravity
+  executioner_param_data["dof_handler"] = dof_handler
+  executioner_param_data["mesh"] = mesh
+  executioner_param_data["nonlinear_solver_params"] = nonlinear_solver_params
+  executioner_param_data["stabilization"] = stabilization
+  executioner_param_data["factory"] = factory
+  executioner = factory.createObject(executioner_type, executioner_param_data)
   U = executioner.run()
 
   # create and run the postprocessor
   postprocessor_param_data = input_file_parser.getBlockData("Output")
-  postprocessor_args = (model_type, eos, dof_handler, mesh)
-  postprocessor = factory.createObject("Postprocessor", postprocessor_param_data, postprocessor_args)
+  postprocessor_param_data["model"] = model
+  postprocessor_param_data["eos"] = eos
+  postprocessor_param_data["dof_handler"] = dof_handler
+  postprocessor_param_data["mesh"] = mesh
+  postprocessor = factory.createObject("Postprocessor", postprocessor_param_data)
   postprocessor.run(U)
 
 ## Gets the input file from the command line and runs it

@@ -12,15 +12,16 @@ class KernelParameters(Parameters):
   def __init__(self):
     Parameters.__init__(self)
     self.registerIntParameter("var_index", "Index of variable")
+    self.registerParameter("dof_handler", "Degree of freedom handler")
 
 class Kernel(object):
   __metaclass__ = ABCMeta
 
-  def __init__(self, params, dof_handler):
+  def __init__(self, params):
     self.var_index = params.get("var_index")
-    self.dof_handler = dof_handler
-    self.i = dof_handler.i
-    self.n = dof_handler.n_dof_per_cell_per_var
+    self.dof_handler = params.get("dof_handler")
+    self.i = self.dof_handler.i
+    self.n = self.dof_handler.n_dof_per_cell_per_var
     self.zero = [0]
 
   def apply(self, data, der, r, J):

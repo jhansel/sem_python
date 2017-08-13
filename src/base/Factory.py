@@ -63,6 +63,14 @@ from ExplicitEulerExecutioner import ExplicitEulerExecutioner, ExplicitEulerExec
 from ImplicitEulerExecutioner import ImplicitEulerExecutioner, ImplicitEulerExecutionerParameters
 from SteadyStateExecutioner import SteadyStateExecutioner, SteadyStateExecutionerParameters
 
+# fem
+sys.path.append(base_dir + "src/fem")
+from DoFHandler1Phase import DoFHandler1Phase, DoFHandler1PhaseParameters
+from DoFHandler2PhaseNonInteracting import DoFHandler2PhaseNonInteracting, DoFHandler2PhaseNonInteractingParameters
+from DoFHandler2Phase import DoFHandler2Phase, DoFHandler2PhaseParameters
+from FEValues import FEValues, FEValuesParameters
+from Quadrature import Quadrature, QuadratureParameters
+
 # ic
 sys.path.append(base_dir + "src/ic")
 from InitialConditions1Phase import InitialConditions1Phase, InitialConditions1PhaseParameters
@@ -134,7 +142,7 @@ class Factory(object):
   ## Creates an object
   # @param object_class  class of object to create
   # @param params  dictionary of parameter names to their values as strings
-  def createObject(self, object_class, params, args=None):
+  def createObject(self, object_class, params):
     # create the object's parameters object first
     parameters_object = self.createParametersObject(object_class, params)
 
@@ -143,9 +151,7 @@ class Factory(object):
       constructor = globals()[object_class]
     else:
       error("'" + object_class + "' is not a valid object type.")
-    if args:
-      the_object = constructor(parameters_object, *args)
-    else:
-      the_object = constructor(parameters_object)
+
+    the_object = constructor(parameters_object)
 
     return the_object

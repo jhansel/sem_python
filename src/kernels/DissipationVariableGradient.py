@@ -8,7 +8,6 @@ from Kernel1Phase import Kernel1Phase, Kernel1PhaseParameters
 class DissipationVariableGradientParameters(Kernel1PhaseParameters):
   def __init__(self):
     Kernel1PhaseParameters.__init__(self)
-    self.registerParameter("var", "Name of variable to which this kernel corresponds")
 
 ## Dissipation from a solution variable gradient.
 #
@@ -25,10 +24,9 @@ class DissipationVariableGradientParameters(Kernel1PhaseParameters):
 #   (\mathbf{f}, \nabla\phi_i)_\Omega - (\mathbf{f}\cdot\mathbf{n}\phi_i)_{\partial\Omega} .
 # \f]
 class DissipationVariableGradient(Kernel1Phase):
-  def __init__(self, params, dof_handler):
-    var_enum = params.get("var")
-    Kernel1Phase.__init__(self, params, dof_handler, var_enum)
-    var = self.dof_handler.variableEnumToName(var_enum, self.phase)
+  def __init__(self, params):
+    Kernel1Phase.__init__(self, params)
+    var = self.dof_handler.variableEnumToName(self.var_enum, self.phase)
     self.grad_var = "grad_" + var
     self.visccoef = "visccoef_" + var
 

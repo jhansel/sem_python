@@ -13,12 +13,13 @@ class SteadyStateExecutionerParameters(ExecutionerParameters):
     ExecutionerParameters.__init__(self)
 
 class SteadyStateExecutioner(Executioner):
-  def __init__(self, params, model, ics, bcs, eos_map, interface_closures, gravity, dof_handler, mesh, nonlinear_solver_params, stabilization, factory):
-    Executioner.__init__(self, params, model, ics, bcs, eos_map, interface_closures, gravity, dof_handler, mesh, nonlinear_solver_params, stabilization, factory)
+  def __init__(self, params):
+    Executioner.__init__(self, params)
 
   def run(self):
-    nonlinear_solver = NonlinearSolver(self.nonlinear_solver_params,
-      self.assembleSteadyStateSystem, self.dof_handler)
+    self.nonlinear_solver_params["assemble_system_function"] = self.assembleSteadyStateSystem
+    self.nonlinear_solver_params["dof_handler"] = self.dof_handler
+    nonlinear_solver = self.factory.createObject("NonlinearSolver", self.nonlinear_solver_params)
     nonlinear_solver.solve(self.U)
 
     return self.U

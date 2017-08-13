@@ -1,15 +1,30 @@
+import os
+import sys
+base_dir = os.environ["SEM_PYTHON_DIR"]
+
 import numpy as np
 
+sys.path.append(base_dir + "src/input")
+from Parameters import Parameters
+
+class FEValuesParameters(Parameters):
+  def __init__(self):
+    Parameters.__init__(self)
+    self.registerParameter("quadrature", "Quadrature")
+    self.registerParameter("dof_handler", "Degree of freedom handler")
+    self.registerParameter("mesh", "Mesh")
+
 class FEValues(object):
-  def __init__(self, quadrature, dof_handler, mesh):
-    self.quadrature = quadrature
-    self.dof_handler = dof_handler
-    self.mesh = mesh
-    self.phi = np.zeros(shape=(dof_handler.n_dof_per_cell_per_var, quadrature.n_q))
-    self.grad_phi = np.zeros(shape=(dof_handler.n_dof_per_cell_per_var, quadrature.n_q))
-    for q in xrange(quadrature.n_q):
-      self.phi[0, q] = self.phi_left(quadrature.z[q])
-      self.phi[1, q] = self.phi_right(quadrature.z[q])
+  def __init__(self, params):
+    self.quadrature = params.get("quadrature")
+    self.dof_handler = params.get("dof_handler")
+    self.mesh = params.get("mesh")
+
+    self.phi = np.zeros(shape=(self.dof_handler.n_dof_per_cell_per_var, self.quadrature.n_q))
+    self.grad_phi = np.zeros(shape=(self.dof_handler.n_dof_per_cell_per_var, self.quadrature.n_q))
+    for q in xrange(self.quadrature.n_q):
+      self.phi[0, q] = self.phi_left(self.quadrature.z[q])
+      self.phi[1, q] = self.phi_right(self.quadrature.z[q])
       self.grad_phi[0, q] = -0.5
       self.grad_phi[1, q] = 0.5
 

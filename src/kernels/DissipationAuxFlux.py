@@ -8,7 +8,6 @@ from Kernel1Phase import Kernel1Phase, Kernel1PhaseParameters
 class DissipationAuxFluxParameters(Kernel1PhaseParameters):
   def __init__(self):
     Kernel1PhaseParameters.__init__(self)
-    self.registerParameter("var", "Name of variable to which this kernel corresponds")
     self.registerStringParameter("flux_name", "Name of flux aux")
 
 ## Dissipation from an aux quantity flux.
@@ -26,8 +25,8 @@ class DissipationAuxFluxParameters(Kernel1PhaseParameters):
 #   (\mathbf{f}, \nabla\phi_i)_\Omega - (\mathbf{f}\cdot\mathbf{n}\phi_i)_{\partial\Omega} .
 # \f]
 class DissipationAuxFlux(Kernel1Phase):
-  def __init__(self, params, dof_handler):
-    Kernel1Phase.__init__(self, params, dof_handler, params.get("var"))
+  def __init__(self, params):
+    Kernel1Phase.__init__(self, params)
     self.flux = params.get("flux_name")
 
   def computeResidual(self, data, i):

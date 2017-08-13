@@ -1,7 +1,18 @@
+import os
+import sys
+base_dir = os.environ["SEM_PYTHON_DIR"]
+
 from math import sqrt
 
-class Quadrature(object):
+sys.path.append(base_dir + "src/input")
+from Parameters import Parameters
+
+class QuadratureParameters(Parameters):
   def __init__(self):
+    Parameters.__init__(self)
+
+class Quadrature(object):
+  def __init__(self, params):
     self.n_q = 2
     self.z = [-sqrt(1.0 / 3.0), sqrt(1.0 / 3.0)]
     self.w = [1.0, 1.0]

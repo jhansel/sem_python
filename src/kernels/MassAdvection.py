@@ -13,8 +13,9 @@ class MassAdvectionParameters(Kernel1PhaseParameters):
     Kernel1PhaseParameters.__init__(self)
 
 class MassAdvection(Kernel1Phase):
-  def __init__(self, params, dof_handler):
-    Kernel1Phase.__init__(self, params, dof_handler, VariableName.ARho)
+  def __init__(self, params):
+    params.set("var_enum", VariableName.ARho)
+    Kernel1Phase.__init__(self, params)
 
   def computeResidual(self, data, i):
     return - data[self.arhou] * data["grad_phi"][i] * data["JxW"]

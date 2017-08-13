@@ -9,13 +9,15 @@ class BCParameters(Parameters):
   def __init__(self):
     Parameters.__init__(self)
     self.registerStringSelectionParameter("boundary", ["left", "right"], "Which boundary to apply boundary condition on")
+    self.registerParameter("dof_handler", "Degree of freedom handler")
+    self.registerParameter("eos", "Equation of state")
 
 class BC(object):
-  def __init__(self, params, dof_handler, eos):
+  def __init__(self, params):
     self.boundary = params.get("boundary")
-    self.dof_handler = dof_handler
-    self.model_type = dof_handler.model_type
-    self.eos = eos
+    self.dof_handler = params.get("dof_handler")
+    self.model_type = self.dof_handler.model_type
+    self.eos = params.get("eos")
     if self.boundary == "left":
       self.nx = -1.0
       self.k = 0

@@ -9,12 +9,15 @@ class Kernel2PhaseParameters(KernelParameters):
   def __init__(self):
     KernelParameters.__init__(self)
     self.registerIntParameter("phase", "Phase index (0 or 1)")
+    self.registerParameter("var_enum", "Variable enumeration")
 
 class Kernel2Phase(Kernel):
-  def __init__(self, params, dof_handler, var_name):
+  def __init__(self, params):
     self.phase = params.get("phase")
-    params.set("var_index", dof_handler.variable_index[var_name][self.phase])
-    Kernel.__init__(self, params, dof_handler)
+    var_enum = params.get("var_enum")
+    dof_handler = params.get("dof_handler")
+    params.set("var_index", dof_handler.variable_index[var_enum][self.phase])
+    Kernel.__init__(self, params)
     if self.phase == 0:
       self.sign = 1.0
     else:

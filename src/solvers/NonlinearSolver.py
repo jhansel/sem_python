@@ -38,10 +38,13 @@ class NonlinearSolverParameters(Parameters):
     self.registerFloatParameter("scaling_arhou2", "Scaling factor for arhou2", 1)
     self.registerFloatParameter("scaling_arhoE2", "Scaling factor for arhoE2", 1)
 
+    self.registerParameter("assemble_system_function", "System assembly function")
+    self.registerParameter("dof_handler", "Degree of freedom handler")
+
 class NonlinearSolver(object):
-  def __init__(self, params, assembleSystem, dof_handler):
-    self.assembleSystem = assembleSystem
-    self.dof_handler = dof_handler
+  def __init__(self, params):
+    self.assembleSystem = params.get("assemble_system_function")
+    self.dof_handler = params.get("dof_handler")
 
     self.max_iterations = params.get("max_iterations")
     self.absolute_tol = params.get("absolute_tolerance")
