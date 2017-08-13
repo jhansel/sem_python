@@ -1,12 +1,6 @@
 from copy import deepcopy
-
 import numpy as np
 
-import os
-import sys
-base_dir = os.environ["SEM_PYTHON_DIR"]
-
-sys.path.append(base_dir + "src/executioners")
 from TransientExecutioner import TransientExecutioner, TransientExecutionerParameters
 
 class ExplicitEulerExecutionerParameters(TransientExecutionerParameters):

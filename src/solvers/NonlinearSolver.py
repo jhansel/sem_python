@@ -1,19 +1,11 @@
 from copy import deepcopy
 import numpy as np
 from numpy.linalg import matrix_rank, inv
+import sys
 from termcolor import colored
 
-import os
-import sys
-base_dir = os.environ["SEM_PYTHON_DIR"]
-
-sys.path.append(base_dir + "src/base")
 from enums import VariableName
-
-sys.path.append(base_dir + "src/input")
 from Parameters import Parameters
-
-sys.path.append(base_dir + "src/utilities")
 from display_utilities import computeRelativeDifferenceMatrix, printMatrix, printMatrixDifference
 from error_utilities import errorNoTraceback
 

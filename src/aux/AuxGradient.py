@@ -1,10 +1,5 @@
 import numpy as np
 
-import os
-import sys
-base_dir = os.environ["SEM_PYTHON_DIR"]
-
-sys.path.append(base_dir + "src/aux")
 from AuxQuantity import AuxQuantity, AuxQuantityParameters
 
 class AuxGradientParameters(AuxQuantityParameters):

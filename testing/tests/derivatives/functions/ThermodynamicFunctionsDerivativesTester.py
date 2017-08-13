@@ -1,7 +1,3 @@
-import sys
-sys.path.append("../../src/utilities")
-sys.path.append("../../../src/closures")
-
 import unittest
 
 from FunctionDerivativesTester import FunctionDerivativesTester

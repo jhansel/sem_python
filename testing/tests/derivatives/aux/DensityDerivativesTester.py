@@ -1,14 +1,7 @@
-import os
-import sys
-base_dir = os.environ["SEM_PYTHON_DIR"]
-
 import unittest
 
-sys.path.append(base_dir + "src/aux")
 from Density import Density, DensityParameters
 from VolumeFractionPhase1 import VolumeFractionPhase1, VolumeFractionPhase1Parameters
-
-sys.path.append(base_dir + "testing/src/utilities")
 from AuxDerivativesTester import AuxDerivativesTester
 
 params = DensityParameters()

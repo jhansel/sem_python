@@ -1,11 +1,4 @@
-import os
-import sys
-base_dir = os.environ["SEM_PYTHON_DIR"]
-
-sys.path.append(base_dir + "src/base")
 from enums import ModelType
-
-sys.path.append(base_dir + "src/input")
 from Parameters import Parameters
 
 class ModelParameters(Parameters):

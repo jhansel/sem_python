@@ -16,21 +16,14 @@ Arguments:
 
 from docopt import docopt
 
-import os
-import sys
-base_dir = os.environ["SEM_PYTHON_DIR"]
-
 # base
-sys.path.append(base_dir + "src/base")
 from enums import ModelType
 from Factory import Factory
 
 # input
-sys.path.append(base_dir + "src/input")
 from InputFileParser import InputFileParser
 
 # utilities
-sys.path.append(base_dir + "src/utilities")
 from error_utilities import error
 
 ## Runs the code with the given input file

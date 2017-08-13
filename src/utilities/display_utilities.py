@@ -2,11 +2,6 @@ import numpy as np
 import sys
 from termcolor import colored
 
-import os
-import sys
-base_dir = os.environ["SEM_PYTHON_DIR"]
-
-sys.path.append(base_dir + "src/utilities")
 from numeric_utilities import computeRelativeDifference
 
 def computeRelativeDifferenceMatrix(A, B):

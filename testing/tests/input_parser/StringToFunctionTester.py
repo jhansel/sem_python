@@ -1,9 +1,4 @@
-import sys
-sys.path.append("../../src/utilities")
-sys.path.append("../../../src/utilities")
-
 import unittest
-
 from numpy import sin, cos, exp, log
 
 from conversion_utilities import stringToFunction

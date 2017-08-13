@@ -1,8 +1,3 @@
-import os
-import sys
-base_dir = os.environ["SEM_PYTHON_DIR"]
-
-sys.path.append(base_dir + "src/utilities")
 from conversion_utilities import stringToBool, stringToInt, stringToFloat, stringToFunction
 from error_utilities import error
 

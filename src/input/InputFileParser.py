@@ -1,10 +1,5 @@
 import re
 
-import os
-import sys
-base_dir = os.environ["SEM_PYTHON_DIR"]
-
-sys.path.append(base_dir + "src/utilities")
 from conversion_utilities import stringToInt, stringToFloat
 from error_utilities import error, inputError
 from file_utilities import checkFileExists

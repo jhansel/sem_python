@@ -1,11 +1,4 @@
-import os
-import sys
-base_dir = os.environ["SEM_PYTHON_DIR"]
-
-sys.path.append(base_dir + "src/base")
 from enums import VariableName
-
-sys.path.append(base_dir + "src/bc")
 from BC import BC, BCParameters
 
 class VolumeFractionBCParameters(BCParameters):

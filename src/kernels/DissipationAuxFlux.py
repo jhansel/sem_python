@@ -1,8 +1,3 @@
-import os
-import sys
-base_dir = os.environ["SEM_PYTHON_DIR"]
-
-sys.path.append(base_dir + "src/aux")
 from Kernel1Phase import Kernel1Phase, Kernel1PhaseParameters
 
 class DissipationAuxFluxParameters(Kernel1PhaseParameters):

@@ -1,14 +1,5 @@
-import os
-import sys
-base_dir = os.environ["SEM_PYTHON_DIR"]
-
-sys.path.append(base_dir + "src/base")
 from enums import ModelType
-
-sys.path.append(base_dir + "src/bc")
 from OnePhaseBC import OnePhaseBC, OnePhaseBCParameters
-
-sys.path.append(base_dir + "src/closures")
 from thermodynamic_functions import computeVolumeFraction, computeDensity, \
   computeSpecificVolume, computeVelocity, computeSpecificTotalEnergy, \
   computeSpecificInternalEnergy

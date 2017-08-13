@@ -1,13 +1,6 @@
 from numpy import sqrt, vectorize
 
-import os
-import sys
-base_dir = os.environ["SEM_PYTHON_DIR"]
-
-sys.path.append(base_dir + "src/closures")
 from EoS import EoS, EoSParameters
-
-sys.path.append(base_dir + "src/utilities")
 from error_utilities import error
 
 def assertNonNegativeSoundSpeedArgSingle(arg, p, v):

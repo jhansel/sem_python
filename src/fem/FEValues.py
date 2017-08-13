@@ -1,10 +1,5 @@
-import os
-import sys
-base_dir = os.environ["SEM_PYTHON_DIR"]
-
 import numpy as np
 
-sys.path.append(base_dir + "src/input")
 from Parameters import Parameters
 
 class FEValuesParameters(Parameters):

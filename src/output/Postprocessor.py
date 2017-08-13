@@ -1,23 +1,10 @@
-import os
-import sys
-base_dir = os.environ["SEM_PYTHON_DIR"]
-
 from collections import OrderedDict
 
-sys.path.append(base_dir + "src/base")
 from enums import ModelType
-
-sys.path.append(base_dir + "src/closures")
 from thermodynamic_functions import computeDensity, computeVelocity, computeSpecificVolume, \
   computeSpecificTotalEnergy, computeSpecificInternalEnergy
-
-sys.path.append(base_dir + "src/input")
 from Parameters import Parameters
-
-sys.path.append(base_dir + "src/output")
 from Plotter import Plotter
-
-sys.path.append(base_dir + "src/utilities")
 from file_utilities import writeCSVFile
 
 class PostprocessorParameters(Parameters):

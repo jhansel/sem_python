@@ -1,18 +1,9 @@
 import numpy as np
 
-import os
-import sys
-base_dir = os.environ["SEM_PYTHON_DIR"]
-
-sys.path.append(base_dir + "src/base")
 from enums import ModelType, VariableName
-
-sys.path.append(base_dir + "src/closures")
 from thermodynamic_functions import computeVolumeFraction, computeVelocity, \
   computeDensity, computeSpecificVolume, computeSpecificTotalEnergy, \
   computeSpecificInternalEnergy
-
-sys.path.append(base_dir + "src/input")
 from Parameters import Parameters
 
 class ExecutionerParameters(Parameters):

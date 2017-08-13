@@ -1,14 +1,7 @@
 import unittest
 import filecmp
 
-import os
-import sys
-base_dir = os.environ["SEM_PYTHON_DIR"]
-
-sys.path.append(base_dir)
 import sem
-
-sys.path.append(base_dir + "src/input")
 from InputFileModification import InputFileModification
 
 class LaxFriedrichs2PhaseTester(unittest.TestCase):

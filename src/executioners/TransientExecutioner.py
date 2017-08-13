@@ -2,17 +2,8 @@ from copy import deepcopy
 import numpy as np
 from termcolor import colored
 
-import os
-import sys
-base_dir = os.environ["SEM_PYTHON_DIR"]
-
-sys.path.append(base_dir + "src/base")
 from enums import ModelType, VariableName
-
-sys.path.append(base_dir + "src/executioners")
 from Executioner import Executioner, ExecutionerParameters
-
-sys.path.append(base_dir + "src/utilities")
 from error_utilities import error
 
 class TransientExecutionerParameters(ExecutionerParameters):

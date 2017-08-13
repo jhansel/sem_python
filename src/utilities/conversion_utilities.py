@@ -1,11 +1,6 @@
 from numpy import sin, cos, exp, log
 import parser
 
-import os
-import sys
-base_dir = os.environ["SEM_PYTHON_DIR"]
-
-sys.path.append(base_dir + "src/utilities")
 from error_utilities import error
 
 def stringToBool(s):

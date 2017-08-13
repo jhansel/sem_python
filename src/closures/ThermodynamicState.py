@@ -1,12 +1,4 @@
-import os
-import sys
-base_dir = os.environ["SEM_PYTHON_DIR"]
-
-sys.path.append(base_dir + "src/input")
 from Parameters import Parameters
-
-# utilities
-sys.path.append(base_dir + "src/utilities")
 from error_utilities import error
 
 class ThermodynamicStateParameters(Parameters):

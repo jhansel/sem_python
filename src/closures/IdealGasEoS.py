@@ -1,10 +1,5 @@
 from numpy import sqrt
 
-import os
-import sys
-base_dir = os.environ["SEM_PYTHON_DIR"]
-
-sys.path.append(base_dir + "src/closures")
 from EoS import EoS, EoSParameters
 
 class IdealGasEoSParameters(EoSParameters):

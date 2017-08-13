@@ -1,6 +1,3 @@
-import sys
-sys.path.append("../../../src/base")
-
 import unittest
 
 from Factory import Factory

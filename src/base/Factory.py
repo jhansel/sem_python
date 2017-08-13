@@ -1,9 +1,4 @@
-import os
-import sys
-base_dir = os.environ["SEM_PYTHON_DIR"]
-
 # aux
-sys.path.append(base_dir + "src/aux")
 from AcousticImpedance import AcousticImpedance, AcousticImpedanceParameters
 from AuxGradient import AuxGradient, AuxGradientParameters
 from BerryInterfacePressure import BerryInterfacePressure, BerryInterfacePressureParameters
@@ -38,11 +33,9 @@ from AmbrosoInterfaceVelocity import AmbrosoInterfaceVelocity, AmbrosoInterfaceV
 from AmbrosoInterfacePressure import AmbrosoInterfacePressure, AmbrosoInterfacePressureParameters
 
 # base
-sys.path.append(base_dir + "src/base")
 from Model import Model, ModelParameters
 
 # bc
-sys.path.append(base_dir + "src/bc")
 from FreeBC import FreeBC, FreeBCParameters
 from DirichletVolumeFractionBC import DirichletVolumeFractionBC, DirichletVolumeFractionBCParameters
 from InletRhoUBC import InletRhoUBC, InletRhoUBCParameters
@@ -50,7 +43,6 @@ from OutletBC import OutletBC, OutletBCParameters
 from SolidWallBC import SolidWallBC, SolidWallBCParameters
 
 # closures
-sys.path.append(base_dir + "src/closures")
 from IdealGasEoS import IdealGasEoS, IdealGasEoSParameters
 from StiffenedGasEoS import StiffenedGasEoS, StiffenedGasEoSParameters
 from AmbrosoInterfaceClosures import AmbrosoInterfaceClosures, AmbrosoInterfaceClosuresParameters
@@ -58,13 +50,11 @@ from BerryInterfaceClosures import BerryInterfaceClosures, BerryInterfaceClosure
 from ThermodynamicState import ThermodynamicState, ThermodynamicStateParameters
 
 # executioners
-sys.path.append(base_dir + "src/executioners")
 from ExplicitEulerExecutioner import ExplicitEulerExecutioner, ExplicitEulerExecutionerParameters
 from ImplicitEulerExecutioner import ImplicitEulerExecutioner, ImplicitEulerExecutionerParameters
 from SteadyStateExecutioner import SteadyStateExecutioner, SteadyStateExecutionerParameters
 
 # fem
-sys.path.append(base_dir + "src/fem")
 from DoFHandler1Phase import DoFHandler1Phase, DoFHandler1PhaseParameters
 from DoFHandler2PhaseNonInteracting import DoFHandler2PhaseNonInteracting, DoFHandler2PhaseNonInteractingParameters
 from DoFHandler2Phase import DoFHandler2Phase, DoFHandler2PhaseParameters
@@ -72,16 +62,13 @@ from FEValues import FEValues, FEValuesParameters
 from Quadrature import Quadrature, QuadratureParameters
 
 # ic
-sys.path.append(base_dir + "src/ic")
 from InitialConditions1Phase import InitialConditions1Phase, InitialConditions1PhaseParameters
 from InitialConditions2Phase import InitialConditions2Phase, InitialConditions2PhaseParameters
 
 # input
-sys.path.append(base_dir + "src/input")
 from PhysicsParameters import PhysicsParameters
 
 # kernels
-sys.path.append(base_dir + "src/kernels")
 from DissipationAuxFlux import DissipationAuxFlux, DissipationAuxFluxParameters
 from DissipationVariableGradient import DissipationVariableGradient, DissipationVariableGradientParameters
 from VolumeFractionAdvection import VolumeFractionAdvection, VolumeFractionAdvectionParameters
@@ -96,24 +83,19 @@ from EnergyPressureRelaxation import EnergyPressureRelaxation, EnergyPressureRel
 from EnergyVolumeFractionGradient import EnergyVolumeFractionGradient, EnergyVolumeFractionGradientParameters
 
 # mesh
-sys.path.append(base_dir + "src/mesh")
 from UniformMesh import UniformMesh, UniformMeshParameters
 
 # output
-sys.path.append(base_dir + "src/output")
 from Postprocessor import Postprocessor, PostprocessorParameters
 
 # solvers
-sys.path.append(base_dir + "src/solvers")
 from NonlinearSolver import NonlinearSolver, NonlinearSolverParameters
 
 # stabilization
-sys.path.append(base_dir + "src/stabilization")
 from NoStabilization import NoStabilization, NoStabilizationParameters
 from LaxFriedrichsStabilization import LaxFriedrichsStabilization, LaxFriedrichsStabilizationParameters
 
 # utilities
-sys.path.append(base_dir + "src/utilities")
 from error_utilities import error
 
 ## Class for creating objects

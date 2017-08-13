@@ -1,8 +1,3 @@
-import os
-import sys
-base_dir = os.environ["SEM_PYTHON_DIR"]
-
-sys.path.append(base_dir + "src/aux")
 from AuxQuantity1Phase import AuxQuantity1Phase, AuxQuantity1PhaseParameters
 
 class InternalEnergyDensityParameters(AuxQuantity1PhaseParameters):

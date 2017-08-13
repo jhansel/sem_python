@@ -1,21 +1,10 @@
 from copy import deepcopy
 import numpy as np
 
-import os
-import sys
-base_dir = os.environ["SEM_PYTHON_DIR"]
-
-sys.path.append(base_dir + "src/aux")
 from TestAux import TestAux, TestAuxParameters
-
-sys.path.append(base_dir + "src/base")
 from enums import ModelType, VariableName
 from Factory import Factory
-
-sys.path.append(base_dir + "src/mesh")
 from UniformMesh import UniformMesh, UniformMeshParameters
-
-sys.path.append(base_dir + "src/utilities")
 from numeric_utilities import computeRelativeDifference
 
 class KernelDerivativesTester(object):

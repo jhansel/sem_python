@@ -1,13 +1,6 @@
-import os
-import sys
-base_dir = os.environ["SEM_PYTHON_DIR"]
-
 import unittest
 
-sys.path.append(base_dir + "src/aux")
 from VolumeFractionPhase2 import VolumeFractionPhase2, VolumeFractionPhase2Parameters
-
-sys.path.append(base_dir + "testing/src/utilities")
 from AuxDerivativesTester import AuxDerivativesTester
 
 params = VolumeFractionPhase2Parameters()

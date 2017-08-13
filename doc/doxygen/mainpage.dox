@@ -18,15 +18,15 @@ closure relations for the interphase transfer terms.
 
 There are a few python modules that are required (to be listed later):
 
-The code relies on an environment variable called `SEM_PYTHON_DIR`, so
-one needs to put the following line in their `.bashrc` or equivalent startup
-file:
+To have import paths within the package work properly, one needs to add
+all of the source paths to the environment variable `PYTHONPATH`. This includes
+all of the subdirectories of the `src/` directory. For example, one might add
+the following lines to their `.bashrc` or equivalent startup file:
 ```
-export SEM_PYTHON_DIR=/path/to/sem.py
+export PYTHONPATH=$PYTHONPATH:~/sem_python/
+export PYTHONPATH=$PYTHONPATH:~/sem_python/src/aux/
+export PYTHONPATH=$PYTHONPATH:~/sem_python/src/base/
+...
 ```
-where `/path/to/sem.py` is the path to the base directory of the repository,
-which contains `sem.py`.
-
-
 
 */

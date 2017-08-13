@@ -1,8 +1,3 @@
-import os
-import sys
-base_dir = os.environ["SEM_PYTHON_DIR"]
-
-sys.path.append(base_dir + "src/bc")
 from OnePhaseBC import OnePhaseBC, OnePhaseBCParameters
 
 class SolidWallBCParameters(OnePhaseBCParameters):
