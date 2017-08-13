@@ -118,7 +118,10 @@ class NonlinearSolver(object):
         r_norm_abs_initial = r_norm_abs
 
       # compute relative nonlinear residual norm
-      r_norm_rel = r_norm_abs / r_norm_abs_initial
+      if abs(r_norm_abs_initial) < 1e-15:
+        r_norm_rel = r_norm_abs
+      else:
+        r_norm_rel = r_norm_abs / r_norm_abs_initial
 
       # report residual norms
       if self.verbose:
