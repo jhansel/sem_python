@@ -20,6 +20,7 @@ class EntropyMinimumEnergyFluxParameters(AuxQuantity1PhaseParameters):
 class EntropyMinimumEnergyFlux(AuxQuantity1Phase):
   def __init__(self, params):
     AuxQuantity1Phase.__init__(self, params)
+    self.name = self.viscflux_arhoE
 
   def compute(self, data, der):
     h = data[self.vf] * data[self.visccoef_arhoE] * data[self.grad_rhoe] \
@@ -57,7 +58,7 @@ class EntropyMinimumEnergyFlux(AuxQuantity1Phase):
       + data[self.u] * der[self.viscflux_arhou][self.grad_arhou]
     dh_dgrad_arhoE = data[self.vf] * data[self.visccoef_arhoE] * der[self.grad_rhoe][self.grad_arhoE]
 
-    data[self.viscflux_arhoE] = h
-    der[self.viscflux_arhoE] = {"vf1" : dh_dvf1, self.arho : dh_darho, self.arhou : dh_darhou,
+    data[self.name] = h
+    der[self.name] = {"vf1" : dh_dvf1, self.arho : dh_darho, self.arhou : dh_darhou,
       self.arhoE : dh_darhoE, "grad_vf1" : dh_dgrad_vf1, self.grad_arho : dh_dgrad_arho,
       self.grad_arhou : dh_dgrad_arhou, self.grad_arhoE : dh_dgrad_arhoE}

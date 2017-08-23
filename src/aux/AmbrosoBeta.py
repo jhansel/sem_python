@@ -8,6 +8,7 @@ class AmbrosoBetaParameters(AuxQuantity2PhaseParameters):
 class AmbrosoBeta(AuxQuantity2Phase):
   def __init__(self, params):
     AuxQuantity2Phase.__init__(self, params)
+    self.name = "beta"
     self.chi = params.get("chi")
 
   def compute(self, data, der):
@@ -16,5 +17,5 @@ class AmbrosoBeta(AuxQuantity2Phase):
     dbeta_darho1 = self.chi / denominator - self.chi * data["arho1"] / denominator / denominator * self.chi
     dbeta_darho2 = - self.chi * data["arho1"] / denominator / denominator * (1 - self.chi)
 
-    data["beta"] = beta
-    der["beta"] = {"arho1": dbeta_darho1, "arho2": dbeta_darho2}
+    data[self.name] = beta
+    der[self.name] = {"arho1": dbeta_darho1, "arho2": dbeta_darho2}

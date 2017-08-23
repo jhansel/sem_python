@@ -13,7 +13,7 @@ class TestAuxParameters(AuxQuantityParameters):
 class TestAux(AuxQuantity):
   def __init__(self, params):
     AuxQuantity.__init__(self, params)
-    self.var = params.get("var")
+    self.name = params.get("var")
     self.other_vars = params.get("other_vars")
     self.coefs = params.get("coefs")
     self.b = params.get("b")
@@ -22,8 +22,8 @@ class TestAux(AuxQuantity):
     self.n = len(self.other_vars)
 
   def compute(self, data, der):
-    data[self.var] = self.b
-    der[self.var] = dict()
+    data[self.name] = self.b
+    der[self.name] = dict()
     for i in xrange(self.n):
-      data[self.var] += self.coefs[i] * data[self.other_vars[i]]
-      der[self.var][self.other_vars[i]] = self.coefs[i]
+      data[self.name] += self.coefs[i] * data[self.other_vars[i]]
+      der[self.name][self.other_vars[i]] = self.coefs[i]

@@ -8,14 +8,15 @@ class TemperatureParameters(AuxQuantity1PhaseParameters):
 class Temperature(AuxQuantity1Phase):
   def __init__(self, params):
     AuxQuantity1Phase.__init__(self, params)
+    self.name = self.T
     self.T_function = params.get("T_function")
 
   def compute(self, data, der):
     T, dT_dv, dT_de = self.T_function(data[self.v], data[self.e])
-    data[self.T] = T
+    data[self.name] = T
 
     dT_dvf1 = dT_dv * der[self.v]["vf1"]
     dT_darho = dT_dv * der[self.v][self.arho] + dT_de * der[self.e][self.arho]
     dT_darhou = dT_de * der[self.e][self.arhou]
     dT_darhoE = dT_de * der[self.e][self.arhoE]
-    der[self.T] = {"vf1" : dT_dvf1, self.arho : dT_darho, self.arhou : dT_darhou, self.arhoE : dT_darhoE}
+    der[self.name] = {"vf1" : dT_dvf1, self.arho : dT_darho, self.arhou : dT_darhou, self.arhoE : dT_darhoE}

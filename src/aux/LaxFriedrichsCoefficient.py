@@ -21,7 +21,7 @@ class LaxFriedrichsCoefficient(AuxQuantity1Phase):
   def __init__(self, params):
     AuxQuantity1Phase.__init__(self, params)
     self.var = params.get("var")
-    self.visccoef = "visccoef_" + self.var + self.phase
+    self.name = "visccoef_" + self.var + self.phase
     self.mult = params.get("mult")
 
   def compute(self, data, der):
@@ -34,5 +34,5 @@ class LaxFriedrichsCoefficient(AuxQuantity1Phase):
     db_darhou = db_du * der[self.u][self.arhou] + db_dc * der[self.c][self.arhou]
     db_darhoE = db_dc * der[self.c][self.arhoE]
 
-    data[self.visccoef] = b
-    der[self.visccoef] = {"vf1" : db_dvf1, self.arho : db_darho, self.arhou : db_darhou, self.arhoE : db_darhoE}
+    data[self.name] = b
+    der[self.name] = {"vf1" : db_dvf1, self.arho : db_darho, self.arhou : db_darhou, self.arhoE : db_darhoE}

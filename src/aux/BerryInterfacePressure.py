@@ -9,6 +9,7 @@ class BerryInterfacePressureParameters(AuxQuantity2PhaseParameters):
 class BerryInterfacePressure(AuxQuantity2Phase):
   def __init__(self, params):
     AuxQuantity2Phase.__init__(self, params)
+    self.name = "pI"
 
   def compute(self, data, der):
     pI_bar = data["pI_bar"]
@@ -20,7 +21,7 @@ class BerryInterfacePressure(AuxQuantity2Phase):
 
     numerator = sign(grad_vf1) * z1 * z2 * (u2 - u1)
     denominator = z1 + z2
-    data["pI"] = pI_bar + numerator / denominator
+    data[self.name] = pI_bar + numerator / denominator
 
     dnumerator = 1.0 / denominator
     ddenominator = -numerator / denominator**2
@@ -39,5 +40,5 @@ class BerryInterfacePressure(AuxQuantity2Phase):
     darhoE2 = der["pI_bar"]["arhoE2"] + dnumerator * sign(grad_vf1) * z1 * der["z2"]["arhoE2"] * (u2 - u1) \
       + ddenominator * der["z2"]["arhoE2"]
 
-    der["pI"] = {"vf1": dvf1, "arho1": darho1, "arhou1": darhou1, "arhoE1": darhoE1,
+    der[self.name] = {"vf1": dvf1, "arho1": darho1, "arhou1": darhou1, "arhoE1": darhoE1,
       "arho2": darho2, "arhou2": darhou2, "arhoE2": darhoE2}

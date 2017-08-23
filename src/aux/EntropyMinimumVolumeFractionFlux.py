@@ -17,6 +17,7 @@ class EntropyMinimumVolumeFractionFluxParameters(AuxQuantity1PhaseParameters):
 class EntropyMinimumVolumeFractionFlux(AuxQuantity1Phase):
   def __init__(self, params):
     AuxQuantity1Phase.__init__(self, params)
+    self.name = self.viscflux_vf
 
   def compute(self, data, der):
     l = data[self.visccoef_vf] * data[self.grad_vf]
@@ -29,6 +30,6 @@ class EntropyMinimumVolumeFractionFlux(AuxQuantity1Phase):
     dl_darhoE = dl_dlf_visc * der[self.visccoef_vf][self.arhoE]
     dl_dgrad_vf1 = dl_dgrad_vf * self.dgrad_vf_dgrad_vf1
 
-    data[self.viscflux_vf] = l
-    der[self.viscflux_vf] = {"vf1" : dl_dvf1, self.arho : dl_darho, self.arhou : dl_darhou,
+    data[self.name] = l
+    der[self.name] = {"vf1" : dl_dvf1, self.arho : dl_darho, self.arhou : dl_darhou,
       self.arhoE : dl_darhoE, "grad_vf1" : dl_dgrad_vf1, self.grad_arho: 0, self.grad_arhou: 0, self.grad_arhoE: 0}

@@ -23,7 +23,7 @@ class AuxGradient(AuxQuantity):
   def __init__(self, params):
     AuxQuantity.__init__(self, params)
     self.aux = params.get("aux")
-    self.grad_aux = "grad_" + self.aux
+    self.name = "grad_" + self.aux
 
   def compute(self, data, der):
     der_aux = der[self.aux]
@@ -34,5 +34,5 @@ class AuxGradient(AuxQuantity):
       grad_aux += der_aux[var] * data["grad_" + var]
       grad_aux_der["grad_" + var] = der_aux[var]
 
-    data[self.grad_aux] = grad_aux
-    der[self.grad_aux] = grad_aux_der
+    data[self.name] = grad_aux
+    der[self.name] = grad_aux_der

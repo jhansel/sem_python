@@ -9,6 +9,7 @@ class BerryInterfaceVelocityParameters(AuxQuantity2PhaseParameters):
 class BerryInterfaceVelocity(AuxQuantity2Phase):
   def __init__(self, params):
     AuxQuantity2Phase.__init__(self, params)
+    self.name = "uI"
 
   def compute(self, data, der):
     uI_bar = data["uI_bar"]
@@ -20,7 +21,7 @@ class BerryInterfaceVelocity(AuxQuantity2Phase):
 
     numerator = sign(grad_vf1) * (p2 - p1)
     denominator = z1 + z2
-    data["uI"] = uI_bar + numerator / denominator
+    data[self.name] = uI_bar + numerator / denominator
 
     dnumerator = 1.0 / denominator
     ddenominator = -numerator / denominator**2
@@ -33,5 +34,5 @@ class BerryInterfaceVelocity(AuxQuantity2Phase):
     darhou2 = der["uI_bar"]["arhou2"] + dnumerator * sign(grad_vf1) * der["p2"]["arhou2"] + ddenominator * der["z2"]["arhou2"]
     darhoE2 = der["uI_bar"]["arhoE2"] + dnumerator * sign(grad_vf1) * der["p2"]["arhoE2"] + ddenominator * der["z2"]["arhoE2"]
 
-    der["uI"] = {"vf1": dvf1, "arho1": darho1, "arhou1": darhou1, "arhoE1": darhoE1,
+    der[self.name] = {"vf1": dvf1, "arho1": darho1, "arhou1": darhou1, "arhoE1": darhoE1,
       "arho2": darho2, "arhou2": darhou2, "arhoE2": darhoE2}

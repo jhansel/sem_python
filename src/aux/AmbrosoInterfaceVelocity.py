@@ -7,13 +7,14 @@ class AmbrosoInterfaceVelocityParameters(AuxQuantity2PhaseParameters):
 class AmbrosoInterfaceVelocity(AuxQuantity2Phase):
   def __init__(self, params):
     AuxQuantity2Phase.__init__(self, params)
+    self.name = "uI"
 
   def compute(self, data, der):
     beta = data["beta"]
     u1 = data["u1"]
     u2 = data["u2"]
 
-    data["uI"] = beta * u1 + (1 - beta) * u2
+    data[self.name] = beta * u1 + (1 - beta) * u2
     duI_du1 = beta
     duI_du2 = (1 - beta)
     duI_dbeta = u1 - u2
@@ -22,5 +23,5 @@ class AmbrosoInterfaceVelocity(AuxQuantity2Phase):
     duI_darho2 = duI_du2 * der["u2"]["arho2"] + duI_dbeta * der["beta"]["arho2"]
     duI_darhou1 = duI_du1 * der["u1"]["arhou1"]
     duI_darhou2 = duI_du2 * der["u2"]["arhou2"]
-    der["uI"] = {"vf1": 0, "arho1": duI_darho1, "arhou1": duI_darhou1, "arhoE1": 0,
+    der[self.name] = {"vf1": 0, "arho1": duI_darho1, "arhou1": duI_darhou1, "arhoE1": 0,
       "arho2": duI_darho2, "arhou2": duI_darhou2, "arhoE2": 0}

@@ -9,6 +9,7 @@ class BerryInterfacialAreaDensityParameters(AuxQuantity2PhaseParameters):
 class BerryInterfacialAreaDensity(AuxQuantity2Phase):
   def __init__(self, params):
     AuxQuantity2Phase.__init__(self, params)
+    self.name = "a_int"
     self.a_int_min = params.get("a_int_min")
     self.a_int_max = params.get("a_int_max")
     self.coef_A = 4 * (self.a_int_min - self.a_int_max)
@@ -17,8 +18,8 @@ class BerryInterfacialAreaDensity(AuxQuantity2Phase):
 
   def compute(self, data, der):
     vf1 = data["vf1"]
-    data["a_int"] = self.coef_A * vf1**2 + self.coef_B * vf1 + self.coef_C
+    data[self.name] = self.coef_A * vf1**2 + self.coef_B * vf1 + self.coef_C
 
     da_int_dvf1 = 2 * self.coef_A * vf1 + self.coef_B
 
-    der["a_int"] = {"vf1": da_int_dvf1}
+    der[self.name] = {"vf1": da_int_dvf1}

@@ -7,8 +7,9 @@ class VolumeFraction1PhaseParameters(AuxQuantity1PhaseParameters):
 class VolumeFraction1Phase(AuxQuantity1Phase):
   def __init__(self, params):
     AuxQuantity1Phase.__init__(self, params)
+    self.name = self.vf
 
   def compute(self, data, der):
-    data[self.vf] = 0 * data["vf1"] + 1.0
+    data[self.name] = 0 * data["vf1"] + 1.0
 
-    der[self.vf] = {"vf1" : 0 * data["vf1"]}
+    der[self.name] = {"vf1" : 0 * data["vf1"]}
