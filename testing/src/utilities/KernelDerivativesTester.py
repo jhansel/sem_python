@@ -4,7 +4,6 @@ import numpy as np
 from TestAux import TestAux, TestAuxParameters
 from enums import ModelType, VariableName
 from Factory import Factory
-from UniformMesh import UniformMesh, UniformMeshParameters
 from numeric_utilities import computeRelativeDifference
 
 class KernelDerivativesTester(object):
@@ -19,12 +18,11 @@ class KernelDerivativesTester(object):
     factory = Factory()
 
     # mesh
-    params = UniformMeshParameters()
-    params.set("n_cell", 1)
-    mesh = UniformMesh(params)
+    params = {"n_cell": 1}
+    meshes = [factory.createObject("UniformMesh", params)]
 
     # DoF handler
-    dof_handler_params = {"mesh": mesh}
+    dof_handler_params = {"meshes": meshes}
     if self.model_type == ModelType.OnePhase:
       dof_handler_class = "DoFHandler1Phase"
     elif self.model_type == ModelType.TwoPhaseNonInteracting:
@@ -41,7 +39,7 @@ class KernelDerivativesTester(object):
     quadrature = factory.createObject("Quadrature", quadrature_params)
 
     # FE values
-    fe_values_params = {"quadrature": quadrature, "dof_handler": dof_handler, "mesh": mesh}
+    fe_values_params = {"quadrature": quadrature, "dof_handler": dof_handler, "meshes": meshes}
     self.fe_values = factory.createObject("FEValues", fe_values_params)
 
     # kernel

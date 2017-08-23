@@ -1,0 +1,91 @@
+# This test tests multi-mesh capability. This test solves a 1-phase steady-state
+# problem on 2 meshes. The solution in each mesh should be identical. However,
+# it has been noted that despite equal residuals and Jacobians for each mesh,
+# the linear solver produces slightly different solutions.
+
+[Model]
+  model = 1phase
+[]
+
+[Physics]
+  gravity = 0
+[]
+
+[Mesh]
+  [mesh1]
+    type = UniformMesh
+    x_min = 0
+    length = 1
+    n_cell = 5
+  []
+  [mesh2]
+    type = UniformMesh
+    x_min = 1
+    length = 1
+    n_cell = 5
+  []
+[]
+
+[EoS]
+  [air]
+    type = IdealGasEoS
+    gamma = 1.4
+    R = 290
+  []
+[]
+
+[IC]
+  p = 1.0e5
+  T = 300
+  u = 1
+[]
+
+[BC]
+  [mesh1_inlet]
+    type = InletRhoUBC
+    rho = 5
+    u = 1
+    mesh_name = mesh1
+    boundary = left
+    phase = air
+  []
+  [mesh1_outlet]
+    type = OutletBC
+    p = 1.0e5
+    mesh_name = mesh1
+    boundary = right
+    phase = air
+  []
+  [mesh2_inlet]
+    type = InletRhoUBC
+    rho = 5
+    u = 1
+    mesh_name = mesh2
+    boundary = left
+    phase = air
+  []
+  [mesh2_outlet]
+    type = OutletBC
+    p = 1.0e5
+    mesh_name = mesh2
+    boundary = right
+    phase = air
+  []
+[]
+
+[Executioner]
+  type = SteadyStateExecutioner
+[]
+
+[NonlinearSolver]
+  verbose = False
+  absolute_tolerance = 1e-5
+  max_iterations = 10
+[]
+
+[Output]
+  plot_solution = False
+  print_solution = False
+  save_solution = True
+  solution_file = tests/mesh/multi_mesh/solution.csv
+[]

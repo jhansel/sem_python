@@ -18,7 +18,7 @@ class DoFHandler2PhaseNonInteracting(DoFHandler):
     # create array for volume fraction
     self.vf1 = np.zeros(self.n_node)
     for k in xrange(self.n_node):
-      self.vf1[k] = initial_vf1(self.mesh.x[k])
+      self.vf1[k] = initial_vf1(self.x[k])
 
   def getVolumeFraction(self, U, k):
     return self.vf1[k]

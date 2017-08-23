@@ -46,10 +46,30 @@ def run(input_file, mods=list()):
   model = factory.createObject("Model", model_param_data)
   model_type = model.model_type
 
-  # mesh
-  mesh_param_data = input_file_parser.getBlockData("Mesh")
-  mesh_class = mesh_param_data["type"]
-  mesh = factory.createObject(mesh_class, mesh_param_data)
+  # mesh(es)
+  mesh_subblocks = input_file_parser.getSubblockNames("Mesh")
+  if len(mesh_subblocks) == 0:
+    # single mesh; no subblock is required
+    mesh_param_data = input_file_parser.getBlockData("Mesh")
+    mesh_class = mesh_param_data["type"]
+    mesh = factory.createObject(mesh_class, mesh_param_data)
+    meshes = [mesh]
+  else:
+    # multiple meshes; subblocks are required
+    meshes = list()
+    for mesh_subblock in mesh_subblocks:
+      mesh_param_data = input_file_parser.getSubblockData("Mesh", mesh_subblock)
+      mesh_class = mesh_param_data["type"]
+      mesh_param_data["name"] = mesh_subblock
+      mesh = factory.createObject(mesh_class, mesh_param_data)
+      meshes.append(mesh)
+  # check that no meshes have the same name
+  mesh_names = list()
+  for mesh in meshes:
+    if mesh.name in mesh_names:
+      error("Multiple meshes with the name '" + mesh.name + "'.")
+    else:
+      mesh_names.append(mesh.name)
 
   # equations of state
   eos_subblocks = input_file_parser.getSubblockNames("EoS")
@@ -75,7 +95,7 @@ def run(input_file, mods=list()):
     ics = factory.createObject("InitialConditions2Phase", ic_param_data)
 
   # DoF handler
-  dof_handler_params = {"mesh": mesh}
+  dof_handler_params = {"meshes": meshes}
   if model_type == ModelType.OnePhase:
     dof_handler_class = "DoFHandler1Phase"
   elif model_type == ModelType.TwoPhaseNonInteracting:
@@ -91,14 +111,21 @@ def run(input_file, mods=list()):
   for bc_subblock in bc_subblocks:
     bc_param_data = input_file_parser.getSubblockData("BC", bc_subblock)
     bc_class = bc_param_data["type"]
+
+    # if there is only 1 mesh, add the mesh parameter if not supplied already
+    if len(meshes) == 1:
+      if "mesh_name" not in bc_param_data:
+        bc_param_data["mesh_name"] = meshes[0].name
+
     if "phase" in bc_param_data:
       bc_param_data["phase"] = phase_name_to_index[bc_param_data["phase"]]
     bc_param_data["dof_handler"] = dof_handler
     bc_param_data["eos"] = eos
+
     bc = factory.createObject(bc_class, bc_param_data)
     bcs.append(bc)
 
-  # interace closures
+  # inteface closures
   if model_type == ModelType.TwoPhase:
     interface_closures_params = input_file_parser.getBlockData("InterfaceClosures")
     interface_closures_params["factory"] = factory
@@ -136,7 +163,7 @@ def run(input_file, mods=list()):
   executioner_param_data["interface_closures"] = interface_closures
   executioner_param_data["gravity"] = gravity
   executioner_param_data["dof_handler"] = dof_handler
-  executioner_param_data["mesh"] = mesh
+  executioner_param_data["meshes"] = meshes
   executioner_param_data["nonlinear_solver_params"] = nonlinear_solver_params
   executioner_param_data["stabilization"] = stabilization
   executioner_param_data["factory"] = factory
@@ -148,7 +175,7 @@ def run(input_file, mods=list()):
   postprocessor_param_data["model"] = model
   postprocessor_param_data["eos"] = eos
   postprocessor_param_data["dof_handler"] = dof_handler
-  postprocessor_param_data["mesh"] = mesh
+  postprocessor_param_data["meshes"] = meshes
   postprocessor = factory.createObject("Postprocessor", postprocessor_param_data)
   postprocessor.run(U)
 

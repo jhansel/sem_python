@@ -3,22 +3,25 @@ from Parameters import Parameters
 class BCParameters(Parameters):
   def __init__(self):
     Parameters.__init__(self)
+    self.registerStringParameter("mesh_name", "Name of the mesh for which this BC applies")
     self.registerStringSelectionParameter("boundary", ["left", "right"], "Which boundary to apply boundary condition on")
     self.registerParameter("dof_handler", "Degree of freedom handler")
     self.registerParameter("eos", "Equation of state")
 
 class BC(object):
   def __init__(self, params):
+    self.mesh_name = params.get("mesh_name")
     self.boundary = params.get("boundary")
     self.dof_handler = params.get("dof_handler")
-    self.model_type = self.dof_handler.model_type
     self.eos = params.get("eos")
+
+    self.model_type = self.dof_handler.model_type
     if self.boundary == "left":
       self.nx = -1.0
-      self.k = 0
+      self.k = self.dof_handler.getLeftNodeIndex(self.mesh_name)
     else:
       self.nx = 1.0
-      self.k = self.dof_handler.n_cell
+      self.k = self.dof_handler.getRightNodeIndex(self.mesh_name)
 
   def applyStrongBCNonlinearSystem(self, U, r, J):
     pass

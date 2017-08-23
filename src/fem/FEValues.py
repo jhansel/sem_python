@@ -7,13 +7,13 @@ class FEValuesParameters(Parameters):
     Parameters.__init__(self)
     self.registerParameter("quadrature", "Quadrature")
     self.registerParameter("dof_handler", "Degree of freedom handler")
-    self.registerParameter("mesh", "Mesh")
+    self.registerParameter("meshes", "List of meshes")
 
 class FEValues(object):
   def __init__(self, params):
     self.quadrature = params.get("quadrature")
     self.dof_handler = params.get("dof_handler")
-    self.mesh = params.get("mesh")
+    self.meshes = params.get("meshes")
 
     self.phi = np.zeros(shape=(self.dof_handler.n_dof_per_cell_per_var, self.quadrature.n_q))
     self.grad_phi = np.zeros(shape=(self.dof_handler.n_dof_per_cell_per_var, self.quadrature.n_q))
@@ -33,11 +33,11 @@ class FEValues(object):
     return self.phi
 
   def get_grad_phi(self, e):
-    Jac = self.quadrature.Jac_divided_by_h * self.mesh.h[e]
+    Jac = self.quadrature.Jac_divided_by_h * self.dof_handler.h[e]
     return self.grad_phi / Jac
 
   def get_JxW(self, e):
-    return [self.quadrature.JxW_divided_by_h[q] * self.mesh.h[e] for q in xrange(self.quadrature.n_q)]
+    return [self.quadrature.JxW_divided_by_h[q] * self.dof_handler.h[e] for q in xrange(self.quadrature.n_q)]
 
   def computeLocalVolumeFractionSolution(self, U, e):
     vf1 = np.zeros(self.quadrature.n_q)
@@ -50,7 +50,7 @@ class FEValues(object):
 
   def computeLocalVolumeFractionSolutionGradient(self, U, e):
     vf1_grad = np.zeros(self.quadrature.n_q)
-    Jac = self.quadrature.Jac_divided_by_h * self.mesh.h[e]
+    Jac = self.quadrature.Jac_divided_by_h * self.dof_handler.h[e]
     for q in xrange(self.quadrature.n_q):
       for k_local in xrange(self.dof_handler.n_dof_per_cell_per_var):
         k = self.dof_handler.k(e, k_local)
@@ -71,7 +71,7 @@ class FEValues(object):
   def computeLocalSolutionGradient(self, U, variable_name, phase, e):
     var_index = self.dof_handler.variable_index[variable_name][phase]
     solution_grad = np.zeros(self.quadrature.n_q)
-    Jac = self.quadrature.Jac_divided_by_h * self.mesh.h[e]
+    Jac = self.quadrature.Jac_divided_by_h * self.dof_handler.h[e]
     for q in xrange(self.quadrature.n_q):
       for k_local in xrange(self.dof_handler.n_dof_per_cell_per_var):
         k = self.dof_handler.k(e, k_local)

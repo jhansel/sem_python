@@ -8,17 +8,51 @@ from Parameters import Parameters
 class DoFHandlerParameters(Parameters):
   def __init__(self):
     Parameters.__init__(self)
-    self.registerParameter("mesh", "Mesh")
+    self.registerParameter("meshes", "List of meshes")
 
 class DoFHandler(object):
   __metaclass__ = ABCMeta
   def __init__(self, params):
-    self.mesh = params.get("mesh")
+    self.meshes = params.get("meshes")
 
-    # counts
-    self.n_cell = self.mesh.n_cell
-    self.n_dof_per_var = self.n_cell + 1
-    self.n_node = self.n_dof_per_var
+    # number of cells and nodes
+    self.n_cell = 0
+    self.n_node = 0
+    for mesh in self.meshes:
+      self.n_cell += mesh.n_cell
+      self.n_node += mesh.n_cell + 1
+
+    # create the x-position array, element-size array, and element-index to mesh-index array
+    n_meshes = len(self.meshes)
+    self.mesh_name_to_mesh_index = dict()
+    self.k_left = [0] * n_meshes
+    self.k_right = [0] * n_meshes
+    self.x = np.zeros(self.n_node)
+    self.h = np.zeros(self.n_cell)
+    self.elem_to_mesh_index = [0] * self.n_cell
+    k_begin = 0
+    elem_begin = 0
+    for i_mesh, mesh in enumerate(self.meshes):
+      self.mesh_name_to_mesh_index[mesh.name] = i_mesh
+      mesh_n_node = mesh.n_cell + 1
+      k_end = k_begin + mesh_n_node - 1
+      self.k_left[i_mesh] = k_begin
+      self.k_right[i_mesh] = k_end
+      elem_end = elem_begin + mesh.n_cell - 1
+      self.x[k_begin:k_end+1] = mesh.x
+      self.h[elem_begin:elem_end+1] = mesh.h
+      self.elem_to_mesh_index[elem_begin:elem_end+1] = [i_mesh] * mesh.n_cell
+      k_begin += mesh_n_node
+      elem_begin += mesh.n_cell
+
+    # determine min and max x-positions
+    self.x_min = self.meshes[0].x_min
+    self.x_max = self.meshes[0].x_max
+    for mesh in self.meshes:
+      self.x_min = min(self.x_min, mesh.x_min)
+      self.x_max = max(self.x_max, mesh.x_max)
+
+    # number of DoFs per cell per variable (2 for linear FEM)
     self.n_dof_per_cell_per_var = 2
 
   def setup(self):
@@ -76,15 +110,31 @@ class DoFHandler(object):
 
     # total number of DoFs
     self.n_dof_per_cell = self.n_dof_per_cell_per_var * self.n_var
-    self.n_dof = self.n_dof_per_var * self.n_var
+    self.n_dof = self.n_node * self.n_var
 
-  # DoF index
+  ## Returns global DoF index corresponding to a node and variable
+  # @param[in] k  global node index
+  # @param[in] var_index  variable index
   def i(self, k, var_index):
     return k * self.n_var + var_index
 
-  # global node index
+  ## Returns global node index for an element index and local node index
+  # @param[in] e  element index
+  # @param[in] k_local  local node index
   def k(self, e, k_local):
-    return e + k_local
+    return e + k_local + self.elem_to_mesh_index[e]
+
+  ## Returns the left node index for a mesh
+  # @param[in] mesh_name  name of the mesh
+  def getLeftNodeIndex(self, mesh_name):
+    i_mesh = self.mesh_name_to_mesh_index[mesh_name]
+    return self.k_left[i_mesh]
+
+  ## Returns the right node index for a mesh
+  # @param[in] mesh_name  name of the mesh
+  def getRightNodeIndex(self, mesh_name):
+    i_mesh = self.mesh_name_to_mesh_index[mesh_name]
+    return self.k_right[i_mesh]
 
   ## Converts variable enum to its string name with phase index
   # @param[in] var  variable enum
@@ -111,11 +161,15 @@ class DoFHandler(object):
 
   # aggregates local vector into global vector
   def aggregateLocalVector(self, r, r_cell, e):
-    r[e * self.n_var : (e+2) * self.n_var] += r_cell
+    i_min = self.i(self.k(e, 0), 0)
+    i_max = self.i(self.k(e, 1), self.n_var - 1)
+    r[i_min:i_max+1] += r_cell
 
   # aggregates local matrix into global matrix
   def aggregateLocalMatrix(self, J, J_cell, e):
-    J[e * self.n_var : (e+2) * self.n_var, e * self.n_var : (e+2) * self.n_var] += J_cell
+    i_min = self.i(self.k(e, 0), 0)
+    i_max = self.i(self.k(e, 1), self.n_var - 1)
+    J[i_min:i_max+1, i_min:i_max+1] += J_cell
 
   ## Applies scaling factors to the nonlinear residual based on variable
   # @param[in,out] r  nonlinear residual vector to modify

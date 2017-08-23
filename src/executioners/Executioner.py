@@ -16,7 +16,7 @@ class ExecutionerParameters(Parameters):
     self.registerParameter("interface_closures", "Interface closures")
     self.registerFloatParameter("gravity", "Acceleration due to gravity")
     self.registerParameter("dof_handler", "Degree of freedom handler")
-    self.registerParameter("mesh", "Mesh")
+    self.registerParameter("meshes", "List of meshes")
     self.registerParameter("nonlinear_solver_params", "Nonlinear solver parameters")
     self.registerParameter("stabilization", "Stabilization")
     self.registerParameter("factory", "Factory")
@@ -31,7 +31,7 @@ class Executioner(object):
     interface_closures = params.get("interface_closures")
     self.gravity = params.get("gravity")
     self.dof_handler = params.get("dof_handler")
-    self.mesh = params.get("mesh")
+    self.meshes = params.get("meshes")
     self.nonlinear_solver_params = params.get("nonlinear_solver_params")
     self.factory = params.get("factory")
     stabilization = params.get("stabilization")
@@ -42,7 +42,7 @@ class Executioner(object):
     self.quadrature = self.factory.createObject("Quadrature", quadrature_params)
 
     # FE values
-    fe_values_params = {"quadrature": self.quadrature, "dof_handler": self.dof_handler, "mesh": self.mesh}
+    fe_values_params = {"quadrature": self.quadrature, "dof_handler": self.dof_handler, "meshes": self.meshes}
     self.fe_values = self.factory.createObject("FEValues", fe_values_params)
 
     # initialize the solution
@@ -103,13 +103,13 @@ class Executioner(object):
     arhou_index = self.dof_handler.variable_index[VariableName.ARhoU][phase]
     arhoE_index = self.dof_handler.variable_index[VariableName.ARhoE][phase]
     for k in xrange(self.dof_handler.n_node):
-      vf = initial_vf(self.mesh.x[k])
-      p = initial_p(self.mesh.x[k])
-      u = initial_u(self.mesh.x[k])
+      vf = initial_vf(self.dof_handler.x[k])
+      p = initial_p(self.dof_handler.x[k])
+      u = initial_u(self.dof_handler.x[k])
       if ics.specified_rho:
-        rho = initial_rho(self.mesh.x[k])
+        rho = initial_rho(self.dof_handler.x[k])
       else:
-        T = initial_T(self.mesh.x[k])
+        T = initial_T(self.dof_handler.x[k])
         rho = eos_phase.rho(p, T)
       e = eos_phase.e(1.0 / rho, p)[0]
       E = e + 0.5 * u * u
@@ -120,7 +120,7 @@ class Executioner(object):
   def initializeVolumeFractionSolution(self, ics):
     vf1_index = self.dof_handler.variable_index[VariableName.VF1][0]
     for k in xrange(self.dof_handler.n_node):
-      self.U[self.dof_handler.i(k, vf1_index)] = ics.vf1(self.mesh.x[k])
+      self.U[self.dof_handler.i(k, vf1_index)] = ics.vf1(self.dof_handler.x[k])
 
   def createIndependentPhaseAuxQuantities(self, phase):
     # create list of aux quantities to create
@@ -234,7 +234,7 @@ class Executioner(object):
 
       data["grad_phi"] = self.fe_values.get_grad_phi(elem)
       data["JxW"] = self.fe_values.get_JxW(elem)
-      data["dx"] = self.mesh.h[elem]
+      data["dx"] = self.dof_handler.h[elem]
 
       # compute solution
       self.computeLocalSolution(U, elem, data)

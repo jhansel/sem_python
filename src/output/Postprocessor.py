@@ -20,7 +20,7 @@ class PostprocessorParameters(Parameters):
     self.registerParameter("model", "Model")
     self.registerParameter("eos", "Equation of state")
     self.registerParameter("dof_handler", "Degree of freedom handler")
-    self.registerParameter("mesh", "Mesh")
+    self.registerParameter("meshes", "List of meshes")
 
 class Postprocessor(object):
   def __init__(self, params):
@@ -35,7 +35,7 @@ class Postprocessor(object):
     self.model_type = model.model_type
     self.eos = params.get("eos")
     self.dof_handler = params.get("dof_handler")
-    self.mesh = params.get("mesh")
+    self.meshes = params.get("meshes")
 
   def run(self, U):
     vf1, arho1, arhou1, arhoE1 = self.dof_handler.getPhaseSolution(U, 0)
@@ -82,7 +82,7 @@ class Postprocessor(object):
     if self.save_solution:
       # create the data dictionary
       data = OrderedDict()
-      data["x"] = self.mesh.x
+      data["x"] = self.dof_handler.x
       if self.model_type == ModelType.OnePhase:
         data["rho"] = rho1
         data["u"] = u1
@@ -105,50 +105,50 @@ class Postprocessor(object):
       x_label = "Position, $x$"
       if (self.model_type == ModelType.OnePhase):
         plotter = Plotter("", "Density, $\\rho$", (2,2))
-        plotter.setXRange(self.mesh.x_min, self.mesh.x_max)
-        plotter.addSet(self.mesh.x, rho1, "$\\rho$")
+        plotter.setXRange(self.dof_handler.x_min, self.dof_handler.x_max)
+        plotter.addSet(self.dof_handler.x, rho1, "$\\rho$")
         plotter.fixNearConstantPlot()
         plotter.nextSubplot("", "Velocity, $u$")
-        plotter.addSet(self.mesh.x, u1, "$u$")
+        plotter.addSet(self.dof_handler.x, u1, "$u$")
         plotter.fixNearConstantPlot()
         plotter.nextSubplot(x_label, "Pressure, $p$ [kPa]")
-        plotter.addSet(self.mesh.x, p1, "$p$", scale=1e-3)
+        plotter.addSet(self.dof_handler.x, p1, "$p$", scale=1e-3)
         plotter.fixNearConstantPlot()
         plotter.nextSubplot(x_label, "Temperature, $T$ [K]")
-        plotter.addSet(self.mesh.x, T1, "$T$")
+        plotter.addSet(self.dof_handler.x, T1, "$T$")
         plotter.fixNearConstantPlot()
       elif (self.model_type == ModelType.TwoPhaseNonInteracting):
         plotter = Plotter(x_label, "Density, $\\rho$", (2,2))
-        plotter.setXRange(self.mesh.x_min, self.mesh.x_max)
-        plotter.addSet(self.mesh.x, rho1, "$\\rho_1$")
+        plotter.setXRange(self.dof_handler.x_min, self.dof_handler.x_max)
+        plotter.addSet(self.dof_handler.x, rho1, "$\\rho_1$")
         plotter.fixNearConstantPlot()
         plotter.nextSubplot(x_label, "Density, $\\rho$")
-        plotter.addSet(self.mesh.x, rho2, "$\\rho_2$")
+        plotter.addSet(self.dof_handler.x, rho2, "$\\rho_2$")
         plotter.fixNearConstantPlot()
         plotter.nextSubplot(x_label, "Velocity, $u$")
-        plotter.addSet(self.mesh.x, u1, "$u_1$")
-        plotter.addSet(self.mesh.x, u2, "$u_2$")
+        plotter.addSet(self.dof_handler.x, u1, "$u_1$")
+        plotter.addSet(self.dof_handler.x, u2, "$u_2$")
         plotter.fixNearConstantPlot()
         plotter.nextSubplot(x_label, "Pressure, $p$ [kPa]")
-        plotter.addSet(self.mesh.x, p1, "$p_1$", scale=1e-3)
-        plotter.addSet(self.mesh.x, p2, "$p_2$", scale=1e-3)
+        plotter.addSet(self.dof_handler.x, p1, "$p_1$", scale=1e-3)
+        plotter.addSet(self.dof_handler.x, p2, "$p_2$", scale=1e-3)
         plotter.fixNearConstantPlot()
       elif (self.model_type == ModelType.TwoPhase):
         plotter = Plotter(x_label, "Volume Fraction, $\\alpha$", (2,2))
-        plotter.setXRange(self.mesh.x_min, self.mesh.x_max)
-        plotter.addSet(self.mesh.x, vf1, "$\\alpha_1$")
+        plotter.setXRange(self.dof_handler.x_min, self.dof_handler.x_max)
+        plotter.addSet(self.dof_handler.x, vf1, "$\\alpha_1$")
         plotter.fixNearConstantPlot()
         plotter.nextSubplot(x_label, "Density, $\\rho$")
-        plotter.addSet(self.mesh.x, rho1, "$\\rho_1$")
-        plotter.addSet(self.mesh.x, rho2, "$\\rho_2$")
+        plotter.addSet(self.dof_handler.x, rho1, "$\\rho_1$")
+        plotter.addSet(self.dof_handler.x, rho2, "$\\rho_2$")
         plotter.fixNearConstantPlot()
         plotter.nextSubplot(x_label, "Velocity, $u$")
-        plotter.addSet(self.mesh.x, u1, "$u_1$")
-        plotter.addSet(self.mesh.x, u2, "$u_2$")
+        plotter.addSet(self.dof_handler.x, u1, "$u_1$")
+        plotter.addSet(self.dof_handler.x, u2, "$u_2$")
         plotter.fixNearConstantPlot()
         plotter.nextSubplot(x_label, "Pressure, $p$ [kPa]")
-        plotter.addSet(self.mesh.x, p1, "$p_1$", scale=1e-3)
-        plotter.addSet(self.mesh.x, p2, "$p_2$", scale=1e-3)
+        plotter.addSet(self.dof_handler.x, p1, "$p_1$", scale=1e-3)
+        plotter.addSet(self.dof_handler.x, p2, "$p_2$", scale=1e-3)
         plotter.fixNearConstantPlot()
 
       # save plot
