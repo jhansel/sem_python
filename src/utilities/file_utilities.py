@@ -1,4 +1,5 @@
 import csv
+import numpy as np
 import os.path
 
 from error_utilities import error
@@ -28,3 +29,31 @@ def writeCSVFile(data, filename, precision):
     for i,item in enumerate(data[key_list[0]]):
       row_data = [format_string % (data[key][i]) for key in data]
       writer.writerow(row_data)
+
+## Reads data from a CSV file
+# @param inputfile  name of the file to read
+# @return dictionary of lists of each variable
+def readCSVData(inputfile):
+  first_line_processed = False
+  data = dict()
+  variable_name_to_index = dict()
+
+  # read data from input file into lists
+  with open(inputfile) as csvfile:
+    reader = csv.reader(csvfile, delimiter=',')
+    for row in reader:
+      if (row):
+        if (first_line_processed):
+          for key in data:
+            data[key].append(float(row[variable_name_to_index[key]]))
+        else:
+          for i,entry in enumerate(row):
+            variable_name_to_index[entry] = i
+            data[entry] = list()
+          first_line_processed = True
+
+  # convert lists to numpy arrays
+  for key in data:
+    data[key] = np.array(data[key])
+
+  return data

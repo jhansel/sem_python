@@ -1,15 +1,16 @@
 import unittest
-import filecmp
 
 import sem
 from InputFileModification import InputFileModification
+from CSVTester import CSVTester
 
 class AmbrosoInterfaceClosuresTester(unittest.TestCase):
   ## Tests the solution
   def testSolution(self):
     test_dir = "tests/closures/ambroso_interface_closures/"
     sem.run(test_dir + "ambroso_interface_closures.in")
-    self.assertTrue(filecmp.cmp(test_dir + "solution.csv", test_dir + "gold/solution.csv"))
+    csv_tester = CSVTester(test_dir, "solution.csv")
+    self.assertTrue(csv_tester.filesAreEqual())
 
 if __name__ == "__main__":
   mods = list()
