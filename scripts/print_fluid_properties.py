@@ -14,20 +14,8 @@ Arguments:
 
 from docopt import docopt
 
-import os
-import sys
-base_dir = os.environ["SEM_PYTHON_DIR"]
-
-# base
-sys.path.append(base_dir + "src/base")
 from Factory import Factory
-
-# closures
-sys.path.append(base_dir + "src/closures")
 from ThermodynamicState import ThermodynamicState
-
-# input
-sys.path.append(base_dir + "src/input")
 from InputFileParser import InputFileParser
 
 ## Runs the code with the given input file

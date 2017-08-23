@@ -33,7 +33,7 @@ class ThermodynamicState(object):
   # @param[in] eos  Equation of state object
   def computeRemainingProperties(self, eos):
     if self.provided["p"] and self.provided["T"]:
-      self.values["rho"] = eos.rho(self.values["p"], self.values["T"])[0]
+      self.values["rho"] = eos.rho(self.values["p"], self.values["T"])
       self.values["v"] = 1.0 / self.values["rho"]
       self.values["e"] = eos.e(self.values["v"], self.values["p"])[0]
     elif self.provided["p"] and self.provided["rho"]:
