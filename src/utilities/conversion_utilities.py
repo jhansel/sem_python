@@ -1,4 +1,4 @@
-from numpy import sin, cos, exp, log
+from numpy import sin, cos, exp, log, pi
 import parser
 
 from error_utilities import error
