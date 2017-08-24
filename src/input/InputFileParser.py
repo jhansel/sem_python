@@ -16,9 +16,12 @@ class InputFileParser(object):
     self.subblock_data = dict()
     self.subblock_list = dict()
 
+    self.blocks_to_delete = list()
+    self.subblocks_to_delete = dict()
+
     # regular expressions
     self.comment_regex = re.compile(r'\#.*')
-    self.block_begin_regex = re.compile(r'\[\w+\]')
+    self.block_begin_regex = re.compile(r'-?\[\w+\]')
     self.block_end_regex = re.compile(r'\[\]')
     self.input_entry_regex = re.compile(r'\w+\s*=\s*\S+')
 
@@ -63,6 +66,13 @@ class InputFileParser(object):
   ## Processes a line matching a block begin marker
   # @param line  line to be processed
   def processBlockBegin(self, line):
+    # check if this is a deletion block
+    if line[0] == "-":
+      is_deletion_block = True
+      line = line.lstrip("-")
+    else:
+      is_deletion_block = False
+
     # increment block nesting level
     self.level += 1
 
@@ -74,10 +84,10 @@ class InputFileParser(object):
     block_or_subblock = line.lstrip("[").rstrip("]")
 
     # determine whether a block or sub-block was entered
-    if self.level == 1:
+    if self.level == 1: # block
       entered_block = True
       self.block = block_or_subblock
-    else:
+    else: # sub-block
       entered_block = False
       self.subblock = block_or_subblock
 
@@ -87,17 +97,28 @@ class InputFileParser(object):
       if self.block in self.block_data:
         inputError(self.i_line, "The block name '" + self.block + "' already exists.")
       else:
-        self.block_data[self.block] = dict()
-        self.subblock_data[self.block] = dict()
-        self.subblock_list[self.block] = list()
+        if is_deletion_block:
+          self.blocks_to_delete.append(self.block)
+        else:
+          self.block_data[self.block] = dict()
+          self.subblock_data[self.block] = dict()
+          self.subblock_list[self.block] = list()
+          self.subblocks_to_delete[self.block] = list()
     # else a sub-block was entered
     else:
       # check that sub-block name has not already been used
       if self.subblock in self.subblock_data[self.block]:
         inputError(self.i_line, "The sub-block name '" + self.subblock + "' has already been used.")
       else:
-        self.subblock_data[self.block][self.subblock] = dict()
-        self.subblock_list[self.block].append(self.subblock)
+        if is_deletion_block:
+          self.subblocks_to_delete[self.block].append(self.subblock)
+        else:
+          self.subblock_data[self.block][self.subblock] = dict()
+          self.subblock_list[self.block].append(self.subblock)
+
+    # decrement block nesting level if a deletion block
+    if is_deletion_block:
+      self.level -= 1
 
   ## Processes a line matching a block end marker
   def processBlockEnd(self):
@@ -148,6 +169,40 @@ class InputFileParser(object):
     value = mod.value
     self.assertBlockExists(block)
     self.block_data[block][param] = value
+
+  ## Applies modifications to data from a differential input file parser
+  # @param input_file_parser_diff  differential input file parser
+  def applyDifferentialInputFileParser(self, input_file_parser_diff):
+    # apply block parameter value changes
+    for block in input_file_parser_diff.block_data:
+      if block not in self.block_data:
+        self.block_data[block] = dict()
+      for parameter in input_file_parser_diff.block_data[block]:
+        self.block_data[block][parameter] = input_file_parser_diff.block_data[block][parameter]
+
+    # apply sub-block parameter value changes
+    for block in input_file_parser_diff.subblock_data:
+      if block not in self.subblock_data:
+        self.subblock_data[block] = dict()
+      for subblock in input_file_parser_diff.subblock_data[block]:
+        if subblock not in self.subblock_data[block]:
+          self.subblock_data[block][subblock] = dict()
+        for parameter in input_file_parser_diff.subblock_data[block][subblock]:
+          self.subblock_data[block][subblock][parameter] = input_file_parser_diff.subblock_data[block][subblock][parameter]
+
+    # delete blocks
+    for block in input_file_parser_diff.blocks_to_delete:
+      del self.block_data[block]
+      # delete its sub-blocks, if any
+      if block in self.subblock_data:
+        del self.subblock_data[block]
+        del self.subblock_list[block]
+
+    # delete sub-blocks
+    for block in input_file_parser_diff.subblocks_to_delete:
+      for subblock in input_file_parser_diff.subblocks_to_delete[block]:
+        del self.subblock_data[block][subblock]
+        self.subblock_list[block].remove(subblock)
 
   ## Gets dictionary of a block's data
   # @param block  block from which to take data

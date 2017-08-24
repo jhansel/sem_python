@@ -31,8 +31,22 @@ from error_utilities import error
 # @param mods  input file modifications
 def run(input_file, mods=list()):
   # parse the input file
-  input_file_parser = InputFileParser()
-  input_file_parser.parse(input_file)
+  input_file_parser_original = InputFileParser()
+  input_file_parser_original.parse(input_file)
+
+  # check if the input file was a differential input file
+  if input_file_parser_original.blockExists("BaseInputFile"):
+    # get the name of the base input file and parse it
+    base_input_file = input_file_parser_original.getBlockData("BaseInputFile")["base"]
+    input_file_parser_base = InputFileParser()
+    input_file_parser_base.parse(base_input_file)
+
+    # apply modifications to base input file parser
+    input_file_parser_base.applyDifferentialInputFileParser(input_file_parser_original)
+
+    input_file_parser = input_file_parser_base
+  else:
+    input_file_parser = input_file_parser_original
 
   # apply modifications to input parameters, if any
   for mod in mods:
@@ -75,10 +89,10 @@ def run(input_file, mods=list()):
   eos_subblocks = input_file_parser.getSubblockNames("EoS")
   if model_type == ModelType.OnePhase:
     if len(eos_subblocks) != 1:
-      error("Model type '" + model_type + "' should have exactly 1 equation of state.")
+      error("Single-phase flow should have exactly 1 equation of state.")
   else:
     if len(eos_subblocks) != 2:
-      error("Model type '" + model_type + "' should have exactly 2 equations of state.")
+      error("Two-phase flow should have exactly 2 equations of state.")
   eos = list()
   phase_name_to_index = dict()
   for k, eos_subblock in enumerate(eos_subblocks):
