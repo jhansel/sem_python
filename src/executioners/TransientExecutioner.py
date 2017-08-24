@@ -138,7 +138,9 @@ class TransientExecutioner(Executioner):
 
   def computeTimeStepSizeFromCFL(self):
     # determine minimum cell width
-    dx_min = self.mesh.getMinimumCellWidth()
+    dx_min = self.meshes[0].getMinimumCellWidth()
+    for mesh in self.meshes:
+      dx_min = min(dx_min, mesh.getMinimumCellWidth())
 
     # determine maximum wave speed
     data = dict()
