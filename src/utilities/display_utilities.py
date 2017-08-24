@@ -37,3 +37,17 @@ def printMatrixDifference(A, red_threshold=None, yellow_threshold=None):
         sys.stdout.write("   %11.4e" % (A[i,j]))
     sys.stdout.write("\n")
   sys.stdout.flush()
+
+def printDoFVector(U, dof_handler):
+  n_var = dof_handler.n_var
+  header_items = ("i",) + tuple(dof_handler.variable_names)
+  header_format = "%4s" + " %12s" * n_var
+  entry_format = "%4i" + " %12.3e" * n_var
+  print header_format % header_items
+  for k in xrange(dof_handler.n_node):
+    items_k = list()
+    for m in xrange(n_var):
+      items_k.append(U[k * n_var + m])
+    entry_items = (k,) + tuple(items_k)
+    print entry_format % entry_items
+  print ""

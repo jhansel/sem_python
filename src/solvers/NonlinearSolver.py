@@ -6,7 +6,7 @@ from termcolor import colored
 
 from enums import VariableName
 from Parameters import Parameters
-from display_utilities import computeRelativeDifferenceMatrix, printMatrix, printMatrixDifference
+from display_utilities import computeRelativeDifferenceMatrix, printMatrix, printMatrixDifference, printDoFVector
 from error_utilities import errorNoTraceback
 
 class NonlinearSolverParameters(Parameters):
@@ -134,17 +134,7 @@ class NonlinearSolver(object):
           print ""
         # print residual vector
         if self.print_residual:
-          header_items = ("i",) + tuple(self.dof_handler.variable_names)
-          header_format = "%4s" + " %12s" * self.dof_handler.n_var
-          entry_format = "%4i" + " %12.3e" * self.dof_handler.n_var
-          print header_format % header_items
-          for k in xrange(self.dof_handler.n_node):
-            res_k = list()
-            for m in xrange(self.dof_handler.n_var):
-              res_k.append(r_scaled[k * self.dof_handler.n_var + m])
-            entry_items = (k,) + tuple(res_k)
-            print entry_format % entry_items
-          print ""
+          printDoFVector(r_scaled, self.dof_handler)
 
       # check for convergence
       if r_norm_abs <= self.absolute_tol or r_norm_rel <= self.relative_tol:
