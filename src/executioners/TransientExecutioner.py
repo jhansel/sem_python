@@ -199,10 +199,10 @@ class TransientExecutioner(Executioner):
       try:
         # solve the time step
         self.solve()
-      except:
+      except Exception as exception:
         # report failure and exit transient
         if self.verbose:
-          print colored("Time step failed.", "red")
+          print colored("Time step failed: " + str(exception), "red")
         return self.U_old
 
       # save old solution and increment time step index
