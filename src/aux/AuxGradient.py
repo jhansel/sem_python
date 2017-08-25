@@ -6,6 +6,7 @@ class AuxGradientParameters(AuxQuantityParameters):
   def __init__(self):
     AuxQuantityParameters.__init__(self)
     self.registerStringParameter("aux", "Name of aux for which the gradient should be computed")
+    self.registerParameter("variable_names", "List of names of solution variables that this aux may depend upon")
 
 ## Gradient of an aux quantity
 #
@@ -24,13 +25,14 @@ class AuxGradient(AuxQuantity):
     AuxQuantity.__init__(self, params)
     self.aux = params.get("aux")
     self.name = "grad_" + self.aux
+    self.variable_names = params.get("variable_names")
 
   def compute(self, data, der):
     der_aux = der[self.aux]
 
     grad_aux = 0 * data[self.aux]
     grad_aux_der = dict()
-    for var in der_aux:
+    for var in self.variable_names:
       grad_aux += der_aux[var] * data["grad_" + var]
       grad_aux_der["grad_" + var] = der_aux[var]
 

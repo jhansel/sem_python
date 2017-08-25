@@ -7,6 +7,7 @@ from AuxDerivativesTester import AuxDerivativesTester
 # gradient of test aux
 params = AuxGradientParameters()
 params.set("aux", "testaux")
+params.set("variable_names", ["var1", "var2"])
 test_aux = AuxGradient(params)
 
 # test aux
