@@ -196,14 +196,8 @@ class TransientExecutioner(Executioner):
       if self.verbose:
         print "Time step %i: t = %g, dt = %g" % (time_step, t, self.dt)
 
-      try:
-        # solve the time step
-        self.solve()
-      except Exception as exception:
-        # report failure and exit transient
-        if self.verbose:
-          print colored("Time step failed: " + str(exception), "red")
-        return self.U_old
+      # solve the time step
+      self.solve()
 
       # save old solution and increment time step index
       self.U_old = deepcopy(self.U)
