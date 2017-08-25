@@ -46,6 +46,7 @@ class JunctionTester(object):
     junction_params["mesh_names"] = " ".join([mesh.name for mesh in meshes])
     junction_params["mesh_sides"] = "right left"
     junction_params["dof_handler"] = dof_handler
+    junction_params["eos_list"] = eos_list
     junction_parameters = factory.createParametersObject(self.junction_name)
     for param in junction_params:
       junction_parameters.set(param, junction_params[param])

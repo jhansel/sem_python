@@ -45,13 +45,13 @@ class BCTester(object):
     eos_params = dict()
     eos_params["gamma"] = 1.4
     eos_params["R"] = 2.0
-    eos = factory.createObject("IdealGasEoS", eos_params)
+    eos_list = [factory.createObject("IdealGasEoS", eos_params)]
 
     # BC
     bc_params["mesh_name"] = meshes[0].name
     bc_params["boundary"] = boundary
     bc_params["dof_handler"] = dof_handler
-    bc_params["eos"] = [eos]
+    bc_params["eos_list"] = eos_list
     bc_params["phase"] = phase
     bc = factory.createObject(bc_name, bc_params)
 
