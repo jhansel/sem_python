@@ -10,9 +10,9 @@ class ExplicitEulerExecutionerParameters(TransientExecutionerParameters):
 class ExplicitEulerExecutioner(TransientExecutioner):
   def __init__(self, params):
     TransientExecutioner.__init__(self, params)
-    # create a mass matrix modified for Dirichlet BC
+    # create a mass matrix modified for strong constraints
     self.M_modified = deepcopy(self.M)
-    self.applyStrongBCLinearSystemMatrix(self.M_modified)
+    self.applyStrongConstraintsToLinearSystemMatrix(self.M_modified)
 
     # invert mass matrix only once and keep it
     self.M_inv = np.linalg.inv(self.M_modified)
@@ -24,8 +24,8 @@ class ExplicitEulerExecutioner(TransientExecutioner):
     # compute linear system RHS vector
     b = np.matmul(self.M, self.U_old) - self.dt * r_ss
 
-    # modify RHS for Dirichlet BC
-    self.applyStrongBCLinearSystemRHSVector(self.U_old, b)
+    # modify RHS for strong constraints
+    self.applyStrongConstraintsToLinearSystemRHSVector(self.U_old, b)
 
     # compute the update
     self.U = np.matmul(self.M_inv, b)

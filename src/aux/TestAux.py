@@ -6,8 +6,8 @@ class TestAuxParameters(AuxQuantityParameters):
   def __init__(self):
     AuxQuantityParameters.__init__(self)
     self.registerStringParameter("var", "Name of this variable")
-    self.registerListParameter("other_vars", "Variable names this quantity depends upon")
-    self.registerListParameter("coefs", "Proportionality coefficients for each quantity")
+    self.registerParameter("other_vars", "Variable names this quantity depends upon")
+    self.registerParameter("coefs", "Proportionality coefficients for each quantity")
     self.registerFloatParameter("b", "Constant shift", 1.0)
 
 class TestAux(AuxQuantity):

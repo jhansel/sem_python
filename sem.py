@@ -139,7 +139,19 @@ def run(input_file, mods=list()):
     bc = factory.createObject(bc_class, bc_param_data)
     bcs.append(bc)
 
-  # inteface closures
+  # junctions
+  junctions = list()
+  if input_file_parser.blockExists("Junctions"):
+    junction_subblocks = input_file_parser.getSubblockNames("Junctions")
+    for junction_subblock in junction_subblocks:
+      junction_param_data = input_file_parser.getSubblockData("Junctions", junction_subblock)
+      junction_class = junction_param_data["type"]
+      junction_param_data["dof_handler"] = dof_handler
+
+      junction = factory.createObject(junction_class, junction_param_data)
+      junctions.append(junction)
+
+  # interface closures
   if model_type == ModelType.TwoPhase:
     interface_closures_params = input_file_parser.getBlockData("InterfaceClosures")
     interface_closures_params["factory"] = factory
@@ -174,6 +186,7 @@ def run(input_file, mods=list()):
   executioner_param_data["model"] = model
   executioner_param_data["ics"] = ics
   executioner_param_data["bcs"] = bcs
+  executioner_param_data["junctions"] = junctions
   executioner_param_data["eos"] = eos
   executioner_param_data["interface_closures"] = interface_closures
   executioner_param_data["gravity"] = gravity

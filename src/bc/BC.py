@@ -23,6 +23,9 @@ class BC(object):
       self.nx = 1.0
       self.k = self.dof_handler.getRightNodeIndex(self.mesh_name)
 
+  def applyWeakBC(self, U, r, J):
+    pass
+
   def applyStrongBCNonlinearSystem(self, U, r, J):
     pass
 

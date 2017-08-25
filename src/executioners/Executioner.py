@@ -12,6 +12,7 @@ class ExecutionerParameters(Parameters):
     self.registerParameter("model", "Model")
     self.registerParameter("ics", "Initial conditions")
     self.registerParameter("bcs", "Boundary conditions")
+    self.registerParameter("junctions", "List of junctions")
     self.registerParameter("eos", "Equation of state map")
     self.registerParameter("interface_closures", "Interface closures")
     self.registerFloatParameter("gravity", "Acceleration due to gravity")
@@ -27,6 +28,7 @@ class Executioner(object):
     ics = params.get("ics")
     self.model_type = self.model.model_type
     self.bcs = params.get("bcs")
+    self.junctions = params.get("junctions")
     self.eos = params.get("eos")
     interface_closures = params.get("interface_closures")
     self.gravity = params.get("gravity")
@@ -183,43 +185,62 @@ class Executioner(object):
     # volumetric terms
     self.addSteadyStateSystem(U, r, J)
 
-    # weak boundary terms
+    # BCs
     for bc in self.bcs:
       bc.applyWeakBC(U, r, J)
+
+    # junctions
+    for junction in self.junctions:
+      junction.applyWeaklyToNonlinearSystem(U, r, J)
 
     return (r, J)
 
   # computes the full steady-state residual and Jacobian (strong BC applied)
   def assembleSteadyStateSystem(self, U):
     r, J = self.assembleSteadyStateSystemWithoutStrongBC(U)
-    self.applyStrongBCNonlinearSystem(U, r, J)
+    self.applyStrongConstraintsToNonlinearSystem(U, r, J)
     return (r, J)
 
-  ## Applies strong BC to a nonlinear system solved with Newton's method
+  ## Applies strong constraints to a nonlinear system solved with Newton's method
   # @param[in] U  implicit solution vector
   # @param[in] r  nonlinear system residual vector
   # @param[in] J  nonlinear system Jacobian matrix
-  def applyStrongBCNonlinearSystem(self, U, r, J):
+  def applyStrongConstraintsToNonlinearSystem(self, U, r, J):
+    # BCs
     for bc in self.bcs:
       bc.applyStrongBCNonlinearSystem(U, r, J)
 
-  ## Applies strong BC to a linear system matrix.
+    # junctions
+    for junction in self.junctions:
+      junction.applyStronglyToNonlinearSystem(U, r, J)
+
+  ## Applies strong constraints to a linear system matrix.
   #
   # This is separated from the corresponding RHS vector modification function
   # because the matrix needs to be modified only once; the RHS vector might
   # depend on time or the solution vector.
   #
   # @param[in] A      linear system matrix
-  def applyStrongBCLinearSystemMatrix(self, A):
+  def applyStrongConstraintsToLinearSystemMatrix(self, A):
+    # BCs
     for bc in self.bcs:
       bc.applyStrongBCLinearSystemMatrix(A)
 
-  ## Applies strong BC to a linear system RHS vector.
+    # junctions
+    for junction in self.junctions:
+      junction.applyStronglyToLinearSystemMatrix(A)
+
+  ## Applies strong constraints to a linear system RHS vector.
   # @param[in] U_old  old solution, needed if Dirichlet values are solution-dependent
   # @param[in] b      linear system RHS vector
-  def applyStrongBCLinearSystemRHSVector(self, U_old, b):
+  def applyStrongConstraintsToLinearSystemRHSVector(self, U_old, b):
+    # BCs
     for bc in self.bcs:
       bc.applyStrongBCLinearSystemRHSVector(U_old, b)
+
+    # junctions
+    for junction in self.junctions:
+      junction.applyStronglyToLinearSystemRHSVector(U_old, b)
 
   ## Computes the steady-state residual and Jacobian
   def addSteadyStateSystem(self, U, r, J):

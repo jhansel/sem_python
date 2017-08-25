@@ -70,6 +70,9 @@ from InitialConditions2Phase import InitialConditions2Phase, InitialConditions2P
 # input
 from PhysicsParameters import PhysicsParameters
 
+# junctions
+from CloneJunction import CloneJunction, CloneJunctionParameters
+
 # kernels
 from DissipationAuxFlux import DissipationAuxFlux, DissipationAuxFluxParameters
 from DissipationVariableGradient import DissipationVariableGradient, DissipationVariableGradientParameters

@@ -1,0 +1,96 @@
+# This tests CloneJunction. The test consists of 2 meshes connected by a
+# CloneJunction. At t = 0, a wave of differing density enters the left boundary,
+# and it should propagate through the junction without any disturbance; it
+# should be the same solution as without the junction.
+
+[Model]
+  model = 1phase
+[]
+
+[Physics]
+  gravity = 0
+[]
+
+[Mesh]
+  [mesh1]
+    type = UniformMesh
+    x_min = 0
+    length = 1
+    n_cell = 20
+  []
+  [mesh2]
+    type = UniformMesh
+    x_min = 1
+    length = 1
+    n_cell = 20
+  []
+[]
+
+[EoS]
+  [air]
+    type = IdealGasEoS
+    gamma = 1.4
+    R = 290
+  []
+[]
+
+[IC]
+  # hump profile on left half
+  T = 300 + 50 * sin(2*pi*x + 1.5*pi) if x < 1 else 250
+  u = 1
+  p = 1e5
+[]
+
+[BC]
+  [left]
+    type = InletRhoUBC
+    mesh_name = mesh1
+    boundary = left
+    phase = air
+    # rho at T = 250 K, p = 1e5 Pa
+    rho = 1.37931034483
+    u = 1
+  []
+  [right]
+    type = OutletBC
+    mesh_name = mesh2
+    boundary = right
+    phase = air
+    p = 1.0e5
+  []
+[]
+
+[Junctions]
+  [junction1]
+    type = CloneJunction
+    mesh_names = mesh1 mesh2
+    mesh_sides = right left
+  []
+[]
+
+[Stabilization]
+  type = NoStabilization
+[]
+
+[Executioner]
+  type = ImplicitEulerExecutioner
+  dt = 0.05
+  end_time = 0.50
+[]
+
+[NonlinearSolver]
+  verbose = True
+  absolute_tolerance = 1e-6
+  max_iterations = 10
+
+  scaling_arho1  = 1
+  scaling_arhou1 = 1e-1
+  scaling_arhoE1 = 1e-5
+[]
+
+[Output]
+  plot_solution = True
+  plot_file = solution_with_junction.pdf
+  save_solution = True
+  solution_file = solution_with_junction.csv
+[]

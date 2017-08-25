@@ -18,5 +18,5 @@ class ImplicitEulerExecutioner(TransientExecutioner):
     r_ss, J_ss = self.assembleSteadyStateSystemWithoutStrongBC(U)
     r = r_tr + self.dt * r_ss
     J = J_tr + self.dt * J_ss
-    self.applyStrongBCNonlinearSystem(U, r, J)
+    self.applyStrongConstraintsToNonlinearSystem(U, r, J)
     return (r, J)
