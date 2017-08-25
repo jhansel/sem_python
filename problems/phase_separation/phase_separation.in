@@ -32,9 +32,8 @@
 []
 
 [InterfaceClosures]
-  type = AmbrosoInterfaceClosures
-  chi = 0.5
-  pressure_relaxation_time = 5.0e-3
+  type = BerryInterfaceClosures
+  a_int_max = 1700
 []
 
 [Mesh]
@@ -95,7 +94,7 @@
 []
 
 [Stabilization]
-  type = NoStabilization
+  type = LaxFriedrichsStabilization
 []
 
 [Executioner]

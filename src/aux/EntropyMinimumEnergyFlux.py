@@ -33,20 +33,34 @@ class EntropyMinimumEnergyFlux(AuxQuantity1Phase):
       + der[self.rhoe]["vf1"] * data[self.viscflux_vf] + data[self.rhoe] * der[self.viscflux_vf]["vf1"] \
       - 0.5 * data[self.u] ** 2 * der[self.viscflux_arho]["vf1"] \
       + data[self.u] * der[self.viscflux_arhou]["vf1"]
-    dh_darho = data[self.vf] * der[self.visccoef_arhoE][self.arho] * data[self.grad_rhoe] \
-      + der[self.rhoe][self.arho] * data[self.viscflux_vf] + data[self.rhoe] * der[self.viscflux_vf][self.arho] \
-      - data[self.u] * der[self.u][self.arho] * data[self.viscflux_arho] \
-      - 0.5 * data[self.u] ** 2 * der[self.viscflux_arho][self.arho] \
-      + der[self.u][self.arho] * data[self.viscflux_arhou] + data[self.u] * der[self.viscflux_arhou][self.arho]
-    dh_darhou = data[self.vf] * der[self.visccoef_arhoE][self.arhou] * data[self.grad_rhoe] \
-      + der[self.rhoe][self.arhou] * data[self.viscflux_vf] + data[self.rhoe] * der[self.viscflux_vf][self.arhou] \
-      - data[self.u] * der[self.u][self.arhou] * data[self.viscflux_arho] \
-      - 0.5 * data[self.u] ** 2 * der[self.viscflux_arho][self.arhou] \
-      + der[self.u][self.arhou] * data[self.viscflux_arhou] + data[self.u] * der[self.viscflux_arhou][self.arhou]
-    dh_darhoE = data[self.vf] * der[self.visccoef_arhoE][self.arhoE] * data[self.grad_rhoe] \
-      + der[self.rhoe][self.arhoE] * data[self.viscflux_vf] + data[self.rhoe] * der[self.viscflux_vf][self.arhoE] \
-      - 0.5 * data[self.u] ** 2 * der[self.viscflux_arho][self.arhoE] \
-      + data[self.u] * der[self.viscflux_arhou][self.arhoE]
+    dh_darho1 = data[self.vf] * der[self.visccoef_arhoE]["arho1"] * data[self.grad_rhoe] \
+      + der[self.rhoe]["arho1"] * data[self.viscflux_vf] + data[self.rhoe] * der[self.viscflux_vf]["arho1"] \
+      - data[self.u] * der[self.u]["arho1"] * data[self.viscflux_arho] \
+      - 0.5 * data[self.u] ** 2 * der[self.viscflux_arho]["arho1"] \
+      + der[self.u]["arho1"] * data[self.viscflux_arhou] + data[self.u] * der[self.viscflux_arhou]["arho1"]
+    dh_darhou1 = data[self.vf] * der[self.visccoef_arhoE]["arhou1"] * data[self.grad_rhoe] \
+      + der[self.rhoe]["arhou1"] * data[self.viscflux_vf] + data[self.rhoe] * der[self.viscflux_vf]["arhou1"] \
+      - data[self.u] * der[self.u]["arhou1"] * data[self.viscflux_arho] \
+      - 0.5 * data[self.u] ** 2 * der[self.viscflux_arho]["arhou1"] \
+      + der[self.u]["arhou1"] * data[self.viscflux_arhou] + data[self.u] * der[self.viscflux_arhou]["arhou1"]
+    dh_darhoE1 = data[self.vf] * der[self.visccoef_arhoE]["arhoE1"] * data[self.grad_rhoe] \
+      + der[self.rhoe]["arhoE1"] * data[self.viscflux_vf] + data[self.rhoe] * der[self.viscflux_vf]["arhoE1"] \
+      - 0.5 * data[self.u] ** 2 * der[self.viscflux_arho]["arhoE1"] \
+      + data[self.u] * der[self.viscflux_arhou]["arhoE1"]
+    dh_darho2 = data[self.vf] * der[self.visccoef_arhoE]["arho2"] * data[self.grad_rhoe] \
+      + der[self.rhoe]["arho2"] * data[self.viscflux_vf] + data[self.rhoe] * der[self.viscflux_vf]["arho2"] \
+      - data[self.u] * der[self.u]["arho2"] * data[self.viscflux_arho] \
+      - 0.5 * data[self.u] ** 2 * der[self.viscflux_arho]["arho2"] \
+      + der[self.u]["arho2"] * data[self.viscflux_arhou] + data[self.u] * der[self.viscflux_arhou]["arho2"]
+    dh_darhou2 = data[self.vf] * der[self.visccoef_arhoE]["arhou2"] * data[self.grad_rhoe] \
+      + der[self.rhoe]["arhou2"] * data[self.viscflux_vf] + data[self.rhoe] * der[self.viscflux_vf]["arhou2"] \
+      - data[self.u] * der[self.u]["arhou2"] * data[self.viscflux_arho] \
+      - 0.5 * data[self.u] ** 2 * der[self.viscflux_arho]["arhou2"] \
+      + der[self.u]["arhou2"] * data[self.viscflux_arhou] + data[self.u] * der[self.viscflux_arhou]["arhou2"]
+    dh_darhoE2 = data[self.vf] * der[self.visccoef_arhoE]["arhoE2"] * data[self.grad_rhoe] \
+      + der[self.rhoe]["arhoE2"] * data[self.viscflux_vf] + data[self.rhoe] * der[self.viscflux_vf]["arhoE2"] \
+      - 0.5 * data[self.u] ** 2 * der[self.viscflux_arho]["arhoE2"] \
+      + data[self.u] * der[self.viscflux_arhou]["arhoE2"]
     dh_dgrad_vf1 = data[self.vf] * data[self.visccoef_arhoE] * der[self.grad_rhoe]["grad_vf1"] \
       + data[self.rhoe] * der[self.viscflux_vf]["grad_vf1"] \
       - 0.5 * data[self.u] ** 2 * der[self.viscflux_arho]["grad_vf1"] \
@@ -60,9 +74,12 @@ class EntropyMinimumEnergyFlux(AuxQuantity1Phase):
 
     data[self.name] = h
     der[self.name]["vf1"] = dh_dvf1
-    der[self.name][self.arho] = dh_darho
-    der[self.name][self.arhou] = dh_darhou
-    der[self.name][self.arhoE] = dh_darhoE
+    der[self.name]["arho1"] = dh_darho1
+    der[self.name]["arhou1"] = dh_darhou1
+    der[self.name]["arhoE1"] = dh_darhoE1
+    der[self.name]["arho2"] = dh_darho2
+    der[self.name]["arhou2"] = dh_darhou2
+    der[self.name]["arhoE2"] = dh_darhoE2
     der[self.name]["grad_vf1"] = dh_dgrad_vf1
     der[self.name][self.grad_arho] = dh_dgrad_arho
     der[self.name][self.grad_arhou] = dh_dgrad_arhou

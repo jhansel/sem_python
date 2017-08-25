@@ -1,4 +1,4 @@
-from enums import VariableName
+from enums import VariableName, ModelType
 from Stabilization import Stabilization, StabilizationParameters
 
 class LaxFriedrichsStabilizationParameters(StabilizationParameters):
@@ -19,7 +19,7 @@ class LaxFriedrichsStabilization(Stabilization):
 
   def createIndependentPhaseAuxQuantities(self, phase):
     aux_list = list()
-    var_list = ["vf", "arho", "arhou", "arhoE"]
+    var_list = ["arho", "arhou", "arhoE"]
 
     # add the viscous coefficients
     for var in var_list:
@@ -47,8 +47,22 @@ class LaxFriedrichsStabilization(Stabilization):
 
     return aux_list
 
-  def createPhaseInteractionAuxQuantities(self):
-    return []
+  def createAuxQuantities(self):
+    aux_list = list()
+
+    if self.model_type == ModelType.TwoPhase:
+      params = {"mult": self.mult}
+      aux_list.append(self.factory.createObject("LaxFriedrichsCoefficientVolumeFraction", params))
+    else:
+      # create zero coefficient for volume fraction equation
+      params = {"name": "visccoef_vf", "value": 0}
+      aux_list.append(self.factory.createObject("ConstantAux", params))
+
+    aux_list += self.createIndependentPhaseAuxQuantities(0)
+    if self.model_type != ModelType.OnePhase:
+      aux_list += self.createIndependentPhaseAuxQuantities(1)
+
+    return aux_list
 
   def createIndependentPhaseKernels(self, phase):
     kernels = list()

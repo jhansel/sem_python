@@ -7,6 +7,7 @@ class StabilizationParameters(Parameters):
     Parameters.__init__(self)
     self.registerParameter("factory", "Factory")
     self.registerParameter("dof_handler", "Degree of freedom handler")
+    self.registerParameter("model_type", "Model type")
 
 ## Abstract base class for stabilization
 class Stabilization(object):
@@ -15,17 +16,14 @@ class Stabilization(object):
   def __init__(self, params):
     self.factory = params.get("factory")
     self.dof_handler = params.get("dof_handler")
+    self.model_type = params.get("model_type")
 
   @abstractmethod
   def needSolutionGradients(self):
     pass
 
   @abstractmethod
-  def createIndependentPhaseAuxQuantities(self, phase):
-    pass
-
-  @abstractmethod
-  def createPhaseInteractionAuxQuantities(self):
+  def createAuxQuantities(self):
     pass
 
   @abstractmethod

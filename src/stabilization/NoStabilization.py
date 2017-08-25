@@ -12,10 +12,7 @@ class NoStabilization(Stabilization):
   def needSolutionGradients(self):
     return False
 
-  def createIndependentPhaseAuxQuantities(self, phase):
-    return []
-
-  def createPhaseInteractionAuxQuantities(self):
+  def createAuxQuantities(self):
     return []
 
   def createIndependentPhaseKernels(self, phase):

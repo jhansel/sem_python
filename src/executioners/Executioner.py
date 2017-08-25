@@ -60,14 +60,12 @@ class Executioner(object):
       self.computeLocalSolution = self.computeLocalSolutionTwoPhase
 
     # create aux quantities
-    self.aux_list = self.createIndependentPhaseAuxQuantities(0) \
-      + stabilization.createIndependentPhaseAuxQuantities(0)
+    self.aux_list = self.createIndependentPhaseAuxQuantities(0)
     if self.model_type != ModelType.OnePhase:
-      self.aux_list += self.createIndependentPhaseAuxQuantities(1) \
-        + stabilization.createIndependentPhaseAuxQuantities(1)
+      self.aux_list += self.createIndependentPhaseAuxQuantities(1)
     if self.model_type == ModelType.TwoPhase:
-      self.aux_list += interface_closures.createAuxQuantities() \
-        + stabilization.createPhaseInteractionAuxQuantities()
+      self.aux_list += interface_closures.createAuxQuantities()
+    self.aux_list += stabilization.createAuxQuantities()
 
     # get list of aux quantities
     self.aux_names = [aux.name for aux in self.aux_list]
