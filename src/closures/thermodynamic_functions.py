@@ -33,6 +33,14 @@ def computeSpecificInternalEnergy(u, E):
 
   return (e, de_du, de_dE)
 
+def computeSpecificEnthalpy(e, p, rho):
+  h = e + p / rho
+  dh_de = 1.0
+  dh_dp = 1.0 / rho
+  dh_drho = - p / rho / rho
+
+  return (h, dh_de, dh_dp, dh_drho)
+
 def computeVelocity(arho, arhou):
   u = arhou / arho
   du_darho = - arhou / arho / arho

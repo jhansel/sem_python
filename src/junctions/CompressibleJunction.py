@@ -3,11 +3,12 @@ from enums import ModelType
 from error_utilities import error
 from thermodynamic_functions import computeVolumeFraction, computeDensity, \
   computeSpecificVolume, computeVelocity, computeSpecificTotalEnergy, \
-  computeSpecificInternalEnergy
+  computeSpecificInternalEnergy, computeSpecificEnthalpy
 
 class CompressibleJunctionParameters(Junction1PhaseParameters):
   def __init__(self):
     Junction1PhaseParameters.__init__(self)
+    self.registerBoolParameter("use_momentum_flux_balance", "Flag to use a momentum flux balance for last equation", False)
 
 ## Junction that uses compressible flow assumption
 class CompressibleJunction(Junction1Phase):
@@ -15,6 +16,10 @@ class CompressibleJunction(Junction1Phase):
     Junction1Phase.__init__(self, params)
     if self.n_meshes != 2:
       error("CompressibleJunction is only implemented for connecting 2 meshes.")
+
+    # determine if momentum flux balance is to be used for last equation;
+    # otherwise, stagnation pressure condition will be used
+    self.use_momentum_flux_balance = params.get("use_momentum_flux_balance")
 
     # get node indices
     self.k_left = self.node_indices[0]
@@ -123,6 +128,13 @@ class CompressibleJunction(Junction1Phase):
     dc_darhou = [0] * n_values
     dc_darhoE = [0] * n_values
 
+    if not self.use_momentum_flux_balance:
+      p0 = [0] * n_values
+      dp0_dvf1 = [0] * n_values
+      dp0_darho = [0] * n_values
+      dp0_darhou = [0] * n_values
+      dp0_darhoE = [0] * n_values
+
     # loop over subscript/superscript combinations
     for i in xrange(n_values):
       vf1 = self.dof_handler.getVolumeFraction(U[i], k[i])
@@ -158,6 +170,31 @@ class CompressibleJunction(Junction1Phase):
       dc_darho[i] = dc_dv * dv_darho + dc_de * de_darho[i]
       dc_darhou[i] = dc_de * de_darhou[i]
       dc_darhoE[i] = dc_de * de_darhoE[i]
+
+      if not self.use_momentum_flux_balance:
+        s, ds_dv, ds_de = self.eos.s(v, e[i])
+        ds_dvf1 = ds_dv * dv_dvf1
+        ds_darho = ds_dv * dv_darho + ds_de * de_darho[i]
+        ds_darhou = ds_de * de_darhou[i]
+        ds_darhoE = ds_de * de_darhoE[i]
+
+        h, dh_de, dh_dp, dh_drho = computeSpecificEnthalpy(e[i], p[i], rho[i])
+        dh_dvf1 = dh_dp * dp_dvf1[i]
+        dh_darho = dh_de * de_darho[i] + dh_dp * dp_darho[i] + dh_drho * drho_darho[i]
+        dh_darhou = dh_de * de_darhou[i] + dh_dp * dp_darhou[i]
+        dh_darhoE = dh_de * de_darhoE[i] + dh_dp * dp_darhoE[i]
+
+        h0 = h + 0.5 * u[i]**2
+        dh0_dvf1 = dh_dvf1
+        dh0_darho = dh_darho + u[i] * du_darho[i]
+        dh0_darhou = dh_darhou + u[i] * du_darhou[i]
+        dh0_darhoE = dh_darhoE
+
+        p0[i], dp0_dh0, dp0_ds = self.eos.p_from_h_s(h0, s)
+        dp0_dvf1[i] = dp0_dh0 * dh0_dvf1 + dp0_ds * ds_dvf1
+        dp0_darho[i] = dp0_dh0 * dh0_darho + dp0_ds * ds_darho
+        dp0_darhou[i] = dp0_dh0 * dh0_darhou + dp0_ds * ds_darhou
+        dp0_darhoE[i] = dp0_dh0 * dh0_darhoE + dp0_ds * ds_darhoE
 
     # compute old average quantities
     rhoL = 0.5 * (rho[L_old] + rho[LL_old])
@@ -235,15 +272,26 @@ class CompressibleJunction(Junction1Phase):
     J[i5,self.i_arhouR] = -(de_darhou[R] + dp_darhou[R] / rho[R] + u[R] * du_darhou[R])
     J[i5,self.i_arhoER] = -(de_darhoE[R] + dp_darhoE[R] / rho[R])
 
-    r[i6] = rho[L] * u[L]**2 + p[L] - (rho[R] * u[R]**2 + p[R])
-    J_i6_vf1L = drho_dvf1[L] * u[L]**2 + dp_dvf1[L]
-    J[i6,self.i_arhoL] = drho_darho[L] * u[L]**2 + rho[L] * 2.0 * u[L] * du_darho[L] + dp_darho[L]
-    J[i6,self.i_arhouL] = rho[L] * 2.0 * u[L] * du_darhou[L] + dp_darhou[L]
-    J[i6,self.i_arhoEL] = dp_darhoE[L]
-    J_i6_vf1R = -(drho_dvf1[R] * u[R]**2 + dp_dvf1[R])
-    J[i6,self.i_arhoR] = -(drho_darho[R] * u[R]**2 + rho[R] * 2.0 * u[R] * du_darho[R] + dp_darho[R])
-    J[i6,self.i_arhouR] = -(rho[R] * 2.0 * u[R] * du_darhou[R] + dp_darhou[R])
-    J[i6,self.i_arhoER] = -dp_darhoE[R]
+    if self.use_momentum_flux_balance:
+      r[i6] = rho[L] * u[L]**2 + p[L] - (rho[R] * u[R]**2 + p[R])
+      J_i6_vf1L = drho_dvf1[L] * u[L]**2 + dp_dvf1[L]
+      J[i6,self.i_arhoL] = drho_darho[L] * u[L]**2 + rho[L] * 2.0 * u[L] * du_darho[L] + dp_darho[L]
+      J[i6,self.i_arhouL] = rho[L] * 2.0 * u[L] * du_darhou[L] + dp_darhou[L]
+      J[i6,self.i_arhoEL] = dp_darhoE[L]
+      J_i6_vf1R = -(drho_dvf1[R] * u[R]**2 + dp_dvf1[R])
+      J[i6,self.i_arhoR] = -(drho_darho[R] * u[R]**2 + rho[R] * 2.0 * u[R] * du_darho[R] + dp_darho[R])
+      J[i6,self.i_arhouR] = -(rho[R] * 2.0 * u[R] * du_darhou[R] + dp_darhou[R])
+      J[i6,self.i_arhoER] = -dp_darhoE[R]
+    else:
+      r[i6] = p0[L] - p0[R]
+      J_i6_vf1L = dp0_dvf1[L]
+      J[i6,self.i_arhoL] = dp0_darho[L]
+      J[i6,self.i_arhouL] = dp0_darhou[L]
+      J[i6,self.i_arhoEL] = dp0_darhoE[L]
+      J_i6_vf1R = -dp0_dvf1[R]
+      J[i6,self.i_arhoR] = -dp0_darho[R]
+      J[i6,self.i_arhouR] = -dp0_darhou[R]
+      J[i6,self.i_arhoER] = -dp0_darhoE[R]
 
     if self.model_type == ModelType.TwoPhase:
       J[i1,self.i_vf1L] = J_i1_vf1L
