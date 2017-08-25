@@ -31,6 +31,16 @@ class IdealGasEoSFunctionDerivativesTester(unittest.TestCase):
     for reldiff in reldiffs:
       self.assertLessEqual(reldiff, 1e-6)
 
+  def testEntropy(self):
+    reldiffs = self.derivative_tester.checkDerivatives(self.eos.s, 2)
+    for reldiff in reldiffs:
+      self.assertLessEqual(reldiff, 1e-6)
+
+  def testPressureFromEnthalpyEntropy(self):
+    reldiffs = self.derivative_tester.checkDerivatives(self.eos.p_from_h_s, 2)
+    for reldiff in reldiffs:
+      self.assertLessEqual(reldiff, 5e-6)
+
 if __name__ == "__main__":
   params = IdealGasEoSParameters()
   params.set("gamma", 1.4)
@@ -43,3 +53,5 @@ if __name__ == "__main__":
   tester.checkDerivatives(eos.p, 2)
   tester.checkDerivatives(eos.T, 2)
   tester.checkDerivatives(eos.c, 2)
+  tester.checkDerivatives(eos.s, 2)
+  tester.checkDerivatives(eos.p_from_h_s, 2)

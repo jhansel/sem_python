@@ -9,6 +9,7 @@
   cv = 1
   p_inf = 0
   q = 0
+  q_prime = 0
 []
 
 # values defining the thermodynamic state

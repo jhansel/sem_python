@@ -28,3 +28,11 @@ class EoS(object):
   @abstractmethod
   def c(self, v, e):
     pass
+
+  @abstractmethod
+  def s(self, v, e):
+    pass
+
+  @abstractmethod
+  def p(self, h, s):
+    pass

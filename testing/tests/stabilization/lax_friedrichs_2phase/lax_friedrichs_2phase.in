@@ -28,6 +28,7 @@
     cv = 1
     q = 0
     p_inf = 0
+    q_prime = 0
   []
   [vapor]
     type = StiffenedGasEoS
@@ -35,6 +36,7 @@
     cv = 1
     q = 0
     p_inf = 0
+    q_prime = 0
   []
 []
 
