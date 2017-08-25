@@ -219,7 +219,7 @@ class Executioner(object):
 
     # junctions
     for junction in self.junctions:
-      junction.applyWeaklyToNonlinearSystem(U, r, J)
+      junction.applyWeaklyToNonlinearSystem(U, self.U_old, r, J)
 
     return (r, J)
 
@@ -240,7 +240,7 @@ class Executioner(object):
 
     # junctions
     for junction in self.junctions:
-      junction.applyStronglyToNonlinearSystem(U, r, J)
+      junction.applyStronglyToNonlinearSystem(U, self.U_old, r, J)
 
   ## Applies strong constraints to a linear system matrix.
   #

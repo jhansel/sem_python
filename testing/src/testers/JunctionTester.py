@@ -55,8 +55,10 @@ class JunctionTester(object):
 
     # compute base solution
     U = np.zeros(n_dof)
+    U_old = np.zeros(n_dof)
     for i in xrange(n_dof):
       U[i] = i + 1.0
+      U_old[i] = i + 2.0
 
     # determine evaluation function
     if test_weak:
@@ -67,7 +69,7 @@ class JunctionTester(object):
     # base calculation
     r = np.zeros(n_dof)
     J_hand_coded = np.zeros(shape=(n_dof, n_dof))
-    f(U, r, J_hand_coded)
+    f(U, U_old, r, J_hand_coded)
 
     # finite difference Jacobians
     rel_diffs = np.zeros(shape=(n_dof, n_dof))
@@ -80,7 +82,7 @@ class JunctionTester(object):
       # compute finite difference Jacobian
       r_perturbed = np.zeros(n_dof)
       J_perturbed = np.zeros(shape=(n_dof, n_dof))
-      f(U_perturbed, r_perturbed, J_perturbed)
+      f(U_perturbed, U_old, r_perturbed, J_perturbed)
       for i in xrange(n_dof):
         J_fd[i,j] = (r_perturbed[i] - r[i]) / fd_eps
 
