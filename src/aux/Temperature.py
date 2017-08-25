@@ -19,4 +19,7 @@ class Temperature(AuxQuantity1Phase):
     dT_darho = dT_dv * der[self.v][self.arho] + dT_de * der[self.e][self.arho]
     dT_darhou = dT_de * der[self.e][self.arhou]
     dT_darhoE = dT_de * der[self.e][self.arhoE]
-    der[self.name] = {"vf1" : dT_dvf1, self.arho : dT_darho, self.arhou : dT_darhou, self.arhoE : dT_darhoE}
+    der[self.name]["vf1"] = dT_dvf1
+    der[self.name][self.arho] = dT_darho
+    der[self.name][self.arhou] = dT_darhou
+    der[self.name][self.arhoE] = dT_darhoE

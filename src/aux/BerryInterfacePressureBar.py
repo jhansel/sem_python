@@ -21,20 +21,17 @@ class BerryInterfacePressureBar(AuxQuantity2Phase):
 
     dnumerator = 1.0 / denominator
     ddenominator = -numerator / denominator**2
-    dvf1 = dnumerator * (der["z1"]["vf1"] * p2 + z1 * der["p2"]["vf1"] + der["z2"]["vf1"] * p1 + z2 * der["p1"]["vf1"]) \
+    der[self.name]["vf1"] = dnumerator * (der["z1"]["vf1"] * p2 + z1 * der["p2"]["vf1"] + der["z2"]["vf1"] * p1 + z2 * der["p1"]["vf1"]) \
       + ddenominator * (der["z1"]["vf1"] + der["z2"]["vf1"])
-    darho1 = dnumerator * (der["z1"]["arho1"] * p2 + z2 * der["p1"]["arho1"]) \
+    der[self.name]["arho1"] = dnumerator * (der["z1"]["arho1"] * p2 + z2 * der["p1"]["arho1"]) \
       + ddenominator * der["z1"]["arho1"]
-    darhou1 = dnumerator * (der["z1"]["arhou1"] * p2 + z2 * der["p1"]["arhou1"]) \
+    der[self.name]["arhou1"] = dnumerator * (der["z1"]["arhou1"] * p2 + z2 * der["p1"]["arhou1"]) \
       + ddenominator * der["z1"]["arhou1"]
-    darhoE1 = dnumerator * (der["z1"]["arhoE1"] * p2 + z2 * der["p1"]["arhoE1"]) \
+    der[self.name]["arhoE1"] = dnumerator * (der["z1"]["arhoE1"] * p2 + z2 * der["p1"]["arhoE1"]) \
       + ddenominator * der["z1"]["arhoE1"]
-    darho2 = dnumerator * (z1 * der["p2"]["arho2"] + der["z2"]["arho2"] * p1) \
+    der[self.name]["arho2"] = dnumerator * (z1 * der["p2"]["arho2"] + der["z2"]["arho2"] * p1) \
       + ddenominator * der["z2"]["arho2"]
-    darhou2 = dnumerator * (z1 * der["p2"]["arhou2"] + der["z2"]["arhou2"] * p1) \
+    der[self.name]["arhou2"] = dnumerator * (z1 * der["p2"]["arhou2"] + der["z2"]["arhou2"] * p1) \
       + ddenominator * der["z2"]["arhou2"]
-    darhoE2 = dnumerator * (z1 * der["p2"]["arhoE2"] + der["z2"]["arhoE2"] * p1) \
+    der[self.name]["arhoE2"] = dnumerator * (z1 * der["p2"]["arhoE2"] + der["z2"]["arhoE2"] * p1) \
       + ddenominator * der["z2"]["arhoE2"]
-
-    der[self.name] = {"vf1": dvf1, "arho1": darho1, "arhou1": darhou1, "arhoE1": darhoE1,
-      "arho2": darho2, "arhou2": darhou2, "arhoE2": darhoE2}

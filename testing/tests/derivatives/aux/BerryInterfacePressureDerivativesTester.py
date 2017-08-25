@@ -7,7 +7,6 @@ from AuxDerivativesTester import AuxDerivativesTester
 # test aux
 params = BerryInterfacePressureParameters()
 test_aux = BerryInterfacePressure(params)
-test_var = "pI"
 
 # bar interface pressure aux
 params = TestAuxParameters()
@@ -44,8 +43,7 @@ params.set("other_vars", ["vf1", "arho2", "arhou2", "arhoE2"])
 params.set("coefs", [1.2, 3.2, 4.1, 2.4])
 z2_aux = TestAux(params)
 
-other_aux = {"pI_bar": pI_bar_aux, "u1": u1_aux, "u2": u2_aux, "z1": z1_aux, "z2": z2_aux}
-other_vars = ["pI_bar", "u1", "u2", "z1", "z2"]
+other_aux = [pI_bar_aux, u1_aux, u2_aux, z1_aux, z2_aux]
 root_vars = ["vf1", "arho1", "arhou1", "arhoE1", "arho2", "arhou2", "arhoE2"]
 constant_data_positive = {"grad_vf1": 0.6}
 constant_data_negative = {"grad_vf1": -0.6}
@@ -55,18 +53,15 @@ class BerryInterfacePressureDerivativesTester(unittest.TestCase):
     self.derivatives_tester = AuxDerivativesTester()
 
   def testPositiveGradient(self):
-    rel_diffs = self.derivatives_tester.checkDerivatives(
-      test_aux, test_var, other_aux, other_vars, root_vars, constant_data_positive)
+    rel_diffs = self.derivatives_tester.checkDerivatives(test_aux, other_aux, root_vars, constant_data_positive)
     for key in rel_diffs:
       self.assertLessEqual(rel_diffs[key], 5e-6)
 
   def testNegativeGradient(self):
-    rel_diffs = self.derivatives_tester.checkDerivatives(
-      test_aux, test_var, other_aux, other_vars, root_vars, constant_data_negative)
+    rel_diffs = self.derivatives_tester.checkDerivatives(test_aux, other_aux, root_vars, constant_data_negative)
     for key in rel_diffs:
       self.assertLessEqual(rel_diffs[key], 5e-6)
 
 if __name__ == "__main__":
   derivatives_tester = AuxDerivativesTester(True)
-  _ = derivatives_tester.checkDerivatives(
-    test_aux, test_var, other_aux, other_vars, root_vars, constant_data_negative)
+  _ = derivatives_tester.checkDerivatives(test_aux, other_aux, root_vars, constant_data_negative)

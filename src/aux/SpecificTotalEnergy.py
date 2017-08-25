@@ -16,4 +16,5 @@ class SpecificTotalEnergy(AuxQuantity1Phase):
 
     dE_darho = - arhoE / arho / arho
     dE_darhoE = 1.0 / arho
-    der[self.name] = {self.arho : dE_darho, self.arhoE : dE_darhoE}
+    der[self.name][self.arho] = dE_darho
+    der[self.name][self.arhoE] = dE_darhoE

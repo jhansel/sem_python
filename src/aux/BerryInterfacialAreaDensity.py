@@ -22,4 +22,4 @@ class BerryInterfacialAreaDensity(AuxQuantity2Phase):
 
     da_int_dvf1 = 2 * self.coef_A * vf1 + self.coef_B
 
-    der[self.name] = {"vf1": da_int_dvf1}
+    der[self.name]["vf1"] = da_int_dvf1

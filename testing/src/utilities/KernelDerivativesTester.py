@@ -69,7 +69,8 @@ class KernelDerivativesTester(object):
 
     # data
     data = dict()
-    der = dict()
+    aux_names = [aux.name for aux in aux_list]
+    der = dof_handler.initializeDerivativeData(aux_names)
     self.elem = 0
     i = 0
     j = 1

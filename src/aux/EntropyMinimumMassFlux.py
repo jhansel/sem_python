@@ -37,6 +37,9 @@ class EntropyMinimumMassFlux(AuxQuantity1Phase):
     df_dgrad_arho = data[self.vf] * data[self.visccoef_arho] * der[self.grad_rho][self.grad_arho]
 
     data[self.name] = f
-    der[self.name] = {"vf1" : df_dvf1, self.arho : df_darho, self.arhou : df_darhou,
-      self.arhoE : df_darhoE, "grad_vf1" : df_dgrad_vf1, self.grad_arho : df_dgrad_arho,
-      self.grad_arhou: 0, self.grad_arhoE: 0}
+    der[self.name]["vf1"] = df_dvf1
+    der[self.name][self.arho] = df_darho
+    der[self.name][self.arhou] = df_darhou
+    der[self.name][self.arhoE] = df_darhoE
+    der[self.name]["grad_vf1"] = df_dgrad_vf1
+    der[self.name][self.grad_arho] = df_dgrad_arho

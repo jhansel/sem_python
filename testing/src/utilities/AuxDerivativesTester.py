@@ -7,16 +7,28 @@ class AuxDerivativesTester(object):
   def __init__(self, verbose=False):
     self.verbose = verbose
 
-  def checkDerivatives(self, test_aux, test_var, other_aux, other_vars, root_vars, constant_data=dict(), fd_eps=1e-8):
+  def checkDerivatives(self, test_aux, other_aux, root_vars, constant_data=dict(), fd_eps=1e-8):
+    # name of test aux
+    test_var = test_aux.name
+
     # setup input data
     data = constant_data
     for i,x in enumerate(root_vars):
       data[x] = i + 2.0
+
+    # initialize derivatives to zero
+    derivative_list = deepcopy(root_vars)
+    if "vf1" not in derivative_list:
+      derivative_list.append("vf1")
     der = dict()
+    for aux in other_aux + [test_aux]:
+      der[aux.name] = dict()
+      for var in derivative_list:
+        der[aux.name][var] = 0
 
     # base computation
-    for var in other_vars:
-      other_aux[var].compute(data, der)
+    for aux in other_aux:
+      aux.compute(data, der)
     test_aux.compute(data, der)
     base = data[test_var]
     hand_der = deepcopy(der)
@@ -27,8 +39,8 @@ class AuxDerivativesTester(object):
     for x in root_vars:
       data_perturbed = deepcopy(data)
       data_perturbed[x] += fd_eps
-      for var in other_vars:
-        other_aux[var].compute(data_perturbed, der)
+      for aux in other_aux:
+        aux.compute(data_perturbed, der)
       test_aux.compute(data_perturbed, der)
       fd_der[x] = (data_perturbed[test_var] - base) / fd_eps
       rel_diffs[x] = computeRelativeDifference(hand_der[test_var][x], fd_der[x])

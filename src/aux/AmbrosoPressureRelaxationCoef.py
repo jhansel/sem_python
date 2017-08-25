@@ -26,13 +26,10 @@ class AmbrosoPressureRelaxationCoef(AuxQuantity2Phase):
     dp_relax_dp1 = dp_relax_ddenominator * self.pressure_relaxation_time
     dp_relax_dp2 = dp_relax_ddenominator * self.pressure_relaxation_time
 
-    dp_relax_dvf1 = pdp_relax_pdvf1 + dp_relax_dp1 * der["p1"]["vf1"] + dp_relax_dp2 * der["p2"]["vf1"]
-    dp_relax_darho1 = dp_relax_dp1 * der["p1"]["arho1"]
-    dp_relax_darho2 = dp_relax_dp2 * der["p2"]["arho2"]
-    dp_relax_darhou1 = dp_relax_dp1 * der["p1"]["arhou1"]
-    dp_relax_darhou2 = dp_relax_dp2 * der["p2"]["arhou2"]
-    dp_relax_darhoE1 = dp_relax_dp1 * der["p1"]["arhoE1"]
-    dp_relax_darhoE2 = dp_relax_dp2 * der["p2"]["arhoE2"]
-    der[self.name] = {"vf1": dp_relax_dvf1,
-      "arho1": dp_relax_darho1, "arhou1": dp_relax_darhou1, "arhoE1": dp_relax_darhoE1,
-      "arho2": dp_relax_darho2, "arhou2": dp_relax_darhou2, "arhoE2": dp_relax_darhoE2}
+    der[self.name]["vf1"] = pdp_relax_pdvf1 + dp_relax_dp1 * der["p1"]["vf1"] + dp_relax_dp2 * der["p2"]["vf1"]
+    der[self.name]["arho1"] = dp_relax_dp1 * der["p1"]["arho1"]
+    der[self.name]["arho2"] = dp_relax_dp2 * der["p2"]["arho2"]
+    der[self.name]["arhou1"] = dp_relax_dp1 * der["p1"]["arhou1"]
+    der[self.name]["arhou2"] = dp_relax_dp2 * der["p2"]["arhou2"]
+    der[self.name]["arhoE1"] = dp_relax_dp1 * der["p1"]["arhoE1"]
+    der[self.name]["arhoE2"] = dp_relax_dp2 * der["p2"]["arhoE2"]

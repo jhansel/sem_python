@@ -18,4 +18,5 @@ class AmbrosoBeta(AuxQuantity2Phase):
     dbeta_darho2 = - self.chi * data["arho1"] / denominator / denominator * (1 - self.chi)
 
     data[self.name] = beta
-    der[self.name] = {"arho1": dbeta_darho1, "arho2": dbeta_darho2}
+    der[self.name]["arho1"] = dbeta_darho1
+    der[self.name]["arho2"] = dbeta_darho2

@@ -17,4 +17,7 @@ class AcousticImpedance(AuxQuantity1Phase):
     drhoc_darhou = data[self.rho] * der[self.c][self.arhou]
     drhoc_darhoE = data[self.rho] * der[self.c][self.arhoE]
 
-    der[self.name] = {"vf1": drhoc_dvf1, self.arho: drhoc_darho, self.arhou: drhoc_darhou, self.arhoE: drhoc_darhoE}
+    der[self.name]["vf1"] = drhoc_dvf1
+    der[self.name][self.arho] = drhoc_darho
+    der[self.name][self.arhou] = drhoc_darhou
+    der[self.name][self.arhoE] = drhoc_darhoE

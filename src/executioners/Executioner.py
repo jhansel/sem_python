@@ -69,6 +69,9 @@ class Executioner(object):
       self.aux_list += interface_closures.createAuxQuantities() \
         + stabilization.createPhaseInteractionAuxQuantities()
 
+    # get list of aux quantities
+    self.aux_names = [aux.name for aux in self.aux_list]
+
     # create kernels
     self.kernels = self.createIndependentPhaseKernels(0) + stabilization.createIndependentPhaseKernels(0)
     if self.model_type != ModelType.OnePhase:
@@ -223,7 +226,7 @@ class Executioner(object):
   ## Computes the steady-state residual and Jacobian
   def addSteadyStateSystem(self, U, r, J):
     data = dict()
-    der = dict()
+    der = self.dof_handler.initializeDerivativeData(self.aux_names)
 
     data["phi"] = self.fe_values.get_phi()
     data["g"] = self.gravity

@@ -8,7 +8,6 @@ from AuxDerivativesTester import AuxDerivativesTester
 params = SpecificInternalEnergyParameters()
 params.set("phase", 0)
 test_aux = SpecificInternalEnergy(params)
-test_var = "e1"
 
 # velocity aux
 params = TestAuxParameters()
@@ -24,8 +23,7 @@ params.set("other_vars", ["arho1", "arhoE1"])
 params.set("coefs", [2.5, 3.5])
 E_aux = TestAux(params)
 
-other_aux = {"u1" : u_aux, "E1" : E_aux}
-other_vars = ["u1", "E1"]
+other_aux = [u_aux, E_aux]
 root_vars = ["arho1", "arhou1", "arhoE1"]
 
 class SpecificInternalEnergyDerivativesTester(unittest.TestCase):
@@ -33,12 +31,10 @@ class SpecificInternalEnergyDerivativesTester(unittest.TestCase):
     self.derivatives_tester = AuxDerivativesTester()
 
   def test(self):
-    rel_diffs = self.derivatives_tester.checkDerivatives(
-      test_aux, test_var, other_aux, other_vars, root_vars)
+    rel_diffs = self.derivatives_tester.checkDerivatives(test_aux, other_aux, root_vars)
     for key in rel_diffs:
       self.assertLessEqual(rel_diffs[key], 1e-6)
 
 if __name__ == "__main__":
   derivatives_tester = AuxDerivativesTester(True)
-  _ = derivatives_tester.checkDerivatives(
-    test_aux, test_var, other_aux, other_vars, root_vars)
+  _ = derivatives_tester.checkDerivatives(test_aux, other_aux, root_vars)

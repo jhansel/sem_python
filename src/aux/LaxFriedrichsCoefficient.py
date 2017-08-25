@@ -35,4 +35,7 @@ class LaxFriedrichsCoefficient(AuxQuantity1Phase):
     db_darhoE = db_dc * der[self.c][self.arhoE]
 
     data[self.name] = b
-    der[self.name] = {"vf1" : db_dvf1, self.arho : db_darho, self.arhou : db_darhou, self.arhoE : db_darhoE}
+    der[self.name]["vf1"] = db_dvf1
+    der[self.name][self.arho] = db_darho
+    der[self.name][self.arhou] = db_darhou
+    der[self.name][self.arhoE] = db_darhoE

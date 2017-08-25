@@ -9,7 +9,6 @@ from AuxDerivativesTester import AuxDerivativesTester
 params = EntropyMinimumEnergyFluxParameters()
 params.set("phase", 0)
 test_aux = EntropyMinimumEnergyFlux(params)
-test_var = "viscflux_arhoE1"
 
 # volume fraction aux
 params = VolumeFractionPhase1Parameters()
@@ -65,11 +64,8 @@ params.set("other_vars", ["vf1", "arho1", "arhou1", "arhoE1", "grad_vf1", "grad_
 params.set("coefs", [1.1, 2.2, 3.8, 4.0, 3.7, 2.3, 1.2])
 viscflux_arhou_aux = TestAux(params)
 
-other_aux = {"vf1" : vf_aux, "visccoef_arhou1" : visccoef_arhoE_aux, "grad_rhoe1" : grad_rhoe_aux,
-  "rhoe" : rhoe_aux, "viscflux_vf1" : viscflux_vf_aux, "u1" : u_aux, "viscflux_arho1" : viscflux_arho_aux,
-  "viscflux_arhou1" : viscflux_arhou_aux}
-other_vars = ["vf1", "visccoef_arhou1", "grad_rhoe1", "rhoe" , "viscflux_vf1", "u1",
-  "viscflux_arho1", "viscflux_arhou1"]
+other_aux = [vf_aux, visccoef_arhoE_aux, grad_rhoe_aux, rhoe_aux,
+             viscflux_vf_aux, u_aux, viscflux_arho_aux, viscflux_arhou_aux]
 root_vars = ["vf1", "arho1", "arhou1", "arhoE1", "grad_vf1", "grad_arho1", "grad_arhou1", "grad_arhoE1"]
 
 class EntropyMinimumEnergyFluxDerivativesTester(unittest.TestCase):
@@ -77,12 +73,10 @@ class EntropyMinimumEnergyFluxDerivativesTester(unittest.TestCase):
     self.derivatives_tester = AuxDerivativesTester()
 
   def test(self):
-    rel_diffs = self.derivatives_tester.checkDerivatives(
-      test_aux, test_var, other_aux, other_vars, root_vars)
+    rel_diffs = self.derivatives_tester.checkDerivatives(test_aux, other_aux, root_vars)
     for key in rel_diffs:
       self.assertLessEqual(rel_diffs[key], 1e-5)
 
 if __name__ == "__main__":
   derivatives_tester = AuxDerivativesTester(True)
-  _ = derivatives_tester.checkDerivatives(
-    test_aux, test_var, other_aux, other_vars, root_vars)
+  _ = derivatives_tester.checkDerivatives(test_aux, other_aux, root_vars)

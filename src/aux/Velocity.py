@@ -16,4 +16,5 @@ class Velocity(AuxQuantity1Phase):
 
     du_darho = - arhou / arho / arho
     du_darhou = 1.0 / arho
-    der[self.name] = {self.arho : du_darho, self.arhou : du_darhou}
+    der[self.name][self.arho] = du_darho
+    der[self.name][self.arhou] = du_darhou

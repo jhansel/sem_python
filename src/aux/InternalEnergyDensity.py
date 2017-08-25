@@ -18,4 +18,7 @@ class InternalEnergyDensity(AuxQuantity1Phase):
     drhoe_darhou = data[self.rho] * der[self.e][self.arhou]
     drhoe_darhoE = data[self.rho] * der[self.e][self.arhoE]
 
-    der[self.name] = {"vf1": drhoe_dvf1, self.arho: drhoe_darho, self.arhou: drhoe_darhou, self.arhoE: drhoe_darhoE}
+    der[self.name]["vf1"] = drhoe_dvf1
+    der[self.name][self.arho] = drhoe_darho
+    der[self.name][self.arhou] = drhoe_darhou
+    der[self.name][self.arhoE] = drhoe_darhoE

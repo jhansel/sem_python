@@ -7,7 +7,6 @@ from AuxDerivativesTester import AuxDerivativesTester
 # test aux
 params = BerryVelocityRelaxationCoefParameters()
 test_aux = BerryVelocityRelaxationCoef(params)
-test_var = "u_relax"
 
 # pressure relaxation aux
 params = TestAuxParameters()
@@ -30,8 +29,7 @@ params.set("other_vars", ["vf1", "arho2", "arhou2", "arhoE2"])
 params.set("coefs", [2.4, 2.2, 3.3, 4.4])
 z2_aux = TestAux(params)
 
-other_aux = {"p_relax": p_relax_aux, "z1": z1_aux, "z2": z2_aux}
-other_vars = ["p_relax", "z1", "z2"]
+other_aux = [p_relax_aux, z1_aux, z2_aux]
 root_vars = ["vf1", "arho1", "arhou1", "arhoE1", "arho2", "arhou2", "arhoE2"]
 
 class BerryVelocityRelaxationCoefDerivativesTester(unittest.TestCase):
@@ -39,12 +37,10 @@ class BerryVelocityRelaxationCoefDerivativesTester(unittest.TestCase):
     self.derivatives_tester = AuxDerivativesTester()
 
   def test(self):
-    rel_diffs = self.derivatives_tester.checkDerivatives(
-      test_aux, test_var, other_aux, other_vars, root_vars)
+    rel_diffs = self.derivatives_tester.checkDerivatives(test_aux, other_aux, root_vars)
     for key in rel_diffs:
       self.assertLessEqual(rel_diffs[key], 1e-6)
 
 if __name__ == "__main__":
   derivatives_tester = AuxDerivativesTester(True)
-  _ = derivatives_tester.checkDerivatives(
-    test_aux, test_var, other_aux, other_vars, root_vars)
+  _ = derivatives_tester.checkDerivatives(test_aux, other_aux, root_vars)

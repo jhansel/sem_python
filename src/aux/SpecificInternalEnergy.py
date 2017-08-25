@@ -19,4 +19,6 @@ class SpecificInternalEnergy(AuxQuantity1Phase):
     de_darho = de_dE * der[self.E][self.arho] + de_du * der[self.u][self.arho]
     de_darhou = de_du * der[self.u][self.arhou]
     de_darhoE = de_dE * der[self.E][self.arhoE]
-    der[self.name] = {self.arho : de_darho, self.arhou : de_darhou, self.arhoE : de_darhoE}
+    der[self.name][self.arho] = de_darho
+    der[self.name][self.arhou] = de_darhou
+    der[self.name][self.arhoE] = de_darhoE

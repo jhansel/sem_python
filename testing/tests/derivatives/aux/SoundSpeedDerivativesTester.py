@@ -15,7 +15,6 @@ params = SoundSpeedParameters()
 params.set("phase", 0)
 params.set("c_function", computeSoundSpeed)
 test_aux = SoundSpeed(params)
-test_var = "c1"
 
 # specific volume aux
 params = TestAuxParameters()
@@ -31,8 +30,7 @@ params.set("other_vars", ["vf1", "arho1", "arhou1", "arhoE1"])
 params.set("coefs", [1.5, 2.5, 3.5, 4.5])
 p_aux = TestAux(params)
 
-other_aux = {"v1" : v_aux, "p1" : p_aux}
-other_vars = ["v1", "p1"]
+other_aux = [v_aux, p_aux]
 root_vars = ["vf1", "arho1", "arhou1", "arhoE1"]
 
 class SoundSpeedDerivativesTester(unittest.TestCase):
@@ -40,12 +38,10 @@ class SoundSpeedDerivativesTester(unittest.TestCase):
     self.derivatives_tester = AuxDerivativesTester()
 
   def test(self):
-    rel_diffs = self.derivatives_tester.checkDerivatives(
-      test_aux, test_var, other_aux, other_vars, root_vars)
+    rel_diffs = self.derivatives_tester.checkDerivatives(test_aux, other_aux, root_vars)
     for key in rel_diffs:
       self.assertLessEqual(rel_diffs[key], 1e-6)
 
 if __name__ == "__main__":
   derivatives_tester = AuxDerivativesTester(True)
-  _ = derivatives_tester.checkDerivatives(
-    test_aux, test_var, other_aux, other_vars, root_vars)
+  _ = derivatives_tester.checkDerivatives(test_aux, other_aux, root_vars)

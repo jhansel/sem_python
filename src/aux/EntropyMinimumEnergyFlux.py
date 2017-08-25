@@ -59,6 +59,11 @@ class EntropyMinimumEnergyFlux(AuxQuantity1Phase):
     dh_dgrad_arhoE = data[self.vf] * data[self.visccoef_arhoE] * der[self.grad_rhoe][self.grad_arhoE]
 
     data[self.name] = h
-    der[self.name] = {"vf1" : dh_dvf1, self.arho : dh_darho, self.arhou : dh_darhou,
-      self.arhoE : dh_darhoE, "grad_vf1" : dh_dgrad_vf1, self.grad_arho : dh_dgrad_arho,
-      self.grad_arhou : dh_dgrad_arhou, self.grad_arhoE : dh_dgrad_arhoE}
+    der[self.name]["vf1"] = dh_dvf1
+    der[self.name][self.arho] = dh_darho
+    der[self.name][self.arhou] = dh_darhou
+    der[self.name][self.arhoE] = dh_darhoE
+    der[self.name]["grad_vf1"] = dh_dgrad_vf1
+    der[self.name][self.grad_arho] = dh_dgrad_arho
+    der[self.name][self.grad_arhou] = dh_dgrad_arhou
+    der[self.name][self.grad_arhoE] = dh_dgrad_arhoE

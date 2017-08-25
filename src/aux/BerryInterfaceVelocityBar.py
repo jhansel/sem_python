@@ -19,18 +19,15 @@ class BerryInterfaceVelocityBar(AuxQuantity2Phase):
     data[self.name] = numerator / (z1 + z2)
 
     ddenominator = -1.0 / (z1 + z2)**2
-    dvf1 = (der["z1"]["vf1"] * u1 + der["z2"]["vf1"] * u2) / (z1 + z2) \
+    der[self.name]["vf1"] = (der["z1"]["vf1"] * u1 + der["z2"]["vf1"] * u2) / (z1 + z2) \
       + numerator * ddenominator * (der["z1"]["vf1"] + der["z2"]["vf1"])
-    darho1 = (der["z1"]["arho1"] * u1 + z1 * der["u1"]["arho1"]) / (z1 + z2) \
+    der[self.name]["arho1"] = (der["z1"]["arho1"] * u1 + z1 * der["u1"]["arho1"]) / (z1 + z2) \
       + numerator * ddenominator * der["z1"]["arho1"]
-    darhou1 = (der["z1"]["arhou1"] * u1 + z1 * der["u1"]["arhou1"]) / (z1 + z2) \
+    der[self.name]["arhou1"] = (der["z1"]["arhou1"] * u1 + z1 * der["u1"]["arhou1"]) / (z1 + z2) \
       + numerator * ddenominator * der["z1"]["arhou1"]
-    darhoE1 = der["z1"]["arhoE1"] * u1 / (z1 + z2) + numerator * ddenominator * der["z1"]["arhoE1"]
-    darho2 = (der["z2"]["arho2"] * u2 + z2 * der["u2"]["arho2"]) / (z1 + z2) \
+    der[self.name]["arhoE1"] = der["z1"]["arhoE1"] * u1 / (z1 + z2) + numerator * ddenominator * der["z1"]["arhoE1"]
+    der[self.name]["arho2"] = (der["z2"]["arho2"] * u2 + z2 * der["u2"]["arho2"]) / (z1 + z2) \
       + numerator * ddenominator * der["z2"]["arho2"]
-    darhou2 = (der["z2"]["arhou2"] * u2 + z2 * der["u2"]["arhou2"]) / (z1 + z2) \
+    der[self.name]["arhou2"] = (der["z2"]["arhou2"] * u2 + z2 * der["u2"]["arhou2"]) / (z1 + z2) \
       + numerator * ddenominator * der["z2"]["arhou2"]
-    darhoE2 = der["z2"]["arhoE2"] * u2 / (z1 + z2) + numerator * ddenominator * der["z2"]["arhoE2"]
-
-    der[self.name] = {"vf1": dvf1, "arho1": darho1, "arhou1": darhou1, "arhoE1": darhoE1,
-      "arho2": darho2, "arhou2": darhou2, "arhoE2": darhoE2}
+    der[self.name]["arhoE2"] = der["z2"]["arhoE2"] * u2 / (z1 + z2) + numerator * ddenominator * der["z2"]["arhoE2"]

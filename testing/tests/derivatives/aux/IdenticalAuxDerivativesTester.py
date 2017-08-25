@@ -16,10 +16,8 @@ params = IdenticalAuxParameters()
 params.set("original_aux", "aux_original")
 params.set("copy_aux", "aux_copy")
 test_aux = IdenticalAux(params)
-test_var = "aux_original"
 
-other_aux = {"aux_original": original_aux}
-other_vars = ["aux_original"]
+other_aux = [original_aux]
 root_vars = ["var1", "var2"]
 
 class IdenticalAuxDerivativesTester(unittest.TestCase):
@@ -27,12 +25,10 @@ class IdenticalAuxDerivativesTester(unittest.TestCase):
     self.derivatives_tester = AuxDerivativesTester()
 
   def test(self):
-    rel_diffs = self.derivatives_tester.checkDerivatives(
-      test_aux, test_var, other_aux, other_vars, root_vars)
+    rel_diffs = self.derivatives_tester.checkDerivatives(test_aux, other_aux, root_vars)
     for key in rel_diffs:
       self.assertLessEqual(rel_diffs[key], 1e-6)
 
 if __name__ == "__main__":
   derivatives_tester = AuxDerivativesTester(True)
-  _ = derivatives_tester.checkDerivatives(
-    test_aux, test_var, other_aux, other_vars, root_vars)
+  _ = derivatives_tester.checkDerivatives(test_aux, other_aux, root_vars)
