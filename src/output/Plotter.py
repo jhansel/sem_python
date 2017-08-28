@@ -11,10 +11,11 @@ from matplotlib.ticker import FormatStrFormatter
 # 6: hot pink
 colors = ['k','indianred','orange','lightgreen','cornflowerblue','slateblue','orchid']
 linetypes = ['-','--',':']
+markers = ["", ".", "x", "o", "s", "^", "D"]
 
-## Class for creating plots
 class Plotter(object):
-    def __init__(self, x_label, y_label, n_subplots=1, logscale_y=False, size_x=12, size_y=9):
+    def __init__(self, x_label, y_label, n_subplots=1, logscale_x=False, logscale_y=False,
+      size_x=12, size_y=9):
         # set figure size
         plt.figure(figsize=(size_x, size_y))
 
@@ -37,7 +38,8 @@ class Plotter(object):
         # turn off offset
         self.ax.get_yaxis().get_major_formatter().set_useOffset(False)
 
-        # log scale for first axis
+        # log scale
+        self.logscale_x = logscale_x
         self.logscale_y = logscale_y
 
         # set the axis labels
@@ -48,9 +50,13 @@ class Plotter(object):
         self.set_custom_x_range = False
 
         # legend
+        self.legend_location = "upper right"
         self.put_legend_outside = False
         self.frame_legend = False
         self.legend_entries = list()
+
+    def setLegendLocation(self, loc):
+        self.legend_location = loc
 
     def adjustLeftMargin(self, margin):
         plt.subplots_adjust(left=margin)
@@ -72,8 +78,7 @@ class Plotter(object):
 
     def fixNearConstantPlot(self, dy_min=1.0):
       ymin, ymax = self.ax.get_ylim()
-      rel_diff = (ymax - ymin) / max(1e-15, abs(ymax))
-      if (rel_diff < 1e-15):
+      if (ymax - ymin < dy_min):
         yavg = 0.5 * (ymin + ymax)
         ymin_new = yavg - 0.5 * dy_min
         ymax_new = yavg + 0.5 * dy_min
@@ -86,8 +91,9 @@ class Plotter(object):
       box = self.ax.get_position()
       self.ax.set_position([box.x0, box.y0, box.width * 0.8, box.height])
 
-    def nextSubplot(self, x_label, y_label, logscale_y=False):
+    def nextSubplot(self, x_label, y_label, logscale_x=False, logscale_y=False):
         # update logscale
+        self.logscale_x = logscale_x
         self.logscale_y = logscale_y
 
         # create legend for previous subplot and then clear legend entries list
@@ -95,7 +101,7 @@ class Plotter(object):
           self.ax.legend(self.legend_entries, loc='center left', frameon=self.frame_legend,
               bbox_to_anchor=(1,0.5), prop={'size':12})
         else:
-          self.ax.legend(self.legend_entries, frameon=self.frame_legend, prop={'size':12})
+          self.ax.legend(self.legend_entries, frameon=self.frame_legend, prop={'size':12}, loc=self.legend_location)
         self.legend_entries = list()
 
         # create new subplot
@@ -120,17 +126,18 @@ class Plotter(object):
     def addGrid(self):
         plt.grid(True)
 
-    def addSet(self,x,y,set_name,color=-1,linetype=0,scale=1):
+    def addSet(self, x, y, set_name, color=-1, linetype=0, marker=0, scale=1):
         # scale y values
         y = [yi * scale for yi in y]
 
-        if (color >= 0):
-            if (self.logscale_y):
-              plt.semilogy(x,y,linetypes[linetype],color=colors[color])
-            else:
-              plt.plot(x,y,linetypes[linetype],color=colors[color])
+        if (self.logscale_x and self.logscale_y):
+          plt.loglog(x,y,linetypes[linetype],color=colors[color],marker=markers[marker],markerfacecolor="none",markeredgecolor=colors[color])
+        elif (self.logscale_x):
+          plt.semilogx(x,y,linetypes[linetype],color=colors[color],marker=markers[marker],markerfacecolor="none",markeredgecolor=colors[color])
+        elif (self.logscale_y):
+          plt.semilogy(x,y,linetypes[linetype],color=colors[color],marker=markers[marker],markerfacecolor="none",markeredgecolor=colors[color])
         else:
-            plt.plot(x,y,linetypes[linetype])
+          plt.plot(x,y,linetypes[linetype],color=colors[color],marker=markers[marker],markerfacecolor="none",markeredgecolor=colors[color])
         self.legend_entries.append(set_name)
 
     def save(self, outputfile):
@@ -139,13 +146,13 @@ class Plotter(object):
           self.ax.legend(self.legend_entries, loc='center left', frameon=self.frame_legend,
               bbox_to_anchor=(1,0.5), prop={'size':12})
         else:
-          self.ax.legend(self.legend_entries, frameon=self.frame_legend, prop={'size':12})
+          self.ax.legend(self.legend_entries, frameon=self.frame_legend, prop={'size':12}, loc=self.legend_location)
 
         # save the figure
         plt.savefig(outputfile, dpi=300)
 
 if (__name__ == '__main__'):
-    plotter = Plotter('x', 'y', 2)
+    plotter = Plotter('x','y',2)
     x = [1, 2, 3]
     y1 = [1, 2, 3]
     y2 = [2, 4, 6]
