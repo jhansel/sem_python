@@ -29,6 +29,7 @@ class TransientExecutioner(Executioner):
       self.cfl = params.get("cfl")
       self.use_cfl_dt = True
       self.cfl_dt_aux_list = self.createCFLAuxQuantities()
+      self.cfl_aux_names = [aux.name for aux in self.cfl_dt_aux_list]
     else:
       error("Either parameter 'dt' or 'cfl' must be provided.")
 
@@ -127,9 +128,9 @@ class TransientExecutioner(Executioner):
         "SpecificInternalEnergy", "Pressure", "SoundSpeed"]
       for name in names:
         if name == "Pressure":
-          params = {"phase": phase, "p_function": self.eos[phase].p}
+          params = {"phase": phase, "p_function": self.eos_list[phase].p}
         elif name == "SoundSpeed":
-          params = {"phase": phase, "c_function": self.eos[phase].c}
+          params = {"phase": phase, "c_function": self.eos_list[phase].c}
         else:
           params = {"phase": phase}
         aux_list.append(self.factory.createObject(name, params))
@@ -144,7 +145,7 @@ class TransientExecutioner(Executioner):
 
     # determine maximum wave speed
     data = dict()
-    der = dict()
+    der = self.dof_handler.initializeDerivativeData(self.cfl_aux_names)
 
     for phase in xrange(self.n_phases):
       phase_str = str(phase + 1)
