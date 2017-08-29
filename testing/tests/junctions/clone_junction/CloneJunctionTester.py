@@ -19,21 +19,21 @@ class CloneJunctionTester(unittest.TestCase):
     csv_tester = CSVTester(test_dir, "solution_with_junction.csv")
     self.assertTrue(csv_tester.filesAreEqual())
 
-  def runDerivativeTest(self, test_weak):
+  def runDerivativeTest(self, test_option):
     tester = JunctionTester("CloneJunction")
-    rel_diffs = tester.checkJacobian(test_weak)
+    rel_diffs = tester.checkJacobian(test_option)
     n_i, n_j = rel_diffs.shape
     for i in xrange(n_i):
       for j in xrange(n_j):
         self.assertLessEqual(rel_diffs[i,j], 1e-6)
 
   def testJacobianWeak(self):
-    self.runDerivativeTest(True)
+    self.runDerivativeTest("weak")
 
   def testJacobianStrong(self):
-    self.runDerivativeTest(False)
+    self.runDerivativeTest("strong")
 
 if __name__ == "__main__":
   tester = JunctionTester("CloneJunction", verbose=True)
-  _ = tester.checkJacobian(True)
-  _ = tester.checkJacobian(False)
+  _ = tester.checkJacobian("weak")
+  _ = tester.checkJacobian("strong")

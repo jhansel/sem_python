@@ -74,6 +74,8 @@ from PhysicsParameters import PhysicsParameters
 # junctions
 from CloneJunction import CloneJunction, CloneJunctionParameters
 from CompressibleJunction import CompressibleJunction, CompressibleJunctionParameters
+from EqualFluxJunction import EqualFluxJunction, EqualFluxJunctionParameters
+from FreeBCJunction import FreeBCJunction, FreeBCJunctionParameters
 
 # kernels
 from DissipationAuxFlux import DissipationAuxFlux, DissipationAuxFluxParameters

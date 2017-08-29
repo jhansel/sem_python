@@ -3,6 +3,7 @@ import numpy as np
 
 from display_utilities import computeRelativeDifferenceMatrix, printRelativeMatrixDifference
 from enums import ModelType
+from error_utilities import error
 from Factory import Factory
 from numeric_utilities import computeRelativeDifference
 
@@ -11,7 +12,7 @@ class JunctionTester(object):
     self.junction_name = junction_name
     self.verbose = verbose
 
-  def checkJacobian(self, test_weak, model_type=ModelType.OnePhase, phase=0, junction_params=dict(), fd_eps=1e-8):
+  def checkJacobian(self, test_option, model_type=ModelType.OnePhase, phase=0, junction_params=dict(), fd_eps=1e-8):
     # factory
     factory = Factory()
 
@@ -62,10 +63,16 @@ class JunctionTester(object):
       U_old[i] = i + 2.0
 
     # determine evaluation function
-    if test_weak:
+    if test_option == "weak":
       f = junction.applyWeaklyToNonlinearSystem
-    else:
+    elif test_option == "strong":
       f = junction.applyStronglyToNonlinearSystem
+    elif test_option == "both":
+      def f(*args, **kwargs):
+        junction.applyWeaklyToNonlinearSystem(*args, **kwargs)
+        junction.applyStronglyToNonlinearSystem(*args, **kwargs)
+    else:
+      error("Invalid test option")
 
     # base calculation
     r = np.zeros(n_dof)
@@ -92,10 +99,7 @@ class JunctionTester(object):
 
     # print results
     if self.verbose:
-      if test_weak:
-        print "\nRelative difference of Jacobian for weak contributions:"
-      else:
-        print "\nRelative difference of Jacobian for strong contributions:"
+      print "\nRelative difference of Jacobian for " + test_option + " contributions:"
       printRelativeMatrixDifference(rel_diffs, J_hand_coded - J_fd, 1e-1, 1e-3)
 
     # take the absolute value of the relative differences

@@ -19,3 +19,8 @@ class Junction1Phase(Junction):
     self.arho_index = self.dof_handler.variable_index[VariableName.ARho][self.phase]
     self.arhou_index = self.dof_handler.variable_index[VariableName.ARhoU][self.phase]
     self.arhoE_index = self.dof_handler.variable_index[VariableName.ARhoE][self.phase]
+
+    # indices for all meshes
+    self.i_arho = [self.dof_handler.i(k, self.arho_index) for k in self.node_indices]
+    self.i_arhou = [self.dof_handler.i(k, self.arhou_index) for k in self.node_indices]
+    self.i_arhoE = [self.dof_handler.i(k, self.arhoE_index) for k in self.node_indices]

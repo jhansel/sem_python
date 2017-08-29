@@ -37,6 +37,14 @@ class Junction(object):
       else:
         error("Side parameters must be either 'left' or 'right'.")
 
+    # get normal vectors
+    self.nx = list()
+    for i in xrange(self.n_meshes):
+      if self.mesh_sides[i] == "left":
+        self.nx.append(-1.0)
+      else:
+        self.nx.append(1.0)
+
   def applyWeaklyToNonlinearSystem(self, U, U_old, r, J):
     pass
 
