@@ -8,9 +8,10 @@ class FreeBCTester(unittest.TestCase):
 
   def testJacobian(self):
     rel_diffs = self.tester.checkJacobian("FreeBC")
-    for var_i_dict in rel_diffs:
-      for var_j in var_i_dict:
-        self.assertLessEqual(var_i_dict[var_j], 1e-6)
+    n_i, n_j = rel_diffs.shape
+    for i in xrange(n_i):
+      for j in xrange(n_j):
+        self.assertLessEqual(rel_diffs[i,j], 1e-6)
 
 if __name__ == "__main__":
   tester = BCTester(True)
