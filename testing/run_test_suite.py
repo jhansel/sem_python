@@ -33,7 +33,8 @@ def getTestModuleList():
     for thefile in files:
       fields = thefile.split(".")
       ext = fields[-1]
-      if ext == "py":
+      # only include files that end in "Tester.py"
+      if thefile.endswith("Tester.py"):
         test_modules.append(".".join(fields[0:-1]))
 
   return test_modules
