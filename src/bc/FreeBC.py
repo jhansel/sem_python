@@ -42,7 +42,7 @@ class FreeBC(OnePhaseBC):
     dp_darhoE = dp_de * de_darhoE
 
     # mass
-    r[self.i_arho] += rhou * self.nx
+    r[self.i_arho] += arhou * self.nx
     J[self.i_arho,self.i_arhou] += self.nx
 
     # momentum

@@ -75,7 +75,7 @@ class DoFHandler(object):
     self.arho_index = list()
     self.arhou_index = list()
     self.arhoE_index = list()
-    self.variable_names = dict()
+    self.variable_names = [""] * self.n_var
     self.index_to_variable = dict()
     self.index_to_phase = dict()
     for phase in xrange(n_phases):
