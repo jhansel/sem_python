@@ -1,3 +1,6 @@
+# This tests the source-splitting strategy using a 1-phase hydrostatic pressure
+# problem. It takes 2 time steps and checks that the solution matches a gold file.
+
 [Model]
   model = 1phase
 []
@@ -43,19 +46,18 @@
 [Executioner]
   type = ImplicitEulerExecutioner
   dt = 0.01
-  end_time = 0.1
+  end_time = 0.02
   split_source = True
 []
 
 [NonlinearSolver]
-  verbose = True
   absolute_tolerance = 1e-5
   max_iterations = 10
 []
 
 [Output]
-  plot_solution = True
-  print_solution = False
   save_solution = True
-  solution_file = solution.csv
+  solution_file = solution_1phase.csv
+  plot_solution = True
+  plot_file = solution_1phase.pdf
 []
