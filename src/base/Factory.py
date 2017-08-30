@@ -47,6 +47,7 @@ from SolidWallBC import SolidWallBC, SolidWallBCParameters
 # closures
 from IdealGasEoS import IdealGasEoS, IdealGasEoSParameters
 from StiffenedGasEoS import StiffenedGasEoS, StiffenedGasEoSParameters
+from TestEoS import TestEoS, TestEoSParameters
 from AmbrosoInterfaceClosures import AmbrosoInterfaceClosures, AmbrosoInterfaceClosuresParameters
 from BerryInterfaceClosures import BerryInterfaceClosures, BerryInterfaceClosuresParameters
 from ThermodynamicState import ThermodynamicState, ThermodynamicStateParameters
