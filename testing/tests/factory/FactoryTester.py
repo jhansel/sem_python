@@ -22,3 +22,11 @@ class FactoryTester(unittest.TestCase):
     params = {"type" : "IdealGasEoS", "gamma" : "1.4", "R" : "200"}
     object_class = params["type"]
     self.factory.createObject(object_class, params)
+
+  ## Tests the createObjectFromParametersObject() function
+  def testCreateObjectFromParametersObject(self):
+    object_class = "IdealGasEoS"
+    parameters_object = self.factory.createParametersObject(object_class)
+    parameters_object.set("gamma", 1.4)
+    parameters_object.set("R", 200)
+    self.factory.createObjectFromParametersObject(object_class, parameters_object)
