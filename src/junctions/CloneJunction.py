@@ -30,8 +30,8 @@ class CloneJunction(Junction):
     r[self.i_slave] = 0
     J[self.i_master,:] += J[self.i_slave,:]
     J[self.i_slave,:] = 0
-    J[:,self.i_master] += J[:,self.i_slave]
-    J[:,self.i_slave] = 0
+    # J[:,self.i_master] += J[:,self.i_slave]
+    # J[:,self.i_slave] = 0
 
     # apply Dirichlet constraint to slave nodes
     r[self.i_slave] = U[self.i_slave] - U[self.i_master]
