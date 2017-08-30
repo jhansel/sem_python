@@ -39,7 +39,12 @@ class JunctionTester(object):
     junction_params["mesh_names"] = " ".join([mesh.name for mesh in meshes])
     junction_params["mesh_sides"] = "right left"
     junction_params["dof_handler"] = dof_handler
-    junction = factory.createObject(self.junction_name, junction_params)
+    junction_parameters = factory.createParametersObject(self.junction_name)
+    for param in junction_params:
+      junction_parameters.set(param, junction_params[param])
+    if junction_parameters.hasRegisteredParam("phase"):
+      junction_parameters.set("phase", phase)
+    junction = factory.createObjectFromParametersObject(self.junction_name, junction_parameters)
 
     # compute base solution
     U = np.zeros(n_dof)

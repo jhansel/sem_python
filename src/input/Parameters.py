@@ -30,6 +30,15 @@ class Parameters(object):
     else:
       return False
 
+  ## Returns whether or not a parameter is registered
+  # @param name  the name of the parameter for which to check registration
+  # @return whether or not the parameter is registered
+  def hasRegisteredParam(self, name):
+    if name in self.descriptions:
+      return True
+    else:
+      return False
+
   ## Sets an input parameter
   # @param name  name of the parameter to set
   # @param value  value of the parameter as a string
