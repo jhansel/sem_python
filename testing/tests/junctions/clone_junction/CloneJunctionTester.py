@@ -3,9 +3,9 @@ import unittest
 import sem
 from InputFileModification import InputFileModification
 from CSVTester import CSVTester
+from JunctionTester import JunctionTester
 
 class CloneJunctionTester(unittest.TestCase):
-  ## Tests the solution
   def testSolution(self):
     test_dir = "tests/junctions/clone_junction/"
     mods = list()
@@ -18,3 +18,22 @@ class CloneJunctionTester(unittest.TestCase):
 
     csv_tester = CSVTester(test_dir, "solution_with_junction.csv")
     self.assertTrue(csv_tester.filesAreEqual())
+
+  def runDerivativeTest(self, test_weak):
+    tester = JunctionTester("CloneJunction")
+    rel_diffs = tester.checkJacobian(test_weak)
+    n_i, n_j = rel_diffs.shape
+    for i in xrange(n_i):
+      for j in xrange(n_j):
+        self.assertLessEqual(rel_diffs[i,j], 1e-6)
+
+  def testJacobianWeak(self):
+    self.runDerivativeTest(True)
+
+  def testJacobianStrong(self):
+    self.runDerivativeTest(False)
+
+if __name__ == "__main__":
+  tester = JunctionTester("CloneJunction", verbose=True)
+  _ = tester.checkJacobian(True)
+  _ = tester.checkJacobian(False)
