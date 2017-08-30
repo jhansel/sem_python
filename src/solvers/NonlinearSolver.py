@@ -6,7 +6,8 @@ from termcolor import colored
 
 from enums import VariableName
 from Parameters import Parameters
-from display_utilities import computeRelativeDifferenceMatrix, printMatrix, printMatrixDifference, printDoFVector
+from display_utilities import computeRelativeDifferenceMatrix, printMatrix, \
+  printRelativeMatrixDifference, printDoFVector
 from error_utilities import errorNoTraceback
 
 class NonlinearSolverParameters(Parameters):
@@ -89,11 +90,9 @@ class NonlinearSolver(object):
         printMatrix(J)
         print("\nFinite Difference Jacobian:")
         printMatrix(J_fd)
-        print("\nAbsolute Difference:")
-        printMatrixDifference(J - J_fd)
         print("\nRelative Difference:")
         J_relative_difference = computeRelativeDifferenceMatrix(J, J_fd)
-        printMatrixDifference(J_relative_difference, 1e-1, 1e-3)
+        printRelativeMatrixDifference(J_relative_difference, J - J_fd, 1e-1, 1e-3)
 
         # exit
         sys.exit()

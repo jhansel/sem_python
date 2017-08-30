@@ -38,6 +38,22 @@ def printMatrixDifference(A, red_threshold=None, yellow_threshold=None):
     sys.stdout.write("\n")
   sys.stdout.flush()
 
+def printRelativeMatrixDifference(A, A_diff, red_threshold=None, yellow_threshold=None, abs_threshold=1e-6):
+  n = A.shape[0]
+  for i in xrange(n):
+    for j in xrange(n):
+      not_near_zero = abs(A_diff[i,j]) > abs_threshold
+      if (not_near_zero and red_threshold and abs(A[i,j]) >= red_threshold):
+        sys.stdout.write(colored("   %11.4e" % (A[i,j]), "red"))
+      elif (not_near_zero and yellow_threshold and abs(A[i,j]) >= yellow_threshold):
+        sys.stdout.write(colored("   %11.4e" % (A[i,j]), "yellow"))
+      elif (abs(A[i,j]) > 0):
+        sys.stdout.write(colored("   %11.4e" % (A[i,j]), "green"))
+      else:
+        sys.stdout.write("   %11.4e" % (A[i,j]))
+    sys.stdout.write("\n")
+  sys.stdout.flush()
+
 def printDoFVector(U, dof_handler):
   n_var = dof_handler.n_var
   header_items = ("i",) + tuple(dof_handler.variable_names)
