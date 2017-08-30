@@ -35,6 +35,13 @@ class JunctionTester(object):
     n_dof = dof_handler.n_dof
     n_var = dof_handler.n_var
 
+    # equation of state
+    eos_params1 = {"slope_initial": 1.0, "slope_increment": 0.1}
+    eos_list = [factory.createObject("TestEoS", eos_params1)]
+    if model_type != ModelType.OnePhase:
+      eos_params2 = {"slope_initial": 1.1, "slope_increment": 0.07}
+      eos_list.append(factory.createObject("TestEoS", eos_params2))
+
     # junction
     junction_params["mesh_names"] = " ".join([mesh.name for mesh in meshes])
     junction_params["mesh_sides"] = "right left"
@@ -83,9 +90,9 @@ class JunctionTester(object):
     # print results
     if self.verbose:
       if test_weak:
-        print "Jacobian of weak contributions:"
+        print "\nRelative difference of Jacobian for weak contributions:"
       else:
-        print "Jacobian of strong contributions:"
+        print "\nRelative difference of Jacobian for strong contributions:"
       printRelativeMatrixDifference(rel_diffs, J_hand_coded - J_fd, 1e-1, 1e-3)
 
     # take the absolute value of the relative differences
