@@ -27,7 +27,7 @@ class CompressibleJunction(Junction1Phase):
     self.k_left_adjacent = self.adjacent_node_indices[0]
     self.k_right_adjacent = self.adjacent_node_indices[1]
 
-    # get DoF indices
+  def setDoFIndices(self):
     if (self.model_type == ModelType.TwoPhase):
       self.i_vf1L = self.dof_handler.i(self.k_left, self.vf1_index)
       self.i_vf1R = self.dof_handler.i(self.k_right, self.vf1_index)

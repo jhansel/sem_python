@@ -1,4 +1,4 @@
-from conversion_utilities import stringToBool, stringToInt, stringToFloat, stringToFunction
+from conversion_utilities import stringToBool, stringToInt, stringToFloat, stringToFunction, stringToStringList
 from error_utilities import error
 
 ## Class for declaring and retrieving input parameters
@@ -45,7 +45,7 @@ class Parameters(object):
   def set(self, name, value):
     if name in self.descriptions:
       if self.types[name] == "string_list":
-        self.values[name] = value.split()
+        self.values[name] = stringToStringList(value)
       elif self.types[name] == "bool":
         self.values[name] = stringToBool(value)
       elif self.types[name] == "int":

@@ -16,7 +16,7 @@ class CloneJunction(Junction):
     self.k_master = self.node_indices[0]
     self.k_slave = self.node_indices[1]
 
-    # create lists of corresponding DoF indices
+  def setDoFIndices(self):
     self.variable_indices = range(self.dof_handler.n_var)
     self.i_master = [self.dof_handler.i(self.k_master, m) for m in self.variable_indices]
     self.i_slave = [self.dof_handler.i(self.k_slave, m) for m in self.variable_indices]
@@ -30,8 +30,6 @@ class CloneJunction(Junction):
     r[self.i_slave] = 0
     J[self.i_master,:] += J[self.i_slave,:]
     J[self.i_slave,:] = 0
-    # J[:,self.i_master] += J[:,self.i_slave]
-    # J[:,self.i_slave] = 0
 
     # apply Dirichlet constraint to slave nodes
     r[self.i_slave] = U[self.i_slave] - U[self.i_master]

@@ -10,6 +10,9 @@ class FreeBCJunction(FluxJunction):
   def __init__(self, params):
     FluxJunction.__init__(self, params)
 
+  def setDoFIndices(self):
+    FluxJunction.setDoFIndices(self)
+
   def applyWeaklyToNonlinearSystem(self, U, U_old, r, J):
     self.computeFluxes(U)
     for m in xrange(self.n_meshes):

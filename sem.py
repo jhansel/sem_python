@@ -119,6 +119,24 @@ def run(input_file, mods=list()):
     dof_handler_class = "DoFHandler2Phase"
   dof_handler = factory.createObject(dof_handler_class, dof_handler_params)
 
+  # junctions
+  junctions = list()
+  if input_file_parser.blockExists("Junctions"):
+    junction_subblocks = input_file_parser.getSubblockNames("Junctions")
+    for junction_subblock in junction_subblocks:
+      junction_param_data = input_file_parser.getSubblockData("Junctions", junction_subblock)
+      junction_class = junction_param_data["type"]
+      if "phase" in junction_param_data:
+        junction_param_data["phase"] = phase_name_to_index[junction_param_data["phase"]]
+      junction_param_data["dof_handler"] = dof_handler
+      junction_param_data["eos_list"] = eos_list
+
+      junction = factory.createObject(junction_class, junction_param_data)
+      junctions.append(junction)
+
+  # update DoF handler with junction constraints
+  dof_handler.updateWithJunctionConstraints(junctions)
+
   # boundary conditions
   bcs = list()
   bc_subblocks = input_file_parser.getSubblockNames("BC")
@@ -138,21 +156,6 @@ def run(input_file, mods=list()):
 
     bc = factory.createObject(bc_class, bc_param_data)
     bcs.append(bc)
-
-  # junctions
-  junctions = list()
-  if input_file_parser.blockExists("Junctions"):
-    junction_subblocks = input_file_parser.getSubblockNames("Junctions")
-    for junction_subblock in junction_subblocks:
-      junction_param_data = input_file_parser.getSubblockData("Junctions", junction_subblock)
-      junction_class = junction_param_data["type"]
-      if "phase" in junction_param_data:
-        junction_param_data["phase"] = phase_name_to_index[junction_param_data["phase"]]
-      junction_param_data["dof_handler"] = dof_handler
-      junction_param_data["eos_list"] = eos_list
-
-      junction = factory.createObject(junction_class, junction_param_data)
-      junctions.append(junction)
 
   # interface closures
   if model_type == ModelType.TwoPhase:

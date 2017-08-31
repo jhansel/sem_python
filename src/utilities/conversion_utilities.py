@@ -31,3 +31,11 @@ def stringToFunction(s):
   def f(x):
     return eval(code)
   return f
+
+def stringToStringList(s):
+  if isinstance(s, basestring):
+    return s.split()
+  elif isinstance(s, list):
+    return s
+  else:
+    error("'" + s + "' is not a valid string list.")

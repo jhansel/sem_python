@@ -93,7 +93,8 @@ def printDoFVector(U, dof_handler):
   for k in xrange(dof_handler.n_node):
     items_k = list()
     for m in xrange(n_var):
-      items_k.append(U[k * n_var + m])
+      i_k_m = dof_handler.i(k, m)
+      items_k.append(U[i_k_m])
     entry_items = (k,) + tuple(items_k)
     print entry_format % entry_items
   print ""

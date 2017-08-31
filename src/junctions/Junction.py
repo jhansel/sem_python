@@ -45,6 +45,20 @@ class Junction(object):
       else:
         self.nx.append(1.0)
 
+    # initialize number of constraints to zero
+    self.n_constraints = 0
+
+  def setConstraintDoFIndices(self, constraint_dof_indices):
+    self.i_constraint = constraint_dof_indices
+
+    # call derived class functions that query DoF indices; it is incorrect to
+    # make this call in the constructor because the DoF handler requires
+    # construction of the junctions before it can know the DoF indices
+    self.setDoFIndices()
+
+  def setDoFIndices(self):
+    pass
+
   def applyWeaklyToNonlinearSystem(self, U, U_old, r, J):
     pass
 

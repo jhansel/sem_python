@@ -13,6 +13,8 @@ class DoFHandler2PhaseNonInteracting(DoFHandler):
     DoFHandler.__init__(self, params)
     initial_vf1 = params.get("initial_vf1")
     self.model_type = ModelType.TwoPhaseNonInteracting
+    self.n_phases = 2
+    self.n_vf_equations = 0
     self.setup()
 
     # create array for volume fraction

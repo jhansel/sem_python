@@ -16,6 +16,9 @@ class FluxJunction(Junction1Phase):
     if self.n_meshes != 2:
       error("FluxJunction is only implemented for connecting 2 meshes.")
 
+  def setDoFIndices(self):
+    Junction1Phase.setDoFIndices(self)
+
   def computeFluxes(self, U):
     self.f_mass = [0] * self.n_meshes
     self.df_mass_darhou = [0] * self.n_meshes

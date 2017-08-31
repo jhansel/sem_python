@@ -1,5 +1,6 @@
 from abc import ABCMeta, abstractmethod
 import numpy as np
+from operator import add
 
 from enums import ModelType, VariableName
 from thermodynamic_functions import computeVolumeFraction
@@ -22,12 +23,13 @@ class DoFHandler(object):
       self.n_cell += mesh.n_cell
       self.n_node += mesh.n_cell + 1
 
-    # create the x-position array, element-size array, and element-index to mesh-index array
-    n_meshes = len(self.meshes)
+    # create various mesh and indexing quantities
+    self.n_meshes = len(self.meshes)
     self.mesh_name_to_mesh_index = dict()
     self.x = np.zeros(self.n_node)
     self.h = np.zeros(self.n_cell)
     self.elem_to_mesh_index = [0] * self.n_cell
+    self.node_to_mesh_index = [0] * self.n_node
     k_begin = 0
     elem_begin = 0
     for i_mesh, mesh in enumerate(self.meshes):
@@ -38,6 +40,7 @@ class DoFHandler(object):
       self.x[k_begin:k_end+1] = mesh.x
       self.h[elem_begin:elem_end+1] = mesh.h
       self.elem_to_mesh_index[elem_begin:elem_end+1] = [i_mesh] * mesh.n_cell
+      self.node_to_mesh_index[k_begin:k_end+1] = [i_mesh] * (mesh.n_cell + 1)
       k_begin += mesh_n_node
       elem_begin += mesh.n_cell
 
@@ -51,33 +54,67 @@ class DoFHandler(object):
     # number of DoFs per cell per variable (2 for linear FEM)
     self.n_dof_per_cell_per_var = 2
 
-  def setup(self):
-    if (self.model_type == ModelType.OnePhase):
-      n_phases = 1
-      n_vf_equations = 0
-    elif (self.model_type == ModelType.TwoPhaseNonInteracting):
-      n_phases = 2
-      n_vf_equations = 0
-    elif (self.model_type == ModelType.TwoPhase):
-      n_phases = 2
-      n_vf_equations = 1
-    else:
-      raise NotImplementedError("Selected model type not implemented")
+    # initialize number of constraints to zero
+    self.n_constraints = [0] * self.n_meshes
 
+  def updateWithJunctionConstraints(self, junctions):
+    # add the number of constraints from each junction
+    for junction in junctions:
+      # get corresponding mesh index
+      mesh_names = junction.mesh_names
+      mesh_indices = [self.mesh_name_to_mesh_index[name] for name in mesh_names]
+      mesh_index_min = min(mesh_indices)
+
+      n_constraints = junction.n_constraints
+      self.n_constraints[mesh_index_min+1] += n_constraints
+
+    # give each junction its constraint DoF indices
+    current_local_constraint_index = [1] * self.n_meshes
+    for junction in junctions:
+      # get corresponding mesh index
+      mesh_names = junction.mesh_names
+      mesh_indices = [self.mesh_name_to_mesh_index[name] for name in mesh_names]
+      mesh_index_min = min(mesh_indices)
+
+      # get the index of the DoF before this junction's constraint DoFs
+      i_previous = 0
+      # add the DoFs for all non-constraint variables
+      k_previous = self.getNodeIndexFromRight(self.meshes[mesh_index_min].name, 0)
+      i_previous += (k_previous + 1) * self.n_var - 1
+      # add the constraint DoFs
+      for mesh_index in xrange(mesh_index_min):
+        i_previous += self.n_constraints[mesh_index_min]
+
+      # finish computation of the constraint DoF indices
+      n_constraints = junction.n_constraints
+      i_local_begin = current_local_constraint_index[mesh_index_min]
+      local_constraint_dof_indices = range(i_local_begin, i_local_begin + n_constraints)
+      constraint_dof_indices = map(add, [i_previous] * n_constraints, local_constraint_dof_indices)
+
+      # set the constraint DoF indices for the junction
+      junction.setConstraintDoFIndices(constraint_dof_indices)
+
+      # update the current local constraint index
+      current_local_constraint_index[mesh_index_min] += n_constraints
+
+    # update total number of DoFs
+    self.n_dof += sum(self.n_constraints)
+
+  def setup(self):
     arho_index_phase = 0
     arhou_index_phase = 2
     arhoE_index_phase = 1
-    self.n_var = n_vf_equations + n_phases * 3
+    self.n_var = self.n_vf_equations + self.n_phases * 3
     self.arho_index = list()
     self.arhou_index = list()
     self.arhoE_index = list()
     self.variable_names = [""] * self.n_var
     self.index_to_variable = dict()
     self.index_to_phase = dict()
-    for phase in xrange(n_phases):
-      self.arho_index.append(n_vf_equations + phase * 3 + arho_index_phase)
-      self.arhou_index.append(n_vf_equations + phase * 3 + arhou_index_phase)
-      self.arhoE_index.append(n_vf_equations + phase * 3 + arhoE_index_phase)
+    for phase in xrange(self.n_phases):
+      self.arho_index.append(self.n_vf_equations + phase * 3 + arho_index_phase)
+      self.arhou_index.append(self.n_vf_equations + phase * 3 + arhou_index_phase)
+      self.arhoE_index.append(self.n_vf_equations + phase * 3 + arhoE_index_phase)
 
       self.variable_names[self.arho_index[phase]] = "arho" + str(phase+1)
       self.variable_names[self.arhou_index[phase]] = "arhou" + str(phase+1)
@@ -112,7 +149,7 @@ class DoFHandler(object):
   # @param[in] k  global node index
   # @param[in] var_index  variable index
   def i(self, k, var_index):
-    return k * self.n_var + var_index
+    return k * self.n_var + var_index + self.n_constraints[self.node_to_mesh_index[k]]
 
   ## Returns global node index for an element index and local node index
   # @param[in] e  element index
