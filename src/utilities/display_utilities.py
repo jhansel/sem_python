@@ -16,10 +16,20 @@ def printMatrix(A):
   n = A.shape[0]
   for i in xrange(n):
     for j in xrange(n):
-      if (abs(A[i,j]) > 0):
-        sys.stdout.write(colored("   %11.4e" % (A[i,j]), "blue"))
+      # underline the diagonal
+      if i == j:
+        attrs = ["underline"]
       else:
-        sys.stdout.write("   %11.4e" % (A[i,j]))
+        attrs = list()
+
+      # color the nonzero values
+      if (abs(A[i,j]) > 0):
+        color = "blue"
+      else:
+        color = "white"
+
+      sys.stdout.write(colored("   %11.4e" % (A[i,j]), color, attrs=attrs))
+
     sys.stdout.write("\n")
   sys.stdout.flush()
 
@@ -27,14 +37,24 @@ def printMatrixDifference(A, red_threshold=None, yellow_threshold=None):
   n = A.shape[0]
   for i in xrange(n):
     for j in xrange(n):
-      if (red_threshold and abs(A[i,j]) >= red_threshold):
-        sys.stdout.write(colored("   %11.4e" % (A[i,j]), "red"))
-      elif (yellow_threshold and abs(A[i,j]) >= yellow_threshold):
-        sys.stdout.write(colored("   %11.4e" % (A[i,j]), "yellow"))
-      elif (abs(A[i,j]) > 0):
-        sys.stdout.write(colored("   %11.4e" % (A[i,j]), "green"))
+      # underline the diagonal
+      if i == j:
+        attrs = ["underline"]
       else:
-        sys.stdout.write("   %11.4e" % (A[i,j]))
+        attrs = list()
+
+      # color by match
+      if (red_threshold and abs(A[i,j]) >= red_threshold):
+        color = "red"
+      elif (yellow_threshold and abs(A[i,j]) >= yellow_threshold):
+        color = "yellow"
+      elif (abs(A[i,j]) > 0):
+        color = "green"
+      else:
+        color = "white"
+
+      sys.stdout.write(colored("   %11.4e" % (A[i,j]), color, attrs=attrs))
+
     sys.stdout.write("\n")
   sys.stdout.flush()
 
@@ -42,15 +62,25 @@ def printRelativeMatrixDifference(A, A_diff, red_threshold=None, yellow_threshol
   n = A.shape[0]
   for i in xrange(n):
     for j in xrange(n):
+      # underline the diagonal
+      if i == j:
+        attrs = ["underline"]
+      else:
+        attrs = list()
+
+      # color by match
       not_near_zero = abs(A_diff[i,j]) > abs_threshold
       if (not_near_zero and red_threshold and abs(A[i,j]) >= red_threshold):
-        sys.stdout.write(colored("   %11.4e" % (A[i,j]), "red"))
+        color = "red"
       elif (not_near_zero and yellow_threshold and abs(A[i,j]) >= yellow_threshold):
-        sys.stdout.write(colored("   %11.4e" % (A[i,j]), "yellow"))
+        color = "yellow"
       elif (abs(A[i,j]) > 0):
-        sys.stdout.write(colored("   %11.4e" % (A[i,j]), "green"))
+        color = "green"
       else:
-        sys.stdout.write("   %11.4e" % (A[i,j]))
+        color = "white"
+
+      sys.stdout.write(colored("   %11.4e" % (A[i,j]), color, attrs=attrs))
+
     sys.stdout.write("\n")
   sys.stdout.flush()
 
