@@ -75,6 +75,7 @@ from PhysicsParameters import PhysicsParameters
 from CloneJunction import CloneJunction, CloneJunctionParameters
 from CompressibleJunction import CompressibleJunction, CompressibleJunctionParameters
 from EqualFluxJunction import EqualFluxJunction, EqualFluxJunctionParameters
+from EqualSolutionLM1PhaseJunction import EqualSolutionLM1PhaseJunction, EqualSolutionLM1PhaseJunctionParameters
 from FreeBCJunction import FreeBCJunction, FreeBCJunctionParameters
 from TestJunction import TestJunction, TestJunctionParameters
 

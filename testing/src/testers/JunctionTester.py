@@ -54,6 +54,9 @@ class JunctionTester(object):
       junction_parameters.set("phase", phase)
     junction = factory.createObjectFromParametersObject(self.junction_name, junction_parameters)
 
+    # update DoF handler with junction constraints
+    dof_handler.updateWithJunctionConstraints([junction])
+
     # compute base solution
     U = np.zeros(n_dof)
     U_old = np.zeros(n_dof)

@@ -1,7 +1,7 @@
 import unittest
 
 import sem
-from InputFileModification import InputFileModification
+from ParameterModification import BlockParameterModification
 from CSVTester import CSVTester
 
 class LaxFriedrichs2PhaseTester(unittest.TestCase):
@@ -14,8 +14,8 @@ class LaxFriedrichs2PhaseTester(unittest.TestCase):
 
 if __name__ == "__main__":
   mods = list()
-  mods.append(InputFileModification("NonlinearSolver", "verbose", True))
-  mods.append(InputFileModification("Executioner", "verbose", True))
-  mods.append(InputFileModification("Output", "save_solution", True))
-  mods.append(InputFileModification("Output", "solution_file", "solution.csv"))
+  mods.append(BlockParameterModification("NonlinearSolver", "verbose", True))
+  mods.append(BlockParameterModification("Executioner", "verbose", True))
+  mods.append(BlockParameterModification("Output", "save_solution", True))
+  mods.append(BlockParameterModification("Output", "solution_file", "solution.csv"))
   sem.run("lax_friedrichs_2phase.in", mods)

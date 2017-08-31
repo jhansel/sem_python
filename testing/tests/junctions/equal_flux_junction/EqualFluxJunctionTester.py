@@ -1,7 +1,7 @@
 import unittest
 
 import sem
-from InputFileModification import InputFileModification
+from ParameterModification import BlockParameterModification
 from CSVTester import CSVTester
 from JunctionTester import JunctionTester
 

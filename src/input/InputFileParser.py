@@ -167,8 +167,14 @@ class InputFileParser(object):
     block = mod.block
     param = mod.param
     value = mod.value
-    self.assertBlockExists(block)
-    self.block_data[block][param] = value
+
+    if mod.is_subblock_param:
+      subblock = mod.subblock
+      self.assertSubblockExists(block, subblock)
+      self.subblock_data[block][subblock][param] = value
+    else:
+      self.assertBlockExists(block)
+      self.block_data[block][param] = value
 
   ## Applies modifications to data from a differential input file parser
   # @param input_file_parser_diff  differential input file parser

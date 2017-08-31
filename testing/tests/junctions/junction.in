@@ -1,7 +1,7 @@
-# This tests CloneJunction. The test consists of 2 meshes connected by a
-# CloneJunction. At t = 0, a wave of differing density enters the left boundary,
-# and it should propagate through the junction without any disturbance; it
-# should be the same solution as without the junction.
+# This tests an arbitrary 1-phase junction. The setup consists of 2 meshes
+# connected by a junction. At t = 0, a wave of differing density enters the left
+# boundary, and it should propagate through the junction without any
+# disturbance; ideally, it should be the same solution as without the junction.
 
 [Model]
   model = 1phase
@@ -62,7 +62,7 @@
 
 [Junctions]
   [junction1]
-    type = CloneJunction
+    type = PLACEHOLDER
     mesh_names = mesh1 mesh2
     mesh_sides = right left
   []
@@ -90,7 +90,7 @@
 
 [Output]
   plot_solution = True
-  plot_file = solution_with_junction.pdf
+  plot_file = junction.pdf
   save_solution = True
-  solution_file = solution_with_junction.csv
+  solution_file = junction.csv
 []

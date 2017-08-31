@@ -1,7 +1,7 @@
 import unittest
 
 import sem
-from InputFileModification import InputFileModification
+from ParameterModification import BlockParameterModification
 from CSVTester import CSVTester
 
 class OnePhaseSteadyStateTester(unittest.TestCase):
@@ -14,6 +14,6 @@ class OnePhaseSteadyStateTester(unittest.TestCase):
 
 if __name__ == "__main__":
   mods = list()
-  mods.append(InputFileModification("NonlinearSolver", "verbose", True))
-  mods.append(InputFileModification("Output", "save_solution", False))
+  mods.append(BlockParameterModification("NonlinearSolver", "verbose", True))
+  mods.append(BlockParameterModification("Output", "save_solution", False))
   sem.run("one_phase_ss.in", mods)
