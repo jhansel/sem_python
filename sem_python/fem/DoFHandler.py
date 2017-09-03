@@ -2,9 +2,9 @@ from abc import ABCMeta, abstractmethod
 import numpy as np
 from operator import add
 
-from enums import ModelType, VariableName
-from thermodynamic_functions import computeVolumeFraction
-from Parameters import Parameters
+from ..base.enums import ModelType, VariableName
+from ..closures.thermodynamic_functions import computeVolumeFraction
+from ..input.Parameters import Parameters
 
 class DoFHandlerParameters(Parameters):
   def __init__(self):

@@ -1,7 +1,7 @@
 import numpy as np
 
-from enums import ModelType, VariableName
-from DoFHandler import DoFHandler, DoFHandlerParameters
+from ..base.enums import ModelType, VariableName
+from .DoFHandler import DoFHandler, DoFHandlerParameters
 
 class DoFHandler2PhaseParameters(DoFHandlerParameters):
   def __init__(self):

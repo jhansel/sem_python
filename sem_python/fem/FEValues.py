@@ -1,6 +1,6 @@
 import numpy as np
 
-from Parameters import Parameters
+from ..input.Parameters import Parameters
 
 class FEValuesParameters(Parameters):
   def __init__(self):
