@@ -1,7 +1,8 @@
-from enums import ModelType
-from OnePhaseBC import OnePhaseBC, OnePhaseBCParameters
-from thermodynamic_functions import computeVolumeFraction, computeSpecificVolume, \
-  computeSpecificTotalEnergy, computeSpecificInternalEnergy
+from ..base.enums import ModelType
+from .OnePhaseBC import OnePhaseBC, OnePhaseBCParameters
+from ..closures.thermodynamic_functions import computeVolumeFraction, \
+  computeSpecificVolume, computeSpecificTotalEnergy, \
+  computeSpecificInternalEnergy
 
 class InletRhoUBCParameters(OnePhaseBCParameters):
   def __init__(self):

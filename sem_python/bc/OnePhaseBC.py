@@ -1,5 +1,5 @@
-from enums import ModelType, VariableName
-from BC import BC, BCParameters
+from ..base.enums import ModelType, VariableName
+from .BC import BC, BCParameters
 
 class OnePhaseBCParameters(BCParameters):
   def __init__(self):

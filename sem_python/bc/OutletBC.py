@@ -1,7 +1,7 @@
-from enums import ModelType
-from OnePhaseBC import OnePhaseBC, OnePhaseBCParameters
-from thermodynamic_functions import computeVolumeFraction, computeDensity, \
-  computeVelocity, computeSpecificVolume
+from ..base.enums import ModelType
+from .OnePhaseBC import OnePhaseBC, OnePhaseBCParameters
+from ..closures.thermodynamic_functions import computeVolumeFraction, \
+  computeDensity, computeVelocity, computeSpecificVolume
 
 ## Parameters class for OutletBC
 class OutletBCParameters(OnePhaseBCParameters):
