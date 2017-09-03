@@ -1,4 +1,4 @@
-from Stabilization import Stabilization, StabilizationParameters
+from .Stabilization import Stabilization, StabilizationParameters
 
 class NoStabilizationParameters(StabilizationParameters):
   def __init__(self):
