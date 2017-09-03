@@ -1,9 +1,9 @@
-from Junction1Phase import Junction1Phase, Junction1PhaseParameters
-from thermodynamic_functions import computeVolumeFraction, computeDensity, \
-  computeSpecificVolume, computeVelocity, computeSpecificTotalEnergy, \
-  computeSpecificInternalEnergy
-from enums import ModelType
-from error_utilities import error
+from .Junction1Phase import Junction1Phase, Junction1PhaseParameters
+from ..closures.thermodynamic_functions import computeVolumeFraction, \
+  computeDensity, computeSpecificVolume, computeVelocity, \
+  computeSpecificTotalEnergy, computeSpecificInternalEnergy
+from ..base.enums import ModelType
+from ..utilities.error_utilities import error
 
 class FluxJunctionParameters(Junction1PhaseParameters):
   def __init__(self):

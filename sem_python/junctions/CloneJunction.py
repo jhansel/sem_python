@@ -1,5 +1,5 @@
-from Junction import Junction, JunctionParameters
-from error_utilities import error
+from .Junction import Junction, JunctionParameters
+from ..utilities.error_utilities import error
 
 class CloneJunctionParameters(JunctionParameters):
   def __init__(self):

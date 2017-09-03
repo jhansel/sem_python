@@ -1,5 +1,5 @@
-from FluxJunction import FluxJunction, FluxJunctionParameters
-from enums import ModelType
+from .FluxJunction import FluxJunction, FluxJunctionParameters
+from ..base.enums import ModelType
 
 class FreeBCJunctionParameters(FluxJunctionParameters):
   def __init__(self):

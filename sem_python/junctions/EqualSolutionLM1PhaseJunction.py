@@ -1,5 +1,5 @@
-from FreeBCJunction import FreeBCJunction, FreeBCJunctionParameters
-from error_utilities import error
+from .FreeBCJunction import FreeBCJunction, FreeBCJunctionParameters
+from ..utilities.error_utilities import error
 
 class EqualSolutionLM1PhaseJunctionParameters(FreeBCJunctionParameters):
   def __init__(self):

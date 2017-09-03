@@ -1,5 +1,5 @@
-from Junction import Junction, JunctionParameters
-from enums import ModelType, VariableName
+from .Junction import Junction, JunctionParameters
+from ..base.enums import ModelType, VariableName
 
 class Junction1PhaseParameters(JunctionParameters):
   def __init__(self):
