@@ -2,7 +2,7 @@ import csv
 import numpy as np
 import os.path
 
-from error_utilities import error
+from .error_utilities import error
 
 ## Checks to see if a file exists
 # @param filename  name of the file to check for existence
