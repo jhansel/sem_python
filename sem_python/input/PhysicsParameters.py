@@ -1,4 +1,4 @@
-from Parameters import Parameters
+from .Parameters import Parameters
 
 class PhysicsParameters(Parameters):
   def __init__(self):
