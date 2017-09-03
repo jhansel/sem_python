@@ -1,4 +1,4 @@
-from enums import ModelType, VariableName
+from ..base.enums import ModelType, VariableName
 
 def computeVolumeFraction(vf1, phase, model_type):
   if model_type == ModelType.OnePhase:

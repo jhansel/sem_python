@@ -1,6 +1,6 @@
 from numpy import sqrt, log, exp
 
-from EoS import EoS, EoSParameters
+from .EoS import EoS, EoSParameters
 
 class IdealGasEoSParameters(EoSParameters):
   def __init__(self):

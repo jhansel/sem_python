@@ -1,4 +1,4 @@
-from EoS import EoS, EoSParameters
+from .EoS import EoS, EoSParameters
 
 class TestEoSParameters(EoSParameters):
   def __init__(self):
