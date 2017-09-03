@@ -1,5 +1,5 @@
-from enums import ModelType
-from Parameters import Parameters
+from .enums import ModelType
+from ..input.Parameters import Parameters
 
 class ModelParameters(Parameters):
   def __init__(self):

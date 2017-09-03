@@ -1,113 +1,113 @@
 # aux
-from AcousticImpedance import AcousticImpedance, AcousticImpedanceParameters
-from AuxGradient import AuxGradient, AuxGradientParameters
-from BerryInterfacePressure import BerryInterfacePressure, BerryInterfacePressureParameters
-from BerryInterfacePressureBar import BerryInterfacePressureBar, BerryInterfacePressureBarParameters
-from BerryInterfaceVelocity import BerryInterfaceVelocity, BerryInterfaceVelocityParameters
-from BerryInterfaceVelocityBar import BerryInterfaceVelocityBar, BerryInterfaceVelocityBarParameters
-from BerryInterfacialAreaDensity import BerryInterfacialAreaDensity, BerryInterfacialAreaDensityParameters
-from BerryPressureRelaxationCoef import BerryPressureRelaxationCoef, BerryPressureRelaxationCoefParameters
-from BerryVelocityRelaxationCoef import BerryVelocityRelaxationCoef, BerryVelocityRelaxationCoefParameters
-from ConstantAux import ConstantAux, ConstantAuxParameters
-from Density import Density, DensityParameters
-from LaxFriedrichsCoefficient import LaxFriedrichsCoefficient, LaxFriedrichsCoefficientParameters
-from LaxFriedrichsCoefficientVolumeFraction import LaxFriedrichsCoefficientVolumeFraction, LaxFriedrichsCoefficientVolumeFractionParameters
-from EntropyMinimumMassFlux import EntropyMinimumMassFlux, EntropyMinimumMassFluxParameters
-from EntropyMinimumMomentumFlux import EntropyMinimumMomentumFlux, EntropyMinimumMomentumFluxParameters
-from EntropyMinimumEnergyFlux import EntropyMinimumEnergyFlux, EntropyMinimumEnergyFluxParameters
-from EntropyMinimumVolumeFractionFlux import EntropyMinimumVolumeFractionFlux, EntropyMinimumVolumeFractionFluxParameters
-from IdenticalAux import IdenticalAux, IdenticalAuxParameters
-from InternalEnergyDensity import InternalEnergyDensity, InternalEnergyDensityParameters
-from Pressure import Pressure, PressureParameters
-from Temperature import Temperature, TemperatureParameters
-from SoundSpeed import SoundSpeed, SoundSpeedParameters
-from SpecificInternalEnergy import SpecificInternalEnergy, SpecificInternalEnergyParameters
-from SpecificTotalEnergy import SpecificTotalEnergy, SpecificTotalEnergyParameters
-from SpecificVolume import SpecificVolume, SpecificVolumeParameters
-from Velocity import Velocity, VelocityParameters
-from VolumeFraction1Phase import VolumeFraction1Phase, VolumeFraction1PhaseParameters
-from VolumeFractionPhase1 import VolumeFractionPhase1, VolumeFractionPhase1Parameters
-from VolumeFractionPhase2 import VolumeFractionPhase2, VolumeFractionPhase2Parameters
-from AmbrosoBeta import AmbrosoBeta, AmbrosoBetaParameters
-from AmbrosoVelocityRelaxationCoef import AmbrosoVelocityRelaxationCoef, AmbrosoVelocityRelaxationCoefParameters
-from AmbrosoPressureRelaxationCoef import AmbrosoPressureRelaxationCoef, AmbrosoPressureRelaxationCoefParameters
-from AmbrosoInterfaceVelocity import AmbrosoInterfaceVelocity, AmbrosoInterfaceVelocityParameters
-from AmbrosoInterfacePressure import AmbrosoInterfacePressure, AmbrosoInterfacePressureParameters
+from ..aux.AcousticImpedance import AcousticImpedance, AcousticImpedanceParameters
+from ..aux.AuxGradient import AuxGradient, AuxGradientParameters
+from ..aux.BerryInterfacePressure import BerryInterfacePressure, BerryInterfacePressureParameters
+from ..aux.BerryInterfacePressureBar import BerryInterfacePressureBar, BerryInterfacePressureBarParameters
+from ..aux.BerryInterfaceVelocity import BerryInterfaceVelocity, BerryInterfaceVelocityParameters
+from ..aux.BerryInterfaceVelocityBar import BerryInterfaceVelocityBar, BerryInterfaceVelocityBarParameters
+from ..aux.BerryInterfacialAreaDensity import BerryInterfacialAreaDensity, BerryInterfacialAreaDensityParameters
+from ..aux.BerryPressureRelaxationCoef import BerryPressureRelaxationCoef, BerryPressureRelaxationCoefParameters
+from ..aux.BerryVelocityRelaxationCoef import BerryVelocityRelaxationCoef, BerryVelocityRelaxationCoefParameters
+from ..aux.ConstantAux import ConstantAux, ConstantAuxParameters
+from ..aux.Density import Density, DensityParameters
+from ..aux.LaxFriedrichsCoefficient import LaxFriedrichsCoefficient, LaxFriedrichsCoefficientParameters
+from ..aux.LaxFriedrichsCoefficientVolumeFraction import LaxFriedrichsCoefficientVolumeFraction, LaxFriedrichsCoefficientVolumeFractionParameters
+from ..aux.EntropyMinimumMassFlux import EntropyMinimumMassFlux, EntropyMinimumMassFluxParameters
+from ..aux.EntropyMinimumMomentumFlux import EntropyMinimumMomentumFlux, EntropyMinimumMomentumFluxParameters
+from ..aux.EntropyMinimumEnergyFlux import EntropyMinimumEnergyFlux, EntropyMinimumEnergyFluxParameters
+from ..aux.EntropyMinimumVolumeFractionFlux import EntropyMinimumVolumeFractionFlux, EntropyMinimumVolumeFractionFluxParameters
+from ..aux.IdenticalAux import IdenticalAux, IdenticalAuxParameters
+from ..aux.InternalEnergyDensity import InternalEnergyDensity, InternalEnergyDensityParameters
+from ..aux.Pressure import Pressure, PressureParameters
+from ..aux.Temperature import Temperature, TemperatureParameters
+from ..aux.SoundSpeed import SoundSpeed, SoundSpeedParameters
+from ..aux.SpecificInternalEnergy import SpecificInternalEnergy, SpecificInternalEnergyParameters
+from ..aux.SpecificTotalEnergy import SpecificTotalEnergy, SpecificTotalEnergyParameters
+from ..aux.SpecificVolume import SpecificVolume, SpecificVolumeParameters
+from ..aux.Velocity import Velocity, VelocityParameters
+from ..aux.VolumeFraction1Phase import VolumeFraction1Phase, VolumeFraction1PhaseParameters
+from ..aux.VolumeFractionPhase1 import VolumeFractionPhase1, VolumeFractionPhase1Parameters
+from ..aux.VolumeFractionPhase2 import VolumeFractionPhase2, VolumeFractionPhase2Parameters
+from ..aux.AmbrosoBeta import AmbrosoBeta, AmbrosoBetaParameters
+from ..aux.AmbrosoVelocityRelaxationCoef import AmbrosoVelocityRelaxationCoef, AmbrosoVelocityRelaxationCoefParameters
+from ..aux.AmbrosoPressureRelaxationCoef import AmbrosoPressureRelaxationCoef, AmbrosoPressureRelaxationCoefParameters
+from ..aux.AmbrosoInterfaceVelocity import AmbrosoInterfaceVelocity, AmbrosoInterfaceVelocityParameters
+from ..aux.AmbrosoInterfacePressure import AmbrosoInterfacePressure, AmbrosoInterfacePressureParameters
 
 # base
-from Model import Model, ModelParameters
+from .Model import Model, ModelParameters
 
 # bc
-from FreeBC import FreeBC, FreeBCParameters
-from DirichletVolumeFractionBC import DirichletVolumeFractionBC, DirichletVolumeFractionBCParameters
-from InletRhoUBC import InletRhoUBC, InletRhoUBCParameters
-from OutletBC import OutletBC, OutletBCParameters
-from SolidWallBC import SolidWallBC, SolidWallBCParameters
+from ..bc.FreeBC import FreeBC, FreeBCParameters
+from ..bc.DirichletVolumeFractionBC import DirichletVolumeFractionBC, DirichletVolumeFractionBCParameters
+from ..bc.InletRhoUBC import InletRhoUBC, InletRhoUBCParameters
+from ..bc.OutletBC import OutletBC, OutletBCParameters
+from ..bc.SolidWallBC import SolidWallBC, SolidWallBCParameters
 
 # closures
-from IdealGasEoS import IdealGasEoS, IdealGasEoSParameters
-from StiffenedGasEoS import StiffenedGasEoS, StiffenedGasEoSParameters
-from TestEoS import TestEoS, TestEoSParameters
-from AmbrosoInterfaceClosures import AmbrosoInterfaceClosures, AmbrosoInterfaceClosuresParameters
-from BerryInterfaceClosures import BerryInterfaceClosures, BerryInterfaceClosuresParameters
-from ThermodynamicState import ThermodynamicState, ThermodynamicStateParameters
+from ..closures.IdealGasEoS import IdealGasEoS, IdealGasEoSParameters
+from ..closures.StiffenedGasEoS import StiffenedGasEoS, StiffenedGasEoSParameters
+from ..closures.TestEoS import TestEoS, TestEoSParameters
+from ..closures.AmbrosoInterfaceClosures import AmbrosoInterfaceClosures, AmbrosoInterfaceClosuresParameters
+from ..closures.BerryInterfaceClosures import BerryInterfaceClosures, BerryInterfaceClosuresParameters
+from ..closures.ThermodynamicState import ThermodynamicState, ThermodynamicStateParameters
 
 # executioners
-from ExplicitEulerExecutioner import ExplicitEulerExecutioner, ExplicitEulerExecutionerParameters
-from ImplicitEulerExecutioner import ImplicitEulerExecutioner, ImplicitEulerExecutionerParameters
-from SteadyStateExecutioner import SteadyStateExecutioner, SteadyStateExecutionerParameters
+from ..executioners.ExplicitEulerExecutioner import ExplicitEulerExecutioner, ExplicitEulerExecutionerParameters
+from ..executioners.ImplicitEulerExecutioner import ImplicitEulerExecutioner, ImplicitEulerExecutionerParameters
+from ..executioners.SteadyStateExecutioner import SteadyStateExecutioner, SteadyStateExecutionerParameters
 
 # fem
-from DoFHandler1Phase import DoFHandler1Phase, DoFHandler1PhaseParameters
-from DoFHandler2PhaseNonInteracting import DoFHandler2PhaseNonInteracting, DoFHandler2PhaseNonInteractingParameters
-from DoFHandler2Phase import DoFHandler2Phase, DoFHandler2PhaseParameters
-from FEValues import FEValues, FEValuesParameters
-from Quadrature import Quadrature, QuadratureParameters
+from ..fem.DoFHandler1Phase import DoFHandler1Phase, DoFHandler1PhaseParameters
+from ..fem.DoFHandler2PhaseNonInteracting import DoFHandler2PhaseNonInteracting, DoFHandler2PhaseNonInteractingParameters
+from ..fem.DoFHandler2Phase import DoFHandler2Phase, DoFHandler2PhaseParameters
+from ..fem.FEValues import FEValues, FEValuesParameters
+from ..fem.Quadrature import Quadrature, QuadratureParameters
 
 # ic
-from InitialConditions1Phase import InitialConditions1Phase, InitialConditions1PhaseParameters
-from InitialConditions2Phase import InitialConditions2Phase, InitialConditions2PhaseParameters
+from ..ic.InitialConditions1Phase import InitialConditions1Phase, InitialConditions1PhaseParameters
+from ..ic.InitialConditions2Phase import InitialConditions2Phase, InitialConditions2PhaseParameters
 
 # input
-from PhysicsParameters import PhysicsParameters
+from ..input.PhysicsParameters import PhysicsParameters
 
 # junctions
-from CloneJunction import CloneJunction, CloneJunctionParameters
-from CompressibleJunction import CompressibleJunction, CompressibleJunctionParameters
-from EqualFluxJunction import EqualFluxJunction, EqualFluxJunctionParameters
-from EqualSolutionLM1PhaseJunction import EqualSolutionLM1PhaseJunction, EqualSolutionLM1PhaseJunctionParameters
-from FreeBCJunction import FreeBCJunction, FreeBCJunctionParameters
-from TestJunction import TestJunction, TestJunctionParameters
+from ..junctions.CloneJunction import CloneJunction, CloneJunctionParameters
+from ..junctions.CompressibleJunction import CompressibleJunction, CompressibleJunctionParameters
+from ..junctions.EqualFluxJunction import EqualFluxJunction, EqualFluxJunctionParameters
+from ..junctions.EqualSolutionLM1PhaseJunction import EqualSolutionLM1PhaseJunction, EqualSolutionLM1PhaseJunctionParameters
+from ..junctions.FreeBCJunction import FreeBCJunction, FreeBCJunctionParameters
+from ..junctions.TestJunction import TestJunction, TestJunctionParameters
 
 # kernels
-from DissipationAuxFlux import DissipationAuxFlux, DissipationAuxFluxParameters
-from DissipationVariableGradient import DissipationVariableGradient, DissipationVariableGradientParameters
-from VolumeFractionAdvection import VolumeFractionAdvection, VolumeFractionAdvectionParameters
-from VolumeFractionPressureRelaxation import VolumeFractionPressureRelaxation, VolumeFractionPressureRelaxationParameters
-from MassAdvection import MassAdvection, MassAdvectionParameters
-from MomentumAdvection import MomentumAdvection, MomentumAdvectionParameters
-from MomentumGravity import MomentumGravity, MomentumGravityParameters
-from MomentumVolumeFractionGradient import MomentumVolumeFractionGradient, MomentumVolumeFractionGradientParameters
-from EnergyAdvection import EnergyAdvection, EnergyAdvectionParameters
-from EnergyGravity import EnergyGravity, EnergyGravityParameters
-from EnergyPressureRelaxation import EnergyPressureRelaxation, EnergyPressureRelaxationParameters
-from EnergyVolumeFractionGradient import EnergyVolumeFractionGradient, EnergyVolumeFractionGradientParameters
+from ..kernels.DissipationAuxFlux import DissipationAuxFlux, DissipationAuxFluxParameters
+from ..kernels.DissipationVariableGradient import DissipationVariableGradient, DissipationVariableGradientParameters
+from ..kernels.VolumeFractionAdvection import VolumeFractionAdvection, VolumeFractionAdvectionParameters
+from ..kernels.VolumeFractionPressureRelaxation import VolumeFractionPressureRelaxation, VolumeFractionPressureRelaxationParameters
+from ..kernels.MassAdvection import MassAdvection, MassAdvectionParameters
+from ..kernels.MomentumAdvection import MomentumAdvection, MomentumAdvectionParameters
+from ..kernels.MomentumGravity import MomentumGravity, MomentumGravityParameters
+from ..kernels.MomentumVolumeFractionGradient import MomentumVolumeFractionGradient, MomentumVolumeFractionGradientParameters
+from ..kernels.EnergyAdvection import EnergyAdvection, EnergyAdvectionParameters
+from ..kernels.EnergyGravity import EnergyGravity, EnergyGravityParameters
+from ..kernels.EnergyPressureRelaxation import EnergyPressureRelaxation, EnergyPressureRelaxationParameters
+from ..kernels.EnergyVolumeFractionGradient import EnergyVolumeFractionGradient, EnergyVolumeFractionGradientParameters
 
 # mesh
-from UniformMesh import UniformMesh, UniformMeshParameters
+from ..mesh.UniformMesh import UniformMesh, UniformMeshParameters
 
 # output
-from Postprocessor import Postprocessor, PostprocessorParameters
+from ..output.Postprocessor import Postprocessor, PostprocessorParameters
 
 # solvers
-from NonlinearSolver import NonlinearSolver, NonlinearSolverParameters
+from ..solvers.NonlinearSolver import NonlinearSolver, NonlinearSolverParameters
 
 # stabilization
-from NoStabilization import NoStabilization, NoStabilizationParameters
-from LaxFriedrichsStabilization import LaxFriedrichsStabilization, LaxFriedrichsStabilizationParameters
+from ..stabilization.NoStabilization import NoStabilization, NoStabilizationParameters
+from ..stabilization.LaxFriedrichsStabilization import LaxFriedrichsStabilization, LaxFriedrichsStabilizationParameters
 
 # utilities
-from error_utilities import error
+from ..utilities.error_utilities import error
 
 ## Class for creating objects
 class Factory(object):
