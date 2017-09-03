@@ -4,11 +4,11 @@ from numpy.linalg import matrix_rank, inv
 import sys
 from termcolor import colored
 
-from enums import VariableName
-from Parameters import Parameters
-from display_utilities import computeRelativeDifferenceMatrix, printMatrix, \
-  printRelativeMatrixDifference, printDoFVector
-from error_utilities import errorNoTraceback
+from ..base.enums import VariableName
+from ..input.Parameters import Parameters
+from ..utilities.display_utilities import computeRelativeDifferenceMatrix, \
+  printMatrix, printRelativeMatrixDifference, printDoFVector
+from ..utilities.error_utilities import errorNoTraceback
 
 class NonlinearSolverParameters(Parameters):
   def __init__(self):
