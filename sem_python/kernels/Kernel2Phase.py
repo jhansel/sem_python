@@ -1,4 +1,4 @@
-from Kernel import Kernel, KernelParameters
+from .Kernel import Kernel, KernelParameters
 
 class Kernel2PhaseParameters(KernelParameters):
   def __init__(self):
