@@ -1,10 +1,10 @@
 import numpy as np
 
-from enums import ModelType, VariableName
-from thermodynamic_functions import computeVolumeFraction, computeVelocity, \
-  computeDensity, computeSpecificVolume, computeSpecificTotalEnergy, \
-  computeSpecificInternalEnergy
-from Parameters import Parameters
+from ..base.enums import ModelType, VariableName
+from ..closures.thermodynamic_functions import computeVolumeFraction, \
+  computeVelocity, computeDensity, computeSpecificVolume, \
+  computeSpecificTotalEnergy, computeSpecificInternalEnergy
+from ..input.Parameters import Parameters
 
 class ExecutionerParameters(Parameters):
   def __init__(self):

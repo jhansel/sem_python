@@ -2,9 +2,9 @@ from copy import deepcopy
 import numpy as np
 from termcolor import colored
 
-from enums import ModelType, VariableName
-from Executioner import Executioner, ExecutionerParameters
-from error_utilities import error
+from ..base.enums import ModelType, VariableName
+from .Executioner import Executioner, ExecutionerParameters
+from ..utilities.error_utilities import error
 
 class TransientExecutionerParameters(ExecutionerParameters):
   def __init__(self):

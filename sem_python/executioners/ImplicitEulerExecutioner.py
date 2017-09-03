@@ -1,6 +1,6 @@
 import numpy as np
 
-from TransientExecutioner import TransientExecutioner, TransientExecutionerParameters
+from .TransientExecutioner import TransientExecutioner, TransientExecutionerParameters
 
 class ImplicitEulerExecutionerParameters(TransientExecutionerParameters):
   def __init__(self):

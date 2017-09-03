@@ -1,5 +1,5 @@
-from Executioner import Executioner, ExecutionerParameters
-from NonlinearSolver import NonlinearSolver
+from .Executioner import Executioner, ExecutionerParameters
+from ..solvers.NonlinearSolver import NonlinearSolver
 
 class SteadyStateExecutionerParameters(ExecutionerParameters):
   def __init__(self):
