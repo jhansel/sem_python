@@ -1,11 +1,12 @@
 from collections import OrderedDict
 
-from enums import ModelType
-from thermodynamic_functions import computeDensity, computeVelocity, computeSpecificVolume, \
+from ..base.enums import ModelType
+from ..closures.thermodynamic_functions import computeDensity, \
+  computeVelocity, computeSpecificVolume, \
   computeSpecificTotalEnergy, computeSpecificInternalEnergy
-from Parameters import Parameters
-from Plotter import Plotter
-from file_utilities import writeCSVFile
+from ..input.Parameters import Parameters
+from .Plotter import Plotter
+from ..utilities.file_utilities import writeCSVFile
 
 class PostprocessorParameters(Parameters):
   def __init__(self):
