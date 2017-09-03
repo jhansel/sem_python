@@ -204,14 +204,14 @@ def run(input_file, mods=list()):
   executioner = factory.createObject(executioner_type, executioner_param_data)
   U = executioner.run()
 
-  # create and run the postprocessor
-  postprocessor_param_data = input_file_parser.getBlockData("Output")
-  postprocessor_param_data["model"] = model
-  postprocessor_param_data["eos_list"] = eos_list
-  postprocessor_param_data["dof_handler"] = dof_handler
-  postprocessor_param_data["meshes"] = meshes
-  postprocessor = factory.createObject("Postprocessor", postprocessor_param_data)
-  postprocessor.run(U)
+  # create and run the output
+  output_param_data = input_file_parser.getBlockData("Output")
+  output_param_data["model"] = model
+  output_param_data["eos_list"] = eos_list
+  output_param_data["dof_handler"] = dof_handler
+  output_param_data["meshes"] = meshes
+  output = factory.createObject("Output", output_param_data)
+  output.run(U)
 
 ## Gets the input file from the command line and runs it
 def main():

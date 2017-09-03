@@ -7,7 +7,7 @@ from Parameters import Parameters
 from Plotter import Plotter
 from file_utilities import writeCSVFile
 
-class PostprocessorParameters(Parameters):
+class OutputParameters(Parameters):
   def __init__(self):
     Parameters.__init__(self)
     self.registerBoolParameter("print_solution", "Option to print solution to console", False)
@@ -22,7 +22,7 @@ class PostprocessorParameters(Parameters):
     self.registerParameter("dof_handler", "Degree of freedom handler")
     self.registerParameter("meshes", "List of meshes")
 
-class Postprocessor(object):
+class Output(object):
   def __init__(self, params):
     self.print_solution = params.get("print_solution")
     self.save_solution = params.get("save_solution")

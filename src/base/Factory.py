@@ -97,7 +97,7 @@ from EnergyVolumeFractionGradient import EnergyVolumeFractionGradient, EnergyVol
 from UniformMesh import UniformMesh, UniformMeshParameters
 
 # output
-from Postprocessor import Postprocessor, PostprocessorParameters
+from Output import Output, OutputParameters
 
 # solvers
 from NonlinearSolver import NonlinearSolver, NonlinearSolverParameters
