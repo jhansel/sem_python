@@ -18,9 +18,9 @@ class BerryPressureRelaxationCoef(AuxQuantity2Phase):
 
     ddenominator = - a_int / (z1 + z2)**2
     der[self.name]["vf1"] = der["a_int"]["vf1"] / (z1 + z2) + ddenominator * (der["z1"]["vf1"] + der["z2"]["vf1"])
-    der[self.name]["arho1"] = ddenominator * der["z1"]["arho1"]
-    der[self.name]["arhou1"] = ddenominator * der["z1"]["arhou1"]
-    der[self.name]["arhoE1"] = ddenominator * der["z1"]["arhoE1"]
-    der[self.name]["arho2"] = ddenominator * der["z2"]["arho2"]
-    der[self.name]["arhou2"] = ddenominator * der["z2"]["arhou2"]
-    der[self.name]["arhoE2"] = ddenominator * der["z2"]["arhoE2"]
+    der[self.name]["arhoA1"] = ddenominator * der["z1"]["arhoA1"]
+    der[self.name]["arhouA1"] = ddenominator * der["z1"]["arhouA1"]
+    der[self.name]["arhoEA1"] = ddenominator * der["z1"]["arhoEA1"]
+    der[self.name]["arhoA2"] = ddenominator * der["z2"]["arhoA2"]
+    der[self.name]["arhouA2"] = ddenominator * der["z2"]["arhouA2"]
+    der[self.name]["arhoEA2"] = ddenominator * der["z2"]["arhoEA2"]

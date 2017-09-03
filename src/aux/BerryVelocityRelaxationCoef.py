@@ -18,9 +18,9 @@ class BerryVelocityRelaxationCoef(AuxQuantity2Phase):
     data[self.name] = third * p_relax * z1 * z2
 
     der[self.name]["vf1"] = third * (der["p_relax"]["vf1"] * z1 * z2 + p_relax * (der["z1"]["vf1"] * z2 + z1 * der["z2"]["vf1"]))
-    der[self.name]["arho1"] = third * (der["p_relax"]["arho1"] * z1 * z2 + p_relax * der["z1"]["arho1"] * z2)
-    der[self.name]["arhou1"] = third * (der["p_relax"]["arhou1"] * z1 * z2 + p_relax * der["z1"]["arhou1"] * z2)
-    der[self.name]["arhoE1"] = third * (der["p_relax"]["arhoE1"] * z1 * z2 + p_relax * der["z1"]["arhoE1"] * z2)
-    der[self.name]["arho2"] = third * (der["p_relax"]["arho2"] * z1 * z2 + p_relax * z1 * der["z2"]["arho2"])
-    der[self.name]["arhou2"] = third * (der["p_relax"]["arhou2"] * z1 * z2 + p_relax * z1 * der["z2"]["arhou2"])
-    der[self.name]["arhoE2"] = third * (der["p_relax"]["arhoE2"] * z1 * z2 + p_relax * z1 * der["z2"]["arhoE2"])
+    der[self.name]["arhoA1"] = third * (der["p_relax"]["arhoA1"] * z1 * z2 + p_relax * der["z1"]["arhoA1"] * z2)
+    der[self.name]["arhouA1"] = third * (der["p_relax"]["arhouA1"] * z1 * z2 + p_relax * der["z1"]["arhouA1"] * z2)
+    der[self.name]["arhoEA1"] = third * (der["p_relax"]["arhoEA1"] * z1 * z2 + p_relax * der["z1"]["arhoEA1"] * z2)
+    der[self.name]["arhoA2"] = third * (der["p_relax"]["arhoA2"] * z1 * z2 + p_relax * z1 * der["z2"]["arhoA2"])
+    der[self.name]["arhouA2"] = third * (der["p_relax"]["arhouA2"] * z1 * z2 + p_relax * z1 * der["z2"]["arhouA2"])
+    der[self.name]["arhoEA2"] = third * (der["p_relax"]["arhoEA2"] * z1 * z2 + p_relax * z1 * der["z2"]["arhoEA2"])

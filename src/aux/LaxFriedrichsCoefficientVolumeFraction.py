@@ -26,18 +26,18 @@ class LaxFriedrichsCoefficientVolumeFraction(AuxQuantity2Phase):
     db_duI = self.mult * 0.5 * data["dx"] * np.sign(data["uI"])
 
     db_dvf1 = db_duI * der["uI"]["vf1"]
-    db_darho1 = db_duI * der["uI"]["arho1"]
-    db_darhou1 = db_duI * der["uI"]["arhou1"]
-    db_darhoE1 = db_duI * der["uI"]["arhoE1"]
-    db_darho2 = db_duI * der["uI"]["arho2"]
-    db_darhou2 = db_duI * der["uI"]["arhou2"]
-    db_darhoE2 = db_duI * der["uI"]["arhoE2"]
+    db_darhoA1 = db_duI * der["uI"]["arhoA1"]
+    db_darhouA1 = db_duI * der["uI"]["arhouA1"]
+    db_darhoEA1 = db_duI * der["uI"]["arhoEA1"]
+    db_darhoA2 = db_duI * der["uI"]["arhoA2"]
+    db_darhouA2 = db_duI * der["uI"]["arhouA2"]
+    db_darhoEA2 = db_duI * der["uI"]["arhoEA2"]
 
     data[self.name] = b
     der[self.name]["vf1"] = db_dvf1
-    der[self.name]["arho1"] = db_darho1
-    der[self.name]["arhou1"] = db_darhou1
-    der[self.name]["arhoE1"] = db_darhoE1
-    der[self.name]["arho2"] = db_darho2
-    der[self.name]["arhou2"] = db_darhou2
-    der[self.name]["arhoE2"] = db_darhoE2
+    der[self.name]["arhoA1"] = db_darhoA1
+    der[self.name]["arhouA1"] = db_darhouA1
+    der[self.name]["arhoEA1"] = db_darhoEA1
+    der[self.name]["arhoA2"] = db_darhoA2
+    der[self.name]["arhouA2"] = db_darhouA2
+    der[self.name]["arhoEA2"] = db_darhoEA2

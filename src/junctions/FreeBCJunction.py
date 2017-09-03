@@ -16,21 +16,21 @@ class FreeBCJunction(FluxJunction):
   def applyWeaklyToNonlinearSystem(self, U, U_old, r, J):
     self.computeFluxes(U)
     for m in xrange(self.n_meshes):
-      r[self.i_arho[m]] += self.f_mass[m]
-      r[self.i_arhou[m]] += self.f_momentum[m]
-      r[self.i_arhoE[m]] += self.f_energy[m]
+      r[self.i_arhoA[m]] += self.f_mass[m]
+      r[self.i_arhouA[m]] += self.f_momentum[m]
+      r[self.i_arhoEA[m]] += self.f_energy[m]
 
-      J[self.i_arho[m],self.i_arhou[m]] += self.df_mass_darhou[m]
-      J[self.i_arhou[m],self.i_arho[m]] += self.df_momentum_darho[m]
-      J[self.i_arhou[m],self.i_arhou[m]] += self.df_momentum_darhou[m]
-      J[self.i_arhou[m],self.i_arhoE[m]] += self.df_momentum_darhoE[m]
-      J[self.i_arhoE[m],self.i_arho[m]] += self.df_energy_darho[m]
-      J[self.i_arhoE[m],self.i_arhou[m]] += self.df_energy_darhou[m]
-      J[self.i_arhoE[m],self.i_arhoE[m]] += self.df_energy_darhoE[m]
+      J[self.i_arhoA[m],self.i_arhouA[m]] += self.df_mass_darhouA[m]
+      J[self.i_arhouA[m],self.i_arhoA[m]] += self.df_momentum_darhoA[m]
+      J[self.i_arhouA[m],self.i_arhouA[m]] += self.df_momentum_darhouA[m]
+      J[self.i_arhouA[m],self.i_arhoEA[m]] += self.df_momentum_darhoEA[m]
+      J[self.i_arhoEA[m],self.i_arhoA[m]] += self.df_energy_darhoA[m]
+      J[self.i_arhoEA[m],self.i_arhouA[m]] += self.df_energy_darhouA[m]
+      J[self.i_arhoEA[m],self.i_arhoEA[m]] += self.df_energy_darhoEA[m]
 
       if self.model_type == ModelType.TwoPhase:
-        J[self.i_arhou[m],self.i_vf1[m]] += self.df_momentum_dvf1[m]
-        J[self.i_arhoE[m],self.i_vf1[m]] += self.df_energy_dvf1[m]
+        J[self.i_arhouA[m],self.i_vf1[m]] += self.df_momentum_dvf1[m]
+        J[self.i_arhoEA[m],self.i_vf1[m]] += self.df_energy_dvf1[m]
 
   def applyStronglyToNonlinearSystem(self, U, U_old, r, J):
     pass

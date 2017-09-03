@@ -17,10 +17,10 @@ class OnePhaseBC(BC):
       vf1_index = self.dof_handler.variable_index[VariableName.VF1][0]
       self.i_vf1 = self.dof_handler.i(self.k, vf1_index)
 
-    arho_index = self.dof_handler.variable_index[VariableName.ARho][self.phase]
-    arhou_index = self.dof_handler.variable_index[VariableName.ARhoU][self.phase]
-    arhoE_index = self.dof_handler.variable_index[VariableName.ARhoE][self.phase]
+    arho_index = self.dof_handler.variable_index[VariableName.ARhoA][self.phase]
+    arhouA_index = self.dof_handler.variable_index[VariableName.ARhoUA][self.phase]
+    arhoEA_index = self.dof_handler.variable_index[VariableName.ARhoEA][self.phase]
 
-    self.i_arho = self.dof_handler.i(self.k, arho_index)
-    self.i_arhou = self.dof_handler.i(self.k, arhou_index)
-    self.i_arhoE = self.dof_handler.i(self.k, arhoE_index)
+    self.i_arhoA = self.dof_handler.i(self.k, arho_index)
+    self.i_arhouA = self.dof_handler.i(self.k, arhouA_index)
+    self.i_arhoEA = self.dof_handler.i(self.k, arhoEA_index)

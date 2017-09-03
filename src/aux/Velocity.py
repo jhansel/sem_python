@@ -10,11 +10,11 @@ class Velocity(AuxQuantity1Phase):
     self.name = self.u
 
   def compute(self, data, der):
-    arho = data[self.arho]
-    arhou = data[self.arhou]
-    data[self.name] = arhou / arho
+    arhoA = data[self.arhoA]
+    arhouA = data[self.arhouA]
+    data[self.name] = arhouA / arhoA
 
-    du_darho = - arhou / arho / arho
-    du_darhou = 1.0 / arho
-    der[self.name][self.arho] = du_darho
-    der[self.name][self.arhou] = du_darhou
+    du_darhoA = - arhouA / arhoA / arhoA
+    du_darhouA = 1.0 / arhoA
+    der[self.name][self.arhoA] = du_darhoA
+    der[self.name][self.arhouA] = du_darhouA

@@ -12,11 +12,11 @@ class AmbrosoBeta(AuxQuantity2Phase):
     self.chi = params.get("chi")
 
   def compute(self, data, der):
-    denominator = self.chi * data["arho1"] + (1 - self.chi) * data["arho2"]
-    beta = self.chi * data["arho1"] / denominator
-    dbeta_darho1 = self.chi / denominator - self.chi * data["arho1"] / denominator / denominator * self.chi
-    dbeta_darho2 = - self.chi * data["arho1"] / denominator / denominator * (1 - self.chi)
+    denominator = self.chi * data["arhoA1"] + (1 - self.chi) * data["arhoA2"]
+    beta = self.chi * data["arhoA1"] / denominator
+    dbeta_darhoA1 = self.chi / denominator - self.chi * data["arhoA1"] / denominator / denominator * self.chi
+    dbeta_darhoA2 = - self.chi * data["arhoA1"] / denominator / denominator * (1 - self.chi)
 
     data[self.name] = beta
-    der[self.name]["arho1"] = dbeta_darho1
-    der[self.name]["arho2"] = dbeta_darho2
+    der[self.name]["arhoA1"] = dbeta_darhoA1
+    der[self.name]["arhoA2"] = dbeta_darhoA2

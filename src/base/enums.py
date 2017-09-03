@@ -6,7 +6,7 @@ class ModelType(Enum):
   TwoPhase = 3
 
 class VariableName(Enum):
-  ARho = 1
-  ARhoU = 2
-  ARhoE = 3
+  ARhoA = 1
+  ARhoUA = 2
+  ARhoEA = 3
   VF1 = 4

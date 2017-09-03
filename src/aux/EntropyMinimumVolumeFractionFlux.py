@@ -25,20 +25,20 @@ class EntropyMinimumVolumeFractionFlux(AuxQuantity1Phase):
     dl_dgrad_vf = data["visccoef_vf"]
 
     dl_dvf1 = dl_dvisccoef * der["visccoef_vf"]["vf1"]
-    dl_darho1 = dl_dvisccoef * der["visccoef_vf"]["arho1"]
-    dl_darhou1 = dl_dvisccoef * der["visccoef_vf"]["arhou1"]
-    dl_darhoE1 = dl_dvisccoef * der["visccoef_vf"]["arhoE1"]
-    dl_darho2 = dl_dvisccoef * der["visccoef_vf"]["arho2"]
-    dl_darhou2 = dl_dvisccoef * der["visccoef_vf"]["arhou2"]
-    dl_darhoE2 = dl_dvisccoef * der["visccoef_vf"]["arhoE2"]
+    dl_darhoA1 = dl_dvisccoef * der["visccoef_vf"]["arhoA1"]
+    dl_darhouA1 = dl_dvisccoef * der["visccoef_vf"]["arhouA1"]
+    dl_darhoEA1 = dl_dvisccoef * der["visccoef_vf"]["arhoEA1"]
+    dl_darhoA2 = dl_dvisccoef * der["visccoef_vf"]["arhoA2"]
+    dl_darhouA2 = dl_dvisccoef * der["visccoef_vf"]["arhouA2"]
+    dl_darhoEA2 = dl_dvisccoef * der["visccoef_vf"]["arhoEA2"]
     dl_dgrad_vf1 = dl_dgrad_vf * self.dgrad_vf_dgrad_vf1
 
     data[self.name] = l
     der[self.name]["vf1"] = dl_dvf1
-    der[self.name]["arho1"] = dl_darho1
-    der[self.name]["arhou1"] = dl_darhou1
-    der[self.name]["arhoE1"] = dl_darhoE1
-    der[self.name]["arho2"] = dl_darho2
-    der[self.name]["arhou2"] = dl_darhou2
-    der[self.name]["arhoE2"] = dl_darhoE2
+    der[self.name]["arhoA1"] = dl_darhoA1
+    der[self.name]["arhouA1"] = dl_darhouA1
+    der[self.name]["arhoEA1"] = dl_darhoEA1
+    der[self.name]["arhoA2"] = dl_darhoA2
+    der[self.name]["arhouA2"] = dl_darhouA2
+    der[self.name]["arhoEA2"] = dl_darhoEA2
     der[self.name]["grad_vf1"] = dl_dgrad_vf1

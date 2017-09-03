@@ -23,15 +23,15 @@ class BerryInterfacePressureBar(AuxQuantity2Phase):
     ddenominator = -numerator / denominator**2
     der[self.name]["vf1"] = dnumerator * (der["z1"]["vf1"] * p2 + z1 * der["p2"]["vf1"] + der["z2"]["vf1"] * p1 + z2 * der["p1"]["vf1"]) \
       + ddenominator * (der["z1"]["vf1"] + der["z2"]["vf1"])
-    der[self.name]["arho1"] = dnumerator * (der["z1"]["arho1"] * p2 + z2 * der["p1"]["arho1"]) \
-      + ddenominator * der["z1"]["arho1"]
-    der[self.name]["arhou1"] = dnumerator * (der["z1"]["arhou1"] * p2 + z2 * der["p1"]["arhou1"]) \
-      + ddenominator * der["z1"]["arhou1"]
-    der[self.name]["arhoE1"] = dnumerator * (der["z1"]["arhoE1"] * p2 + z2 * der["p1"]["arhoE1"]) \
-      + ddenominator * der["z1"]["arhoE1"]
-    der[self.name]["arho2"] = dnumerator * (z1 * der["p2"]["arho2"] + der["z2"]["arho2"] * p1) \
-      + ddenominator * der["z2"]["arho2"]
-    der[self.name]["arhou2"] = dnumerator * (z1 * der["p2"]["arhou2"] + der["z2"]["arhou2"] * p1) \
-      + ddenominator * der["z2"]["arhou2"]
-    der[self.name]["arhoE2"] = dnumerator * (z1 * der["p2"]["arhoE2"] + der["z2"]["arhoE2"] * p1) \
-      + ddenominator * der["z2"]["arhoE2"]
+    der[self.name]["arhoA1"] = dnumerator * (der["z1"]["arhoA1"] * p2 + z2 * der["p1"]["arhoA1"]) \
+      + ddenominator * der["z1"]["arhoA1"]
+    der[self.name]["arhouA1"] = dnumerator * (der["z1"]["arhouA1"] * p2 + z2 * der["p1"]["arhouA1"]) \
+      + ddenominator * der["z1"]["arhouA1"]
+    der[self.name]["arhoEA1"] = dnumerator * (der["z1"]["arhoEA1"] * p2 + z2 * der["p1"]["arhoEA1"]) \
+      + ddenominator * der["z1"]["arhoEA1"]
+    der[self.name]["arhoA2"] = dnumerator * (z1 * der["p2"]["arhoA2"] + der["z2"]["arhoA2"] * p1) \
+      + ddenominator * der["z2"]["arhoA2"]
+    der[self.name]["arhouA2"] = dnumerator * (z1 * der["p2"]["arhouA2"] + der["z2"]["arhouA2"] * p1) \
+      + ddenominator * der["z2"]["arhouA2"]
+    der[self.name]["arhoEA2"] = dnumerator * (z1 * der["p2"]["arhoEA2"] + der["z2"]["arhoEA2"] * p1) \
+      + ddenominator * der["z2"]["arhoEA2"]

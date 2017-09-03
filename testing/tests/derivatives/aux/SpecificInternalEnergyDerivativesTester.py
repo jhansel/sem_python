@@ -12,19 +12,19 @@ test_aux = SpecificInternalEnergy(params)
 # velocity aux
 params = TestAuxParameters()
 params.set("var", "u1")
-params.set("other_vars", ["arho1", "arhou1"])
+params.set("other_vars", ["arhoA1", "arhouA1"])
 params.set("coefs", [2.0, 3.0])
 u_aux = TestAux(params)
 
 # specific total energy aux
 params = TestAuxParameters()
 params.set("var", "E1")
-params.set("other_vars", ["arho1", "arhoE1"])
+params.set("other_vars", ["arhoA1", "arhoEA1"])
 params.set("coefs", [2.5, 3.5])
 E_aux = TestAux(params)
 
 other_aux = [u_aux, E_aux]
-root_vars = ["arho1", "arhou1", "arhoE1"]
+root_vars = ["arhoA1", "arhouA1", "arhoEA1"]
 
 class SpecificInternalEnergyDerivativesTester(unittest.TestCase):
   def setUp(self):

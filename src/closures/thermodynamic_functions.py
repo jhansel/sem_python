@@ -19,12 +19,12 @@ def computeSpecificVolume(rho):
 
   return (v, dv_drho)
 
-def computeSpecificTotalEnergy(arho, arhoE):
-  E = arhoE / arho
-  dE_darho = - arhoE / arho / arho
-  dE_darhoE = 1.0 / arho
+def computeSpecificTotalEnergy(arhoA, arhoEA):
+  E = arhoEA / arhoA
+  dE_darhoA = - arhoEA / arhoA / arhoA
+  dE_darhoEA = 1.0 / arhoA
 
-  return (E, dE_darho, dE_darhoE)
+  return (E, dE_darhoA, dE_darhoEA)
 
 def computeSpecificInternalEnergy(u, E):
   e = E - 0.5 * u * u
@@ -41,16 +41,16 @@ def computeSpecificEnthalpy(e, p, rho):
 
   return (h, dh_de, dh_dp, dh_drho)
 
-def computeVelocity(arho, arhou):
-  u = arhou / arho
-  du_darho = - arhou / arho / arho
-  du_darhou = 1.0 / arho
+def computeVelocity(arhoA, arhouA):
+  u = arhouA / arhoA
+  du_darhoA = - arhouA / arhoA / arhoA
+  du_darhouA = 1.0 / arhoA
 
-  return (u, du_darho, du_darhou)
+  return (u, du_darhoA, du_darhouA)
 
-def computeDensity(vf, arho):
-  rho = arho / vf
-  drho_dvf = - arho / vf / vf
-  drho_darho = 1.0 / vf
+def computeDensity(vf, arhoA):
+  rho = arhoA / vf
+  drho_dvf = - arhoA / vf / vf
+  drho_darhoA = 1.0 / vf
 
-  return (rho, drho_dvf, drho_darho)
+  return (rho, drho_dvf, drho_darhoA)

@@ -31,10 +31,10 @@ class DissipationAuxFlux(Kernel1Phase):
     if var_index == self.vf1_index:
       return (der[self.flux]["vf1"] * data["phi"][j] + der[self.flux]["grad_vf1"] * data["grad_phi"][j]) * data["grad_phi"][i] * data["JxW"]
     elif var_index == self.arho_index:
-      return (der[self.flux][self.arho] * data["phi"][j] + der[self.flux][self.grad_arho] * data["grad_phi"][j]) * data["grad_phi"][i] * data["JxW"]
-    elif var_index == self.arhou_index:
-      return (der[self.flux][self.arhou] * data["phi"][j] + der[self.flux][self.grad_arhou] * data["grad_phi"][j]) * data["grad_phi"][i] * data["JxW"]
-    elif var_index == self.arhoE_index:
-      return (der[self.flux][self.arhoE] * data["phi"][j] + der[self.flux][self.grad_arhoE] * data["grad_phi"][j]) * data["grad_phi"][i] * data["JxW"]
+      return (der[self.flux][self.arhoA] * data["phi"][j] + der[self.flux][self.grad_arhoA] * data["grad_phi"][j]) * data["grad_phi"][i] * data["JxW"]
+    elif var_index == self.arhouA_index:
+      return (der[self.flux][self.arhouA] * data["phi"][j] + der[self.flux][self.grad_arhouA] * data["grad_phi"][j]) * data["grad_phi"][i] * data["JxW"]
+    elif var_index == self.arhoEA_index:
+      return (der[self.flux][self.arhoEA] * data["phi"][j] + der[self.flux][self.grad_arhoEA] * data["grad_phi"][j]) * data["grad_phi"][i] * data["JxW"]
     else:
       return self.zero

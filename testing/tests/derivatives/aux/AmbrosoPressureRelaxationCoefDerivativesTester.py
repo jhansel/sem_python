@@ -12,19 +12,19 @@ test_aux = AmbrosoPressureRelaxationCoef(params)
 # phase-1 pressure aux
 params = TestAuxParameters()
 params.set("var", "p1")
-params.set("other_vars", ["vf1", "arho1", "arhou1", "arhoE1"])
+params.set("other_vars", ["vf1", "arhoA1", "arhouA1", "arhoEA1"])
 params.set("coefs", [1.2, 2.2, 3.2, 4.2])
 p1_aux = TestAux(params)
 
 # phase-2 pressure aux
 params = TestAuxParameters()
 params.set("var", "p2")
-params.set("other_vars", ["vf1", "arho2", "arhou2", "arhoE2"])
+params.set("other_vars", ["vf1", "arhoA2", "arhouA2", "arhoEA2"])
 params.set("coefs", [1.5, 2.5, 3.5, 4.5])
 p2_aux = TestAux(params)
 
 other_aux = [p1_aux, p2_aux]
-root_vars = ["vf1", "arho1", "arhou1", "arhoE1", "arho2", "arhou2", "arhoE2"]
+root_vars = ["vf1", "arhoA1", "arhouA1", "arhoEA1", "arhoA2", "arhouA2", "arhoEA2"]
 
 class AmbrosoPressureRelaxationCoefDerivativesTester(unittest.TestCase):
   def setUp(self):

@@ -15,24 +15,24 @@ class EqualFluxJunction(FreeBCJunction):
 
   def applyStronglyToNonlinearSystem(self, U, U_old, r, J):
     m = 0
-    r[self.i_arho[m]] = sum(self.f_mass)
-    r[self.i_arhou[m]] = sum(self.f_momentum)
-    r[self.i_arhoE[m]] = sum(self.f_energy)
-    J[self.i_arho[m],:] = 0
-    J[self.i_arhou[m],:] = 0
-    J[self.i_arhoE[m],:] = 0
+    r[self.i_arhoA[m]] = sum(self.f_mass)
+    r[self.i_arhouA[m]] = sum(self.f_momentum)
+    r[self.i_arhoEA[m]] = sum(self.f_energy)
+    J[self.i_arhoA[m],:] = 0
+    J[self.i_arhouA[m],:] = 0
+    J[self.i_arhoEA[m],:] = 0
 
     for n in xrange(self.n_meshes):
-      J[self.i_arho[m],self.i_arhou[n]] = self.df_mass_darhou[n]
+      J[self.i_arhoA[m],self.i_arhouA[n]] = self.df_mass_darhouA[n]
 
-      J[self.i_arhou[m],self.i_arho[n]] = self.df_momentum_darho[n]
-      J[self.i_arhou[m],self.i_arhou[n]] = self.df_momentum_darhou[n]
-      J[self.i_arhou[m],self.i_arhoE[n]] = self.df_momentum_darhoE[n]
+      J[self.i_arhouA[m],self.i_arhoA[n]] = self.df_momentum_darhoA[n]
+      J[self.i_arhouA[m],self.i_arhouA[n]] = self.df_momentum_darhouA[n]
+      J[self.i_arhouA[m],self.i_arhoEA[n]] = self.df_momentum_darhoEA[n]
 
-      J[self.i_arhoE[m],self.i_arho[n]] = self.df_energy_darho[n]
-      J[self.i_arhoE[m],self.i_arhou[n]] = self.df_energy_darhou[n]
-      J[self.i_arhoE[m],self.i_arhoE[n]] = self.df_energy_darhoE[n]
+      J[self.i_arhoEA[m],self.i_arhoA[n]] = self.df_energy_darhoA[n]
+      J[self.i_arhoEA[m],self.i_arhouA[n]] = self.df_energy_darhouA[n]
+      J[self.i_arhoEA[m],self.i_arhoEA[n]] = self.df_energy_darhoEA[n]
 
       if self.model_type == ModelType.TwoPhase:
-        J[self.i_arhou[m],self.i_vf1[n]] = self.df_momentum_dvf1[n]
-        J[self.i_arhoE[m],self.i_vf1[n]] = self.df_energy_dvf1[n]
+        J[self.i_arhouA[m],self.i_vf1[n]] = self.df_momentum_dvf1[n]
+        J[self.i_arhoEA[m],self.i_vf1[n]] = self.df_energy_dvf1[n]

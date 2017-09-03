@@ -7,7 +7,7 @@ class EnergyVolumeFractionGradientParameters(Kernel2PhaseParameters):
 
 class EnergyVolumeFractionGradient(Kernel2Phase):
   def __init__(self, params):
-    params.set("var_enum", VariableName.ARhoE)
+    params.set("var_enum", VariableName.ARhoEA)
     Kernel2Phase.__init__(self, params)
 
   def computeResidual(self, data, i):
@@ -20,17 +20,17 @@ class EnergyVolumeFractionGradient(Kernel2Phase):
         + data["pI"] * data["uI"] * data["grad_phi"][j]) * data["phi"][i] * data["JxW"]
     else:
       aux = - self.sign * data["grad_vf1"] * data["phi"][j] * data["phi"][i] * data["JxW"]
-      if var_index == self.arho1_index:
-        return (der["pI"]["arho1"] * data["uI"] + data["pI"] * der["uI"]["arho1"]) * aux
-      elif var_index == self.arhou1_index:
-        return (der["pI"]["arhou1"] * data["uI"] + data["pI"] * der["uI"]["arhou1"]) * aux
-      elif var_index == self.arhoE1_index:
-        return (der["pI"]["arhoE1"] * data["uI"] + data["pI"] * der["uI"]["arhoE1"]) * aux
-      elif var_index == self.arho2_index:
-        return (der["pI"]["arho2"] * data["uI"] + data["pI"] * der["uI"]["arho2"]) * aux
-      elif var_index == self.arhou2_index:
-        return (der["pI"]["arhou2"] * data["uI"] + data["pI"] * der["uI"]["arhou2"]) * aux
-      elif var_index == self.arhoE2_index:
-        return (der["pI"]["arhoE2"] * data["uI"] + data["pI"] * der["uI"]["arhoE2"]) * aux
+      if var_index == self.arhoA1_index:
+        return (der["pI"]["arhoA1"] * data["uI"] + data["pI"] * der["uI"]["arhoA1"]) * aux
+      elif var_index == self.arhouA1_index:
+        return (der["pI"]["arhouA1"] * data["uI"] + data["pI"] * der["uI"]["arhouA1"]) * aux
+      elif var_index == self.arhoEA1_index:
+        return (der["pI"]["arhoEA1"] * data["uI"] + data["pI"] * der["uI"]["arhoEA1"]) * aux
+      elif var_index == self.arhoA2_index:
+        return (der["pI"]["arhoA2"] * data["uI"] + data["pI"] * der["uI"]["arhoA2"]) * aux
+      elif var_index == self.arhouA2_index:
+        return (der["pI"]["arhouA2"] * data["uI"] + data["pI"] * der["uI"]["arhouA2"]) * aux
+      elif var_index == self.arhoEA2_index:
+        return (der["pI"]["arhoEA2"] * data["uI"] + data["pI"] * der["uI"]["arhoEA2"]) * aux
       else:
         return self.zero

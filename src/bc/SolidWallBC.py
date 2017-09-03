@@ -12,15 +12,15 @@ class SolidWallBC(OnePhaseBC):
     pass
 
   def applyStrongBCNonlinearSystem(self, U, r, J):
-    arhou = U[self.i_arhou]
+    arhouA = U[self.i_arhouA]
 
-    r[self.i_arhou] = arhou
-    J[self.i_arhou,:] = 0
-    J[self.i_arhou,self.i_arhou] = 1
+    r[self.i_arhouA] = arhouA
+    J[self.i_arhouA,:] = 0
+    J[self.i_arhouA,self.i_arhouA] = 1
 
   def applyStrongBCLinearSystemMatrix(self, A):
-    A[self.i_arhou,:] = 0
-    A[self.i_arhou,self.i_arhou] = 1
+    A[self.i_arhouA,:] = 0
+    A[self.i_arhouA,self.i_arhouA] = 1
 
   def applyStrongBCLinearSystemRHSVector(self, U_old, b):
-    b[self.i_arhou] = 0
+    b[self.i_arhouA] = 0

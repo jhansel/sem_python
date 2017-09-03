@@ -14,11 +14,11 @@ class InternalEnergyDensity(AuxQuantity1Phase):
     data[self.name] = data[self.rho] * data[self.e]
 
     drhoe_dvf1 = der[self.rho]["vf1"] * data[self.e]
-    drhoe_darho = der[self.rho][self.arho] * data[self.e] + data[self.rho] * der[self.e][self.arho]
-    drhoe_darhou = data[self.rho] * der[self.e][self.arhou]
-    drhoe_darhoE = data[self.rho] * der[self.e][self.arhoE]
+    drhoe_darhoA = der[self.rho][self.arhoA] * data[self.e] + data[self.rho] * der[self.e][self.arhoA]
+    drhoe_darhouA = data[self.rho] * der[self.e][self.arhouA]
+    drhoe_darhoEA = data[self.rho] * der[self.e][self.arhoEA]
 
     der[self.name]["vf1"] = drhoe_dvf1
-    der[self.name][self.arho] = drhoe_darho
-    der[self.name][self.arhou] = drhoe_darhou
-    der[self.name][self.arhoE] = drhoe_darhoE
+    der[self.name][self.arhoA] = drhoe_darhoA
+    der[self.name][self.arhouA] = drhoe_darhouA
+    der[self.name][self.arhoEA] = drhoe_darhoEA

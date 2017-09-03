@@ -11,7 +11,7 @@ params.set("value", 6.0)
 test_aux = ConstantAux(params)
 
 other_aux = list()
-root_vars = ["vf1", "arho1", "arhou1", "arhoE1", "arho2", "arhou2", "arhoE2"]
+root_vars = ["vf1", "arhoA1", "arhouA1", "arhoEA1", "arhoA2", "arhouA2", "arhoEA2"]
 
 class ConstantAuxDerivativesTester(unittest.TestCase):
   def setUp(self):

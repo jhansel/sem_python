@@ -18,9 +18,9 @@ class AuxQuantity1Phase(AuxQuantity):
       self.dgrad_vf_dgrad_vf1 = -1.0
 
     self.vf = "vf" + self.phase
-    self.arho = "arho" + self.phase
-    self.arhou = "arhou" + self.phase
-    self.arhoE = "arhoE" + self.phase
+    self.arhoA = "arhoA" + self.phase
+    self.arhouA = "arhouA" + self.phase
+    self.arhoEA = "arhoEA" + self.phase
     self.rho = "rho" + self.phase
     self.rhoe = "rhoe" + self.phase
     self.u = "u" + self.phase
@@ -32,20 +32,20 @@ class AuxQuantity1Phase(AuxQuantity):
     self.c = "c" + self.phase
     self.z = "z" + self.phase
 
-    self.grad_arho = "grad_" + self.arho
-    self.grad_arhou = "grad_" + self.arhou
-    self.grad_arhoE = "grad_" + self.arhoE
+    self.grad_arhoA = "grad_" + self.arhoA
+    self.grad_arhouA = "grad_" + self.arhouA
+    self.grad_arhoEA = "grad_" + self.arhoEA
     self.grad_vf = "grad_" + self.vf
     self.grad_rho = "grad_" + self.rho
     self.grad_u = "grad_" + self.u
     self.grad_rhoe = "grad_" + self.rhoe
 
     self.visccoef_vf = "visccoef_" + self.vf
-    self.visccoef_arho = "visccoef_" + self.arho
-    self.visccoef_arhou = "visccoef_" + self.arhou
-    self.visccoef_arhoE = "visccoef_" + self.arhoE
+    self.visccoef_arhoA = "visccoef_" + self.arhoA
+    self.visccoef_arhouA = "visccoef_" + self.arhouA
+    self.visccoef_arhoEA = "visccoef_" + self.arhoEA
 
     self.viscflux_vf = "viscflux_" + self.vf
-    self.viscflux_arho = "viscflux_" + self.arho
-    self.viscflux_arhou = "viscflux_" + self.arhou
-    self.viscflux_arhoE = "viscflux_" + self.arhoE
+    self.viscflux_arhoA = "viscflux_" + self.arhoA
+    self.viscflux_arhouA = "viscflux_" + self.arhouA
+    self.viscflux_arhoEA = "viscflux_" + self.arhoEA

@@ -83,9 +83,9 @@
   absolute_tolerance = 1e-6
   max_iterations = 10
 
-  scaling_arho1  = 1
-  scaling_arhou1 = 1e-1
-  scaling_arhoE1 = 1e-5
+  scaling_arhoA1  = 1
+  scaling_arhouA1 = 1e-1
+  scaling_arhoEA1 = 1e-5
 []
 
 [Output]

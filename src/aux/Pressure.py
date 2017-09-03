@@ -16,10 +16,10 @@ class Pressure(AuxQuantity1Phase):
     data[self.name] = p
 
     dp_dvf1 = dp_dv * der[self.v]["vf1"]
-    dp_darho = dp_dv * der[self.v][self.arho] + dp_de * der[self.e][self.arho]
-    dp_darhou = dp_de * der[self.e][self.arhou]
-    dp_darhoE = dp_de * der[self.e][self.arhoE]
+    dp_darhoA = dp_dv * der[self.v][self.arhoA] + dp_de * der[self.e][self.arhoA]
+    dp_darhouA = dp_de * der[self.e][self.arhouA]
+    dp_darhoEA = dp_de * der[self.e][self.arhoEA]
     der[self.name]["vf1"] = dp_dvf1
-    der[self.name][self.arho] = dp_darho
-    der[self.name][self.arhou] = dp_darhou
-    der[self.name][self.arhoE] = dp_darhoE
+    der[self.name][self.arhoA] = dp_darhoA
+    der[self.name][self.arhouA] = dp_darhouA
+    der[self.name][self.arhoEA] = dp_darhoEA

@@ -17,21 +17,21 @@ class Kernel1Phase(Kernel):
 
     # create list of relevant variable indices
     self.arho_index = self.dof_handler.arho_index[self.phase]
-    self.arhou_index = self.dof_handler.arhou_index[self.phase]
-    self.arhoE_index = self.dof_handler.arhoE_index[self.phase]
+    self.arhouA_index = self.dof_handler.arhouA_index[self.phase]
+    self.arhoEA_index = self.dof_handler.arhoEA_index[self.phase]
     if self.dof_handler.model_type == ModelType.TwoPhase:
       self.vf1_index = self.dof_handler.vf1_index[0]
-      self.var_indices = [self.vf1_index, self.arho_index, self.arhou_index, self.arhoE_index]
+      self.var_indices = [self.vf1_index, self.arho_index, self.arhouA_index, self.arhoEA_index]
     else:
       self.vf1_index = float("NaN")
-      self.var_indices = [self.arho_index, self.arhou_index, self.arhoE_index]
+      self.var_indices = [self.arho_index, self.arhouA_index, self.arhoEA_index]
 
     # create variable names
     phase_str = str(self.phase + 1)
     self.vf = "vf" + phase_str
-    self.arho = "arho" + phase_str
-    self.arhou = "arhou" + phase_str
-    self.arhoE = "arhoE" + phase_str
+    self.arhoA = "arhoA" + phase_str
+    self.arhouA = "arhouA" + phase_str
+    self.arhoEA = "arhoEA" + phase_str
     self.rho = "rho" + phase_str
     self.u = "u" + phase_str
     self.E = "E" + phase_str
@@ -39,6 +39,6 @@ class Kernel1Phase(Kernel):
     self.e = "e" + phase_str
     self.p = "p" + phase_str
 
-    self.grad_arho = "grad_" + self.arho
-    self.grad_arhou = "grad_" + self.arhou
-    self.grad_arhoE = "grad_" + self.arhoE
+    self.grad_arhoA = "grad_" + self.arhoA
+    self.grad_arhouA = "grad_" + self.arhouA
+    self.grad_arhoEA = "grad_" + self.arhoEA

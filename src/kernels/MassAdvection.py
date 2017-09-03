@@ -7,14 +7,14 @@ class MassAdvectionParameters(Kernel1PhaseParameters):
 
 class MassAdvection(Kernel1Phase):
   def __init__(self, params):
-    params.set("var_enum", VariableName.ARho)
+    params.set("var_enum", VariableName.ARhoA)
     Kernel1Phase.__init__(self, params)
 
   def computeResidual(self, data, i):
-    return - data[self.arhou] * data["grad_phi"][i] * data["JxW"]
+    return - data[self.arhouA] * data["grad_phi"][i] * data["JxW"]
 
   def computeJacobian(self, data, der, var_index, i, j):
-    if var_index == self.arhou_index:
+    if var_index == self.arhouA_index:
       return - data["phi"][j] * data["grad_phi"][i] * data["JxW"]
     else:
       return self.zero

@@ -18,60 +18,60 @@ class InletRhoUBC(OnePhaseBC):
   def applyWeakBC(self, U, r, J):
     vf1 = self.dof_handler.getVolumeFraction(U, self.k)
     vf, dvf_dvf1 = computeVolumeFraction(vf1, self.phase, self.model_type)
-    arhoE = U[self.i_arhoE]
+    arhoEA = U[self.i_arhoEA]
 
     arhoBC = vf * self.rho
     darhoBC_dvf1 = self.rho * dvf_dvf1
 
-    arhouBC = vf * self.rho * self.u
-    darhouBC_dvf1 = self.rho * self.u * dvf_dvf1
+    arhouABC = vf * self.rho * self.u
+    darhouABC_dvf1 = self.rho * self.u * dvf_dvf1
 
     v, _ = computeSpecificVolume(self.rho)
 
-    E, dE_darhoBC, dE_darhoE = computeSpecificTotalEnergy(arhoBC, arhoE)
+    E, dE_darhoBC, dE_darhoEA = computeSpecificTotalEnergy(arhoBC, arhoEA)
     dE_dvf1 = dE_darhoBC * darhoBC_dvf1
 
     e, _, de_dE = computeSpecificInternalEnergy(self.u, E)
     de_dvf1 = de_dE * dE_dvf1
-    de_darhoE = de_dE * dE_darhoE
+    de_darhoEA = de_dE * dE_darhoEA
 
     p, _, dp_de = self.eos.p(v, e)
     dp_dvf1 = dp_de * de_dvf1
-    dp_darhoE = dp_de * de_darhoE
+    dp_darhoEA = dp_de * de_darhoEA
 
     # momentum
-    r[self.i_arhou] += (arhouBC * self.u + vf * p) * self.nx
+    r[self.i_arhouA] += (arhouABC * self.u + vf * p) * self.nx
     if (self.model_type == ModelType.TwoPhase):
-      J[self.i_arhou,self.i_vf1] += (self.u * darhouBC_dvf1 + dvf_dvf1 * p + vf * dp_dvf1) * self.nx
-    J[self.i_arhou,self.i_arhoE] += vf * dp_darhoE * self.nx
+      J[self.i_arhouA,self.i_vf1] += (self.u * darhouABC_dvf1 + dvf_dvf1 * p + vf * dp_dvf1) * self.nx
+    J[self.i_arhouA,self.i_arhoEA] += vf * dp_darhoEA * self.nx
 
     # energy
-    r[self.i_arhoE] += self.u * (arhoE + vf * p) * self.nx
+    r[self.i_arhoEA] += self.u * (arhoEA + vf * p) * self.nx
     if (self.model_type == ModelType.TwoPhase):
-      J[self.i_arhoE,self.i_vf1] += self.u * (dvf_dvf1 * p + vf * dp_dvf1) * self.nx
-    J[self.i_arhoE,self.i_arhoE] += self.u * (1 + vf * dp_darhoE) * self.nx
+      J[self.i_arhoEA,self.i_vf1] += self.u * (dvf_dvf1 * p + vf * dp_dvf1) * self.nx
+    J[self.i_arhoEA,self.i_arhoEA] += self.u * (1 + vf * dp_darhoEA) * self.nx
 
   def applyStrongBCNonlinearSystem(self, U, r, J):
     vf1 = self.dof_handler.getVolumeFraction(U, self.k)
     vf, dvf_dvf1 = computeVolumeFraction(vf1, self.phase, self.model_type)
-    arho = U[self.i_arho]
+    arhoA = U[self.i_arhoA]
 
     arhoBC = vf * self.rho
     darhoBC_dvf1 = self.rho * dvf_dvf1
 
     # mass
-    r[self.i_arho] = arho - arhoBC
-    J[self.i_arho,:] = 0
+    r[self.i_arhoA] = arhoA - arhoBC
+    J[self.i_arhoA,:] = 0
     if (self.model_type == ModelType.TwoPhase):
-      J[self.i_arho,self.i_vf1] = - darhoBC_dvf1
-    J[self.i_arho,self.i_arho] = 1
+      J[self.i_arhoA,self.i_vf1] = - darhoBC_dvf1
+    J[self.i_arhoA,self.i_arhoA] = 1
 
   def applyStrongBCLinearSystemMatrix(self, A):
-    A[self.i_arho,:] = 0
-    A[self.i_arho,self.i_arho] = 1
+    A[self.i_arhoA,:] = 0
+    A[self.i_arhoA,self.i_arhoA] = 1
 
   def applyStrongBCLinearSystemRHSVector(self, U_old, b):
     vf1 = self.dof_handler.getVolumeFraction(U_old, self.k)
     vf, dvf_dvf1 = computeVolumeFraction(vf1, self.phase, self.model_type)
-    arho = vf * self.rho
-    b[self.i_arho] = arho
+    arhoA = vf * self.rho
+    b[self.i_arhoA] = arhoA

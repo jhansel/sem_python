@@ -102,36 +102,36 @@ class DoFHandler(object):
 
   def setup(self):
     arho_index_phase = 0
-    arhou_index_phase = 2
-    arhoE_index_phase = 1
+    arhouA_index_phase = 2
+    arhoEA_index_phase = 1
     self.n_var = self.n_vf_equations + self.n_phases * 3
     self.arho_index = list()
-    self.arhou_index = list()
-    self.arhoE_index = list()
+    self.arhouA_index = list()
+    self.arhoEA_index = list()
     self.variable_names = [""] * self.n_var
     self.index_to_variable = dict()
     self.index_to_phase = dict()
     for phase in xrange(self.n_phases):
       self.arho_index.append(self.n_vf_equations + phase * 3 + arho_index_phase)
-      self.arhou_index.append(self.n_vf_equations + phase * 3 + arhou_index_phase)
-      self.arhoE_index.append(self.n_vf_equations + phase * 3 + arhoE_index_phase)
+      self.arhouA_index.append(self.n_vf_equations + phase * 3 + arhouA_index_phase)
+      self.arhoEA_index.append(self.n_vf_equations + phase * 3 + arhoEA_index_phase)
 
-      self.variable_names[self.arho_index[phase]] = "arho" + str(phase+1)
-      self.variable_names[self.arhou_index[phase]] = "arhou" + str(phase+1)
-      self.variable_names[self.arhoE_index[phase]] = "arhoE" + str(phase+1)
+      self.variable_names[self.arho_index[phase]] = "arhoA" + str(phase+1)
+      self.variable_names[self.arhouA_index[phase]] = "arhouA" + str(phase+1)
+      self.variable_names[self.arhoEA_index[phase]] = "arhoEA" + str(phase+1)
 
-      self.index_to_variable[self.arho_index[phase]] = VariableName.ARho
-      self.index_to_variable[self.arhou_index[phase]] = VariableName.ARhoU
-      self.index_to_variable[self.arhoE_index[phase]] = VariableName.ARhoE
+      self.index_to_variable[self.arho_index[phase]] = VariableName.ARhoA
+      self.index_to_variable[self.arhouA_index[phase]] = VariableName.ARhoUA
+      self.index_to_variable[self.arhoEA_index[phase]] = VariableName.ARhoEA
 
       self.index_to_phase[self.arho_index[phase]] = phase
-      self.index_to_phase[self.arhou_index[phase]] = phase
-      self.index_to_phase[self.arhoE_index[phase]] = phase
+      self.index_to_phase[self.arhouA_index[phase]] = phase
+      self.index_to_phase[self.arhoEA_index[phase]] = phase
 
     self.variable_index = {
-      VariableName.ARho: self.arho_index,
-      VariableName.ARhoU: self.arhou_index,
-      VariableName.ARhoE: self.arhoE_index}
+      VariableName.ARhoA: self.arho_index,
+      VariableName.ARhoUA: self.arhouA_index,
+      VariableName.ARhoEA: self.arhoEA_index}
 
     if self.model_type == ModelType.TwoPhase:
       self.vf1_index = [0]
@@ -197,10 +197,10 @@ class DoFHandler(object):
   def getPhaseSolution(self, U, phase):
     vf1 = np.array([self.getVolumeFraction(U, k) for k in xrange(self.n_node)])
     vf, _ = computeVolumeFraction(vf1, phase, self.model_type)
-    arho = self.getSolution(U, VariableName.ARho, phase)
-    arhou = self.getSolution(U, VariableName.ARhoU, phase)
-    arhoE = self.getSolution(U, VariableName.ARhoE, phase)
-    return (vf, arho, arhou, arhoE)
+    arhoA = self.getSolution(U, VariableName.ARhoA, phase)
+    arhouA = self.getSolution(U, VariableName.ARhoUA, phase)
+    arhoEA = self.getSolution(U, VariableName.ARhoEA, phase)
+    return (vf, arhoA, arhouA, arhoEA)
 
   # aggregates local cell vector into global vector
   def aggregateLocalCellVector(self, r, r_cell, e):
@@ -240,7 +240,7 @@ class DoFHandler(object):
   ## Initializes derivative data to zero for each solution variable
   # @param[in] names  list of aux quantity names
   def initializeDerivativeData(self, names):
-    variable_names = ["vf1", "arho1", "arhou1", "arhoE1", "arho2", "arhou2", "arhoE2"]
+    variable_names = ["vf1", "arhoA1", "arhouA1", "arhoEA1", "arhoA2", "arhouA2", "arhoEA2"]
     der = dict()
     for name in names:
       der[name] = dict()

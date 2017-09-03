@@ -20,9 +20,9 @@ class AmbrosoInterfacePressure(AuxQuantity2Phase):
     dpI_du_relax = p1 - p2
 
     der[self.name]["vf1"] = dpI_dp1 * der["p1"]["vf1"] + dpI_dp2 * der["p2"]["vf1"] + dpI_du_relax * der["u_relax"]["vf1"]
-    der[self.name]["arho1"] = dpI_dp1 * der["p1"]["arho1"] + dpI_du_relax * der["u_relax"]["arho1"]
-    der[self.name]["arhou1"] = dpI_dp1 * der["p1"]["arhou1"] + dpI_du_relax * der["u_relax"]["arhou1"]
-    der[self.name]["arhoE1"] = dpI_dp1 * der["p1"]["arhoE1"] + dpI_du_relax * der["u_relax"]["arhoE1"]
-    der[self.name]["arho2"] = dpI_dp2 * der["p2"]["arho2"] + dpI_du_relax * der["u_relax"]["arho2"]
-    der[self.name]["arhou2"] = dpI_dp2 * der["p2"]["arhou2"] + dpI_du_relax * der["u_relax"]["arhou2"]
-    der[self.name]["arhoE2"] = dpI_dp2 * der["p2"]["arhoE2"] + dpI_du_relax * der["u_relax"]["arhoE2"]
+    der[self.name]["arhoA1"] = dpI_dp1 * der["p1"]["arhoA1"] + dpI_du_relax * der["u_relax"]["arhoA1"]
+    der[self.name]["arhouA1"] = dpI_dp1 * der["p1"]["arhouA1"] + dpI_du_relax * der["u_relax"]["arhouA1"]
+    der[self.name]["arhoEA1"] = dpI_dp1 * der["p1"]["arhoEA1"] + dpI_du_relax * der["u_relax"]["arhoEA1"]
+    der[self.name]["arhoA2"] = dpI_dp2 * der["p2"]["arhoA2"] + dpI_du_relax * der["u_relax"]["arhoA2"]
+    der[self.name]["arhouA2"] = dpI_dp2 * der["p2"]["arhouA2"] + dpI_du_relax * der["u_relax"]["arhouA2"]
+    der[self.name]["arhoEA2"] = dpI_dp2 * der["p2"]["arhoEA2"] + dpI_du_relax * der["u_relax"]["arhoEA2"]

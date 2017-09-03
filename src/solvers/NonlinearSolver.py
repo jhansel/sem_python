@@ -24,12 +24,12 @@ class NonlinearSolverParameters(Parameters):
     self.registerBoolParameter("verbose", "Option to print out iterations", True)
 
     self.registerFloatParameter("scaling_vf1", "Scaling factor for vf1", 1)
-    self.registerFloatParameter("scaling_arho1", "Scaling factor for arho1", 1)
-    self.registerFloatParameter("scaling_arhou1", "Scaling factor for arhou1", 1)
-    self.registerFloatParameter("scaling_arhoE1", "Scaling factor for arhoE1", 1)
-    self.registerFloatParameter("scaling_arho2", "Scaling factor for arho2", 1)
-    self.registerFloatParameter("scaling_arhou2", "Scaling factor for arhou2", 1)
-    self.registerFloatParameter("scaling_arhoE2", "Scaling factor for arhoE2", 1)
+    self.registerFloatParameter("scaling_arhoA1", "Scaling factor for arhoA1", 1)
+    self.registerFloatParameter("scaling_arhouA1", "Scaling factor for arhouA1", 1)
+    self.registerFloatParameter("scaling_arhoEA1", "Scaling factor for arhoEA1", 1)
+    self.registerFloatParameter("scaling_arhoA2", "Scaling factor for arhoA2", 1)
+    self.registerFloatParameter("scaling_arhouA2", "Scaling factor for arhouA2", 1)
+    self.registerFloatParameter("scaling_arhoEA2", "Scaling factor for arhoEA2", 1)
 
     self.registerParameter("assemble_system_function", "System assembly function")
     self.registerParameter("dof_handler", "Degree of freedom handler")
@@ -51,9 +51,9 @@ class NonlinearSolver(object):
 
     self.scaling = dict()
     self.scaling[VariableName.VF1] = [params.get("scaling_vf1")]
-    self.scaling[VariableName.ARho] = [params.get("scaling_arho1"), params.get("scaling_arho2")]
-    self.scaling[VariableName.ARhoU] = [params.get("scaling_arhou1"), params.get("scaling_arhou2")]
-    self.scaling[VariableName.ARhoE] = [params.get("scaling_arhoE1"), params.get("scaling_arhoE2")]
+    self.scaling[VariableName.ARhoA] = [params.get("scaling_arhoA1"), params.get("scaling_arhoA2")]
+    self.scaling[VariableName.ARhoUA] = [params.get("scaling_arhouA1"), params.get("scaling_arhouA2")]
+    self.scaling[VariableName.ARhoEA] = [params.get("scaling_arhoEA1"), params.get("scaling_arhoEA2")]
 
   def solve(self, U, residual_factor=1.0):
     # begin Newton solve

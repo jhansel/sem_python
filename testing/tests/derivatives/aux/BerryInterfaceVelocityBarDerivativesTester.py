@@ -11,33 +11,33 @@ test_aux = BerryInterfaceVelocityBar(params)
 # phase-1 velocity
 params = TestAuxParameters()
 params.set("var", "u1")
-params.set("other_vars", ["arho1", "arhou1"])
+params.set("other_vars", ["arhoA1", "arhouA1"])
 params.set("coefs", [1.1, 1.2])
 u1_aux = TestAux(params)
 
 # phase-2 velocity
 params = TestAuxParameters()
 params.set("var", "u2")
-params.set("other_vars", ["arho2", "arhou2"])
+params.set("other_vars", ["arhoA2", "arhouA2"])
 params.set("coefs", [1.7, 1.9])
 u2_aux = TestAux(params)
 
 # phase-1 acoustic impedance aux
 params = TestAuxParameters()
 params.set("var", "z1")
-params.set("other_vars", ["vf1", "arho1", "arhou1", "arhoE1"])
+params.set("other_vars", ["vf1", "arhoA1", "arhouA1", "arhoEA1"])
 params.set("coefs", [2.1, 2.3, 3.4, 4.5])
 z1_aux = TestAux(params)
 
 # phase-2 acoustic impedance aux
 params = TestAuxParameters()
 params.set("var", "z2")
-params.set("other_vars", ["vf1", "arho2", "arhou2", "arhoE2"])
+params.set("other_vars", ["vf1", "arhoA2", "arhouA2", "arhoEA2"])
 params.set("coefs", [2.4, 2.2, 3.3, 4.4])
 z2_aux = TestAux(params)
 
 other_aux = [u1_aux, u2_aux, z1_aux, z2_aux]
-root_vars = ["vf1", "arho1", "arhou1", "arhoE1", "arho2", "arhou2", "arhoE2"]
+root_vars = ["vf1", "arhoA1", "arhouA1", "arhoEA1", "arhoA2", "arhouA2", "arhoEA2"]
 
 class BerryInterfaceVelocityBarDerivativesTester(unittest.TestCase):
   def setUp(self):

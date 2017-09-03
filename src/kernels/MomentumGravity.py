@@ -7,11 +7,11 @@ class MomentumGravityParameters(Kernel1PhaseParameters):
 
 class MomentumGravity(Kernel1Phase):
   def __init__(self, params):
-    params.set("var_enum", VariableName.ARhoU)
+    params.set("var_enum", VariableName.ARhoUA)
     Kernel1Phase.__init__(self, params)
 
   def computeResidual(self, data, i):
-    return -data[self.arho] * data["g"] * data["phi"][i] * data["JxW"]
+    return -data[self.arhoA] * data["g"] * data["phi"][i] * data["JxW"]
 
   def computeJacobian(self, data, der, var_index, i, j):
     if var_index == self.arho_index:

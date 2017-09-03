@@ -17,70 +17,70 @@ class OutletBC(OnePhaseBC):
   def applyWeakBC(self, U, r, J):
     vf1 = self.dof_handler.getVolumeFraction(U, self.k)
     vf, dvf_dvf1 = computeVolumeFraction(vf1, self.phase, self.model_type)
-    arho = U[self.i_arho]
-    arhou = U[self.i_arhou]
+    arhoA = U[self.i_arhoA]
+    arhouA = U[self.i_arhouA]
 
-    u, du_darho, du_darhou = computeVelocity(arho, arhou)
+    u, du_darhoA, du_darhouA = computeVelocity(arhoA, arhouA)
 
     # mass
-    r[self.i_arho] += arhou * self.nx
-    J[self.i_arho,self.i_arhou] += self.nx
+    r[self.i_arhoA] += arhouA * self.nx
+    J[self.i_arhoA,self.i_arhouA] += self.nx
 
     # momentum
-    r[self.i_arhou] += (arhou * u + vf * self.p) * self.nx
+    r[self.i_arhouA] += (arhouA * u + vf * self.p) * self.nx
     if (self.model_type == ModelType.TwoPhase):
-      J[self.i_arhou,self.i_vf1] += dvf_dvf1 * self.p * self.nx
-    J[self.i_arhou,self.i_arho] += arhou * du_darho * self.nx
-    J[self.i_arhou,self.i_arhou] += (arhou * du_darhou + u) * self.nx
+      J[self.i_arhouA,self.i_vf1] += dvf_dvf1 * self.p * self.nx
+    J[self.i_arhouA,self.i_arhoA] += arhouA * du_darhoA * self.nx
+    J[self.i_arhouA,self.i_arhouA] += (arhouA * du_darhouA + u) * self.nx
 
   def applyStrongBCNonlinearSystem(self, U, r, J):
     vf1 = self.dof_handler.getVolumeFraction(U, self.k)
     vf, dvf_dvf1 = computeVolumeFraction(vf1, self.phase, self.model_type)
-    arho = U[self.i_arho]
-    arhou = U[self.i_arhou]
-    arhoE_solution = U[self.i_arhoE]
+    arhoA = U[self.i_arhoA]
+    arhouA = U[self.i_arhouA]
+    arhoEA_solution = U[self.i_arhoEA]
 
-    u, du_darho, du_darhou = computeVelocity(arho, arhou)
+    u, du_darhoA, du_darhouA = computeVelocity(arhoA, arhouA)
 
-    rho, drho_dvf, drho_darho = computeDensity(vf, arho)
+    rho, drho_dvf, drho_darhoA = computeDensity(vf, arhoA)
     drho_dvf1 = drho_dvf * dvf_dvf1
 
     v, dv_drho = computeSpecificVolume(rho)
     dv_dvf1 = dv_drho * drho_dvf1
-    dv_darho = dv_drho * drho_darho
+    dv_darhoA = dv_drho * drho_darhoA
 
     e, de_dv, de_dp = self.eos.e(v, self.p)
     de_dvf1 = de_dv * dv_dvf1
-    de_darho = de_dv * dv_darho
+    de_darhoA = de_dv * dv_darhoA
 
-    arhoE = arho * (e + 0.5 * u * u)
-    darhoE_dvf1 = arho * de_dv * dv_dvf1
-    darhoE_darho = (e + 0.5 * u * u) + arho * (de_dv * dv_darho + u * du_darho)
-    darhoE_darhou = arho * u * du_darhou
+    arhoEA = arhoA * (e + 0.5 * u * u)
+    darhoEA_dvf1 = arhoA * de_dv * dv_dvf1
+    darhoEA_darhoA = (e + 0.5 * u * u) + arhoA * (de_dv * dv_darhoA + u * du_darhoA)
+    darhoEA_darhouA = arhoA * u * du_darhouA
 
     # energy
-    r[self.i_arhoE] = arhoE_solution - arhoE
-    J[self.i_arhoE,:] = 0
+    r[self.i_arhoEA] = arhoEA_solution - arhoEA
+    J[self.i_arhoEA,:] = 0
     if (self.model_type == ModelType.TwoPhase):
-      J[self.i_arhoE,self.i_vf1] = - darhoE_dvf1
-    J[self.i_arhoE,self.i_arho] = - darhoE_darho
-    J[self.i_arhoE,self.i_arhou] = - darhoE_darhou
-    J[self.i_arhoE,self.i_arhoE] = 1
+      J[self.i_arhoEA,self.i_vf1] = - darhoEA_dvf1
+    J[self.i_arhoEA,self.i_arhoA] = - darhoEA_darhoA
+    J[self.i_arhoEA,self.i_arhouA] = - darhoEA_darhouA
+    J[self.i_arhoEA,self.i_arhoEA] = 1
 
   def applyStrongBCLinearSystemMatrix(self, A):
-    A[self.i_arhoE,:] = 0
-    A[self.i_arhoE,self.i_arhoE] = 1
+    A[self.i_arhoEA,:] = 0
+    A[self.i_arhoEA,self.i_arhoEA] = 1
 
   def applyStrongBCLinearSystemRHSVector(self, U_old, b):
     vf1 = self.dof_handler.getVolumeFraction(U_old, self.k)
     vf, dvf_dvf1 = computeVolumeFraction(vf1, self.phase, self.model_type)
-    arho = U_old[self.i_arho]
-    arhou = U_old[self.i_arhou]
+    arhoA = U_old[self.i_arhoA]
+    arhouA = U_old[self.i_arhouA]
 
-    u, du_darho, du_darhou = computeVelocity(arho, arhou)
-    rho, drho_dvf, drho_darho = computeDensity(vf, arho)
+    u, du_darhoA, du_darhouA = computeVelocity(arhoA, arhouA)
+    rho, drho_dvf, drho_darhoA = computeDensity(vf, arhoA)
     v, dv_drho = computeSpecificVolume(rho)
     e, de_dv, de_dp = self.eos.e(v, self.p)
-    arhoE = arho * (e + 0.5 * u * u)
+    arhoEA = arhoA * (e + 0.5 * u * u)
 
-    b[self.i_arhoE] = arhoE
+    b[self.i_arhoEA] = arhoEA

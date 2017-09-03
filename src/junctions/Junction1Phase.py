@@ -16,12 +16,12 @@ class Junction1Phase(Junction):
     # get variable indices
     if (self.model_type == ModelType.TwoPhase):
       self.vf1_index = self.dof_handler.variable_index[VariableName.VF1][0]
-    self.arho_index = self.dof_handler.variable_index[VariableName.ARho][self.phase]
-    self.arhou_index = self.dof_handler.variable_index[VariableName.ARhoU][self.phase]
-    self.arhoE_index = self.dof_handler.variable_index[VariableName.ARhoE][self.phase]
+    self.arho_index = self.dof_handler.variable_index[VariableName.ARhoA][self.phase]
+    self.arhouA_index = self.dof_handler.variable_index[VariableName.ARhoUA][self.phase]
+    self.arhoEA_index = self.dof_handler.variable_index[VariableName.ARhoEA][self.phase]
 
   def setDoFIndices(self):
     # indices for all meshes
-    self.i_arho = [self.dof_handler.i(k, self.arho_index) for k in self.node_indices]
-    self.i_arhou = [self.dof_handler.i(k, self.arhou_index) for k in self.node_indices]
-    self.i_arhoE = [self.dof_handler.i(k, self.arhoE_index) for k in self.node_indices]
+    self.i_arhoA = [self.dof_handler.i(k, self.arho_index) for k in self.node_indices]
+    self.i_arhouA = [self.dof_handler.i(k, self.arhouA_index) for k in self.node_indices]
+    self.i_arhoEA = [self.dof_handler.i(k, self.arhoEA_index) for k in self.node_indices]

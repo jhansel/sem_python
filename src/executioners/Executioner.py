@@ -117,9 +117,9 @@ class Executioner(object):
 
     # compute IC
     eos_phase = self.eos_list[phase]
-    arho_index = self.dof_handler.variable_index[VariableName.ARho][phase]
-    arhou_index = self.dof_handler.variable_index[VariableName.ARhoU][phase]
-    arhoE_index = self.dof_handler.variable_index[VariableName.ARhoE][phase]
+    arho_index = self.dof_handler.variable_index[VariableName.ARhoA][phase]
+    arhouA_index = self.dof_handler.variable_index[VariableName.ARhoUA][phase]
+    arhoEA_index = self.dof_handler.variable_index[VariableName.ARhoEA][phase]
     for k in xrange(self.dof_handler.n_node):
       vf = initial_vf(self.dof_handler.x[k])
       p = initial_p(self.dof_handler.x[k])
@@ -132,8 +132,8 @@ class Executioner(object):
       e = eos_phase.e(1.0 / rho, p)[0]
       E = e + 0.5 * u * u
       self.U[self.dof_handler.i(k, arho_index)] = vf * rho
-      self.U[self.dof_handler.i(k, arhou_index)] = vf * rho * u
-      self.U[self.dof_handler.i(k, arhoE_index)] = vf * rho * E
+      self.U[self.dof_handler.i(k, arhouA_index)] = vf * rho * u
+      self.U[self.dof_handler.i(k, arhoEA_index)] = vf * rho * E
 
   def initializeVolumeFractionSolution(self, ics):
     vf1_index = self.dof_handler.variable_index[VariableName.VF1][0]
@@ -304,58 +304,58 @@ class Executioner(object):
   ## Computes the local cell solution and gradients for 1-phase flow
   def computeLocalCellSolutionOnePhase(self, U, elem, data):
     data["vf1"] = self.fe_values.computeLocalVolumeFractionSolution(U, elem)
-    data["arho1"] = self.fe_values.computeLocalSolution(U, VariableName.ARho, 0, elem)
-    data["arhou1"] = self.fe_values.computeLocalSolution(U, VariableName.ARhoU, 0, elem)
-    data["arhoE1"] = self.fe_values.computeLocalSolution(U, VariableName.ARhoE, 0, elem)
+    data["arhoA1"] = self.fe_values.computeLocalSolution(U, VariableName.ARhoA, 0, elem)
+    data["arhouA1"] = self.fe_values.computeLocalSolution(U, VariableName.ARhoUA, 0, elem)
+    data["arhoEA1"] = self.fe_values.computeLocalSolution(U, VariableName.ARhoEA, 0, elem)
     if self.need_solution_gradients:
       data["grad_vf1"] = self.fe_values.computeLocalVolumeFractionSolutionGradient(U, elem)
-      data["grad_arho1"] = self.fe_values.computeLocalSolutionGradient(U, VariableName.ARho, 0, elem)
-      data["grad_arhou1"] = self.fe_values.computeLocalSolutionGradient(U, VariableName.ARhoU, 0, elem)
-      data["grad_arhoE1"] = self.fe_values.computeLocalSolutionGradient(U, VariableName.ARhoE, 0, elem)
+      data["grad_arhoA1"] = self.fe_values.computeLocalSolutionGradient(U, VariableName.ARhoA, 0, elem)
+      data["grad_arhouA1"] = self.fe_values.computeLocalSolutionGradient(U, VariableName.ARhoUA, 0, elem)
+      data["grad_arhoEA1"] = self.fe_values.computeLocalSolutionGradient(U, VariableName.ARhoEA, 0, elem)
 
   ## Computes the local node solution for 1-phase flow
   def computeLocalNodeSolutionOnePhase(self, U, k, data):
-    arho1_index = self.dof_handler.arho_index[0]
-    arhou1_index = self.dof_handler.arhou_index[0]
-    arhoE1_index = self.dof_handler.arhoE_index[0]
+    arhoA1_index = self.dof_handler.arho_index[0]
+    arhouA1_index = self.dof_handler.arhouA_index[0]
+    arhoEA1_index = self.dof_handler.arhoEA_index[0]
     data["vf1"] = self.dof_handler.getVolumeFraction(U, k)
-    data["arho1"] = U[self.dof_handler.i(k, arho1_index)]
-    data["arhou1"] = U[self.dof_handler.i(k, arhou1_index)]
-    data["arhoE1"] = U[self.dof_handler.i(k, arhoE1_index)]
+    data["arhoA1"] = U[self.dof_handler.i(k, arhoA1_index)]
+    data["arhouA1"] = U[self.dof_handler.i(k, arhouA1_index)]
+    data["arhoEA1"] = U[self.dof_handler.i(k, arhoEA1_index)]
 
   ## Computes the local cell solution and gradients for 2-phase flow
   def computeLocalCellSolutionTwoPhase(self, U, elem, data):
     data["vf1"] = self.fe_values.computeLocalVolumeFractionSolution(U, elem)
-    data["arho1"] = self.fe_values.computeLocalSolution(U, VariableName.ARho, 0, elem)
-    data["arhou1"] = self.fe_values.computeLocalSolution(U, VariableName.ARhoU, 0, elem)
-    data["arhoE1"] = self.fe_values.computeLocalSolution(U, VariableName.ARhoE, 0, elem)
-    data["arho2"] = self.fe_values.computeLocalSolution(U, VariableName.ARho, 1, elem)
-    data["arhou2"] = self.fe_values.computeLocalSolution(U, VariableName.ARhoU, 1, elem)
-    data["arhoE2"] = self.fe_values.computeLocalSolution(U, VariableName.ARhoE, 1, elem)
+    data["arhoA1"] = self.fe_values.computeLocalSolution(U, VariableName.ARhoA, 0, elem)
+    data["arhouA1"] = self.fe_values.computeLocalSolution(U, VariableName.ARhoUA, 0, elem)
+    data["arhoEA1"] = self.fe_values.computeLocalSolution(U, VariableName.ARhoEA, 0, elem)
+    data["arhoA2"] = self.fe_values.computeLocalSolution(U, VariableName.ARhoA, 1, elem)
+    data["arhouA2"] = self.fe_values.computeLocalSolution(U, VariableName.ARhoUA, 1, elem)
+    data["arhoEA2"] = self.fe_values.computeLocalSolution(U, VariableName.ARhoEA, 1, elem)
     data["grad_vf1"] = self.fe_values.computeLocalVolumeFractionSolutionGradient(U, elem)
     if self.need_solution_gradients:
-      data["grad_arho1"] = self.fe_values.computeLocalSolutionGradient(U, VariableName.ARho, 0, elem)
-      data["grad_arhou1"] = self.fe_values.computeLocalSolutionGradient(U, VariableName.ARhoU, 0, elem)
-      data["grad_arhoE1"] = self.fe_values.computeLocalSolutionGradient(U, VariableName.ARhoE, 0, elem)
-      data["grad_arho2"] = self.fe_values.computeLocalSolutionGradient(U, VariableName.ARho, 1, elem)
-      data["grad_arhou2"] = self.fe_values.computeLocalSolutionGradient(U, VariableName.ARhoU, 1, elem)
-      data["grad_arhoE2"] = self.fe_values.computeLocalSolutionGradient(U, VariableName.ARhoE, 1, elem)
+      data["grad_arhoA1"] = self.fe_values.computeLocalSolutionGradient(U, VariableName.ARhoA, 0, elem)
+      data["grad_arhouA1"] = self.fe_values.computeLocalSolutionGradient(U, VariableName.ARhoUA, 0, elem)
+      data["grad_arhoEA1"] = self.fe_values.computeLocalSolutionGradient(U, VariableName.ARhoEA, 0, elem)
+      data["grad_arhoA2"] = self.fe_values.computeLocalSolutionGradient(U, VariableName.ARhoA, 1, elem)
+      data["grad_arhouA2"] = self.fe_values.computeLocalSolutionGradient(U, VariableName.ARhoUA, 1, elem)
+      data["grad_arhoEA2"] = self.fe_values.computeLocalSolutionGradient(U, VariableName.ARhoEA, 1, elem)
 
   ## Computes the local node solution for 2-phase flow
   def computeLocalNodeSolutionTwoPhase(self, U, k, data):
-    arho1_index = self.dof_handler.arho_index[0]
-    arhou1_index = self.dof_handler.arhou_index[0]
-    arhoE1_index = self.dof_handler.arhoE_index[0]
-    arho2_index = self.dof_handler.arho_index[1]
-    arhou2_index = self.dof_handler.arhou_index[1]
-    arhoE2_index = self.dof_handler.arhoE_index[1]
+    arhoA1_index = self.dof_handler.arho_index[0]
+    arhouA1_index = self.dof_handler.arhouA_index[0]
+    arhoEA1_index = self.dof_handler.arhoEA_index[0]
+    arhoA2_index = self.dof_handler.arho_index[1]
+    arhouA2_index = self.dof_handler.arhouA_index[1]
+    arhoEA2_index = self.dof_handler.arhoEA_index[1]
     data["vf1"] = self.dof_handler.getVolumeFraction(U, k)
-    data["arho1"] = U[self.dof_handler.i(k, arho1_index)]
-    data["arhou1"] = U[self.dof_handler.i(k, arhou1_index)]
-    data["arhoE1"] = U[self.dof_handler.i(k, arhoE1_index)]
-    data["arho2"] = U[self.dof_handler.i(k, arho2_index)]
-    data["arhou2"] = U[self.dof_handler.i(k, arhou2_index)]
-    data["arhoE2"] = U[self.dof_handler.i(k, arhoE2_index)]
+    data["arhoA1"] = U[self.dof_handler.i(k, arhoA1_index)]
+    data["arhouA1"] = U[self.dof_handler.i(k, arhouA1_index)]
+    data["arhoEA1"] = U[self.dof_handler.i(k, arhoEA1_index)]
+    data["arhoA2"] = U[self.dof_handler.i(k, arhoA2_index)]
+    data["arhouA2"] = U[self.dof_handler.i(k, arhouA2_index)]
+    data["arhoEA2"] = U[self.dof_handler.i(k, arhoEA2_index)]
 
   def solve(self):
     self.nonlinear_solver.solve(self.U)

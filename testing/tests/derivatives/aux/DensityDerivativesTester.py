@@ -13,7 +13,7 @@ params.set("phase", 0)
 vf_aux = VolumeFractionPhase1(params)
 
 other_aux = [vf_aux]
-root_vars = ["vf1", "arho1"]
+root_vars = ["vf1", "arhoA1"]
 
 class DensityDerivativesTester(unittest.TestCase):
   def setUp(self):

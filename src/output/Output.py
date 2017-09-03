@@ -38,25 +38,25 @@ class Output(object):
     self.meshes = params.get("meshes")
 
   def run(self, U):
-    vf1, arho1, arhou1, arhoE1 = self.dof_handler.getPhaseSolution(U, 0)
+    vf1, arhoA1, arhouA1, arhoEA1 = self.dof_handler.getPhaseSolution(U, 0)
     if (self.model_type != ModelType.OnePhase):
-      vf2, arho2, arhou2, arhoE2 = self.dof_handler.getPhaseSolution(U, 1)
+      vf2, arhoA2, arhouA2, arhoEA2 = self.dof_handler.getPhaseSolution(U, 1)
 
     # compute aux quantities
     n = self.dof_handler.n_node
-    rho1 = computeDensity(vf1, arho1)[0]
-    u1 = computeVelocity(arho1, arhou1)[0]
+    rho1 = computeDensity(vf1, arhoA1)[0]
+    u1 = computeVelocity(arhoA1, arhouA1)[0]
     v1 = computeSpecificVolume(rho1)[0]
-    E1 = computeSpecificTotalEnergy(arho1, arhoE1)[0]
+    E1 = computeSpecificTotalEnergy(arhoA1, arhoEA1)[0]
     e1 = computeSpecificInternalEnergy(u1, E1)[0]
     eos1 = self.eos_list[0]
     p1 = eos1.p(v1, e1)[0]
     T1 = eos1.T(v1, e1)[0]
     if (self.model_type != ModelType.OnePhase):
-      rho2 = computeDensity(vf2, arho2)[0]
-      u2 = computeVelocity(arho2, arhou2)[0]
+      rho2 = computeDensity(vf2, arhoA2)[0]
+      u2 = computeVelocity(arhoA2, arhouA2)[0]
       v2 = computeSpecificVolume(rho2)[0]
-      E2 = computeSpecificTotalEnergy(arho2, arhoE2)[0]
+      E2 = computeSpecificTotalEnergy(arhoA2, arhoEA2)[0]
       e2 = computeSpecificInternalEnergy(u2, E2)[0]
       eos2 = self.eos_list[1]
       p2 = eos2.p(v2, e2)[0]

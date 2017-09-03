@@ -7,7 +7,7 @@ class EnergyPressureRelaxationParameters(Kernel2PhaseParameters):
 
 class EnergyPressureRelaxation(Kernel2Phase):
   def __init__(self, params):
-    params.set("var_enum", VariableName.ARhoE)
+    params.set("var_enum", VariableName.ARhoEA)
     Kernel2Phase.__init__(self, params)
 
   def computeResidual(self, data, i):
@@ -19,35 +19,35 @@ class EnergyPressureRelaxation(Kernel2Phase):
         data["pI_bar"] * der["p_relax"]["vf1"] * (data["p1"] - data["p2"]) + \
         data["pI_bar"] * data["p_relax"] * (der["p1"]["vf1"] - der["p2"]["vf1"])) * \
         data["phi"][j] * data["phi"][i] * data["JxW"]
-    elif var_index == self.arho1_index:
-      return self.sign * (der["pI_bar"]["arho1"] * data["p_relax"] * (data["p1"] - data["p2"]) + \
-        data["pI_bar"] * der["p_relax"]["arho1"] * (data["p1"] - data["p2"]) + \
-        data["pI_bar"] * data["p_relax"] * der["p1"]["arho1"]) * \
+    elif var_index == self.arhoA1_index:
+      return self.sign * (der["pI_bar"]["arhoA1"] * data["p_relax"] * (data["p1"] - data["p2"]) + \
+        data["pI_bar"] * der["p_relax"]["arhoA1"] * (data["p1"] - data["p2"]) + \
+        data["pI_bar"] * data["p_relax"] * der["p1"]["arhoA1"]) * \
         data["phi"][j] * data["phi"][i] * data["JxW"]
-    elif var_index == self.arhou1_index:
-      return self.sign * (der["pI_bar"]["arhou1"] * data["p_relax"] * (data["p1"] - data["p2"]) + \
-        data["pI_bar"] * der["p_relax"]["arhou1"] * (data["p1"] - data["p2"]) + \
-        data["pI_bar"] * data["p_relax"] * der["p1"]["arhou1"]) * \
+    elif var_index == self.arhouA1_index:
+      return self.sign * (der["pI_bar"]["arhouA1"] * data["p_relax"] * (data["p1"] - data["p2"]) + \
+        data["pI_bar"] * der["p_relax"]["arhouA1"] * (data["p1"] - data["p2"]) + \
+        data["pI_bar"] * data["p_relax"] * der["p1"]["arhouA1"]) * \
         data["phi"][j] * data["phi"][i] * data["JxW"]
-    elif var_index == self.arhoE1_index:
-      return self.sign * (der["pI_bar"]["arhoE1"] * data["p_relax"] * (data["p1"] - data["p2"]) + \
-        data["pI_bar"] * der["p_relax"]["arhoE1"] * (data["p1"] - data["p2"]) + \
-        data["pI_bar"] * data["p_relax"] * der["p1"]["arhoE1"]) * \
+    elif var_index == self.arhoEA1_index:
+      return self.sign * (der["pI_bar"]["arhoEA1"] * data["p_relax"] * (data["p1"] - data["p2"]) + \
+        data["pI_bar"] * der["p_relax"]["arhoEA1"] * (data["p1"] - data["p2"]) + \
+        data["pI_bar"] * data["p_relax"] * der["p1"]["arhoEA1"]) * \
         data["phi"][j] * data["phi"][i] * data["JxW"]
-    elif var_index == self.arho2_index:
-      return self.sign * (der["pI_bar"]["arho2"] * data["p_relax"] * (data["p1"] - data["p2"]) + \
-        data["pI_bar"] * der["p_relax"]["arho2"] * (data["p1"] - data["p2"]) - \
-        data["pI_bar"] * data["p_relax"] * der["p2"]["arho2"]) * \
+    elif var_index == self.arhoA2_index:
+      return self.sign * (der["pI_bar"]["arhoA2"] * data["p_relax"] * (data["p1"] - data["p2"]) + \
+        data["pI_bar"] * der["p_relax"]["arhoA2"] * (data["p1"] - data["p2"]) - \
+        data["pI_bar"] * data["p_relax"] * der["p2"]["arhoA2"]) * \
         data["phi"][j] * data["phi"][i] * data["JxW"]
-    elif var_index == self.arhou2_index:
-      return self.sign * (der["pI_bar"]["arhou2"] * data["p_relax"] * (data["p1"] - data["p2"]) + \
-        data["pI_bar"] * der["p_relax"]["arhou2"] * (data["p1"] - data["p2"]) - \
-        data["pI_bar"] * data["p_relax"] * der["p2"]["arhou2"]) * \
+    elif var_index == self.arhouA2_index:
+      return self.sign * (der["pI_bar"]["arhouA2"] * data["p_relax"] * (data["p1"] - data["p2"]) + \
+        data["pI_bar"] * der["p_relax"]["arhouA2"] * (data["p1"] - data["p2"]) - \
+        data["pI_bar"] * data["p_relax"] * der["p2"]["arhouA2"]) * \
         data["phi"][j] * data["phi"][i] * data["JxW"]
-    elif var_index == self.arhoE2_index:
-      return self.sign * (der["pI_bar"]["arhoE2"] * data["p_relax"] * (data["p1"] - data["p2"]) + \
-        data["pI_bar"] * der["p_relax"]["arhoE2"] * (data["p1"] - data["p2"]) - \
-        data["pI_bar"] * data["p_relax"] * der["p2"]["arhoE2"]) * \
+    elif var_index == self.arhoEA2_index:
+      return self.sign * (der["pI_bar"]["arhoEA2"] * data["p_relax"] * (data["p1"] - data["p2"]) + \
+        data["pI_bar"] * der["p_relax"]["arhoEA2"] * (data["p1"] - data["p2"]) - \
+        data["pI_bar"] * data["p_relax"] * der["p2"]["arhoEA2"]) * \
         data["phi"][j] * data["phi"][i] * data["JxW"]
     else:
       return self.zero

@@ -19,7 +19,7 @@ class LaxFriedrichsStabilization(Stabilization):
 
   def createIndependentPhaseAuxQuantities(self, phase):
     aux_list = list()
-    var_list = ["arho", "arhou", "arhoE"]
+    var_list = ["arhoA", "arhouA", "arhoEA"]
 
     # add the viscous coefficients
     for var in var_list:
@@ -34,9 +34,9 @@ class LaxFriedrichsStabilization(Stabilization):
       # gradients
       aux_gradient_names = ["vf", "rho", "u", "rhoe"]
       if phase == 0:
-        variable_names = ["vf1", "arho1", "arhou1", "arhoE1"]
+        variable_names = ["vf1", "arhoA1", "arhouA1", "arhoEA1"]
       else:
-        variable_names = ["vf1", "arho2", "arhou2", "arhoE2"]
+        variable_names = ["vf1", "arhoA2", "arhouA2", "arhoEA2"]
       for aux_gradient_name in aux_gradient_names:
         params = {"aux": aux_gradient_name + str(phase + 1), "variable_names": variable_names}
         aux_list.append(self.factory.createObject("AuxGradient", params))
@@ -69,7 +69,7 @@ class LaxFriedrichsStabilization(Stabilization):
 
   def createIndependentPhaseKernels(self, phase):
     kernels = list()
-    var_enums = [VariableName.ARho, VariableName.ARhoU, VariableName.ARhoE]
+    var_enums = [VariableName.ARhoA, VariableName.ARhoUA, VariableName.ARhoEA]
     for var_enum in var_enums:
       if self.use_simple_dissipation:
         params = {"phase": phase, "dof_handler": self.dof_handler, "var_enum": var_enum}

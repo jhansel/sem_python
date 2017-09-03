@@ -17,38 +17,38 @@ class EntropyMinimumMassFluxParameters(AuxQuantity1PhaseParameters):
 class EntropyMinimumMassFlux(AuxQuantity1Phase):
   def __init__(self, params):
     AuxQuantity1Phase.__init__(self, params)
-    self.name = self.viscflux_arho
+    self.name = self.viscflux_arhoA
 
   def compute(self, data, der):
-    f = data[self.vf] * data[self.visccoef_arho] * data[self.grad_rho] \
+    f = data[self.vf] * data[self.visccoef_arhoA] * data[self.grad_rho] \
       + data[self.rho] * data[self.viscflux_vf]
 
-    df_dvf1 = (der[self.vf]["vf1"] * data[self.visccoef_arho] \
-      + data[self.vf] * der[self.visccoef_arho]["vf1"]) * data[self.grad_rho] \
+    df_dvf1 = (der[self.vf]["vf1"] * data[self.visccoef_arhoA] \
+      + data[self.vf] * der[self.visccoef_arhoA]["vf1"]) * data[self.grad_rho] \
       + der[self.rho]["vf1"] * data[self.viscflux_vf] + data[self.rho] * der[self.viscflux_vf]["vf1"]
-    df_darho1 = data[self.vf] * der[self.visccoef_arho]["arho1"] * data[self.grad_rho] \
-      + der[self.rho]["arho1"] * data[self.viscflux_vf] + data[self.rho] * der[self.viscflux_vf]["arho1"]
-    df_darhou1 = data[self.vf] * der[self.visccoef_arho]["arhou1"] * data[self.grad_rho] \
-      + data[self.rho] * der[self.viscflux_vf]["arhou1"]
-    df_darhoE1 = data[self.vf] * der[self.visccoef_arho]["arhoE1"] * data[self.grad_rho] \
-      + data[self.rho] * der[self.viscflux_vf]["arhoE1"]
-    df_darho2 = data[self.vf] * der[self.visccoef_arho]["arho2"] * data[self.grad_rho] \
-      + der[self.rho]["arho2"] * data[self.viscflux_vf] + data[self.rho] * der[self.viscflux_vf]["arho2"]
-    df_darhou2 = data[self.vf] * der[self.visccoef_arho]["arhou2"] * data[self.grad_rho] \
-      + data[self.rho] * der[self.viscflux_vf]["arhou2"]
-    df_darhoE2 = data[self.vf] * der[self.visccoef_arho]["arhoE2"] * data[self.grad_rho] \
-      + data[self.rho] * der[self.viscflux_vf]["arhoE2"]
-    df_dgrad_vf1 = data[self.vf] * data[self.visccoef_arho] * der[self.grad_rho]["grad_vf1"] \
+    df_darhoA1 = data[self.vf] * der[self.visccoef_arhoA]["arhoA1"] * data[self.grad_rho] \
+      + der[self.rho]["arhoA1"] * data[self.viscflux_vf] + data[self.rho] * der[self.viscflux_vf]["arhoA1"]
+    df_darhouA1 = data[self.vf] * der[self.visccoef_arhoA]["arhouA1"] * data[self.grad_rho] \
+      + data[self.rho] * der[self.viscflux_vf]["arhouA1"]
+    df_darhoEA1 = data[self.vf] * der[self.visccoef_arhoA]["arhoEA1"] * data[self.grad_rho] \
+      + data[self.rho] * der[self.viscflux_vf]["arhoEA1"]
+    df_darhoA2 = data[self.vf] * der[self.visccoef_arhoA]["arhoA2"] * data[self.grad_rho] \
+      + der[self.rho]["arhoA2"] * data[self.viscflux_vf] + data[self.rho] * der[self.viscflux_vf]["arhoA2"]
+    df_darhouA2 = data[self.vf] * der[self.visccoef_arhoA]["arhouA2"] * data[self.grad_rho] \
+      + data[self.rho] * der[self.viscflux_vf]["arhouA2"]
+    df_darhoEA2 = data[self.vf] * der[self.visccoef_arhoA]["arhoEA2"] * data[self.grad_rho] \
+      + data[self.rho] * der[self.viscflux_vf]["arhoEA2"]
+    df_dgrad_vf1 = data[self.vf] * data[self.visccoef_arhoA] * der[self.grad_rho]["grad_vf1"] \
       + data[self.rho] * der[self.viscflux_vf]["grad_vf1"]
-    df_dgrad_arho = data[self.vf] * data[self.visccoef_arho] * der[self.grad_rho][self.grad_arho]
+    df_dgrad_arhoA = data[self.vf] * data[self.visccoef_arhoA] * der[self.grad_rho][self.grad_arhoA]
 
     data[self.name] = f
     der[self.name]["vf1"] = df_dvf1
-    der[self.name]["arho1"] = df_darho1
-    der[self.name]["arhou1"] = df_darhou1
-    der[self.name]["arhoE1"] = df_darhoE1
-    der[self.name]["arho2"] = df_darho2
-    der[self.name]["arhou2"] = df_darhou2
-    der[self.name]["arhoE2"] = df_darhoE2
+    der[self.name]["arhoA1"] = df_darhoA1
+    der[self.name]["arhouA1"] = df_darhouA1
+    der[self.name]["arhoEA1"] = df_darhoEA1
+    der[self.name]["arhoA2"] = df_darhoA2
+    der[self.name]["arhouA2"] = df_darhouA2
+    der[self.name]["arhoEA2"] = df_darhoEA2
     der[self.name]["grad_vf1"] = df_dgrad_vf1
-    der[self.name][self.grad_arho] = df_dgrad_arho
+    der[self.name][self.grad_arhoA] = df_dgrad_arhoA

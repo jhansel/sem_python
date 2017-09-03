@@ -10,7 +10,7 @@ params.set("chi", 0.5)
 test_aux = AmbrosoBeta(params)
 
 other_aux = []
-root_vars = ["arho1", "arho2"]
+root_vars = ["arhoA1", "arhoA2"]
 
 class AmbrosoBetaDerivativesTester(unittest.TestCase):
   def setUp(self):

@@ -7,7 +7,7 @@ class MomentumVolumeFractionGradientParameters(Kernel2PhaseParameters):
 
 class MomentumVolumeFractionGradient(Kernel2Phase):
   def __init__(self, params):
-    params.set("var_enum", VariableName.ARhoU)
+    params.set("var_enum", VariableName.ARhoUA)
     Kernel2Phase.__init__(self, params)
 
   def computeResidual(self, data, i):
@@ -19,17 +19,17 @@ class MomentumVolumeFractionGradient(Kernel2Phase):
         - self.sign * data["pI"] * data["grad_phi"][j]) * data["phi"][i] * data["JxW"]
     else:
       aux = - self.sign * data["grad_vf1"] * data["phi"][j] * data["phi"][i] * data["JxW"]
-      if var_index == self.arho1_index:
-        return der["pI"]["arho1"]  * aux
-      elif var_index == self.arhou1_index:
-        return der["pI"]["arhou1"] * aux
-      elif var_index == self.arhoE1_index:
-        return der["pI"]["arhoE1"] * aux
-      elif var_index == self.arho2_index:
-        return der["pI"]["arho2"]  * aux
-      elif var_index == self.arhou2_index:
-        return der["pI"]["arhou2"] * aux
-      elif var_index == self.arhoE2_index:
-        return der["pI"]["arhoE2"] * aux
+      if var_index == self.arhoA1_index:
+        return der["pI"]["arhoA1"]  * aux
+      elif var_index == self.arhouA1_index:
+        return der["pI"]["arhouA1"] * aux
+      elif var_index == self.arhoEA1_index:
+        return der["pI"]["arhoEA1"] * aux
+      elif var_index == self.arhoA2_index:
+        return der["pI"]["arhoA2"]  * aux
+      elif var_index == self.arhouA2_index:
+        return der["pI"]["arhouA2"] * aux
+      elif var_index == self.arhoEA2_index:
+        return der["pI"]["arhoEA2"] * aux
       else:
         return self.zero

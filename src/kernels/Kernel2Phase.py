@@ -20,23 +20,23 @@ class Kernel2Phase(Kernel):
 
     # create list of relevant variable indices
     self.vf1_index = self.dof_handler.vf1_index[0]
-    self.arho1_index = self.dof_handler.arho_index[0]
-    self.arhou1_index = self.dof_handler.arhou_index[0]
-    self.arhoE1_index = self.dof_handler.arhoE_index[0]
-    self.arho2_index = self.dof_handler.arho_index[1]
-    self.arhou2_index = self.dof_handler.arhou_index[1]
-    self.arhoE2_index = self.dof_handler.arhoE_index[1]
-    self.var_indices = [self.vf1_index, self.arho1_index, self.arhou1_index, self.arhoE1_index,
-      self.arho2_index, self.arhou2_index, self.arhoE2_index]
+    self.arhoA1_index = self.dof_handler.arho_index[0]
+    self.arhouA1_index = self.dof_handler.arhouA_index[0]
+    self.arhoEA1_index = self.dof_handler.arhoEA_index[0]
+    self.arhoA2_index = self.dof_handler.arho_index[1]
+    self.arhouA2_index = self.dof_handler.arhouA_index[1]
+    self.arhoEA2_index = self.dof_handler.arhoEA_index[1]
+    self.var_indices = [self.vf1_index, self.arhoA1_index, self.arhouA1_index, self.arhoEA1_index,
+      self.arhoA2_index, self.arhouA2_index, self.arhoEA2_index]
 
     # create variable names
     self.vf1 = "vf1"
-    self.arho1 = "arho1"
-    self.arhou1 = "arhou1"
-    self.arhoE1 = "arhoE1"
-    self.arho2 = "arho2"
-    self.arhou2 = "arhou2"
-    self.arhoE2 = "arhoE2"
+    self.arhoA1 = "arhoA1"
+    self.arhouA1 = "arhouA1"
+    self.arhoEA1 = "arhoEA1"
+    self.arhoA2 = "arhoA2"
+    self.arhouA2 = "arhouA2"
+    self.arhoEA2 = "arhoEA2"
 
     self.rho1 = "rho1"
     self.u1 = "u1"

@@ -9,7 +9,7 @@ params.set("phase", 0)
 test_aux = SpecificTotalEnergy(params)
 
 other_aux = list()
-root_vars = ["arho1", "arhoE1"]
+root_vars = ["arhoA1", "arhoEA1"]
 
 class SpecificTotalEnergyDerivativesTester(unittest.TestCase):
   def setUp(self):

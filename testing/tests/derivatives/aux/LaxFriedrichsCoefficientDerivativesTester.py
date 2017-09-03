@@ -7,7 +7,7 @@ from AuxDerivativesTester import AuxDerivativesTester
 # LaxFriedrichs coefficient aux
 params = LaxFriedrichsCoefficientParameters()
 params.set("phase", 0)
-params.set("var", "arho")
+params.set("var", "arhoA")
 test_aux = LaxFriedrichsCoefficient(params)
 
 # constant data
@@ -16,27 +16,27 @@ constant_data = {"dx": 0.5}
 # positive velocity aux
 params = TestAuxParameters()
 params.set("var", "u1")
-params.set("other_vars", ["arho1", "arhou1"])
+params.set("other_vars", ["arhoA1", "arhouA1"])
 params.set("coefs", [2.0, 3.0])
 u_positive_aux = TestAux(params)
 
 # negative velocity aux
 params = TestAuxParameters()
 params.set("var", "u1")
-params.set("other_vars", ["arho1", "arhou1"])
+params.set("other_vars", ["arhoA1", "arhouA1"])
 params.set("coefs", [-1.2, -2.2])
 u_negative_aux = TestAux(params)
 
 # sound speed aux
 params = TestAuxParameters()
 params.set("var", "c1")
-params.set("other_vars", ["vf1", "arho1", "arhou1", "arhoE1"])
+params.set("other_vars", ["vf1", "arhoA1", "arhouA1", "arhoEA1"])
 params.set("coefs", [1.5, 2.5, 3.5, 4.5])
 c_aux = TestAux(params)
 
 other_aux_positive = [u_positive_aux, c_aux]
 other_aux_negative = [u_negative_aux, c_aux]
-root_vars = ["vf1", "arho1", "arhou1", "arhoE1"]
+root_vars = ["vf1", "arhoA1", "arhouA1", "arhoEA1"]
 
 class LaxFriedrichsCoefficientDerivativesTester(unittest.TestCase):
   def setUp(self):

@@ -27,9 +27,9 @@ class BerryInterfaceVelocity(AuxQuantity2Phase):
     ddenominator = -numerator / denominator**2
     der[self.name]["vf1"] = der["uI_bar"]["vf1"] + dnumerator * sign(grad_vf1) * (der["p2"]["vf1"] - der["p1"]["vf1"]) \
       + ddenominator * (der["z1"]["vf1"] + der["z2"]["vf1"])
-    der[self.name]["arho1"] = der["uI_bar"]["arho1"] - dnumerator * sign(grad_vf1) * der["p1"]["arho1"] + ddenominator * der["z1"]["arho1"]
-    der[self.name]["arhou1"] = der["uI_bar"]["arhou1"] - dnumerator * sign(grad_vf1) * der["p1"]["arhou1"] + ddenominator * der["z1"]["arhou1"]
-    der[self.name]["arhoE1"] = der["uI_bar"]["arhoE1"] - dnumerator * sign(grad_vf1) * der["p1"]["arhoE1"] + ddenominator * der["z1"]["arhoE1"]
-    der[self.name]["arho2"] = der["uI_bar"]["arho2"] + dnumerator * sign(grad_vf1) * der["p2"]["arho2"] + ddenominator * der["z2"]["arho2"]
-    der[self.name]["arhou2"] = der["uI_bar"]["arhou2"] + dnumerator * sign(grad_vf1) * der["p2"]["arhou2"] + ddenominator * der["z2"]["arhou2"]
-    der[self.name]["arhoE2"] = der["uI_bar"]["arhoE2"] + dnumerator * sign(grad_vf1) * der["p2"]["arhoE2"] + ddenominator * der["z2"]["arhoE2"]
+    der[self.name]["arhoA1"] = der["uI_bar"]["arhoA1"] - dnumerator * sign(grad_vf1) * der["p1"]["arhoA1"] + ddenominator * der["z1"]["arhoA1"]
+    der[self.name]["arhouA1"] = der["uI_bar"]["arhouA1"] - dnumerator * sign(grad_vf1) * der["p1"]["arhouA1"] + ddenominator * der["z1"]["arhouA1"]
+    der[self.name]["arhoEA1"] = der["uI_bar"]["arhoEA1"] - dnumerator * sign(grad_vf1) * der["p1"]["arhoEA1"] + ddenominator * der["z1"]["arhoEA1"]
+    der[self.name]["arhoA2"] = der["uI_bar"]["arhoA2"] + dnumerator * sign(grad_vf1) * der["p2"]["arhoA2"] + ddenominator * der["z2"]["arhoA2"]
+    der[self.name]["arhouA2"] = der["uI_bar"]["arhouA2"] + dnumerator * sign(grad_vf1) * der["p2"]["arhouA2"] + ddenominator * der["z2"]["arhouA2"]
+    der[self.name]["arhoEA2"] = der["uI_bar"]["arhoEA2"] + dnumerator * sign(grad_vf1) * der["p2"]["arhoEA2"] + ddenominator * der["z2"]["arhoEA2"]

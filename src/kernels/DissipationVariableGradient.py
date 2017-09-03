@@ -37,10 +37,10 @@ class DissipationVariableGradient(Kernel1Phase):
     if var_index == self.vf1_index:
       return (der[self.visccoef]["vf1"] * data["phi"][j] * data[self.grad_var] + data[self.visccoef] * dgrad_vari_dvarj) * data["grad_phi"][i] * data["JxW"]
     elif var_index == self.arho_index:
-      return (der[self.visccoef][self.arho] * data["phi"][j] * data[self.grad_var] + data[self.visccoef] * dgrad_vari_dvarj) * data["grad_phi"][i] * data["JxW"]
-    elif var_index == self.arhou_index:
-      return (der[self.visccoef][self.arhou] * data["phi"][j] * data[self.grad_var] + data[self.visccoef] * dgrad_vari_dvarj) * data["grad_phi"][i] * data["JxW"]
-    elif var_index == self.arhoE_index:
-      return (der[self.visccoef][self.arhoE] * data["phi"][j] * data[self.grad_var] + data[self.visccoef] * dgrad_vari_dvarj) * data["grad_phi"][i] * data["JxW"]
+      return (der[self.visccoef][self.arhoA] * data["phi"][j] * data[self.grad_var] + data[self.visccoef] * dgrad_vari_dvarj) * data["grad_phi"][i] * data["JxW"]
+    elif var_index == self.arhouA_index:
+      return (der[self.visccoef][self.arhouA] * data["phi"][j] * data[self.grad_var] + data[self.visccoef] * dgrad_vari_dvarj) * data["grad_phi"][i] * data["JxW"]
+    elif var_index == self.arhoEA_index:
+      return (der[self.visccoef][self.arhoEA] * data["phi"][j] * data[self.grad_var] + data[self.visccoef] * dgrad_vari_dvarj) * data["grad_phi"][i] * data["JxW"]
     else:
       return self.zero

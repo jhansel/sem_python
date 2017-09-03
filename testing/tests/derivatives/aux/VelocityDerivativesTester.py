@@ -8,7 +8,7 @@ params.set("phase", 0)
 test_aux = Velocity(params)
 
 other_aux = list()
-root_vars = ["arho1", "arhou1"]
+root_vars = ["arhoA1", "arhouA1"]
 
 class VelocityDerivativesTester(unittest.TestCase):
   def setUp(self):

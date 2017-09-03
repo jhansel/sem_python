@@ -35,20 +35,20 @@ class CompressibleJunction(Junction1Phase):
       self.i_vf1RR = self.dof_handler.i(self.k_right_adjacent, self.vf1_index)
 
     self.i_arhoL = self.dof_handler.i(self.k_left, self.arho_index)
-    self.i_arhouL = self.dof_handler.i(self.k_left, self.arhou_index)
-    self.i_arhoEL = self.dof_handler.i(self.k_left, self.arhoE_index)
+    self.i_arhouAL = self.dof_handler.i(self.k_left, self.arhouA_index)
+    self.i_arhoEAL = self.dof_handler.i(self.k_left, self.arhoEA_index)
 
     self.i_arhoR = self.dof_handler.i(self.k_right, self.arho_index)
-    self.i_arhouR = self.dof_handler.i(self.k_right, self.arhou_index)
-    self.i_arhoER = self.dof_handler.i(self.k_right, self.arhoE_index)
+    self.i_arhouAR = self.dof_handler.i(self.k_right, self.arhouA_index)
+    self.i_arhoEAR = self.dof_handler.i(self.k_right, self.arhoEA_index)
 
     self.i_arhoLL = self.dof_handler.i(self.k_left_adjacent, self.arho_index)
-    self.i_arhouLL = self.dof_handler.i(self.k_left_adjacent, self.arhou_index)
-    self.i_arhoELL = self.dof_handler.i(self.k_left_adjacent, self.arhoE_index)
+    self.i_arhouALL = self.dof_handler.i(self.k_left_adjacent, self.arhouA_index)
+    self.i_arhoEALL = self.dof_handler.i(self.k_left_adjacent, self.arhoEA_index)
 
     self.i_arhoRR = self.dof_handler.i(self.k_right_adjacent, self.arho_index)
-    self.i_arhouRR = self.dof_handler.i(self.k_right_adjacent, self.arhou_index)
-    self.i_arhoERR = self.dof_handler.i(self.k_right_adjacent, self.arhoE_index)
+    self.i_arhouARR = self.dof_handler.i(self.k_right_adjacent, self.arhouA_index)
+    self.i_arhoEARR = self.dof_handler.i(self.k_right_adjacent, self.arhoEA_index)
 
   def applyWeaklyToNonlinearSystem(self, U, U_old, r, J):
     pass
@@ -70,29 +70,29 @@ class CompressibleJunction(Junction1Phase):
     k[LL_old] = self.k_left_adjacent
     k[RR_old] = self.k_right_adjacent
 
-    i_arho = [0] * n_values
-    i_arho[L] = self.i_arhoL
-    i_arho[R] = self.i_arhoR
-    i_arho[L_old] = self.i_arhoL
-    i_arho[R_old] = self.i_arhoR
-    i_arho[LL_old] = self.i_arhoLL
-    i_arho[RR_old] = self.i_arhoRR
+    i_arhoA = [0] * n_values
+    i_arhoA[L] = self.i_arhoL
+    i_arhoA[R] = self.i_arhoR
+    i_arhoA[L_old] = self.i_arhoL
+    i_arhoA[R_old] = self.i_arhoR
+    i_arhoA[LL_old] = self.i_arhoLL
+    i_arhoA[RR_old] = self.i_arhoRR
 
-    i_arhou = [0] * n_values
-    i_arhou[L] = self.i_arhouL
-    i_arhou[R] = self.i_arhouR
-    i_arhou[L_old] = self.i_arhouL
-    i_arhou[R_old] = self.i_arhouR
-    i_arhou[LL_old] = self.i_arhouLL
-    i_arhou[RR_old] = self.i_arhouRR
+    i_arhouA = [0] * n_values
+    i_arhouA[L] = self.i_arhouAL
+    i_arhouA[R] = self.i_arhouAR
+    i_arhouA[L_old] = self.i_arhouAL
+    i_arhouA[R_old] = self.i_arhouAR
+    i_arhouA[LL_old] = self.i_arhouALL
+    i_arhouA[RR_old] = self.i_arhouARR
 
-    i_arhoE = [0] * n_values
-    i_arhoE[L] = self.i_arhoEL
-    i_arhoE[R] = self.i_arhoER
-    i_arhoE[L_old] = self.i_arhoEL
-    i_arhoE[R_old] = self.i_arhoER
-    i_arhoE[LL_old] = self.i_arhoELL
-    i_arhoE[RR_old] = self.i_arhoERR
+    i_arhoEA = [0] * n_values
+    i_arhoEA[L] = self.i_arhoEAL
+    i_arhoEA[R] = self.i_arhoEAR
+    i_arhoEA[L_old] = self.i_arhoEAL
+    i_arhoEA[R_old] = self.i_arhoEAR
+    i_arhoEA[LL_old] = self.i_arhoEALL
+    i_arhoEA[RR_old] = self.i_arhoEARR
 
     U = [0] * n_values
     U[L] = U_new
@@ -105,96 +105,96 @@ class CompressibleJunction(Junction1Phase):
     # initialize lists
     rho = [0] * n_values
     drho_dvf1 = [0] * n_values
-    drho_darho = [0] * n_values
+    drho_darhoA = [0] * n_values
 
     u = [0] * n_values
-    du_darho = [0] * n_values
-    du_darhou = [0] * n_values
+    du_darhoA = [0] * n_values
+    du_darhouA = [0] * n_values
 
     e = [0] * n_values
-    de_darho = [0] * n_values
-    de_darhou = [0] * n_values
-    de_darhoE = [0] * n_values
+    de_darhoA = [0] * n_values
+    de_darhouA = [0] * n_values
+    de_darhoEA = [0] * n_values
 
     p = [0] * n_values
     dp_dvf1 = [0] * n_values
-    dp_darho = [0] * n_values
-    dp_darhou = [0] * n_values
-    dp_darhoE = [0] * n_values
+    dp_darhoA = [0] * n_values
+    dp_darhouA = [0] * n_values
+    dp_darhoEA = [0] * n_values
 
     c = [0] * n_values
     dc_dvf1 = [0] * n_values
-    dc_darho = [0] * n_values
-    dc_darhou = [0] * n_values
-    dc_darhoE = [0] * n_values
+    dc_darhoA = [0] * n_values
+    dc_darhouA = [0] * n_values
+    dc_darhoEA = [0] * n_values
 
     if not self.use_momentum_flux_balance:
       p0 = [0] * n_values
       dp0_dvf1 = [0] * n_values
-      dp0_darho = [0] * n_values
-      dp0_darhou = [0] * n_values
-      dp0_darhoE = [0] * n_values
+      dp0_darhoA = [0] * n_values
+      dp0_darhouA = [0] * n_values
+      dp0_darhoEA = [0] * n_values
 
     # loop over subscript/superscript combinations
     for i in xrange(n_values):
       vf1 = self.dof_handler.getVolumeFraction(U[i], k[i])
       vf, dvf_dvf1 = computeVolumeFraction(vf1, self.phase, self.model_type)
-      arho  = U[i][i_arho[i]]
-      arhou = U[i][i_arhou[i]]
-      arhoE = U[i][i_arhoE[i]]
+      arhoA  = U[i][i_arhoA[i]]
+      arhouA = U[i][i_arhouA[i]]
+      arhoEA = U[i][i_arhoEA[i]]
 
-      rho[i], drho_dvf, drho_darho[i] = computeDensity(vf, arho)
+      rho[i], drho_dvf, drho_darhoA[i] = computeDensity(vf, arhoA)
       drho_dvf1[i] = drho_dvf * dvf_dvf1
 
-      u[i], du_darho[i], du_darhou[i] = computeVelocity(arho, arhou)
+      u[i], du_darhoA[i], du_darhouA[i] = computeVelocity(arhoA, arhouA)
 
       v, dv_drho = computeSpecificVolume(rho[i])
       dv_dvf1 = dv_drho * drho_dvf1[i]
-      dv_darho = dv_drho * drho_darho[i]
+      dv_darhoA = dv_drho * drho_darhoA[i]
 
-      E, dE_darho, dE_darhoE = computeSpecificTotalEnergy(arho, arhoE)
+      E, dE_darhoA, dE_darhoEA = computeSpecificTotalEnergy(arhoA, arhoEA)
 
       e[i], de_du, de_dE = computeSpecificInternalEnergy(u[i], E)
-      de_darho[i] = de_du * du_darho[i] + de_dE * dE_darho
-      de_darhou[i] = de_du * du_darhou[i]
-      de_darhoE[i] = de_dE * dE_darhoE
+      de_darhoA[i] = de_du * du_darhoA[i] + de_dE * dE_darhoA
+      de_darhouA[i] = de_du * du_darhouA[i]
+      de_darhoEA[i] = de_dE * dE_darhoEA
 
       p[i], dp_dv, dp_de = self.eos.p(v, e[i])
       dp_dvf1[i] = dp_dv * dv_dvf1
-      dp_darho[i] = dp_dv * dv_darho + dp_de * de_darho[i]
-      dp_darhou[i] = dp_de * de_darhou[i]
-      dp_darhoE[i] = dp_de * de_darhoE[i]
+      dp_darhoA[i] = dp_dv * dv_darhoA + dp_de * de_darhoA[i]
+      dp_darhouA[i] = dp_de * de_darhouA[i]
+      dp_darhoEA[i] = dp_de * de_darhoEA[i]
 
       c[i], dc_dv, dc_de = self.eos.c(v, e[i])
       dc_dvf1[i] = dc_dv * dv_dvf1
-      dc_darho[i] = dc_dv * dv_darho + dc_de * de_darho[i]
-      dc_darhou[i] = dc_de * de_darhou[i]
-      dc_darhoE[i] = dc_de * de_darhoE[i]
+      dc_darhoA[i] = dc_dv * dv_darhoA + dc_de * de_darhoA[i]
+      dc_darhouA[i] = dc_de * de_darhouA[i]
+      dc_darhoEA[i] = dc_de * de_darhoEA[i]
 
       if not self.use_momentum_flux_balance:
         s, ds_dv, ds_de = self.eos.s(v, e[i])
         ds_dvf1 = ds_dv * dv_dvf1
-        ds_darho = ds_dv * dv_darho + ds_de * de_darho[i]
-        ds_darhou = ds_de * de_darhou[i]
-        ds_darhoE = ds_de * de_darhoE[i]
+        ds_darhoA = ds_dv * dv_darhoA + ds_de * de_darhoA[i]
+        ds_darhouA = ds_de * de_darhouA[i]
+        ds_darhoEA = ds_de * de_darhoEA[i]
 
         h, dh_de, dh_dp, dh_drho = computeSpecificEnthalpy(e[i], p[i], rho[i])
         dh_dvf1 = dh_dp * dp_dvf1[i]
-        dh_darho = dh_de * de_darho[i] + dh_dp * dp_darho[i] + dh_drho * drho_darho[i]
-        dh_darhou = dh_de * de_darhou[i] + dh_dp * dp_darhou[i]
-        dh_darhoE = dh_de * de_darhoE[i] + dh_dp * dp_darhoE[i]
+        dh_darhoA = dh_de * de_darhoA[i] + dh_dp * dp_darhoA[i] + dh_drho * drho_darhoA[i]
+        dh_darhouA = dh_de * de_darhouA[i] + dh_dp * dp_darhouA[i]
+        dh_darhoEA = dh_de * de_darhoEA[i] + dh_dp * dp_darhoEA[i]
 
         h0 = h + 0.5 * u[i]**2
         dh0_dvf1 = dh_dvf1
-        dh0_darho = dh_darho + u[i] * du_darho[i]
-        dh0_darhou = dh_darhou + u[i] * du_darhou[i]
-        dh0_darhoE = dh_darhoE
+        dh0_darhoA = dh_darhoA + u[i] * du_darhoA[i]
+        dh0_darhouA = dh_darhouA + u[i] * du_darhouA[i]
+        dh0_darhoEA = dh_darhoEA
 
         p0[i], dp0_dh0, dp0_ds = self.eos.p_from_h_s(h0, s)
         dp0_dvf1[i] = dp0_dh0 * dh0_dvf1 + dp0_ds * ds_dvf1
-        dp0_darho[i] = dp0_dh0 * dh0_darho + dp0_ds * ds_darho
-        dp0_darhou[i] = dp0_dh0 * dh0_darhou + dp0_ds * ds_darhou
-        dp0_darhoE[i] = dp0_dh0 * dh0_darhoE + dp0_ds * ds_darhoE
+        dp0_darhoA[i] = dp0_dh0 * dh0_darhoA + dp0_ds * ds_darhoA
+        dp0_darhouA[i] = dp0_dh0 * dh0_darhouA + dp0_ds * ds_darhouA
+        dp0_darhoEA[i] = dp0_dh0 * dh0_darhoEA + dp0_ds * ds_darhoEA
 
     # compute old average quantities
     rhoL = 0.5 * (rho[L_old] + rho[LL_old])
@@ -208,11 +208,11 @@ class CompressibleJunction(Junction1Phase):
 
     # residual indices
     i1 = self.i_arhoL
-    i2 = self.i_arhouL
-    i3 = self.i_arhoEL
+    i2 = self.i_arhouAL
+    i3 = self.i_arhoEAL
     i4 = self.i_arhoR
-    i5 = self.i_arhouR
-    i6 = self.i_arhoER
+    i5 = self.i_arhouAR
+    i6 = self.i_arhoEAR
 
     # reset Jacobian rows
     J[i1,:] = 0
@@ -225,15 +225,15 @@ class CompressibleJunction(Junction1Phase):
     # compute residuals and Jacobians
     r[i1] = p[L] - pL + rhoL * (cL - uL) * (u[L] - uL)
     J_i1_vf1L = dp_dvf1[L]
-    J[i1,self.i_arhoL] = dp_darho[L] + rhoL * (cL - uL) * du_darho[L]
-    J[i1,self.i_arhouL] = dp_darhou[L] + rhoL * (cL - uL) * du_darhou[L]
-    J[i1,self.i_arhoEL] = dp_darhoE[L]
+    J[i1,self.i_arhoL] = dp_darhoA[L] + rhoL * (cL - uL) * du_darhoA[L]
+    J[i1,self.i_arhouAL] = dp_darhouA[L] + rhoL * (cL - uL) * du_darhouA[L]
+    J[i1,self.i_arhoEAL] = dp_darhoEA[L]
 
     r[i2] = p[R] - pR - rhoR * (cR - uR) * (u[R] - uR)
     J_i2_vf1R = dp_dvf1[R]
-    J[i2,self.i_arhoR] = dp_darho[R] - rhoR * (cR - uR) * du_darho[R]
-    J[i2,self.i_arhouR] = dp_darhou[R] - rhoR * (cR - uR) * du_darhou[R]
-    J[i2,self.i_arhoER] = dp_darhoE[R]
+    J[i2,self.i_arhoR] = dp_darhoA[R] - rhoR * (cR - uR) * du_darhoA[R]
+    J[i2,self.i_arhouAR] = dp_darhouA[R] - rhoR * (cR - uR) * du_darhouA[R]
+    J[i2,self.i_arhoEAR] = dp_darhoEA[R]
 
     if u[L] >= 0:
       if u[R] < 0:
@@ -241,57 +241,57 @@ class CompressibleJunction(Junction1Phase):
       r[i3] = rho[L] - rhoL - (p[L] - pL) / cL**2
       J_i3_vf1L = drho_dvf1[L] - dp_dvf1[L] / cL**2
       J_i3_vf1R = 0
-      J[i3,self.i_arhoL] = drho_darho[L] - dp_darho[L] / cL**2
-      J[i3,self.i_arhouL] = - dp_darhou[L] / cL**2
-      J[i3,self.i_arhoEL] = - dp_darhoE[L] / cL**2
+      J[i3,self.i_arhoL] = drho_darhoA[L] - dp_darhoA[L] / cL**2
+      J[i3,self.i_arhouAL] = - dp_darhouA[L] / cL**2
+      J[i3,self.i_arhoEAL] = - dp_darhoEA[L] / cL**2
     elif u[R] < 0:
       r[i3] = rho[R] - rhoR - (p[R] - pR) / cR**2
       J_i3_vf1R = drho_dvf1[R] - dp_dvf1[R] / cR**2
       J_i3_vf1L = 0
-      J[i3,self.i_arhoR] = drho_darho[R] - dp_darho[R] / cR**2
-      J[i3,self.i_arhouR] = - dp_darhou[R] / cR**2
-      J[i3,self.i_arhoER] = - dp_darhoE[R] / cR**2
+      J[i3,self.i_arhoR] = drho_darhoA[R] - dp_darhoA[R] / cR**2
+      J[i3,self.i_arhouAR] = - dp_darhouA[R] / cR**2
+      J[i3,self.i_arhoEAR] = - dp_darhoEA[R] / cR**2
     else:
       error("Assumption violated: Neither velocity condition was true.")
 
     r[i4] = rho[L] * u[L] - rho[R] * u[R]
     J_i4_vf1L = drho_dvf1[L] * u[L]
-    J[i4,self.i_arhoL] = drho_darho[L] * u[L] + rho[L] * du_darho[L]
-    J[i4,self.i_arhouL] = rho[L] * du_darhou[L]
+    J[i4,self.i_arhoL] = drho_darhoA[L] * u[L] + rho[L] * du_darhoA[L]
+    J[i4,self.i_arhouAL] = rho[L] * du_darhouA[L]
     J_i4_vf1R = -drho_dvf1[R] * u[R]
-    J[i4,self.i_arhoR] = -(drho_darho[R] * u[R] + rho[R] * du_darho[R])
-    J[i4,self.i_arhouR] = -rho[R] * du_darhou[R]
+    J[i4,self.i_arhoR] = -(drho_darhoA[R] * u[R] + rho[R] * du_darhoA[R])
+    J[i4,self.i_arhouAR] = -rho[R] * du_darhouA[R]
 
     r[i5] = e[L] + p[L] / rho[L] + 0.5 * u[L]**2 - (e[R] + p[R] / rho[R] + 0.5 * u[R]**2)
     J_i5_vf1L = dp_dvf1[L] / rho[L] - p[L] / rho[L]**2 * drho_dvf1[L]
-    J[i5,self.i_arhoL] = de_darho[L] + dp_darho[L] / rho[L] - p[L] / rho[L]**2 * drho_darho[L] + u[L] * du_darho[L]
-    J[i5,self.i_arhouL] = de_darhou[L] + dp_darhou[L] / rho[L] + u[L] * du_darhou[L]
-    J[i5,self.i_arhoEL] = de_darhoE[L] + dp_darhoE[L] / rho[L]
+    J[i5,self.i_arhoL] = de_darhoA[L] + dp_darhoA[L] / rho[L] - p[L] / rho[L]**2 * drho_darhoA[L] + u[L] * du_darhoA[L]
+    J[i5,self.i_arhouAL] = de_darhouA[L] + dp_darhouA[L] / rho[L] + u[L] * du_darhouA[L]
+    J[i5,self.i_arhoEAL] = de_darhoEA[L] + dp_darhoEA[L] / rho[L]
     J_i5_vf1R = -(dp_dvf1[R] / rho[R] - p[R] / rho[R]**2 * drho_dvf1[R])
-    J[i5,self.i_arhoR] = -(de_darho[R] + dp_darho[R] / rho[R] - p[R] / rho[R]**2 * drho_darho[R] + u[R] * du_darho[R])
-    J[i5,self.i_arhouR] = -(de_darhou[R] + dp_darhou[R] / rho[R] + u[R] * du_darhou[R])
-    J[i5,self.i_arhoER] = -(de_darhoE[R] + dp_darhoE[R] / rho[R])
+    J[i5,self.i_arhoR] = -(de_darhoA[R] + dp_darhoA[R] / rho[R] - p[R] / rho[R]**2 * drho_darhoA[R] + u[R] * du_darhoA[R])
+    J[i5,self.i_arhouAR] = -(de_darhouA[R] + dp_darhouA[R] / rho[R] + u[R] * du_darhouA[R])
+    J[i5,self.i_arhoEAR] = -(de_darhoEA[R] + dp_darhoEA[R] / rho[R])
 
     if self.use_momentum_flux_balance:
       r[i6] = rho[L] * u[L]**2 + p[L] - (rho[R] * u[R]**2 + p[R])
       J_i6_vf1L = drho_dvf1[L] * u[L]**2 + dp_dvf1[L]
-      J[i6,self.i_arhoL] = drho_darho[L] * u[L]**2 + rho[L] * 2.0 * u[L] * du_darho[L] + dp_darho[L]
-      J[i6,self.i_arhouL] = rho[L] * 2.0 * u[L] * du_darhou[L] + dp_darhou[L]
-      J[i6,self.i_arhoEL] = dp_darhoE[L]
+      J[i6,self.i_arhoL] = drho_darhoA[L] * u[L]**2 + rho[L] * 2.0 * u[L] * du_darhoA[L] + dp_darhoA[L]
+      J[i6,self.i_arhouAL] = rho[L] * 2.0 * u[L] * du_darhouA[L] + dp_darhouA[L]
+      J[i6,self.i_arhoEAL] = dp_darhoEA[L]
       J_i6_vf1R = -(drho_dvf1[R] * u[R]**2 + dp_dvf1[R])
-      J[i6,self.i_arhoR] = -(drho_darho[R] * u[R]**2 + rho[R] * 2.0 * u[R] * du_darho[R] + dp_darho[R])
-      J[i6,self.i_arhouR] = -(rho[R] * 2.0 * u[R] * du_darhou[R] + dp_darhou[R])
-      J[i6,self.i_arhoER] = -dp_darhoE[R]
+      J[i6,self.i_arhoR] = -(drho_darhoA[R] * u[R]**2 + rho[R] * 2.0 * u[R] * du_darhoA[R] + dp_darhoA[R])
+      J[i6,self.i_arhouAR] = -(rho[R] * 2.0 * u[R] * du_darhouA[R] + dp_darhouA[R])
+      J[i6,self.i_arhoEAR] = -dp_darhoEA[R]
     else:
       r[i6] = p0[L] - p0[R]
       J_i6_vf1L = dp0_dvf1[L]
-      J[i6,self.i_arhoL] = dp0_darho[L]
-      J[i6,self.i_arhouL] = dp0_darhou[L]
-      J[i6,self.i_arhoEL] = dp0_darhoE[L]
+      J[i6,self.i_arhoL] = dp0_darhoA[L]
+      J[i6,self.i_arhouAL] = dp0_darhouA[L]
+      J[i6,self.i_arhoEAL] = dp0_darhoEA[L]
       J_i6_vf1R = -dp0_dvf1[R]
-      J[i6,self.i_arhoR] = -dp0_darho[R]
-      J[i6,self.i_arhouR] = -dp0_darhou[R]
-      J[i6,self.i_arhoER] = -dp0_darhoE[R]
+      J[i6,self.i_arhoR] = -dp0_darhoA[R]
+      J[i6,self.i_arhouAR] = -dp0_darhouA[R]
+      J[i6,self.i_arhoEAR] = -dp0_darhoEA[R]
 
     if self.model_type == ModelType.TwoPhase:
       J[i1,self.i_vf1L] = J_i1_vf1L

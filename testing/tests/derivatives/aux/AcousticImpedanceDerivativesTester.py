@@ -12,19 +12,19 @@ test_aux = AcousticImpedance(params)
 # density aux
 params = TestAuxParameters()
 params.set("var", "rho1")
-params.set("other_vars", ["vf1", "arho1"])
+params.set("other_vars", ["vf1", "arhoA1"])
 params.set("coefs", [1.4, 2.5])
 rho_aux = TestAux(params)
 
 # sound speed aux
 params = TestAuxParameters()
 params.set("var", "c1")
-params.set("other_vars", ["vf1", "arho1", "arhou1", "arhoE1"])
+params.set("other_vars", ["vf1", "arhoA1", "arhouA1", "arhoEA1"])
 params.set("coefs", [1.2, 2.2, 3.2, 4.2])
 c_aux = TestAux(params)
 
 other_aux = [rho_aux, c_aux]
-root_vars = ["vf1", "arho1", "arhou1", "arhoE1"]
+root_vars = ["vf1", "arhoA1", "arhouA1", "arhoEA1"]
 
 class AcousticImpedanceDerivativesTester(unittest.TestCase):
   def setUp(self):

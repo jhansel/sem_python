@@ -58,9 +58,9 @@ class TransientExecutioner(Executioner):
   def addMassMatrixPhase(self, M, phase):
     phi = self.fe_values.get_phi()
 
-    arho_index = self.dof_handler.variable_index[VariableName.ARho][phase]
-    arhou_index = self.dof_handler.variable_index[VariableName.ARhoU][phase]
-    arhoE_index = self.dof_handler.variable_index[VariableName.ARhoE][phase]
+    arho_index = self.dof_handler.variable_index[VariableName.ARhoA][phase]
+    arhouA_index = self.dof_handler.variable_index[VariableName.ARhoUA][phase]
+    arhoEA_index = self.dof_handler.variable_index[VariableName.ARhoEA][phase]
 
     for e in xrange(self.dof_handler.n_cell):
       M_cell = np.zeros(shape=(self.dof_handler.n_dof_per_cell, self.dof_handler.n_dof_per_cell))
@@ -68,22 +68,22 @@ class TransientExecutioner(Executioner):
       JxW = self.fe_values.get_JxW(e)
       for q in xrange(self.quadrature.n_q):
         for k_local in xrange(self.dof_handler.n_dof_per_cell_per_var):
-          i_arho = self.dof_handler.i(k_local, arho_index)
-          i_arhou = self.dof_handler.i(k_local, arhou_index)
-          i_arhoE = self.dof_handler.i(k_local, arhoE_index)
+          i_arhoA = self.dof_handler.i(k_local, arho_index)
+          i_arhouA = self.dof_handler.i(k_local, arhouA_index)
+          i_arhoEA = self.dof_handler.i(k_local, arhoEA_index)
           for l_local in xrange(self.dof_handler.n_dof_per_cell_per_var):
             if self.lump_mass_matrix:
-              M_cell[i_arho,i_arho] += phi[k_local,q] * phi[l_local,q] * JxW[q]
-              M_cell[i_arhou,i_arhou] += phi[k_local,q] * phi[l_local,q] * JxW[q]
-              M_cell[i_arhoE,i_arhoE] += phi[k_local,q] * phi[l_local,q] * JxW[q]
+              M_cell[i_arhoA,i_arhoA] += phi[k_local,q] * phi[l_local,q] * JxW[q]
+              M_cell[i_arhouA,i_arhouA] += phi[k_local,q] * phi[l_local,q] * JxW[q]
+              M_cell[i_arhoEA,i_arhoEA] += phi[k_local,q] * phi[l_local,q] * JxW[q]
             else:
-              j_arho = self.dof_handler.i(l_local, arho_index)
-              j_arhou = self.dof_handler.i(l_local, arhou_index)
-              j_arhoE = self.dof_handler.i(l_local, arhoE_index)
+              j_arhoA = self.dof_handler.i(l_local, arho_index)
+              j_arhouA = self.dof_handler.i(l_local, arhouA_index)
+              j_arhoEA = self.dof_handler.i(l_local, arhoEA_index)
 
-              M_cell[i_arho,j_arho] += phi[k_local,q] * phi[l_local,q] * JxW[q]
-              M_cell[i_arhou,j_arhou] += phi[k_local,q] * phi[l_local,q] * JxW[q]
-              M_cell[i_arhoE,j_arhoE] += phi[k_local,q] * phi[l_local,q] * JxW[q]
+              M_cell[i_arhoA,j_arhoA] += phi[k_local,q] * phi[l_local,q] * JxW[q]
+              M_cell[i_arhouA,j_arhouA] += phi[k_local,q] * phi[l_local,q] * JxW[q]
+              M_cell[i_arhoEA,j_arhoEA] += phi[k_local,q] * phi[l_local,q] * JxW[q]
 
       # aggregate cell matrix into global matrix
       self.dof_handler.aggregateLocalCellMatrix(M, M_cell, e)
@@ -184,10 +184,10 @@ class TransientExecutioner(Executioner):
     for phase in xrange(self.n_phases):
       phase_str = str(phase + 1)
       vf = "vf" + phase_str
-      arho = "arho" + phase_str
-      arhou = "arhou" + phase_str
-      arhoE = "arhoE" + phase_str
-      data[vf], data[arho], data[arhou], data[arhoE] = self.dof_handler.getPhaseSolution(self.U_old, phase)
+      arhoA = "arhoA" + phase_str
+      arhouA = "arhouA" + phase_str
+      arhoEA = "arhoEA" + phase_str
+      data[vf], data[arhoA], data[arhouA], data[arhoEA] = self.dof_handler.getPhaseSolution(self.U_old, phase)
 
     for aux in self.cfl_dt_aux_list:
       aux.compute(data, der)
