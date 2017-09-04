@@ -8,21 +8,21 @@ from setuptools import setup, find_packages
 with open('README.md') as readme_file:
     readme = readme_file.read()
 
-with open('INSTALL.md') as install_file:
-    install = install_file.read()
-
 requirements = [
-    'numpy>=1.13.0'
-    # TODO: put package requirements here
+    'numpy>=1.13.1',
+    'matplotlib>=2.0.2',
+    'termcolor>=1.1.0',
+    'docopt>=0.6.2'
 ]
 
 setup_requirements = [
-    'pytest-runner',
+    # 'pytest-runner',
     # TODO(andfranklin): put setup requirements (distutils extensions, etc.) here
 ]
 
 test_requirements = [
-    'pytest',
+    'colour_runner>=0.0.5'
+    # 'pytest',
     # TODO: put package test requirements here
 ]
 
@@ -30,7 +30,7 @@ setup(
     name='sem_python',
     version='0.1.0',
     description="A 1D implementation of the 7-equation model in python.",
-    long_description=readme + "\n\n" + install,
+    long_description=readme,
     author="Joshua Hansel",
     author_email='joshua.hansel@inl.gov',
     url='https://github.com/jhansel/sem_python',
