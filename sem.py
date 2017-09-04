@@ -4,8 +4,8 @@ using the Continuous finite element method (CFEM). For help, please see
 the external documentation in doc/.
 
 Usage:
-  sem.py -h | --help
-  sem.py <INPUTFILE>
+  sem -h | --help
+  sem <INPUTFILE>
 
 Options:
   -h --help  Display help information.
@@ -17,14 +17,14 @@ Arguments:
 from docopt import docopt
 
 # base
-from enums import ModelType
-from Factory import Factory
+from sem_python.base.enums import ModelType
+from sem_python.base.Factory import Factory
 
 # input
-from InputFileParser import InputFileParser
+from sem_python.input.InputFileParser import InputFileParser
 
 # utilities
-from error_utilities import error
+from sem_python.utilities.error_utilities import error
 
 ## Runs the code with the given input file
 # @param input_file  input file to run

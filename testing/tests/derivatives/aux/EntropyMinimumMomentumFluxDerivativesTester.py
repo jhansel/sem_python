@@ -1,8 +1,8 @@
 import unittest
 
-from EntropyMinimumMomentumFlux import EntropyMinimumMomentumFlux, EntropyMinimumMomentumFluxParameters
-from TestAux import TestAux, TestAuxParameters
-from VolumeFractionPhase1 import VolumeFractionPhase1, VolumeFractionPhase1Parameters
+from sem_python.aux.EntropyMinimumMomentumFlux import EntropyMinimumMomentumFlux, EntropyMinimumMomentumFluxParameters
+from sem_python.aux.TestAux import TestAux, TestAuxParameters
+from sem_python.aux.VolumeFractionPhase1 import VolumeFractionPhase1, VolumeFractionPhase1Parameters
 from AuxDerivativesTester import AuxDerivativesTester
 
 # viscous flux aux

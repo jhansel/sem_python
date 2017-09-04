@@ -1,8 +1,9 @@
 import unittest
 
-from FunctionDerivativesTester import FunctionDerivativesTester
-from thermodynamic_functions import computeSpecificVolume, computeDensity, \
-  computeVelocity, computeSpecificTotalEnergy, computeSpecificInternalEnergy
+from ..FunctionDerivativesTester import FunctionDerivativesTester
+from sem_python.closures.thermodynamic_functions import computeSpecificVolume, \
+  computeDensity, computeVelocity, computeSpecificTotalEnergy, \
+  computeSpecificInternalEnergy
 
 class ThermodynamicFunctionsFunctionDerivativesTester(unittest.TestCase):
   def setUp(self):

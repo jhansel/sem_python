@@ -95,5 +95,5 @@
   plot_solution = False
   print_solution = False
   save_solution = True
-  solution_file = tests/closures/berry_interface_closures/solution.csv
+  solution_file = solution.csv
 []

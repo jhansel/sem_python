@@ -1,7 +1,7 @@
 import unittest
 
-from BerryInterfaceVelocity import BerryInterfaceVelocity, BerryInterfaceVelocityParameters
-from TestAux import TestAux, TestAuxParameters
+from sem_python.aux.BerryInterfaceVelocity import BerryInterfaceVelocity, BerryInterfaceVelocityParameters
+from sem_python.aux.TestAux import TestAux, TestAuxParameters
 from AuxDerivativesTester import AuxDerivativesTester
 
 # test aux

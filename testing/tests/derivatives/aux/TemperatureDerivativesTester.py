@@ -1,7 +1,7 @@
 import unittest
 
-from Temperature import Temperature, TemperatureParameters
-from TestAux import TestAux, TestAuxParameters
+from sem_python.aux.Temperature import Temperature, TemperatureParameters
+from sem_python.aux.TestAux import TestAux, TestAuxParameters
 from AuxDerivativesTester import AuxDerivativesTester
 
 def computeTemperature(v, e):

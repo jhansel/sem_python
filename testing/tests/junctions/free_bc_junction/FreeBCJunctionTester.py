@@ -1,9 +1,9 @@
 import unittest
 
 import sem
-from ParameterModification import BlockParameterModification
-from CSVTester import CSVTester
-from JunctionTester import JunctionTester
+from sem_python.input.ParameterModification import BlockParameterModification
+from .. import CSVTester
+from ..JunctionTester import JunctionTester
 
 class FreeBCJunctionTester(unittest.TestCase):
   def runDerivativeTest(self, test_option):

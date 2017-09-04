@@ -1,9 +1,10 @@
 from filecmp import cmp
 import sys
 import unittest
+import os
 
-from display_utilities import printDoFVector
-from Factory import Factory
+from sem_python.utilities.display_utilities import printDoFVector
+from sem_python.base.Factory import Factory
 from OutputCaptor import OutputCaptor
 
 def outputPrintDoFVectorToFile(path):
@@ -28,7 +29,7 @@ def outputPrintDoFVectorToFile(path):
 
 class DisplayUtilitiesTester(unittest.TestCase):
   def testPrintDoFVector(self):
-    path = "tests/utilities/"
+    path = os.path.dirname(os.path.realpath(__file__)) + os.sep
     outputPrintDoFVectorToFile(path)
     self.assertTrue(cmp(path + "print_dof_vector.txt", path + "gold/print_dof_vector.txt"))
 

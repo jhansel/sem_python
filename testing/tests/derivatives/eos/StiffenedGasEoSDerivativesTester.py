@@ -1,7 +1,7 @@
 import unittest
 
-from FunctionDerivativesTester import FunctionDerivativesTester
-from StiffenedGasEoS import StiffenedGasEoS, StiffenedGasEoSParameters
+from ..FunctionDerivativesTester import FunctionDerivativesTester
+from sem_python.closures.StiffenedGasEoS import StiffenedGasEoS, StiffenedGasEoSParameters
 
 class StiffenedGasEoSDerivativesTester(unittest.TestCase):
   def setUp(self):

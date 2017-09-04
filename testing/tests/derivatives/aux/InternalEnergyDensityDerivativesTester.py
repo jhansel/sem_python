@@ -1,7 +1,7 @@
 import unittest
 
-from InternalEnergyDensity import InternalEnergyDensity, InternalEnergyDensityParameters
-from TestAux import TestAux, TestAuxParameters
+from sem_python.aux.InternalEnergyDensity import InternalEnergyDensity, InternalEnergyDensityParameters
+from sem_python.aux.TestAux import TestAux, TestAuxParameters
 from AuxDerivativesTester import AuxDerivativesTester
 
 # internal energy density aux

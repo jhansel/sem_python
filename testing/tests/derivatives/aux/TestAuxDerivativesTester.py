@@ -1,6 +1,6 @@
 import unittest
 
-from TestAux import TestAux, TestAuxParameters
+from sem_python.aux.TestAux import TestAux, TestAuxParameters
 from AuxDerivativesTester import AuxDerivativesTester
 
 params = TestAuxParameters()

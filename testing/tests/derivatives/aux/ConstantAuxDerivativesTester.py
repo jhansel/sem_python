@@ -1,7 +1,7 @@
 import unittest
 
-from ConstantAux import ConstantAux, ConstantAuxParameters
-from TestAux import TestAux, TestAuxParameters
+from sem_python.aux.ConstantAux import ConstantAux, ConstantAuxParameters
+from sem_python.aux.TestAux import TestAux, TestAuxParameters
 from AuxDerivativesTester import AuxDerivativesTester
 
 # test aux

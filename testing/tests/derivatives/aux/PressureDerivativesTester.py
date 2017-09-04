@@ -1,7 +1,7 @@
 import unittest
 
-from Pressure import Pressure, PressureParameters
-from TestAux import TestAux, TestAuxParameters
+from sem_python.aux.Pressure import Pressure, PressureParameters
+from sem_python.aux.TestAux import TestAux, TestAuxParameters
 from AuxDerivativesTester import AuxDerivativesTester
 
 def computePressure(v, e):

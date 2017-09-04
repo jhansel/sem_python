@@ -1,7 +1,7 @@
 import unittest
 
-from BerryInterfacePressureBar import BerryInterfacePressureBar, BerryInterfacePressureBarParameters
-from TestAux import TestAux, TestAuxParameters
+from sem_python.aux.BerryInterfacePressureBar import BerryInterfacePressureBar, BerryInterfacePressureBarParameters
+from sem_python.aux.TestAux import TestAux, TestAuxParameters
 from AuxDerivativesTester import AuxDerivativesTester
 
 # test aux

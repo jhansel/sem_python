@@ -1,7 +1,7 @@
 import unittest
 from numpy import sin, cos, exp, log
 
-from conversion_utilities import stringToFunction
+from sem_python.utilities.conversion_utilities import stringToFunction
 
 class StringToFunctionTester(unittest.TestCase):
   def setUp(self):

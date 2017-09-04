@@ -1,6 +1,6 @@
 import unittest
 
-from enums import ModelType, VariableName
+from sem_python.base.enums import ModelType, VariableName
 from KernelDerivativesTester import KernelDerivativesTester
 
 class DissipationAuxFluxDerivativesTester(unittest.TestCase):
