@@ -1,7 +1,7 @@
 import unittest
 
-from AmbrosoVelocityRelaxationCoef import AmbrosoVelocityRelaxationCoef, AmbrosoVelocityRelaxationCoefParameters
-from TestAux import TestAux, TestAuxParameters
+from sem_python.aux.AmbrosoVelocityRelaxationCoef import AmbrosoVelocityRelaxationCoef, AmbrosoVelocityRelaxationCoefParameters
+from sem_python.aux.TestAux import TestAux, TestAuxParameters
 from AuxDerivativesTester import AuxDerivativesTester
 
 # interface pressure aux

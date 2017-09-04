@@ -1,6 +1,6 @@
 import sys
 
-from file_utilities import readCSVData
+from sem_python.utilities.file_utilities import readCSVData
 
 class CSVTester(object):
   def __init__(self, test_dir, test_file, abs_tol=1e-12):

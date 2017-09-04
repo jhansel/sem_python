@@ -1,7 +1,7 @@
 import unittest
 
-from SpecificInternalEnergy import SpecificInternalEnergy, SpecificInternalEnergyParameters
-from TestAux import TestAux, TestAuxParameters
+from sem_python.aux.SpecificInternalEnergy import SpecificInternalEnergy, SpecificInternalEnergyParameters
+from sem_python.aux.TestAux import TestAux, TestAuxParameters
 from AuxDerivativesTester import AuxDerivativesTester
 
 # specific internal energy aux

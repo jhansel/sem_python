@@ -1,7 +1,7 @@
 import unittest
 
-from FunctionDerivativesTester import FunctionDerivativesTester
-from IdealGasEoS import IdealGasEoS, IdealGasEoSParameters
+from ..FunctionDerivativesTester import FunctionDerivativesTester
+from sem_python.closures.IdealGasEoS import IdealGasEoS, IdealGasEoSParameters
 
 class IdealGasEoSFunctionDerivativesTester(unittest.TestCase):
   def setUp(self):

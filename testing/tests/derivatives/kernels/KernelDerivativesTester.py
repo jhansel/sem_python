@@ -1,10 +1,10 @@
 from copy import deepcopy
 import numpy as np
 
-from TestAux import TestAux, TestAuxParameters
-from enums import ModelType, VariableName
-from Factory import Factory
-from numeric_utilities import computeRelativeDifference
+from sem_python.aux.TestAux import TestAux, TestAuxParameters
+from sem_python.base.enums import ModelType, VariableName
+from sem_python.base.Factory import Factory
+from sem_python.utilities.numeric_utilities import computeRelativeDifference
 
 class KernelDerivativesTester(object):
   def __init__(self, verbose=False):

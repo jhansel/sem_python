@@ -1,7 +1,7 @@
 import unittest
 
-from LaxFriedrichsCoefficientVolumeFraction import LaxFriedrichsCoefficientVolumeFraction, LaxFriedrichsCoefficientVolumeFractionParameters
-from TestAux import TestAux, TestAuxParameters
+from sem_python.aux.LaxFriedrichsCoefficientVolumeFraction import LaxFriedrichsCoefficientVolumeFraction, LaxFriedrichsCoefficientVolumeFractionParameters
+from sem_python.aux.TestAux import TestAux, TestAuxParameters
 from AuxDerivativesTester import AuxDerivativesTester
 
 # Lax-Friedrichs coefficient aux

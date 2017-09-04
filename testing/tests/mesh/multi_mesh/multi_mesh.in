@@ -87,5 +87,5 @@
   plot_solution = False
   print_solution = False
   save_solution = True
-  solution_file = tests/mesh/multi_mesh/solution.csv
+  solution_file = solution.csv
 []

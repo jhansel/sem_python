@@ -1,6 +1,6 @@
 import unittest
 
-from VolumeFractionPhase2 import VolumeFractionPhase2, VolumeFractionPhase2Parameters
+from sem_python.aux.VolumeFractionPhase2 import VolumeFractionPhase2, VolumeFractionPhase2Parameters
 from AuxDerivativesTester import AuxDerivativesTester
 
 params = VolumeFractionPhase2Parameters()

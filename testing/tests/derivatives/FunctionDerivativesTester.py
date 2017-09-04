@@ -1,6 +1,6 @@
 from inspect import getargspec
 
-from numeric_utilities import computeRelativeDifference
+from sem_python.utilities.numeric_utilities import computeRelativeDifference
 
 class FunctionDerivativesTester(object):
   def __init__(self, in_unittest_mode=True, use_debug_mode=False):

@@ -1,5 +1,9 @@
 import sys
-from cStringIO import StringIO
+
+try:
+  from cStringIO import StringIO
+except:
+  from io import StringIO
 
 class OutputCaptor(object):
   def __init__(self):

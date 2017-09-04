@@ -1,7 +1,7 @@
 import unittest
 
-from SpecificTotalEnergy import SpecificTotalEnergy, SpecificTotalEnergyParameters
-from TestAux import TestAux, TestAuxParameters
+from sem_python.aux.SpecificTotalEnergy import SpecificTotalEnergy, SpecificTotalEnergyParameters
+from sem_python.aux.TestAux import TestAux, TestAuxParameters
 from AuxDerivativesTester import AuxDerivativesTester
 
 params = SpecificTotalEnergyParameters()

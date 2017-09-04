@@ -1,13 +1,14 @@
 import unittest
+import os
 
 import sem
-from ParameterModification import BlockParameterModification, SubblockParameterModification
-from CSVTester import CSVTester
-from JunctionTester import JunctionTester
+from sem_python.input.ParameterModification import BlockParameterModification, SubblockParameterModification
+from .. import CSVTester
+from ..JunctionTester import JunctionTester
 
 class CloneJunctionTester(unittest.TestCase):
   def testSolution(self):
-    input_dir = "tests/junctions/"
+    input_dir = test_dir = os.path.dirname(os.path.dirname(os.path.realpath(__file__))) + os.sep
     test_dir = input_dir + "clone_junction/"
     solution_file = test_dir + "clone_junction.csv"
     mods = list()

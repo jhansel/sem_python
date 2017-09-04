@@ -1,6 +1,6 @@
 import unittest
 
-from Factory import Factory
+from sem_python.base.Factory import Factory
 
 class DoFHandlerTester(unittest.TestCase):
   ## Tests the DoF indices assigned to junction constraints

@@ -1,6 +1,6 @@
 import unittest
 
-from Velocity import Velocity, VelocityParameters
+from sem_python.aux.Velocity import Velocity, VelocityParameters
 from AuxDerivativesTester import AuxDerivativesTester
 
 params = VelocityParameters()
