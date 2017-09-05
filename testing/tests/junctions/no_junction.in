@@ -1,8 +1,7 @@
-# This file modifies the main CloneJunction file to omit the junction, for
-# comparison purposes.
+# This file modifies an input file to omit a junction, for comparison purposes.
 
 [BaseInputFile]
-  base = clone_junction_with_junction.in
+  base = junction.in
 []
 
 [Mesh]
@@ -22,6 +21,6 @@
 -[Junctions]
 
 [Output]
-  plot_file = solution_without_junction.pdf
-  solution_file = solution_without_junction.csv
+  plot_file = no_junction.pdf
+  solution_file = no_junction.csv
 []

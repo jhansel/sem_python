@@ -1,7 +1,7 @@
 from copy import deepcopy
 import numpy as np
 
-from display_utilities import computeRelativeDifferenceMatrix, printRelativeMatrixDifference
+from display_utilities import computeRelativeDifferenceMatrix, printRelativeMatrixDifference, printMatrix
 from enums import ModelType
 from error_utilities import error
 from Factory import Factory
@@ -39,7 +39,6 @@ class JunctionTester(object):
     elif model_type == ModelType.TwoPhase:
       dof_handler_class = "DoFHandler2Phase"
     dof_handler = factory.createObject(dof_handler_class, dof_handler_params)
-    n_dof = dof_handler.n_dof
 
     # equation of state
     eos_params1 = {"slope_initial": 1.0, "slope_increment": 0.1}
@@ -62,6 +61,7 @@ class JunctionTester(object):
 
     # update DoF handler with junction constraints
     dof_handler.updateWithJunctionConstraints([junction])
+    n_dof = dof_handler.n_dof
 
     # compute base solution
     U = np.zeros(n_dof)
@@ -109,6 +109,8 @@ class JunctionTester(object):
     # print results
     if self.verbose:
       print "\nRelative difference of Jacobian for " + test_option + " contributions:"
+      printMatrix(J_hand_coded)
+      printMatrix(J_fd)
       printRelativeMatrixDifference(rel_diffs, abs_diffs, 1e-1, 1e-3)
 
 
