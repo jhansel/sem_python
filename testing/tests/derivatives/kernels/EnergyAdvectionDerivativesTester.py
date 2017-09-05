@@ -20,7 +20,7 @@ class EnergyAdvectionDerivativesTester(unittest.TestCase):
       self.assertLessEqual(rel_diffs[key], 1e-6)
 
   def test2Phase(self):
-    aux = {"u1": ["arhoA1", "arhouA1"], "vf1": ["vf1"], "p1": ["vf1", "arhoA1", "arhouA1", "arhoEA1"]}
+    aux = {"u1": ["arhoA1", "arhouA1"], "vf1": ["aA1"], "p1": ["aA1", "arhoA1", "arhouA1", "arhoEA1"]}
     rel_diffs = self.derivatives_tester.checkDerivatives("EnergyAdvection", ModelType.TwoPhase, 0, aux)
     for key in rel_diffs:
       self.assertLessEqual(rel_diffs[key], 1e-6)

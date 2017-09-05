@@ -50,7 +50,7 @@ class NonlinearSolver(object):
     self.verbose = params.get("verbose")
 
     self.scaling = dict()
-    self.scaling[VariableName.VF1] = [params.get("scaling_vf1")]
+    self.scaling[VariableName.AA1] = [params.get("scaling_vf1")]
     self.scaling[VariableName.ARhoA] = [params.get("scaling_arhoA1"), params.get("scaling_arhoA2")]
     self.scaling[VariableName.ARhoUA] = [params.get("scaling_arhouA1"), params.get("scaling_arhouA2")]
     self.scaling[VariableName.ARhoEA] = [params.get("scaling_arhoEA1"), params.get("scaling_arhoEA2")]

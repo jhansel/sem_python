@@ -30,13 +30,13 @@ u_negative_aux = TestAux(params)
 # sound speed aux
 params = TestAuxParameters()
 params.set("var", "c1")
-params.set("other_vars", ["vf1", "arhoA1", "arhouA1", "arhoEA1"])
+params.set("other_vars", ["aA1", "arhoA1", "arhouA1", "arhoEA1"])
 params.set("coefs", [1.5, 2.5, 3.5, 4.5])
 c_aux = TestAux(params)
 
 other_aux_positive = [u_positive_aux, c_aux]
 other_aux_negative = [u_negative_aux, c_aux]
-root_vars = ["vf1", "arhoA1", "arhouA1", "arhoEA1"]
+root_vars = ["aA1", "arhoA1", "arhouA1", "arhoEA1"]
 
 class LaxFriedrichsCoefficientDerivativesTester(unittest.TestCase):
   def setUp(self):

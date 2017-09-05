@@ -11,19 +11,19 @@ class MomentumAdvection(Kernel1Phase):
     Kernel1Phase.__init__(self, params)
 
   def computeResidual(self, data, i):
-    return -(data[self.arhouA] * data[self.u] + data[self.vf] * data[self.p]) * data["grad_phi"][i] * data["JxW"]
+    return -(data[self.arhouA] * data[self.u] + data[self.vf] * data[self.p] * data["A"]) * data["grad_phi"][i] * data["JxW"]
 
   def computeJacobian(self, data, der, var_index, i, j):
-    if var_index == self.vf1_index:
-      return -(der[self.vf]["vf1"] * data[self.p] \
-        + data[self.vf] * der[self.p]["vf1"]) * data["phi"][j] * data["grad_phi"][i] * data["JxW"]
-    elif var_index == self.arho_index:
+    if var_index == self.aA1_index:
+      return -(der[self.vf]["aA1"] * data[self.p] \
+        + data[self.vf] * der[self.p]["aA1"]) * data["A"] * data["phi"][j] * data["grad_phi"][i] * data["JxW"]
+    elif var_index == self.arhoA_index:
       return -(data[self.arhouA] * der[self.u][self.arhoA] \
-        + data[self.vf] * der[self.p][self.arhoA]) * data["phi"][j] * data["grad_phi"][i] * data["JxW"]
+        + data[self.vf] * der[self.p][self.arhoA] * data["A"]) * data["phi"][j] * data["grad_phi"][i] * data["JxW"]
     elif var_index == self.arhouA_index:
       return -(data[self.u] + data[self.arhouA] * der[self.u][self.arhouA] \
-        + data[self.vf] * der[self.p][self.arhouA]) * data["phi"][j] * data["grad_phi"][i] * data["JxW"]
+        + data[self.vf] * der[self.p][self.arhouA] * data["A"]) * data["phi"][j] * data["grad_phi"][i] * data["JxW"]
     elif var_index == self.arhoEA_index:
-      return -data[self.vf] * der[self.p][self.arhoEA] * data["phi"][j] * data["grad_phi"][i] * data["JxW"]
+      return -data[self.vf] * der[self.p][self.arhoEA] * data["A"] * data["phi"][j] * data["grad_phi"][i] * data["JxW"]
     else:
       return self.zero

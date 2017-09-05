@@ -8,9 +8,11 @@ from Factory import Factory
 from numeric_utilities import computeRelativeDifference
 
 class JunctionTester(object):
-  def __init__(self, junction_name, verbose=False):
+  def __init__(self, junction_name, verbose=False, rel_tol=1e-6, abs_tol=1e-6):
     self.junction_name = junction_name
     self.verbose = verbose
+    self.rel_tol = rel_tol
+    self.abs_tol = abs_tol
 
   def checkJacobian(self, test_option, model_type=ModelType.OnePhase, phase=0, junction_params=dict(), fd_eps=1e-8):
     # factory
@@ -21,8 +23,12 @@ class JunctionTester(object):
     params2 = {"n_cell": 1, "name": "mesh2"}
     meshes = [factory.createObject("UniformMesh", params1), factory.createObject("UniformMesh", params2)]
 
+    # area function
+    def A(x):
+      return 0.2
+
     # DoF handler
-    dof_handler_params = {"meshes": meshes}
+    dof_handler_params = {"meshes": meshes, "A": A}
     if model_type == ModelType.OnePhase:
       dof_handler_class = "DoFHandler1Phase"
     elif model_type == ModelType.TwoPhaseNonInteracting:
@@ -96,13 +102,19 @@ class JunctionTester(object):
       for i in xrange(n_dof):
         J_fd[i,j] = (r_perturbed[i] - r[i]) / fd_eps
 
-    # compute relative difference matrix
+    # compute difference matrices
+    abs_diffs = abs(J_hand_coded - J_fd)
     rel_diffs = computeRelativeDifferenceMatrix(J_hand_coded, J_fd)
 
     # print results
     if self.verbose:
       print "\nRelative difference of Jacobian for " + test_option + " contributions:"
-      printRelativeMatrixDifference(rel_diffs, J_hand_coded - J_fd, 1e-1, 1e-3)
+      printRelativeMatrixDifference(rel_diffs, abs_diffs, 1e-1, 1e-3)
 
-    # take the absolute value of the relative differences
-    return abs(rel_diffs)
+
+    matched = np.zeros((n_dof, n_dof), dtype=bool)
+    for i in xrange(n_dof):
+      for j in xrange(n_dof):
+        matched[i,j] = abs_diffs[i,j] < self.abs_tol or rel_diffs[i,j] < self.rel_tol
+
+    return matched

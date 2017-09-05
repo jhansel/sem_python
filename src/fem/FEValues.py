@@ -39,24 +39,41 @@ class FEValues(object):
   def get_JxW(self, e):
     return [self.quadrature.JxW_divided_by_h[q] * self.dof_handler.h[e] for q in xrange(self.quadrature.n_q)]
 
-  def computeLocalVolumeFractionSolution(self, U, e):
-    vf1 = np.zeros(self.quadrature.n_q)
+  def computeLocalArea(self, e):
+    A = np.zeros(self.quadrature.n_q)
     for q in xrange(self.quadrature.n_q):
       for k_local in xrange(self.dof_handler.n_dof_per_cell_per_var):
         k = self.dof_handler.k(e, k_local)
-        vf1_k = self.dof_handler.getVolumeFraction(U, k)
-        vf1[q] += vf1_k * self.phi[k_local, q]
-    return vf1
+        A[q] += self.dof_handler.A[k] * self.phi[k_local, q]
+    return A
 
-  def computeLocalVolumeFractionSolutionGradient(self, U, e):
-    vf1_grad = np.zeros(self.quadrature.n_q)
+  def computeLocalAreaGradient(self, e):
+    grad_A = np.zeros(self.quadrature.n_q)
     Jac = self.quadrature.Jac_divided_by_h * self.dof_handler.h[e]
     for q in xrange(self.quadrature.n_q):
       for k_local in xrange(self.dof_handler.n_dof_per_cell_per_var):
         k = self.dof_handler.k(e, k_local)
-        vf1_k = self.dof_handler.getVolumeFraction(U, k)
-        vf1_grad[q] += vf1_k * self.grad_phi[k_local, q] / Jac
-    return vf1_grad
+        grad_A[q] += self.dof_handler.A[k] * self.grad_phi[k_local, q] / Jac
+    return grad_A
+
+  def computeLocalVolumeFractionSolution(self, U, e):
+    aA1 = np.zeros(self.quadrature.n_q)
+    for q in xrange(self.quadrature.n_q):
+      for k_local in xrange(self.dof_handler.n_dof_per_cell_per_var):
+        k = self.dof_handler.k(e, k_local)
+        aA1_k = self.dof_handler.aA1(U, k)
+        aA1[q] += aA1_k * self.phi[k_local, q]
+    return aA1
+
+  def computeLocalVolumeFractionSolutionGradient(self, U, e):
+    aA1_grad = np.zeros(self.quadrature.n_q)
+    Jac = self.quadrature.Jac_divided_by_h * self.dof_handler.h[e]
+    for q in xrange(self.quadrature.n_q):
+      for k_local in xrange(self.dof_handler.n_dof_per_cell_per_var):
+        k = self.dof_handler.k(e, k_local)
+        aA1_k = self.dof_handler.aA1(U, k)
+        aA1_grad[q] += aA1_k * self.grad_phi[k_local, q] / Jac
+    return aA1_grad
 
   def computeLocalSolution(self, U, variable_name, phase, e):
     var_index = self.dof_handler.variable_index[variable_name][phase]

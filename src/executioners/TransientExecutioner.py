@@ -58,7 +58,7 @@ class TransientExecutioner(Executioner):
   def addMassMatrixPhase(self, M, phase):
     phi = self.fe_values.get_phi()
 
-    arho_index = self.dof_handler.variable_index[VariableName.ARhoA][phase]
+    arhoA_index = self.dof_handler.variable_index[VariableName.ARhoA][phase]
     arhouA_index = self.dof_handler.variable_index[VariableName.ARhoUA][phase]
     arhoEA_index = self.dof_handler.variable_index[VariableName.ARhoEA][phase]
 
@@ -68,7 +68,7 @@ class TransientExecutioner(Executioner):
       JxW = self.fe_values.get_JxW(e)
       for q in xrange(self.quadrature.n_q):
         for k_local in xrange(self.dof_handler.n_dof_per_cell_per_var):
-          i_arhoA = self.dof_handler.i(k_local, arho_index)
+          i_arhoA = self.dof_handler.i(k_local, arhoA_index)
           i_arhouA = self.dof_handler.i(k_local, arhouA_index)
           i_arhoEA = self.dof_handler.i(k_local, arhoEA_index)
           for l_local in xrange(self.dof_handler.n_dof_per_cell_per_var):
@@ -77,7 +77,7 @@ class TransientExecutioner(Executioner):
               M_cell[i_arhouA,i_arhouA] += phi[k_local,q] * phi[l_local,q] * JxW[q]
               M_cell[i_arhoEA,i_arhoEA] += phi[k_local,q] * phi[l_local,q] * JxW[q]
             else:
-              j_arhoA = self.dof_handler.i(l_local, arho_index)
+              j_arhoA = self.dof_handler.i(l_local, arhoA_index)
               j_arhouA = self.dof_handler.i(l_local, arhouA_index)
               j_arhoEA = self.dof_handler.i(l_local, arhoEA_index)
 
@@ -91,7 +91,7 @@ class TransientExecutioner(Executioner):
   def addMassMatrixVolumeFraction(self, M):
     phi = self.fe_values.get_phi()
 
-    vf1_index = self.dof_handler.variable_index[VariableName.VF1][0]
+    aA1_index = self.dof_handler.variable_index[VariableName.AA1][0]
 
     for e in xrange(self.dof_handler.n_cell):
       M_cell = np.zeros(shape=(self.dof_handler.n_dof_per_cell, self.dof_handler.n_dof_per_cell))
@@ -99,13 +99,13 @@ class TransientExecutioner(Executioner):
       JxW = self.fe_values.get_JxW(e)
       for q in xrange(self.quadrature.n_q):
         for k_local in xrange(self.dof_handler.n_dof_per_cell_per_var):
-          i_vf1 = self.dof_handler.i(k_local, vf1_index)
+          i_aA1 = self.dof_handler.i(k_local, aA1_index)
           for l_local in xrange(self.dof_handler.n_dof_per_cell_per_var):
             if self.lump_mass_matrix:
-              M_cell[i_vf1,i_vf1] += phi[k_local,q] * phi[l_local,q] * JxW[q]
+              M_cell[i_aA1,i_aA1] += phi[k_local,q] * phi[l_local,q] * JxW[q]
             else:
-              j_vf1 = self.dof_handler.i(l_local, vf1_index)
-              M_cell[i_vf1,j_vf1] += phi[k_local,q] * phi[l_local,q] * JxW[q]
+              j_vf1 = self.dof_handler.i(l_local, aA1_index)
+              M_cell[i_aA1,j_vf1] += phi[k_local,q] * phi[l_local,q] * JxW[q]
 
       # aggregate cell matrix into global matrix
       self.dof_handler.aggregateLocalCellMatrix(M, M_cell, e)

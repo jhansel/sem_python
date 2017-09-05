@@ -1,17 +1,17 @@
 from enums import ModelType, VariableName
 
-def computeVolumeFraction(vf1, phase, model_type):
+def computeVolumeFraction(aA1, A, phase, model_type):
   if model_type == ModelType.OnePhase:
-    vf = 0 * vf1 + 1
-    dvf_dvf1 = 0 * vf1 + 1
+    vf = 1
+    dvf_daA1 = 0
   else:
     if phase == 0:
-      vf = vf1
-      dvf_dvf1 = 0 * vf1 + 1
+      vf = aA1 / A
+      dvf_daA1 = 1 / A
     else:
-      vf = 1 - vf1
-      dvf_dvf1 = 0 * vf1 - 1
-  return (vf, dvf_dvf1)
+      vf = 1 - aA1 / A
+      dvf_daA1 = - 1 / A
+  return (vf, dvf_daA1)
 
 def computeSpecificVolume(rho):
   v = 1.0 / rho
@@ -48,9 +48,10 @@ def computeVelocity(arhoA, arhouA):
 
   return (u, du_darhoA, du_darhouA)
 
-def computeDensity(vf, arhoA):
-  rho = arhoA / vf
-  drho_dvf = - arhoA / vf / vf
-  drho_darhoA = 1.0 / vf
+def computeDensity(vf, arhoA, A):
+  rho = arhoA / (vf * A)
+  drho_dvf = - arhoA / (vf * vf * A)
+  drho_darhoA = 1.0 / (vf * A)
+  drho_dA  = - arhoA / (vf * A * A)
 
-  return (rho, drho_dvf, drho_darhoA)
+  return (rho, drho_dvf, drho_darhoA, drho_dA)

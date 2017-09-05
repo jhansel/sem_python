@@ -29,8 +29,8 @@ class FreeBCJunction(FluxJunction):
       J[self.i_arhoEA[m],self.i_arhoEA[m]] += self.df_energy_darhoEA[m]
 
       if self.model_type == ModelType.TwoPhase:
-        J[self.i_arhouA[m],self.i_vf1[m]] += self.df_momentum_dvf1[m]
-        J[self.i_arhoEA[m],self.i_vf1[m]] += self.df_energy_dvf1[m]
+        J[self.i_arhouA[m],self.i_aA1[m]] += self.df_momentum_daA1[m]
+        J[self.i_arhoEA[m],self.i_aA1[m]] += self.df_energy_daA1[m]
 
   def applyStronglyToNonlinearSystem(self, U, U_old, r, J):
     pass

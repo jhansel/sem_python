@@ -28,9 +28,9 @@ class DissipationAuxFlux(Kernel1Phase):
     return data[self.flux] * data["grad_phi"][i] * data["JxW"]
 
   def computeJacobian(self, data, der, var_index, i, j):
-    if var_index == self.vf1_index:
-      return (der[self.flux]["vf1"] * data["phi"][j] + der[self.flux]["grad_vf1"] * data["grad_phi"][j]) * data["grad_phi"][i] * data["JxW"]
-    elif var_index == self.arho_index:
+    if var_index == self.aA1_index:
+      return (der[self.flux]["aA1"] * data["phi"][j] + der[self.flux]["grad_aA1"] * data["grad_phi"][j]) * data["grad_phi"][i] * data["JxW"]
+    elif var_index == self.arhoA_index:
       return (der[self.flux][self.arhoA] * data["phi"][j] + der[self.flux][self.grad_arhoA] * data["grad_phi"][j]) * data["grad_phi"][i] * data["JxW"]
     elif var_index == self.arhouA_index:
       return (der[self.flux][self.arhouA] * data["phi"][j] + der[self.flux][self.grad_arhouA] * data["grad_phi"][j]) * data["grad_phi"][i] * data["JxW"]

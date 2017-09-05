@@ -22,5 +22,5 @@ class DoFHandler2PhaseNonInteracting(DoFHandler):
     for k in xrange(self.n_node):
       self.vf1[k] = initial_vf1(self.x[k])
 
-  def getVolumeFraction(self, U, k):
-    return self.vf1[k]
+  def aA1(self, U, k):
+    return self.vf1[k] * self.A[k]

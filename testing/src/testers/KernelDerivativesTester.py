@@ -10,7 +10,7 @@ class KernelDerivativesTester(object):
   def __init__(self, verbose=False):
     self.verbose = verbose
 
-  def checkDerivatives(self, kernel_name, model_type, phase, aux_dependencies, kernel_params=dict(), fd_eps=1e-8):
+  def checkDerivatives(self, kernel_name, model_type, phase, aux_dependencies, aux_gradients=list(), kernel_params=dict(), fd_eps=1e-8):
     self.model_type = model_type
     self.phase = phase
 
@@ -21,8 +21,12 @@ class KernelDerivativesTester(object):
     params = {"n_cell": 1}
     meshes = [factory.createObject("UniformMesh", params)]
 
+    # area function
+    def A(x):
+      return 2.0
+
     # DoF handler
-    dof_handler_params = {"meshes": meshes}
+    dof_handler_params = {"meshes": meshes, "A": A}
     if self.model_type == ModelType.OnePhase:
       dof_handler_class = "DoFHandler1Phase"
     elif self.model_type == ModelType.TwoPhaseNonInteracting:
@@ -67,6 +71,11 @@ class KernelDerivativesTester(object):
         params.set("b", 1.0)
         aux_list.append(TestAux(params))
 
+    # add the aux derivatives
+    for aux_name in aux_gradients:
+      params = {"aux": aux_name, "variable_names": aux_dependencies[aux_name]}
+      aux_list.append(factory.createObject("AuxGradient", params))
+
     # data
     data = dict()
     aux_names = [aux.name for aux in aux_list]
@@ -75,6 +84,7 @@ class KernelDerivativesTester(object):
     i = 0
     j = 1
     q = 0
+    data["grad_A"] = 0.3
     data["phi"] = self.fe_values.get_phi()
     data["grad_phi"] = self.fe_values.get_grad_phi(self.elem)
     data["JxW"] = self.fe_values.get_JxW(self.elem)
@@ -125,11 +135,12 @@ class KernelDerivativesTester(object):
     return rel_diffs
 
   def computeSolutionDependentData(self, U, data):
-    data["vf1"] = self.fe_values.computeLocalVolumeFractionSolution(U, self.elem)
+    data["A"] = self.fe_values.computeLocalArea(self.elem)
+    data["aA1"] = self.fe_values.computeLocalVolumeFractionSolution(U, self.elem)
     data["arhoA1"] = self.fe_values.computeLocalSolution(U, VariableName.ARhoA, 0, self.elem)
     data["arhouA1"] = self.fe_values.computeLocalSolution(U, VariableName.ARhoUA, 0, self.elem)
     data["arhoEA1"] = self.fe_values.computeLocalSolution(U, VariableName.ARhoEA, 0, self.elem)
-    data["grad_vf1"] = self.fe_values.computeLocalVolumeFractionSolutionGradient(U, self.elem)
+    data["grad_aA1"] = self.fe_values.computeLocalVolumeFractionSolutionGradient(U, self.elem)
     data["grad_arhoA1"] = self.fe_values.computeLocalSolutionGradient(U, VariableName.ARhoA, 0, self.elem)
     data["grad_arhouA1"] = self.fe_values.computeLocalSolutionGradient(U, VariableName.ARhoUA, 0, self.elem)
     data["grad_arhoEA1"] = self.fe_values.computeLocalSolutionGradient(U, VariableName.ARhoEA, 0, self.elem)

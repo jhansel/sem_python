@@ -21,8 +21,8 @@ class BerryInterfacePressureBar(AuxQuantity2Phase):
 
     dnumerator = 1.0 / denominator
     ddenominator = -numerator / denominator**2
-    der[self.name]["vf1"] = dnumerator * (der["z1"]["vf1"] * p2 + z1 * der["p2"]["vf1"] + der["z2"]["vf1"] * p1 + z2 * der["p1"]["vf1"]) \
-      + ddenominator * (der["z1"]["vf1"] + der["z2"]["vf1"])
+    der[self.name]["aA1"] = dnumerator * (der["z1"]["aA1"] * p2 + z1 * der["p2"]["aA1"] + der["z2"]["aA1"] * p1 + z2 * der["p1"]["aA1"]) \
+      + ddenominator * (der["z1"]["aA1"] + der["z2"]["aA1"])
     der[self.name]["arhoA1"] = dnumerator * (der["z1"]["arhoA1"] * p2 + z2 * der["p1"]["arhoA1"]) \
       + ddenominator * der["z1"]["arhoA1"]
     der[self.name]["arhouA1"] = dnumerator * (der["z1"]["arhouA1"] * p2 + z2 * der["p1"]["arhouA1"]) \

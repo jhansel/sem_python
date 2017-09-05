@@ -11,26 +11,26 @@ test_aux = BerryVelocityRelaxationCoef(params)
 # pressure relaxation aux
 params = TestAuxParameters()
 params.set("var", "p_relax")
-params.set("other_vars", ["vf1", "arhoA1", "arhouA1", "arhoEA1", "arhoA2", "arhouA2", "arhoEA2"])
+params.set("other_vars", ["aA1", "arhoA1", "arhouA1", "arhoEA1", "arhoA2", "arhouA2", "arhoEA2"])
 params.set("coefs", [1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7])
 p_relax_aux = TestAux(params)
 
 # phase-1 acoustic impedance aux
 params = TestAuxParameters()
 params.set("var", "z1")
-params.set("other_vars", ["vf1", "arhoA1", "arhouA1", "arhoEA1"])
+params.set("other_vars", ["aA1", "arhoA1", "arhouA1", "arhoEA1"])
 params.set("coefs", [2.1, 2.3, 3.4, 4.5])
 z1_aux = TestAux(params)
 
 # phase-2 acoustic impedance aux
 params = TestAuxParameters()
 params.set("var", "z2")
-params.set("other_vars", ["vf1", "arhoA2", "arhouA2", "arhoEA2"])
+params.set("other_vars", ["aA1", "arhoA2", "arhouA2", "arhoEA2"])
 params.set("coefs", [2.4, 2.2, 3.3, 4.4])
 z2_aux = TestAux(params)
 
 other_aux = [p_relax_aux, z1_aux, z2_aux]
-root_vars = ["vf1", "arhoA1", "arhouA1", "arhoEA1", "arhoA2", "arhouA2", "arhoEA2"]
+root_vars = ["aA1", "arhoA1", "arhouA1", "arhoEA1", "arhoA2", "arhouA2", "arhoEA2"]
 
 class BerryVelocityRelaxationCoefDerivativesTester(unittest.TestCase):
   def setUp(self):

@@ -17,7 +17,7 @@ class BerryVelocityRelaxationCoef(AuxQuantity2Phase):
     third = 1.0 / 3.0
     data[self.name] = third * p_relax * z1 * z2
 
-    der[self.name]["vf1"] = third * (der["p_relax"]["vf1"] * z1 * z2 + p_relax * (der["z1"]["vf1"] * z2 + z1 * der["z2"]["vf1"]))
+    der[self.name]["aA1"] = third * (der["p_relax"]["aA1"] * z1 * z2 + p_relax * (der["z1"]["aA1"] * z2 + z1 * der["z2"]["aA1"]))
     der[self.name]["arhoA1"] = third * (der["p_relax"]["arhoA1"] * z1 * z2 + p_relax * der["z1"]["arhoA1"] * z2)
     der[self.name]["arhouA1"] = third * (der["p_relax"]["arhouA1"] * z1 * z2 + p_relax * der["z1"]["arhouA1"] * z2)
     der[self.name]["arhoEA1"] = third * (der["p_relax"]["arhoEA1"] * z1 * z2 + p_relax * der["z1"]["arhoEA1"] * z2)

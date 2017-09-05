@@ -11,19 +11,19 @@ class EnergyAdvection(Kernel1Phase):
     Kernel1Phase.__init__(self, params)
 
   def computeResidual(self, data, i):
-    return -data[self.u] * (data[self.arhoEA] + data[self.vf] * data[self.p]) * data["grad_phi"][i] * data["JxW"]
+    return -data[self.u] * (data[self.arhoEA] + data[self.vf] * data[self.p] * data["A"]) * data["grad_phi"][i] * data["JxW"]
 
   def computeJacobian(self, data, der, var_index, i, j):
-    if var_index == self.vf1_index:
-      return -data[self.u] * (data[self.vf] * der[self.p]["vf1"] \
-        + der[self.vf]["vf1"] * data[self.p]) * data["phi"][j] * data["grad_phi"][i] * data["JxW"]
-    elif var_index == self.arho_index:
-      return -(data[self.u] * (data[self.vf] * der[self.p][self.arhoA]) \
-        + der[self.u][self.arhoA] * (data[self.arhoEA] + data[self.vf] * data[self.p])) * data["phi"][j] * data["grad_phi"][i] * data["JxW"]
+    if var_index == self.aA1_index:
+      return -data[self.u] * (data[self.vf] * der[self.p]["aA1"] \
+        + der[self.vf]["aA1"] * data[self.p]) * data["A"] * data["phi"][j] * data["grad_phi"][i] * data["JxW"]
+    elif var_index == self.arhoA_index:
+      return -(data[self.u] * (data[self.vf] * der[self.p][self.arhoA] * data["A"]) \
+        + der[self.u][self.arhoA] * (data[self.arhoEA] + data[self.vf] * data[self.p] * data["A"])) * data["phi"][j] * data["grad_phi"][i] * data["JxW"]
     elif var_index == self.arhouA_index:
-      return -(data[self.u] * (data[self.vf] * der[self.p][self.arhouA]) \
-        + der[self.u][self.arhouA] * (data[self.arhoEA] + data[self.vf] * data[self.p])) * data["phi"][j] * data["grad_phi"][i] * data["JxW"]
+      return -(data[self.u] * (data[self.vf] * der[self.p][self.arhouA] * data["A"]) \
+        + der[self.u][self.arhouA] * (data[self.arhoEA] + data[self.vf] * data[self.p] * data["A"])) * data["phi"][j] * data["grad_phi"][i] * data["JxW"]
     elif var_index == self.arhoEA_index:
-      return -data[self.u] * (1 + data[self.vf] * der[self.p][self.arhoEA]) * data["phi"][j] * data["grad_phi"][i] * data["JxW"]
+      return -data[self.u] * (1 + data[self.vf] * der[self.p][self.arhoEA] * data["A"]) * data["phi"][j] * data["grad_phi"][i] * data["JxW"]
     else:
       return self.zero

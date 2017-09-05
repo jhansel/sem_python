@@ -19,7 +19,7 @@ test_aux = Temperature(params)
 # specific volume aux
 params = TestAuxParameters()
 params.set("var", "v1")
-params.set("other_vars", ["vf1", "arhoA1"])
+params.set("other_vars", ["aA1", "arhoA1"])
 params.set("coefs", [2.0, 3.0])
 v_aux = TestAux(params)
 
@@ -31,7 +31,7 @@ params.set("coefs", [2.5, 3.5, 4.5])
 e_aux = TestAux(params)
 
 other_aux = [v_aux, e_aux]
-root_vars = ["vf1", "arhoA1", "arhouA1", "arhoEA1"]
+root_vars = ["aA1", "arhoA1", "arhouA1", "arhoEA1"]
 
 class TemperatureDerivativesTester(unittest.TestCase):
   def setUp(self):

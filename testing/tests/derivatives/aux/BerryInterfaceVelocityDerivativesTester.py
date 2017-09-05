@@ -11,42 +11,42 @@ test_aux = BerryInterfaceVelocity(params)
 # bar interface velocity aux
 params = TestAuxParameters()
 params.set("var", "uI_bar")
-params.set("other_vars", ["vf1", "arhoA1", "arhouA1", "arhoEA1", "arhoA2", "arhouA2", "arhoEA2"])
+params.set("other_vars", ["aA1", "arhoA1", "arhouA1", "arhoEA1", "arhoA2", "arhouA2", "arhoEA2"])
 params.set("coefs", [1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7])
 uI_bar_aux = TestAux(params)
 
 # phase-1 pressure aux
 params = TestAuxParameters()
 params.set("var", "p1")
-params.set("other_vars", ["vf1", "arhoA1", "arhouA1", "arhoEA1"])
+params.set("other_vars", ["aA1", "arhoA1", "arhouA1", "arhoEA1"])
 params.set("coefs", [2.1, 2.3, 3.4, 4.5])
 p1_aux = TestAux(params)
 
 # phase-2 pressure aux
 params = TestAuxParameters()
 params.set("var", "p2")
-params.set("other_vars", ["vf1", "arhoA2", "arhouA2", "arhoEA2"])
+params.set("other_vars", ["aA1", "arhoA2", "arhouA2", "arhoEA2"])
 params.set("coefs", [2.4, 2.2, 3.3, 4.4])
 p2_aux = TestAux(params)
 
 # phase-1 acoustic impedance aux
 params = TestAuxParameters()
 params.set("var", "z1")
-params.set("other_vars", ["vf1", "arhoA1", "arhouA1", "arhoEA1"])
+params.set("other_vars", ["aA1", "arhoA1", "arhouA1", "arhoEA1"])
 params.set("coefs", [1.6, 2.3, 4.5, 2.1])
 z1_aux = TestAux(params)
 
 # phase-2 acoustic impedance aux
 params = TestAuxParameters()
 params.set("var", "z2")
-params.set("other_vars", ["vf1", "arhoA2", "arhouA2", "arhoEA2"])
+params.set("other_vars", ["aA1", "arhoA2", "arhouA2", "arhoEA2"])
 params.set("coefs", [1.2, 3.2, 4.1, 2.4])
 z2_aux = TestAux(params)
 
 other_aux = [uI_bar_aux, p1_aux, p2_aux, z1_aux, z2_aux]
-root_vars = ["vf1", "arhoA1", "arhouA1", "arhoEA1", "arhoA2", "arhouA2", "arhoEA2"]
-constant_data_positive = {"grad_vf1": 0.6}
-constant_data_negative = {"grad_vf1": -0.6}
+root_vars = ["aA1", "arhoA1", "arhouA1", "arhoEA1", "arhoA2", "arhouA2", "arhoEA2"]
+constant_data_positive = {"grad_aA1": 0.6}
+constant_data_negative = {"grad_aA1": -0.6}
 
 class BerryInterfaceVelocityDerivativesTester(unittest.TestCase):
   def setUp(self):

@@ -14,7 +14,7 @@ class MomentumGravity(Kernel1Phase):
     return -data[self.arhoA] * data["g"] * data["phi"][i] * data["JxW"]
 
   def computeJacobian(self, data, der, var_index, i, j):
-    if var_index == self.arho_index:
+    if var_index == self.arhoA_index:
       return -data["g"] * data["phi"][j] * data["phi"][i] * data["JxW"]
     else:
       return self.zero

@@ -7,11 +7,15 @@ from Factory import Factory
 from OutputCaptor import OutputCaptor
 
 def outputPrintDoFVectorToFile(path):
+  # area function
+  def A(x):
+    return 2.0
+
   # create the DoF handler
   factory = Factory()
   n_cell = 5
   mesh = factory.createObject("UniformMesh", {"name": "mesh", "n_cell": n_cell})
-  dof_handler = factory.createObject("DoFHandler1Phase", {"meshes": [mesh]})
+  dof_handler = factory.createObject("DoFHandler1Phase", {"meshes": [mesh], "A": A})
 
   # solution vector
   U = range((n_cell + 1)*3)

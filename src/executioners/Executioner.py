@@ -1,8 +1,8 @@
 import numpy as np
 
 from enums import ModelType, VariableName
-from thermodynamic_functions import computeVolumeFraction, computeVelocity, \
-  computeDensity, computeSpecificVolume, computeSpecificTotalEnergy, \
+from thermodynamic_functions import computeVelocity, \
+  computeSpecificVolume, computeSpecificTotalEnergy, \
   computeSpecificInternalEnergy
 from Parameters import Parameters
 
@@ -70,7 +70,7 @@ class Executioner(object):
     if self.model_type != ModelType.OnePhase:
       self.aux_list += self.createIndependentPhaseAuxQuantities(1)
     if self.model_type == ModelType.TwoPhase:
-      self.aux_list += interface_closures.createAuxQuantities()
+      self.aux_list += self.createPhaseInteractionAuxQuantities() + interface_closures.createAuxQuantities()
     self.aux_list += stabilization.createAuxQuantities()
 
     # get list of aux quantities
@@ -108,6 +108,7 @@ class Executioner(object):
           return 1 - initial_vf1(x)
 
     # get relevant IC functions
+    A_function = ics.A
     initial_p = ics.p[phase]
     initial_u = ics.u[phase]
     if ics.specified_rho:
@@ -117,28 +118,32 @@ class Executioner(object):
 
     # compute IC
     eos_phase = self.eos_list[phase]
-    arho_index = self.dof_handler.variable_index[VariableName.ARhoA][phase]
+    arhoA_index = self.dof_handler.variable_index[VariableName.ARhoA][phase]
     arhouA_index = self.dof_handler.variable_index[VariableName.ARhoUA][phase]
     arhoEA_index = self.dof_handler.variable_index[VariableName.ARhoEA][phase]
     for k in xrange(self.dof_handler.n_node):
-      vf = initial_vf(self.dof_handler.x[k])
-      p = initial_p(self.dof_handler.x[k])
-      u = initial_u(self.dof_handler.x[k])
+      x = self.dof_handler.x[k]
+
+      A = A_function(x)
+      vf = initial_vf(x)
+      p = initial_p(x)
+      u = initial_u(x)
       if ics.specified_rho:
-        rho = initial_rho(self.dof_handler.x[k])
+        rho = initial_rho(x)
       else:
-        T = initial_T(self.dof_handler.x[k])
+        T = initial_T(x)
         rho = eos_phase.rho(p, T)
       e = eos_phase.e(1.0 / rho, p)[0]
       E = e + 0.5 * u * u
-      self.U[self.dof_handler.i(k, arho_index)] = vf * rho
-      self.U[self.dof_handler.i(k, arhouA_index)] = vf * rho * u
-      self.U[self.dof_handler.i(k, arhoEA_index)] = vf * rho * E
+      self.U[self.dof_handler.i(k, arhoA_index)] = vf * rho * A
+      self.U[self.dof_handler.i(k, arhouA_index)] = vf * rho * u * A
+      self.U[self.dof_handler.i(k, arhoEA_index)] = vf * rho * E * A
 
   def initializeVolumeFractionSolution(self, ics):
-    vf1_index = self.dof_handler.variable_index[VariableName.VF1][0]
+    aA1_index = self.dof_handler.variable_index[VariableName.AA1][0]
     for k in xrange(self.dof_handler.n_node):
-      self.U[self.dof_handler.i(k, vf1_index)] = ics.vf1(self.dof_handler.x[k])
+      x = self.dof_handler.x[k]
+      self.U[self.dof_handler.i(k, aA1_index)] = ics.vf1(x) * ics.A(x)
 
   def createIndependentPhaseAuxQuantities(self, phase):
     # create list of aux quantities to create
@@ -167,10 +172,17 @@ class Executioner(object):
 
     return aux_list
 
+  def createPhaseInteractionAuxQuantities(self):
+    aux_list = list()
+    params = {"aux": "vf1", "variable_names": ["aA1", "A"]}
+    aux_list.append(self.factory.createObject("AuxGradient", params))
+
+    return aux_list
+
   def createIndependentPhaseAdvectionKernels(self, phase):
     kernels = list()
     params = {"phase": phase, "dof_handler": self.dof_handler}
-    kernel_name_list = ["MassAdvection", "MomentumAdvection", "EnergyAdvection"]
+    kernel_name_list = ["MassAdvection", "MomentumAdvection", "MomentumAreaGradient", "EnergyAdvection"]
     for kernel_name in kernel_name_list:
       kernels.append(self.factory.createObject(kernel_name, params))
     return kernels
@@ -303,36 +315,41 @@ class Executioner(object):
 
   ## Computes the local cell solution and gradients for 1-phase flow
   def computeLocalCellSolutionOnePhase(self, U, elem, data):
-    data["vf1"] = self.fe_values.computeLocalVolumeFractionSolution(U, elem)
+    data["A"] = self.fe_values.computeLocalArea(elem)
+    data["aA1"] = self.fe_values.computeLocalVolumeFractionSolution(U, elem)
     data["arhoA1"] = self.fe_values.computeLocalSolution(U, VariableName.ARhoA, 0, elem)
     data["arhouA1"] = self.fe_values.computeLocalSolution(U, VariableName.ARhoUA, 0, elem)
     data["arhoEA1"] = self.fe_values.computeLocalSolution(U, VariableName.ARhoEA, 0, elem)
+    data["grad_A"] = self.fe_values.computeLocalAreaGradient(elem)
     if self.need_solution_gradients:
-      data["grad_vf1"] = self.fe_values.computeLocalVolumeFractionSolutionGradient(U, elem)
+      data["grad_aA1"] = self.fe_values.computeLocalVolumeFractionSolutionGradient(U, elem)
       data["grad_arhoA1"] = self.fe_values.computeLocalSolutionGradient(U, VariableName.ARhoA, 0, elem)
       data["grad_arhouA1"] = self.fe_values.computeLocalSolutionGradient(U, VariableName.ARhoUA, 0, elem)
       data["grad_arhoEA1"] = self.fe_values.computeLocalSolutionGradient(U, VariableName.ARhoEA, 0, elem)
 
   ## Computes the local node solution for 1-phase flow
   def computeLocalNodeSolutionOnePhase(self, U, k, data):
-    arhoA1_index = self.dof_handler.arho_index[0]
+    arhoA1_index = self.dof_handler.arhoA_index[0]
     arhouA1_index = self.dof_handler.arhouA_index[0]
     arhoEA1_index = self.dof_handler.arhoEA_index[0]
-    data["vf1"] = self.dof_handler.getVolumeFraction(U, k)
+    data["A"] = self.dof_handler.A[k]
+    data["aA1"] = self.dof_handler.aA1(U, k)
     data["arhoA1"] = U[self.dof_handler.i(k, arhoA1_index)]
     data["arhouA1"] = U[self.dof_handler.i(k, arhouA1_index)]
     data["arhoEA1"] = U[self.dof_handler.i(k, arhoEA1_index)]
 
   ## Computes the local cell solution and gradients for 2-phase flow
   def computeLocalCellSolutionTwoPhase(self, U, elem, data):
-    data["vf1"] = self.fe_values.computeLocalVolumeFractionSolution(U, elem)
+    data["A"] = self.fe_values.computeLocalArea(elem)
+    data["aA1"] = self.fe_values.computeLocalVolumeFractionSolution(U, elem)
     data["arhoA1"] = self.fe_values.computeLocalSolution(U, VariableName.ARhoA, 0, elem)
     data["arhouA1"] = self.fe_values.computeLocalSolution(U, VariableName.ARhoUA, 0, elem)
     data["arhoEA1"] = self.fe_values.computeLocalSolution(U, VariableName.ARhoEA, 0, elem)
     data["arhoA2"] = self.fe_values.computeLocalSolution(U, VariableName.ARhoA, 1, elem)
     data["arhouA2"] = self.fe_values.computeLocalSolution(U, VariableName.ARhoUA, 1, elem)
     data["arhoEA2"] = self.fe_values.computeLocalSolution(U, VariableName.ARhoEA, 1, elem)
-    data["grad_vf1"] = self.fe_values.computeLocalVolumeFractionSolutionGradient(U, elem)
+    data["grad_A"] = self.fe_values.computeLocalAreaGradient(elem)
+    data["grad_aA1"] = self.fe_values.computeLocalVolumeFractionSolutionGradient(U, elem)
     if self.need_solution_gradients:
       data["grad_arhoA1"] = self.fe_values.computeLocalSolutionGradient(U, VariableName.ARhoA, 0, elem)
       data["grad_arhouA1"] = self.fe_values.computeLocalSolutionGradient(U, VariableName.ARhoUA, 0, elem)
@@ -343,13 +360,14 @@ class Executioner(object):
 
   ## Computes the local node solution for 2-phase flow
   def computeLocalNodeSolutionTwoPhase(self, U, k, data):
-    arhoA1_index = self.dof_handler.arho_index[0]
+    arhoA1_index = self.dof_handler.arhoA_index[0]
     arhouA1_index = self.dof_handler.arhouA_index[0]
     arhoEA1_index = self.dof_handler.arhoEA_index[0]
-    arhoA2_index = self.dof_handler.arho_index[1]
+    arhoA2_index = self.dof_handler.arhoA_index[1]
     arhouA2_index = self.dof_handler.arhouA_index[1]
     arhoEA2_index = self.dof_handler.arhoEA_index[1]
-    data["vf1"] = self.dof_handler.getVolumeFraction(U, k)
+    data["A"] = self.dof_handler.A[k]
+    data["aA1"] = self.dof_handler.aA1(U, k)
     data["arhoA1"] = U[self.dof_handler.i(k, arhoA1_index)]
     data["arhouA1"] = U[self.dof_handler.i(k, arhouA1_index)]
     data["arhoEA1"] = U[self.dof_handler.i(k, arhoEA1_index)]

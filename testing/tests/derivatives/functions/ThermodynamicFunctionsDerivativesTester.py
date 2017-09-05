@@ -14,7 +14,7 @@ class ThermodynamicFunctionsFunctionDerivativesTester(unittest.TestCase):
       self.assertLessEqual(reldiff, 1e-7)
 
   def testDensity(self):
-    reldiffs = self.derivative_tester.checkDerivatives(computeDensity, 2)
+    reldiffs = self.derivative_tester.checkDerivatives(computeDensity, 3)
     for reldiff in reldiffs:
       self.assertLessEqual(reldiff, 1e-7)
 
@@ -36,7 +36,7 @@ class ThermodynamicFunctionsFunctionDerivativesTester(unittest.TestCase):
 if __name__ == "__main__":
   tester = FunctionDerivativesTester(False)
   tester.checkDerivatives(computeVelocity, 2)
-  tester.checkDerivatives(computeDensity, 2)
+  tester.checkDerivatives(computeDensity, 3)
   tester.checkDerivatives(computeSpecificVolume, 1)
   tester.checkDerivatives(computeSpecificTotalEnergy, 2)
   tester.checkDerivatives(computeSpecificInternalEnergy, 2)

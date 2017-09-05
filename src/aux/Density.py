@@ -14,7 +14,7 @@ class Density(AuxQuantity1Phase):
     data[self.name] = data[self.arhoA] / vf
 
     drho_dvf = - data[self.arhoA] / vf / vf
-    drho_dvf1 = drho_dvf * der[self.vf]["vf1"]
+    drho_daA1 = drho_dvf * der[self.vf]["aA1"]
     drho_darhoA = 1.0 / vf
-    der[self.name]["vf1"] = drho_dvf1
+    der[self.name]["aA1"] = drho_daA1
     der[self.name][self.arhoA] = drho_darhoA

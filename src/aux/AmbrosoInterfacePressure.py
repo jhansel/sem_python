@@ -19,7 +19,7 @@ class AmbrosoInterfacePressure(AuxQuantity2Phase):
     dpI_dp2 = (1 - u_relax)
     dpI_du_relax = p1 - p2
 
-    der[self.name]["vf1"] = dpI_dp1 * der["p1"]["vf1"] + dpI_dp2 * der["p2"]["vf1"] + dpI_du_relax * der["u_relax"]["vf1"]
+    der[self.name]["aA1"] = dpI_dp1 * der["p1"]["aA1"] + dpI_dp2 * der["p2"]["aA1"] + dpI_du_relax * der["u_relax"]["aA1"]
     der[self.name]["arhoA1"] = dpI_dp1 * der["p1"]["arhoA1"] + dpI_du_relax * der["u_relax"]["arhoA1"]
     der[self.name]["arhouA1"] = dpI_dp1 * der["p1"]["arhouA1"] + dpI_du_relax * der["u_relax"]["arhouA1"]
     der[self.name]["arhoEA1"] = dpI_dp1 * der["p1"]["arhoEA1"] + dpI_du_relax * der["u_relax"]["arhoEA1"]

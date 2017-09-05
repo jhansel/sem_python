@@ -4,6 +4,9 @@ from error_utilities import error
 class InitialConditions2PhaseParameters(Parameters):
   def __init__(self):
     Parameters.__init__(self)
+    def one(x):
+      return 1
+    self.registerParsedFunctionParameter("A", "Cross-sectional area of flow channel", one)
     self.registerParsedFunctionParameter("vf1", "Volume fraction of phase 1")
     self.registerParsedFunctionParameter("rho1", "Density of phase 1")
     self.registerParsedFunctionParameter("p1", "Pressure of phase 1")
@@ -16,6 +19,7 @@ class InitialConditions2PhaseParameters(Parameters):
 
 class InitialConditions2Phase(object):
   def __init__(self, params):
+    self.A = params.get("A")
     self.vf1 = params.get("vf1")
     self.p = [params.get("p1"), params.get("p2")]
     self.u = [params.get("u1"), params.get("u2")]

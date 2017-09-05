@@ -16,17 +16,14 @@ class AmbrosoPressureRelaxationCoef(AuxQuantity2Phase):
     p1 = data["p1"]
     p2 = data["p2"]
 
-    vf2 = 1 - vf1
-    dvf2_dvf1 = 0 * vf2 - 1
-
     denominator = self.pressure_relaxation_time * (p1 + p2)
-    data[self.name] = vf1 * vf2 / denominator
-    dp_relax_ddenominator = - vf1 * vf2 / denominator / denominator
-    pdp_relax_pdvf1 = (vf2 + vf1 * dvf2_dvf1) / denominator
+    data[self.name] = vf1 * (1 - vf1) / denominator
+    dp_relax_ddenominator = - vf1 * (1 - vf1) / denominator / denominator
+    pdp_relax_pdaA1 = (1 - 2 * vf1) * der["vf1"]["aA1"] / denominator
     dp_relax_dp1 = dp_relax_ddenominator * self.pressure_relaxation_time
     dp_relax_dp2 = dp_relax_ddenominator * self.pressure_relaxation_time
 
-    der[self.name]["vf1"] = pdp_relax_pdvf1 + dp_relax_dp1 * der["p1"]["vf1"] + dp_relax_dp2 * der["p2"]["vf1"]
+    der[self.name]["aA1"] = pdp_relax_pdaA1 + dp_relax_dp1 * der["p1"]["aA1"] + dp_relax_dp2 * der["p2"]["aA1"]
     der[self.name]["arhoA1"] = dp_relax_dp1 * der["p1"]["arhoA1"]
     der[self.name]["arhoA2"] = dp_relax_dp2 * der["p2"]["arhoA2"]
     der[self.name]["arhouA1"] = dp_relax_dp1 * der["p1"]["arhouA1"]

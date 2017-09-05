@@ -9,5 +9,5 @@ class VolumeFractionBC(BC):
   def __init__(self, params):
     BC.__init__(self, params)
 
-    vf1_index =self.dof_handler.variable_index[VariableName.VF1][0]
-    self.i_vf1 = self.dof_handler.i(self.k, vf1_index)
+    aA1_index =self.dof_handler.variable_index[VariableName.AA1][0]
+    self.i_aA1 = self.dof_handler.i(self.k, aA1_index)

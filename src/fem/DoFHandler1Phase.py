@@ -15,5 +15,5 @@ class DoFHandler1Phase(DoFHandler):
     self.n_vf_equations = 0
     self.setup()
 
-  def getVolumeFraction(self, U, k):
-    return 1
+  def aA1(self, U, k):
+    return self.A[k]

@@ -18,8 +18,8 @@ class AuxDerivativesTester(object):
 
     # initialize derivatives to zero
     derivative_list = deepcopy(root_vars)
-    if "vf1" not in derivative_list:
-      derivative_list.append("vf1")
+    if "aA1" not in derivative_list:
+      derivative_list.append("aA1")
     der = dict()
     for aux in other_aux + [test_aux]:
       der[aux.name] = dict()

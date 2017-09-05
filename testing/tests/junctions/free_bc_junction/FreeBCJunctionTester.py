@@ -8,11 +8,11 @@ from JunctionTester import JunctionTester
 class FreeBCJunctionTester(unittest.TestCase):
   def runDerivativeTest(self, test_option):
     tester = JunctionTester("FreeBCJunction")
-    rel_diffs = tester.checkJacobian(test_option)
-    n_i, n_j = rel_diffs.shape
+    matched = tester.checkJacobian(test_option)
+    n_i, n_j = matched.shape
     for i in xrange(n_i):
       for j in xrange(n_j):
-        self.assertLessEqual(rel_diffs[i,j], 1e-6)
+        self.assertTrue(matched[i,j])
 
   def testJacobianWeak(self):
     self.runDerivativeTest("weak")

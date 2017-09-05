@@ -10,8 +10,15 @@ params.set("a_int_min", 0.1)
 params.set("a_int_max", 0.7)
 test_aux = BerryInterfacialAreaDensity(params)
 
-other_aux = list()
-root_vars = ["vf1"]
+# phase-1 volume fraction aux
+params = TestAuxParameters()
+params.set("var", "vf1")
+params.set("other_vars", ["aA1"])
+params.set("coefs", [1.5])
+vf1_aux = TestAux(params)
+
+other_aux = [vf1_aux]
+root_vars = ["aA1"]
 
 class BerryInterfacialAreaDensityDerivativesTester(unittest.TestCase):
   def setUp(self):

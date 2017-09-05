@@ -34,5 +34,5 @@ class EqualFluxJunction(FreeBCJunction):
       J[self.i_arhoEA[m],self.i_arhoEA[n]] = self.df_energy_darhoEA[n]
 
       if self.model_type == ModelType.TwoPhase:
-        J[self.i_arhouA[m],self.i_vf1[n]] = self.df_momentum_dvf1[n]
-        J[self.i_arhoEA[m],self.i_vf1[n]] = self.df_energy_dvf1[n]
+        J[self.i_arhouA[m],self.i_aA1[n]] = self.df_momentum_daA1[n]
+        J[self.i_arhoEA[m],self.i_aA1[n]] = self.df_energy_daA1[n]

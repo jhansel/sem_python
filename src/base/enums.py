@@ -9,4 +9,4 @@ class VariableName(Enum):
   ARhoA = 1
   ARhoUA = 2
   ARhoEA = 3
-  VF1 = 4
+  AA1 = 4

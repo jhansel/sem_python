@@ -34,9 +34,9 @@ class DissipationVariableGradient(Kernel1Phase):
     else:
       dgrad_vari_dvarj = self.zero
 
-    if var_index == self.vf1_index:
-      return (der[self.visccoef]["vf1"] * data["phi"][j] * data[self.grad_var] + data[self.visccoef] * dgrad_vari_dvarj) * data["grad_phi"][i] * data["JxW"]
-    elif var_index == self.arho_index:
+    if var_index == self.aA1_index:
+      return (der[self.visccoef]["aA1"] * data["phi"][j] * data[self.grad_var] + data[self.visccoef] * dgrad_vari_dvarj) * data["grad_phi"][i] * data["JxW"]
+    elif var_index == self.arhoA_index:
       return (der[self.visccoef][self.arhoA] * data["phi"][j] * data[self.grad_var] + data[self.visccoef] * dgrad_vari_dvarj) * data["grad_phi"][i] * data["JxW"]
     elif var_index == self.arhouA_index:
       return (der[self.visccoef][self.arhouA] * data["phi"][j] * data[self.grad_var] + data[self.visccoef] * dgrad_vari_dvarj) * data["grad_phi"][i] * data["JxW"]

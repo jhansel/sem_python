@@ -109,7 +109,7 @@ def run(input_file, mods=list()):
     ics = factory.createObject("InitialConditions2Phase", ic_param_data)
 
   # DoF handler
-  dof_handler_params = {"meshes": meshes}
+  dof_handler_params = {"meshes": meshes, "A": ics.A}
   if model_type == ModelType.OnePhase:
     dof_handler_class = "DoFHandler1Phase"
   elif model_type == ModelType.TwoPhaseNonInteracting:

@@ -26,8 +26,12 @@ class BCTester(object):
     else:
       k_test = 1
 
+    # area function
+    def A(x):
+      return 2.0
+
     # DoF handler
-    dof_handler_params = {"meshes": meshes}
+    dof_handler_params = {"meshes": meshes, "A": A}
     if self.model_type == ModelType.OnePhase:
       dof_handler_class = "DoFHandler1Phase"
     elif self.model_type == ModelType.TwoPhaseNonInteracting:

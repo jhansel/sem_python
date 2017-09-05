@@ -8,12 +8,12 @@ from JunctionTester import JunctionTester
 class CompressibleJunctionTester(unittest.TestCase):
   def runDerivativeTest(self, test_option, use_momentum_flux_balance):
     tester = JunctionTester("CompressibleJunction")
-    rel_diffs = tester.checkJacobian(test_option,
+    matched = tester.checkJacobian(test_option,
       junction_params={"use_momentum_flux_balance": use_momentum_flux_balance})
-    n_i, n_j = rel_diffs.shape
+    n_i, n_j = matched.shape
     for i in xrange(n_i):
       for j in xrange(n_j):
-        self.assertLessEqual(rel_diffs[i,j], 1e-6)
+        self.assertTrue(matched[i,j])
 
   def testJacobianWeakTechnique1(self):
     self.runDerivativeTest("weak", False)

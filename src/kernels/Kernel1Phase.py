@@ -16,15 +16,15 @@ class Kernel1Phase(Kernel):
     Kernel.__init__(self, params)
 
     # create list of relevant variable indices
-    self.arho_index = self.dof_handler.arho_index[self.phase]
+    self.arhoA_index = self.dof_handler.arhoA_index[self.phase]
     self.arhouA_index = self.dof_handler.arhouA_index[self.phase]
     self.arhoEA_index = self.dof_handler.arhoEA_index[self.phase]
     if self.dof_handler.model_type == ModelType.TwoPhase:
-      self.vf1_index = self.dof_handler.vf1_index[0]
-      self.var_indices = [self.vf1_index, self.arho_index, self.arhouA_index, self.arhoEA_index]
+      self.aA1_index = self.dof_handler.aA1_index[0]
+      self.var_indices = [self.aA1_index, self.arhoA_index, self.arhouA_index, self.arhoEA_index]
     else:
-      self.vf1_index = float("NaN")
-      self.var_indices = [self.arho_index, self.arhouA_index, self.arhoEA_index]
+      self.aA1_index = float("NaN")
+      self.var_indices = [self.arhoA_index, self.arhouA_index, self.arhoEA_index]
 
     # create variable names
     phase_str = str(self.phase + 1)

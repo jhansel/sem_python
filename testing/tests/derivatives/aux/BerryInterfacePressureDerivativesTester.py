@@ -11,7 +11,7 @@ test_aux = BerryInterfacePressure(params)
 # bar interface pressure aux
 params = TestAuxParameters()
 params.set("var", "pI_bar")
-params.set("other_vars", ["vf1", "arhoA1", "arhouA1", "arhoEA1", "arhoA2", "arhouA2", "arhoEA2"])
+params.set("other_vars", ["aA1", "arhoA1", "arhouA1", "arhoEA1", "arhoA2", "arhouA2", "arhoEA2"])
 params.set("coefs", [1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7])
 pI_bar_aux = TestAux(params)
 
@@ -32,21 +32,21 @@ u2_aux = TestAux(params)
 # phase-1 acoustic impedance aux
 params = TestAuxParameters()
 params.set("var", "z1")
-params.set("other_vars", ["vf1", "arhoA1", "arhouA1", "arhoEA1"])
+params.set("other_vars", ["aA1", "arhoA1", "arhouA1", "arhoEA1"])
 params.set("coefs", [1.6, 2.3, 4.5, 2.1])
 z1_aux = TestAux(params)
 
 # phase-2 acoustic impedance aux
 params = TestAuxParameters()
 params.set("var", "z2")
-params.set("other_vars", ["vf1", "arhoA2", "arhouA2", "arhoEA2"])
+params.set("other_vars", ["aA1", "arhoA2", "arhouA2", "arhoEA2"])
 params.set("coefs", [1.2, 3.2, 4.1, 2.4])
 z2_aux = TestAux(params)
 
 other_aux = [pI_bar_aux, u1_aux, u2_aux, z1_aux, z2_aux]
-root_vars = ["vf1", "arhoA1", "arhouA1", "arhoEA1", "arhoA2", "arhouA2", "arhoEA2"]
-constant_data_positive = {"grad_vf1": 0.6}
-constant_data_negative = {"grad_vf1": -0.6}
+root_vars = ["aA1", "arhoA1", "arhouA1", "arhoEA1", "arhoA2", "arhouA2", "arhoEA2"]
+constant_data_positive = {"grad_aA1": 0.6}
+constant_data_negative = {"grad_aA1": -0.6}
 
 class BerryInterfacePressureDerivativesTester(unittest.TestCase):
   def setUp(self):

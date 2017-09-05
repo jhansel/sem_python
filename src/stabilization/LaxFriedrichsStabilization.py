@@ -31,12 +31,16 @@ class LaxFriedrichsStabilization(Stabilization):
       params = {"phase": phase}
       aux_list.append(self.factory.createObject("InternalEnergyDensity", params))
 
-      # gradients
-      aux_gradient_names = ["vf", "rho", "u", "rhoe"]
+      # volume fraction gradient
+      params = {"aux": "vf" + str(phase + 1), "variable_names": ["A", "aA1"]}
+      aux_list.append(self.factory.createObject("AuxGradient", params))
+
+      # other gradients
+      aux_gradient_names = ["rho", "u", "rhoe"]
       if phase == 0:
-        variable_names = ["vf1", "arhoA1", "arhouA1", "arhoEA1"]
+        variable_names = ["aA1", "arhoA1", "arhouA1", "arhoEA1"]
       else:
-        variable_names = ["vf1", "arhoA2", "arhouA2", "arhoEA2"]
+        variable_names = ["aA1", "arhoA2", "arhouA2", "arhoEA2"]
       for aux_gradient_name in aux_gradient_names:
         params = {"aux": aux_gradient_name + str(phase + 1), "variable_names": variable_names}
         aux_list.append(self.factory.createObject("AuxGradient", params))
@@ -58,7 +62,7 @@ class LaxFriedrichsStabilization(Stabilization):
       aux_list.append(self.factory.createObject("LaxFriedrichsCoefficientVolumeFraction", params))
     else:
       # create zero coefficient for volume fraction equation
-      params = {"name": "visccoef_vf", "value": 0}
+      params = {"name": "visccoef_aA1", "value": 0}
       aux_list.append(self.factory.createObject("ConstantAux", params))
 
     aux_list += self.createIndependentPhaseAuxQuantities(0)
@@ -84,9 +88,9 @@ class LaxFriedrichsStabilization(Stabilization):
   def createPhaseInteractionKernels(self):
     kernels = list()
     if self.use_simple_dissipation:
-      params = {"phase": 0, "dof_handler": self.dof_handler, "var_enum": VariableName.VF1}
+      params = {"phase": 0, "dof_handler": self.dof_handler, "var_enum": VariableName.AA1}
       kernels.append(self.factory.createObject("DissipationVariableGradient", params))
     else:
-      params = {"phase": 0, "dof_handler": self.dof_handler, "var_enum": VariableName.VF1, "flux_name": "viscflux_vf1"}
+      params = {"phase": 0, "dof_handler": self.dof_handler, "var_enum": VariableName.AA1, "flux_name": "viscflux_aA1"}
       kernels.append(self.factory.createObject("DissipationAuxFlux", params))
     return kernels

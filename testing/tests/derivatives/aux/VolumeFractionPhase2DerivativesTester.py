@@ -8,7 +8,7 @@ params.set("phase", 1)
 test_aux = VolumeFractionPhase2(params)
 
 other_aux = list()
-root_vars = ["vf1"]
+root_vars = ["aA1"]
 
 class VolumeFractionPhase2DerivativesTester(unittest.TestCase):
   def setUp(self):

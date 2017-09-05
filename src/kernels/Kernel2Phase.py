@@ -19,14 +19,14 @@ class Kernel2Phase(Kernel):
       self.sign = -1.0
 
     # create list of relevant variable indices
-    self.vf1_index = self.dof_handler.vf1_index[0]
-    self.arhoA1_index = self.dof_handler.arho_index[0]
+    self.aA1_index = self.dof_handler.aA1_index[0]
+    self.arhoA1_index = self.dof_handler.arhoA_index[0]
     self.arhouA1_index = self.dof_handler.arhouA_index[0]
     self.arhoEA1_index = self.dof_handler.arhoEA_index[0]
-    self.arhoA2_index = self.dof_handler.arho_index[1]
+    self.arhoA2_index = self.dof_handler.arhoA_index[1]
     self.arhouA2_index = self.dof_handler.arhouA_index[1]
     self.arhoEA2_index = self.dof_handler.arhoEA_index[1]
-    self.var_indices = [self.vf1_index, self.arhoA1_index, self.arhouA1_index, self.arhoEA1_index,
+    self.var_indices = [self.aA1_index, self.arhoA1_index, self.arhouA1_index, self.arhoEA1_index,
       self.arhoA2_index, self.arhouA2_index, self.arhoEA2_index]
 
     # create variable names

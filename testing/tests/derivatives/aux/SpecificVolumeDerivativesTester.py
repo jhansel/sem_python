@@ -12,12 +12,12 @@ test_aux = SpecificVolume(params)
 # density aux
 params = TestAuxParameters()
 params.set("var", "rho1")
-params.set("other_vars", ["vf1", "arhoA1"])
+params.set("other_vars", ["aA1", "arhoA1"])
 params.set("coefs", [2.0, 3.0])
 rho_aux = TestAux(params)
 
 other_aux = [rho_aux]
-root_vars = ["vf1", "arhoA1"]
+root_vars = ["aA1", "arhoA1"]
 
 class SpecificVolumeDerivativesTester(unittest.TestCase):
   def setUp(self):

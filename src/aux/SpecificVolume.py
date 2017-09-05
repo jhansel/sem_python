@@ -14,7 +14,7 @@ class SpecificVolume(AuxQuantity1Phase):
     data[self.name] = 1.0 / rho
 
     dv_drho = - 1.0 / rho / rho
-    dv_dvf1 = dv_drho * der[self.rho]["vf1"]
+    dv_daA1 = dv_drho * der[self.rho]["aA1"]
     dv_darhoA = dv_drho * der[self.rho][self.arhoA]
-    der[self.name]["vf1"] = dv_dvf1
+    der[self.name]["aA1"] = dv_daA1
     der[self.name][self.arhoA] = dv_darhoA

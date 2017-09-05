@@ -11,14 +11,15 @@ class MomentumVolumeFractionGradient(Kernel2Phase):
     Kernel2Phase.__init__(self, params)
 
   def computeResidual(self, data, i):
-    return - self.sign * data["pI"] * data["grad_vf1"] * data["phi"][i] * data["JxW"]
+    return - self.sign * data["pI"] * data["grad_vf1"] * data["A"] * data["phi"][i] * data["JxW"]
 
   def computeJacobian(self, data, der, var_index, i, j):
-    if var_index == self.vf1_index:
-      return (-self.sign * der["pI"]["vf1"] * data["grad_vf1"] * data["phi"][j] \
-        - self.sign * data["pI"] * data["grad_phi"][j]) * data["phi"][i] * data["JxW"]
+    if var_index == self.aA1_index:
+      return (-self.sign * der["pI"]["aA1"] * data["grad_vf1"] * data["phi"][j] \
+        - self.sign * data["pI"] * der["grad_vf1"]["grad_aA1"] * data["grad_phi"][j]) \
+        * data["A"] * data["phi"][i] * data["JxW"]
     else:
-      aux = - self.sign * data["grad_vf1"] * data["phi"][j] * data["phi"][i] * data["JxW"]
+      aux = - self.sign * data["grad_vf1"] * data["A"] * data["phi"][j] * data["phi"][i] * data["JxW"]
       if var_index == self.arhoA1_index:
         return der["pI"]["arhoA1"]  * aux
       elif var_index == self.arhouA1_index:

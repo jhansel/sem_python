@@ -20,7 +20,7 @@ class AmbrosoVelocityRelaxationCoef(AuxQuantity2Phase):
     du_relax_dT2 = (1 - beta) / denominator - (1 - beta) * T2 / denominator / denominator * (1 - beta)
     du_relax_dbeta = - T2 / denominator - (1 - beta) * T2 / denominator / denominator * (T1 - T2)
 
-    der[self.name]["vf1"] = du_relax_dT1 * der["T1"]["vf1"] + du_relax_dT2 * der["T2"]["vf1"]
+    der[self.name]["aA1"] = du_relax_dT1 * der["T1"]["aA1"] + du_relax_dT2 * der["T2"]["aA1"]
     der[self.name]["arhoA1"] = du_relax_dT1 * der["T1"]["arhoA1"] + du_relax_dbeta * der["beta"]["arhoA1"]
     der[self.name]["arhoA2"] = du_relax_dT2 * der["T2"]["arhoA2"] + du_relax_dbeta * der["beta"]["arhoA2"]
     der[self.name]["arhouA1"] = du_relax_dT1 * der["T1"]["arhouA1"]

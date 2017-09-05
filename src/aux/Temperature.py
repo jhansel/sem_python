@@ -15,11 +15,11 @@ class Temperature(AuxQuantity1Phase):
     T, dT_dv, dT_de = self.T_function(data[self.v], data[self.e])
     data[self.name] = T
 
-    dT_dvf1 = dT_dv * der[self.v]["vf1"]
+    dT_daA1 = dT_dv * der[self.v]["aA1"]
     dT_darhoA = dT_dv * der[self.v][self.arhoA] + dT_de * der[self.e][self.arhoA]
     dT_darhouA = dT_de * der[self.e][self.arhouA]
     dT_darhoEA = dT_de * der[self.e][self.arhoEA]
-    der[self.name]["vf1"] = dT_dvf1
+    der[self.name]["aA1"] = dT_daA1
     der[self.name][self.arhoA] = dT_darhoA
     der[self.name][self.arhouA] = dT_darhouA
     der[self.name][self.arhoEA] = dT_darhoEA

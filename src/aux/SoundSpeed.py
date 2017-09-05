@@ -15,11 +15,11 @@ class SoundSpeed(AuxQuantity1Phase):
     c, dc_dv, dc_dp = self.c_function(data[self.v], data[self.p])
     data[self.name] = c
 
-    dc_dvf1 = dc_dv * der[self.v]["vf1"] + dc_dp * der[self.p]["vf1"]
+    dc_daA1 = dc_dv * der[self.v]["aA1"] + dc_dp * der[self.p]["aA1"]
     dc_darhoA = dc_dv * der[self.v][self.arhoA] + dc_dp * der[self.p][self.arhoA]
     dc_darhouA = dc_dp * der[self.p][self.arhouA]
     dc_darhoEA = dc_dp * der[self.p][self.arhoEA]
-    der[self.name]["vf1"] = dc_dvf1
+    der[self.name]["aA1"] = dc_daA1
     der[self.name][self.arhoA] = dc_darhoA
     der[self.name][self.arhouA] = dc_darhouA
     der[self.name][self.arhoEA] = dc_darhoEA

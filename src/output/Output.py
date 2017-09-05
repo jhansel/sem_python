@@ -44,7 +44,7 @@ class Output(object):
 
     # compute aux quantities
     n = self.dof_handler.n_node
-    rho1 = computeDensity(vf1, arhoA1)[0]
+    rho1 = computeDensity(vf1, arhoA1, self.dof_handler.A)[0]
     u1 = computeVelocity(arhoA1, arhouA1)[0]
     v1 = computeSpecificVolume(rho1)[0]
     E1 = computeSpecificTotalEnergy(arhoA1, arhoEA1)[0]
@@ -53,7 +53,7 @@ class Output(object):
     p1 = eos1.p(v1, e1)[0]
     T1 = eos1.T(v1, e1)[0]
     if (self.model_type != ModelType.OnePhase):
-      rho2 = computeDensity(vf2, arhoA2)[0]
+      rho2 = computeDensity(vf2, arhoA2, self.dof_handler.A)[0]
       u2 = computeVelocity(arhoA2, arhouA2)[0]
       v2 = computeSpecificVolume(rho2)[0]
       E2 = computeSpecificTotalEnergy(arhoA2, arhoEA2)[0]

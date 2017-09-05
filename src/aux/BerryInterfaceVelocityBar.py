@@ -19,8 +19,8 @@ class BerryInterfaceVelocityBar(AuxQuantity2Phase):
     data[self.name] = numerator / (z1 + z2)
 
     ddenominator = -1.0 / (z1 + z2)**2
-    der[self.name]["vf1"] = (der["z1"]["vf1"] * u1 + der["z2"]["vf1"] * u2) / (z1 + z2) \
-      + numerator * ddenominator * (der["z1"]["vf1"] + der["z2"]["vf1"])
+    der[self.name]["aA1"] = (der["z1"]["aA1"] * u1 + der["z2"]["aA1"] * u2) / (z1 + z2) \
+      + numerator * ddenominator * (der["z1"]["aA1"] + der["z2"]["aA1"])
     der[self.name]["arhoA1"] = (der["z1"]["arhoA1"] * u1 + z1 * der["u1"]["arhoA1"]) / (z1 + z2) \
       + numerator * ddenominator * der["z1"]["arhoA1"]
     der[self.name]["arhouA1"] = (der["z1"]["arhouA1"] * u1 + z1 * der["u1"]["arhouA1"]) / (z1 + z2) \

@@ -13,19 +13,21 @@ class FreeBC(OnePhaseBC):
     OnePhaseBC.__init__(self, params)
 
   def applyWeakBC(self, U, r, J):
-    vf1 = self.dof_handler.getVolumeFraction(U, self.k)
-    vf, dvf_dvf1 = computeVolumeFraction(vf1, self.phase, self.model_type)
+    A = self.dof_handler.A[self.k]
+    aA1 = self.dof_handler.aA1(U, self.k)
     arhoA = U[self.i_arhoA]
     arhouA = U[self.i_arhouA]
     arhoEA = U[self.i_arhoEA]
 
+    vf, dvf_daA1 = computeVolumeFraction(aA1, A, self.phase, self.model_type)
+
     u, du_darhoA, du_darhouA = computeVelocity(arhoA, arhouA)
 
-    rho, drho_dvf, drho_darhoA = computeDensity(vf, arhoA)
-    drho_dvf1 = drho_dvf * dvf_dvf1
+    rho, drho_dvf, drho_darhoA, _ = computeDensity(vf, arhoA, A)
+    drho_daA1 = drho_dvf * dvf_daA1
 
     v, dv_drho = computeSpecificVolume(rho)
-    dv_dvf1 = dv_drho * drho_dvf1
+    dv_daA1 = dv_drho * drho_daA1
     dv_darhoA = dv_drho * drho_darhoA
 
     E, dE_darhoA, dE_darhoEA = computeSpecificTotalEnergy(arhoA, arhoEA)
@@ -36,7 +38,7 @@ class FreeBC(OnePhaseBC):
     de_darhoEA = de_dE * dE_darhoEA
 
     p, dp_dv, dp_de = self.eos.p(v, e)
-    dp_dvf1 = dp_dv * dv_dvf1
+    dp_daA1 = dp_dv * dv_daA1
     dp_darhoA = dp_dv * dv_darhoA + dp_de * de_darhoA
     dp_darhouA = dp_de * de_darhouA
     dp_darhoEA = dp_de * de_darhoEA
@@ -48,7 +50,7 @@ class FreeBC(OnePhaseBC):
     # momentum
     r[self.i_arhouA] += (arhouA * u + vf * p) * self.nx
     if (self.model_type == ModelType.TwoPhase):
-      J[self.i_arhouA,self.i_vf1] += (dvf_dvf1 * p + vf * dp_dvf1) * self.nx
+      J[self.i_arhouA,self.i_aA1] += (dvf_daA1 * p + vf * dp_daA1) * self.nx
     J[self.i_arhouA,self.i_arhoA] += (arhouA * du_darhoA + vf * dp_darhoA) * self.nx
     J[self.i_arhouA,self.i_arhouA] += (arhouA * du_darhouA + u + vf * dp_darhouA) * self.nx
     J[self.i_arhouA,self.i_arhoEA] += vf * dp_darhoEA * self.nx
@@ -56,7 +58,7 @@ class FreeBC(OnePhaseBC):
     # energy
     r[self.i_arhoEA] += (arhoEA + vf * p) * u * self.nx
     if (self.model_type == ModelType.TwoPhase):
-      J[self.i_arhoEA,self.i_vf1] += (dvf_dvf1 * p + vf * dp_dvf1) * u * self.nx
+      J[self.i_arhoEA,self.i_aA1] += (dvf_daA1 * p + vf * dp_daA1) * u * self.nx
     J[self.i_arhoEA,self.i_arhoA] += ((arhoEA + vf * p) * du_darhoA + vf * dp_darhoA * u) * self.nx
     J[self.i_arhoEA,self.i_arhouA] += ((arhoEA + vf * p) * du_darhouA + vf * dp_darhouA * u) * self.nx
     J[self.i_arhoEA,self.i_arhoEA] += (1 + vf * dp_darhoEA) * u * self.nx

@@ -10,11 +10,13 @@ class DoFHandlerParameters(Parameters):
   def __init__(self):
     Parameters.__init__(self)
     self.registerParameter("meshes", "List of meshes")
+    self.registerFunctionParameter("A", "Cross-sectional area function")
 
 class DoFHandler(object):
   __metaclass__ = ABCMeta
   def __init__(self, params):
     self.meshes = params.get("meshes")
+    A = params.get("A")
 
     # number of cells and nodes
     self.n_cell = 0
@@ -56,6 +58,11 @@ class DoFHandler(object):
 
     # initialize number of constraints to zero
     self.n_constraints = [0] * self.n_meshes
+
+    # compute area at each node
+    self.A = np.zeros(self.n_node)
+    for k in xrange(self.n_node):
+      self.A[k] = A(self.x[k])
 
   def updateWithJunctionConstraints(self, junctions):
     # add the number of constraints from each junction
@@ -101,45 +108,45 @@ class DoFHandler(object):
     self.n_dof += sum(self.n_constraints)
 
   def setup(self):
-    arho_index_phase = 0
+    arhoA_index_phase = 0
     arhouA_index_phase = 2
     arhoEA_index_phase = 1
     self.n_var = self.n_vf_equations + self.n_phases * 3
-    self.arho_index = list()
+    self.arhoA_index = list()
     self.arhouA_index = list()
     self.arhoEA_index = list()
     self.variable_names = [""] * self.n_var
     self.index_to_variable = dict()
     self.index_to_phase = dict()
     for phase in xrange(self.n_phases):
-      self.arho_index.append(self.n_vf_equations + phase * 3 + arho_index_phase)
+      self.arhoA_index.append(self.n_vf_equations + phase * 3 + arhoA_index_phase)
       self.arhouA_index.append(self.n_vf_equations + phase * 3 + arhouA_index_phase)
       self.arhoEA_index.append(self.n_vf_equations + phase * 3 + arhoEA_index_phase)
 
-      self.variable_names[self.arho_index[phase]] = "arhoA" + str(phase+1)
+      self.variable_names[self.arhoA_index[phase]] = "arhoA" + str(phase+1)
       self.variable_names[self.arhouA_index[phase]] = "arhouA" + str(phase+1)
       self.variable_names[self.arhoEA_index[phase]] = "arhoEA" + str(phase+1)
 
-      self.index_to_variable[self.arho_index[phase]] = VariableName.ARhoA
+      self.index_to_variable[self.arhoA_index[phase]] = VariableName.ARhoA
       self.index_to_variable[self.arhouA_index[phase]] = VariableName.ARhoUA
       self.index_to_variable[self.arhoEA_index[phase]] = VariableName.ARhoEA
 
-      self.index_to_phase[self.arho_index[phase]] = phase
+      self.index_to_phase[self.arhoA_index[phase]] = phase
       self.index_to_phase[self.arhouA_index[phase]] = phase
       self.index_to_phase[self.arhoEA_index[phase]] = phase
 
     self.variable_index = {
-      VariableName.ARhoA: self.arho_index,
+      VariableName.ARhoA: self.arhoA_index,
       VariableName.ARhoUA: self.arhouA_index,
       VariableName.ARhoEA: self.arhoEA_index}
 
     if self.model_type == ModelType.TwoPhase:
-      self.vf1_index = [0]
+      self.aA1_index = [0]
       phase = 0
-      self.variable_index[VariableName.VF1] = self.vf1_index
-      self.variable_names[self.vf1_index[phase]] = "vf1"
-      self.index_to_variable[self.vf1_index[phase]] = VariableName.VF1
-      self.index_to_phase[self.vf1_index[phase]] = phase
+      self.variable_index[VariableName.AA1] = self.aA1_index
+      self.variable_names[self.aA1_index[phase]] = "aA1"
+      self.index_to_variable[self.aA1_index[phase]] = VariableName.AA1
+      self.index_to_phase[self.aA1_index[phase]] = phase
 
     # total number of DoFs
     self.n_dof_per_cell = self.n_dof_per_cell_per_var * self.n_var
@@ -187,7 +194,7 @@ class DoFHandler(object):
     return self.variable_names[index]
 
   @abstractmethod
-  def getVolumeFraction(self, U, k):
+  def aA1(self, U, k):
     pass
 
   def getSolution(self, U, variable_name, phase):
@@ -195,8 +202,8 @@ class DoFHandler(object):
     return np.array([U[self.i(k, var_index)] for k in xrange(self.n_node)])
 
   def getPhaseSolution(self, U, phase):
-    vf1 = np.array([self.getVolumeFraction(U, k) for k in xrange(self.n_node)])
-    vf, _ = computeVolumeFraction(vf1, phase, self.model_type)
+    aA1 = np.array([self.aA1(U, k) for k in xrange(self.n_node)])
+    vf, _ = computeVolumeFraction(aA1, self.A, phase, self.model_type)
     arhoA = self.getSolution(U, VariableName.ARhoA, phase)
     arhouA = self.getSolution(U, VariableName.ARhoUA, phase)
     arhoEA = self.getSolution(U, VariableName.ARhoEA, phase)
@@ -240,7 +247,7 @@ class DoFHandler(object):
   ## Initializes derivative data to zero for each solution variable
   # @param[in] names  list of aux quantity names
   def initializeDerivativeData(self, names):
-    variable_names = ["vf1", "arhoA1", "arhouA1", "arhoEA1", "arhoA2", "arhouA2", "arhoEA2"]
+    variable_names = ["aA1", "arhoA1", "arhouA1", "arhoEA1", "arhoA2", "arhouA2", "arhoEA2"]
     der = dict()
     for name in names:
       der[name] = dict()

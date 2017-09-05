@@ -10,6 +10,9 @@ class VolumeFractionPhase2(AuxQuantity1Phase):
     self.name = self.vf
 
   def compute(self, data, der):
-    data[self.name] = 1.0 - data["vf1"]
+    data[self.name] = 1.0 - data["aA1"] / data["A"]
 
-    der[self.name]["vf1"] = 0 * data["vf1"] - 1.0
+    # The derivative w.r.t. area is needed because this derivative will be
+    # used by AuxGradient to compute the gradient of volume fraction.
+    der[self.name]["A"] = data["aA1"] / data["A"]**2
+    der[self.name]["aA1"] = - 1.0 / data["A"]

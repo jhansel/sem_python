@@ -11,20 +11,20 @@ test_aux = EntropyMinimumVolumeFractionFlux(params)
 
 # viscous coefficient aux
 params = TestAuxParameters()
-params.set("var", "visccoef_vf")
-params.set("other_vars", ["vf1", "arhoA1", "arhouA1", "arhoEA1", "arhoA2", "arhouA2", "arhoEA2"])
+params.set("var", "visccoef_aA1")
+params.set("other_vars", ["aA1", "arhoA1", "arhouA1", "arhoEA1", "arhoA2", "arhouA2", "arhoEA2"])
 params.set("coefs", [1.5, 2.5, 3.5, 4.5, 2.2, 3.2, 4.2])
-visccoef_vf_aux = TestAux(params)
+visccoef_aA1_aux = TestAux(params)
 
 # volume fraction gradient aux
 params = TestAuxParameters()
-params.set("var", "grad_vf")
-params.set("other_vars", ["grad_vf1"])
+params.set("var", "grad_vf1")
+params.set("other_vars", ["grad_aA1"])
 params.set("coefs", [1.0])
 grad_vf_aux = TestAux(params)
 
-other_aux = [visccoef_vf_aux, grad_vf_aux]
-root_vars = ["vf1", "arhoA1", "arhouA1", "arhoEA1", "arhoA2", "arhouA2", "arhoEA2", "grad_vf1"]
+other_aux = [visccoef_aA1_aux, grad_vf_aux]
+root_vars = ["aA1", "arhoA1", "arhouA1", "arhoEA1", "arhoA2", "arhouA2", "arhoEA2", "grad_aA1"]
 
 class EntropyMinimumVolumeFractionFluxDerivativesTester(unittest.TestCase):
   def setUp(self):
