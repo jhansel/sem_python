@@ -19,7 +19,7 @@
 []
 
 [Physics]
-  gravity = 0
+  gravity = 0 0 0
 []
 
 [Mesh]

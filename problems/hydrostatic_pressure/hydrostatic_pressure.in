@@ -3,7 +3,7 @@
 []
 
 [Physics]
-  gravity = -9.8
+  gravity = -9.8 0 0
 []
 
 [Mesh]

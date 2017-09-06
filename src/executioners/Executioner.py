@@ -15,7 +15,7 @@ class ExecutionerParameters(Parameters):
     self.registerParameter("junctions", "List of junctions")
     self.registerParameter("eos_list", "List of equations of state")
     self.registerParameter("interface_closures", "Interface closures")
-    self.registerFloatParameter("gravity", "Acceleration due to gravity")
+    self.registerFloatListParameter("gravity", "3-D gravitational acceleration vector")
     self.registerParameter("dof_handler", "Degree of freedom handler")
     self.registerParameter("meshes", "List of meshes")
     self.registerParameter("nonlinear_solver_params", "Nonlinear solver parameters")
@@ -288,8 +288,6 @@ class Executioner(object):
     der = self.dof_handler.initializeDerivativeData(self.aux_names)
 
     data["phi"] = self.fe_values.get_phi()
-    data["g"] = self.gravity
-
     for elem in xrange(self.dof_handler.n_cell):
       r_cell = np.zeros(self.dof_handler.n_dof_per_cell)
       J_cell = np.zeros(shape=(self.dof_handler.n_dof_per_cell, self.dof_handler.n_dof_per_cell))
@@ -297,6 +295,7 @@ class Executioner(object):
       data["grad_phi"] = self.fe_values.get_grad_phi(elem)
       data["JxW"] = self.fe_values.get_JxW(elem)
       data["dx"] = self.dof_handler.h[elem]
+      data["g"] = np.dot(self.meshes[self.dof_handler.elem_to_mesh_index[elem]].orientation, self.gravity)
 
       # compute solution
       self.computeLocalCellSolution(U, elem, data)

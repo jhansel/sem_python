@@ -11,7 +11,7 @@
 []
 
 [Physics]
-  gravity = 9.81
+  gravity = 9.81 0 0
 []
 
 [InterfaceClosures]

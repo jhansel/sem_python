@@ -39,3 +39,12 @@ def stringToStringList(s):
     return s
   else:
     error("'" + s + "' is not a valid string list.")
+
+def stringToFloatList(s):
+  if isinstance(s, basestring):
+    string_list = s.split()
+    return [stringToFloat(x) for x in string_list]
+  elif isinstance(s, list):
+    return s
+  else:
+    error("'" + s + "' is not a valid float list.")

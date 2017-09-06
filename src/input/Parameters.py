@@ -1,4 +1,4 @@
-from conversion_utilities import stringToBool, stringToInt, stringToFloat, stringToFunction, stringToStringList
+from conversion_utilities import stringToBool, stringToInt, stringToFloat, stringToFloatList, stringToFunction, stringToStringList
 from error_utilities import error
 
 ## Class for declaring and retrieving input parameters
@@ -52,6 +52,8 @@ class Parameters(object):
         self.values[name] = stringToInt(value)
       elif self.types[name] == "float":
         self.values[name] = stringToFloat(value)
+      elif self.types[name] == "float_list":
+        self.values[name] = stringToFloatList(value)
       elif self.types[name] == "function":
         self.values[name] = value
       elif self.types[name] == "general":
@@ -94,6 +96,9 @@ class Parameters(object):
 
   def registerFloatParameter(self, name, description, default=None):
     self.registerParameterInternal(name, "float", description, default)
+
+  def registerFloatListParameter(self, name, description, default=None):
+    self.registerParameterInternal(name, "float_list", description, default)
 
   def registerFunctionParameter(self, name, description, default=None):
     self.registerParameterInternal(name, "function", description, default)

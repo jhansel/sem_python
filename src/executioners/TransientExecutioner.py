@@ -124,7 +124,6 @@ class TransientExecutioner(Executioner):
     data["phi"].fill(1.0)
     data["grad_phi"].fill(float("NaN"))
     data["JxW"] = 1.0
-    data["g"] = self.gravity
 
     n_var = self.dof_handler.n_var
 
@@ -132,6 +131,8 @@ class TransientExecutioner(Executioner):
     for k in xrange(self.dof_handler.n_node):
       r_node = np.zeros(n_var)
       J_node = np.zeros(shape=(n_var, n_var))
+
+      data["g"] = np.dot(self.meshes[self.dof_handler.node_to_mesh_index[k]].orientation, self.gravity)
 
       # compute solution
       self.computeLocalNodeSolution(U, k, data)

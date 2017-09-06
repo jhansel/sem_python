@@ -170,6 +170,8 @@ def run(input_file, mods=list()):
   physics_param_data = input_file_parser.getBlockData("Physics")
   physics_params = factory.createParametersObject("Physics", physics_param_data)
   gravity = physics_params.get("gravity")
+  if len(gravity) != 3:
+    error("Gravity vector must have 3 elements")
 
   # nonlinear solver options
   nonlinear_solver_params = input_file_parser.getBlockData("NonlinearSolver")
