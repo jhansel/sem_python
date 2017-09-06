@@ -26,7 +26,7 @@ class EqualSolutionLM1PhaseJunction(FreeBCJunction):
     # add normal boundary fluxes
     FreeBCJunction.applyWeaklyToNonlinearSystem(self, U, U_old, r, J)
 
-    # add contributions from Langrange multipliers
+    # add contributions from Lagrange multipliers
     for m in xrange(self.n_var):
       r[self.i1[m]] += U[self.i_constraint[m]]
       J[self.i1[m]][self.i_constraint[m]] += 1
