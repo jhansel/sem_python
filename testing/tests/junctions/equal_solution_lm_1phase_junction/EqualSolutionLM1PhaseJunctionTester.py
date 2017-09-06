@@ -29,7 +29,7 @@ class EqualSolutionLM1PhaseJunctionTester(unittest.TestCase):
     n_i, n_j = matched.shape
     for i in xrange(n_i):
       for j in xrange(n_j):
-        self.assertTrue(rel_diffs[i,j])
+        self.assertTrue(matched[i,j])
 
   def testJacobianWeak(self):
     self.runDerivativeTest("weak")
