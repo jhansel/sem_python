@@ -15,11 +15,11 @@ class CompressibleJunctionTester(unittest.TestCase):
       for j in xrange(n_j):
         self.assertTrue(matched[i,j])
 
-  def testJacobianTechnique1(self):
-    self.runDerivativeTest("both", False)
+  def testJacobianTechnique1NoLM(self):
+    self.runDerivativeTest("both", False, False)
 
-  def testJacobianTechnique2(self):
-    self.runDerivativeTest("both", True)
+  def testJacobianTechnique2NoLM(self):
+    self.runDerivativeTest("both", True, False)
 
 if __name__ == "__main__":
   tester = JunctionTester("CompressibleJunction", verbose=True)
@@ -27,5 +27,7 @@ if __name__ == "__main__":
   _ = tester.checkJacobian("both", junction_params={"use_momentum_flux_balance": False, "use_lm": False})
   print "\nDirect, Momentum flux balance"
   _ = tester.checkJacobian("both", junction_params={"use_momentum_flux_balance": True, "use_lm": False})
+  print "\nLagrange Multiplier, Stagnation pressure"
+  _ = tester.checkJacobian("both", junction_params={"use_momentum_flux_balance": False, "use_lm": True})
   print "\nLagrange Multiplier, Momentum flux balance"
   _ = tester.checkJacobian("both", junction_params={"use_momentum_flux_balance": True, "use_lm": True})

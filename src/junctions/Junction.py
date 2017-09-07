@@ -37,8 +37,9 @@ class Junction(object):
       else:
         error("Side parameters must be either 'left' or 'right'.")
 
-    # get normal vectors
+    # get normal vectors and areas
     self.nx = list()
+    self.A = [self.dof_handler.A[k] for k in self.node_indices]
     for i in xrange(self.n_meshes):
       if self.mesh_sides[i] == "left":
         self.nx.append(-1.0)

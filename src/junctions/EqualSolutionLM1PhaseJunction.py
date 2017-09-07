@@ -1,14 +1,14 @@
-from FreeBCJunction import FreeBCJunction, FreeBCJunctionParameters
+from Junction1Phase import Junction1Phase, Junction1PhaseParameters
 from error_utilities import error
 
-class EqualSolutionLM1PhaseJunctionParameters(FreeBCJunctionParameters):
+class EqualSolutionLM1PhaseJunctionParameters(Junction1PhaseParameters):
   def __init__(self):
-    FreeBCJunctionParameters.__init__(self)
+    Junction1PhaseParameters.__init__(self)
 
 ## Junction that uses Lagrange multipliers to enforce solution equality between 2 meshes
-class EqualSolutionLM1PhaseJunction(FreeBCJunction):
+class EqualSolutionLM1PhaseJunction(Junction1Phase):
   def __init__(self, params):
-    FreeBCJunction.__init__(self, params)
+    Junction1Phase.__init__(self, params)
     if self.n_meshes != 2:
       error("Only implemented for connecting 2 meshes.")
 
@@ -16,7 +16,7 @@ class EqualSolutionLM1PhaseJunction(FreeBCJunction):
     self.n_constraints += self.n_var
 
   def setDoFIndices(self):
-    FreeBCJunction.setDoFIndices(self)
+    Junction1Phase.setDoFIndices(self)
 
     # create lists of DoF indices involved in constraints
     self.i1 = [self.dof_handler.i(self.node_indices[0], m) for m in xrange(self.n_var)]
@@ -24,7 +24,7 @@ class EqualSolutionLM1PhaseJunction(FreeBCJunction):
 
   def applyWeaklyToNonlinearSystem(self, U, U_old, r, J):
     # add normal boundary fluxes
-    FreeBCJunction.applyWeaklyToNonlinearSystem(self, U, U_old, r, J)
+    Junction1Phase.applyWeaklyToNonlinearSystem(self, U, U_old, r, J)
 
     # add contributions from Lagrange multipliers
     for m in xrange(self.n_var):

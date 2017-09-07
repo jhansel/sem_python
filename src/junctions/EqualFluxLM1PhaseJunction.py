@@ -1,23 +1,23 @@
-from FreeBCJunction import FreeBCJunction, FreeBCJunctionParameters
+from Junction1Phase import Junction1Phase, Junction1PhaseParameters
 from enums import ModelType
 
-class EqualFluxLM1PhaseJunctionParameters(FreeBCJunctionParameters):
+class EqualFluxLM1PhaseJunctionParameters(Junction1PhaseParameters):
   def __init__(self):
-    FreeBCJunctionParameters.__init__(self)
+    Junction1PhaseParameters.__init__(self)
 
 ## Junction that enforces that the fluxes are equal at the junction
 #
 #  The first mesh will have its residuals replaced strongly, and the second
 #  mesh will add a boundary flux computed with its solution.
-class EqualFluxLM1PhaseJunction(FreeBCJunction):
+class EqualFluxLM1PhaseJunction(Junction1Phase):
   def __init__(self, params):
-    FreeBCJunction.__init__(self, params)
+    Junction1Phase.__init__(self, params)
 
     self.n_var = self.dof_handler.n_var
     self.n_constraints += self.n_var
 
   def setDoFIndices(self):
-    FreeBCJunction.setDoFIndices(self)
+    Junction1Phase.setDoFIndices(self)
 
     self.i_constraint_mass = self.i_constraint[0]
     self.i_constraint_momentum = self.i_constraint[1]
@@ -25,7 +25,7 @@ class EqualFluxLM1PhaseJunction(FreeBCJunction):
 
   def applyWeaklyToNonlinearSystem(self, U, U_old, r, J):
     # add normal boundary fluxes
-    FreeBCJunction.applyWeaklyToNonlinearSystem(self, U, U_old, r, J)
+    Junction1Phase.applyWeaklyToNonlinearSystem(self, U, U_old, r, J)
 
     # add contributions from Lagrange multipliers
     for n in xrange(self.n_meshes):

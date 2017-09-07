@@ -1,17 +1,17 @@
-from FreeBCJunction import FreeBCJunction, FreeBCJunctionParameters
+from Junction1Phase import Junction1Phase, Junction1PhaseParameters
 from enums import ModelType
 
-class EqualFluxJunctionParameters(FreeBCJunctionParameters):
+class EqualFluxJunctionParameters(Junction1PhaseParameters):
   def __init__(self):
-    FreeBCJunctionParameters.__init__(self)
+    Junction1PhaseParameters.__init__(self)
 
 ## Junction that enforces that the fluxes are equal at the junction
 #
 #  The first mesh will have its residuals replaced strongly, and the second
 #  mesh will add a boundary flux computed with its solution.
-class EqualFluxJunction(FreeBCJunction):
+class EqualFluxJunction(Junction1Phase):
   def __init__(self, params):
-    FreeBCJunction.__init__(self, params)
+    Junction1Phase.__init__(self, params)
 
   def applyStronglyToNonlinearSystem(self, U, U_old, r, J):
     m = 0

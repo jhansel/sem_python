@@ -1,20 +1,20 @@
-from FreeBCJunction import FreeBCJunction, FreeBCJunctionParameters
+from Junction1Phase import Junction1Phase, Junction1PhaseParameters
 from enums import ModelType
 from error_utilities import error
 from thermodynamic_functions import computeVolumeFraction, computeDensity, \
   computeSpecificVolume, computeVelocity, computeSpecificTotalEnergy, \
   computeSpecificInternalEnergy, computeSpecificEnthalpy
 
-class CompressibleJunctionParameters(FreeBCJunctionParameters):
+class CompressibleJunctionParameters(Junction1PhaseParameters):
   def __init__(self):
-    FreeBCJunctionParameters.__init__(self)
+    Junction1PhaseParameters.__init__(self)
     self.registerBoolParameter("use_momentum_flux_balance", "Flag to use a momentum flux balance for last equation", False)
     self.registerBoolParameter("use_lm", "Flag to use Lagrange multipliers", False)
 
 ## Junction that uses compressible flow assumption
-class CompressibleJunction(FreeBCJunction):
+class CompressibleJunction(Junction1Phase):
   def __init__(self, params):
-    FreeBCJunction.__init__(self, params)
+    Junction1Phase.__init__(self, params)
     if self.n_meshes != 2:
       error("CompressibleJunction is only implemented for connecting 2 meshes.")
 
@@ -34,7 +34,7 @@ class CompressibleJunction(FreeBCJunction):
     self.k_right_adjacent = self.adjacent_node_indices[1]
 
   def setDoFIndices(self):
-    FreeBCJunction.setDoFIndices(self)
+    Junction1Phase.setDoFIndices(self)
 
     if (self.model_type == ModelType.TwoPhase):
       self.i_aA1L = self.dof_handler.i(self.k_left, self.aA1_index)
@@ -60,7 +60,7 @@ class CompressibleJunction(FreeBCJunction):
 
   def applyWeaklyToNonlinearSystem(self, U_new, U_old, r, J):
     if self.use_lm:
-      FreeBCJunction.applyWeaklyToNonlinearSystem(self, U_new, U_old, r, J)
+      Junction1Phase.applyWeaklyToNonlinearSystem(self, U_new, U_old, r, J)
 
     n_values = 6
     L = 0

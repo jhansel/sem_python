@@ -77,7 +77,7 @@ from CompressibleJunction import CompressibleJunction, CompressibleJunctionParam
 from EqualFluxJunction import EqualFluxJunction, EqualFluxJunctionParameters
 from EqualFluxLM1PhaseJunction import EqualFluxLM1PhaseJunction, EqualFluxLM1PhaseJunctionParameters
 from EqualSolutionLM1PhaseJunction import EqualSolutionLM1PhaseJunction, EqualSolutionLM1PhaseJunctionParameters
-from FreeBCJunction import FreeBCJunction, FreeBCJunctionParameters
+from Junction1Phase import Junction1Phase, Junction1PhaseParameters
 from TestJunction import TestJunction, TestJunctionParameters
 
 # kernels
