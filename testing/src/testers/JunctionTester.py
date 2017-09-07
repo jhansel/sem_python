@@ -108,11 +108,13 @@ class JunctionTester(object):
 
     # print results
     if self.verbose:
-      print "\nRelative difference of Jacobian for " + test_option + " contributions:"
+      print "\nJacobian, " + test_option + " contributions:"
+      print "Hand-coded:"
       printMatrix(J_hand_coded)
+      print "Finite-difference:"
       printMatrix(J_fd)
+      print "Relative difference:"
       printRelativeMatrixDifference(rel_diffs, abs_diffs, 1e-1, 1e-3)
-
 
     matched = np.zeros((n_dof, n_dof), dtype=bool)
     for i in xrange(n_dof):
