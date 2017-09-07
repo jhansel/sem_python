@@ -59,6 +59,9 @@ class Junction(object):
   def setDoFIndices(self):
     pass
 
+  def initializeConstraintVariables(self, U):
+    pass
+
   def applyWeaklyToNonlinearSystem(self, U, U_old, r, J):
     pass
 

@@ -57,6 +57,10 @@ class Executioner(object):
     if self.model_type == ModelType.TwoPhase:
       self.initializeVolumeFractionSolution(ics)
 
+    # initialize the junction constraint variables
+    for junction in self.junctions:
+      junction.initializeConstraintVariables(self.U)
+
     # set local solution update function
     if self.model_type == ModelType.OnePhase:
       self.computeLocalCellSolution = self.computeLocalCellSolutionOnePhase
