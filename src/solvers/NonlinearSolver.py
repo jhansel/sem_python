@@ -1,6 +1,6 @@
 from copy import deepcopy
 import numpy as np
-from numpy.linalg import matrix_rank, inv
+from numpy.linalg import matrix_rank, inv, eigvals, svd
 import sys
 from termcolor import colored
 
@@ -22,6 +22,8 @@ class NonlinearSolverParameters(Parameters):
     self.registerFloatParameter("finite_difference_eps", "Parameter for the FD debug Jacobian", 1e-4)
     self.registerBoolParameter("print_jacobian_inverse", "Option to print the inverse of the Jacobian", False)
     self.registerBoolParameter("verbose", "Option to print out iterations", True)
+    self.registerBoolParameter("print_svd", "Option to print singular value decomposition", False)
+    self.registerBoolParameter("print_eigenvalues", "Option to print eigenvalues", False)
 
     self.registerFloatParameter("scaling_vf1", "Scaling factor for vf1", 1)
     self.registerFloatParameter("scaling_arhoA1", "Scaling factor for arhoA1", 1)
@@ -48,6 +50,8 @@ class NonlinearSolver(object):
     self.fd_eps = params.get("finite_difference_eps")
     self.print_jacobian_inverse = params.get("print_jacobian_inverse")
     self.verbose = params.get("verbose")
+    self.print_eigenvalues = params.get("print_eigenvalues")
+    self.print_svd = params.get("print_svd")
 
     self.scaling = dict()
     self.scaling[VariableName.AA1] = [params.get("scaling_vf1")]
@@ -63,6 +67,15 @@ class NonlinearSolver(object):
     while it <= self.max_iterations:
       # compute the residual and Jacobian
       r, J = self.assembleSystem(U)
+
+      # print eigenvalues
+      if self.print_eigenvalues:
+        print eigvals(J)
+
+      # print SVD
+      if self.print_svd:
+        _, svds, _ = svd(J, full_matrices=True)
+        print np.sort(svds)
 
       # print the Jacobian inverse if specified
       if (self.print_jacobian_inverse):
