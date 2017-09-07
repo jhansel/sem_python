@@ -11,6 +11,16 @@ class IdealGasEoSFunctionDerivativesTester(unittest.TestCase):
     self.eos = IdealGasEoS(params)
     self.derivative_tester = FunctionDerivativesTester()
 
+  def testDensity(self):
+    reldiffs = self.derivative_tester.checkDerivatives(self.eos.rho, 2)
+    for reldiff in reldiffs:
+      self.assertLessEqual(reldiff, 1e-6)
+
+  def testDensityFromPressureEntropy(self):
+    reldiffs = self.derivative_tester.checkDerivatives(self.eos.rho_from_p_s, 2)
+    for reldiff in reldiffs:
+      self.assertLessEqual(reldiff, 5e-6)
+
   def testSpecificInternalEnergy(self):
     reldiffs = self.derivative_tester.checkDerivatives(self.eos.e, 2)
     for reldiff in reldiffs:

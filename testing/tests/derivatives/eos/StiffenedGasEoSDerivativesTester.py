@@ -14,6 +14,16 @@ class StiffenedGasEoSDerivativesTester(unittest.TestCase):
     self.eos = StiffenedGasEoS(params)
     self.derivative_tester = FunctionDerivativesTester()
 
+  def testDensity(self):
+    reldiffs = self.derivative_tester.checkDerivatives(self.eos.rho, 2)
+    for reldiff in reldiffs:
+      self.assertLessEqual(reldiff, 1e-6)
+
+  def testDensityFromPressureEntropy(self):
+    reldiffs = self.derivative_tester.checkDerivatives(self.eos.rho, 2)
+    for reldiff in reldiffs:
+      self.assertLessEqual(reldiff, 1e-6)
+
   def testSpecificInternalEnergy(self):
     reldiffs = self.derivative_tester.checkDerivatives(self.eos.e, 2)
     for reldiff in reldiffs:
@@ -55,6 +65,8 @@ if __name__ == "__main__":
   eos = StiffenedGasEoS(params)
 
   tester = FunctionDerivativesTester(False)
+  tester.checkDerivatives(eos.rho, 2)
+  tester.checkDerivatives(eos.rho_from_p_s, 2)
   tester.checkDerivatives(eos.e, 2)
   tester.checkDerivatives(eos.p, 2)
   tester.checkDerivatives(eos.T, 2)

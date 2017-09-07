@@ -12,6 +12,9 @@ class TestEoS(EoS):
     self.slope = params.get("slope_initial")
     self.slope_increment = params.get("slope_increment")
 
+    self.drho_dp = self.nextSlope()
+    self.drho_dT = self.nextSlope()
+    self.drho_ds = self.nextSlope()
     self.de_dv = self.nextSlope()
     self.de_dp = self.nextSlope()
     self.dp_dv = self.nextSlope()
@@ -29,9 +32,6 @@ class TestEoS(EoS):
     self.slope += self.slope_increment
     return self.slope
 
-  def rho(self, p, T):
-    return p + T
-
   ## Computes a test property that is a linear combination of 2 properties
   # @param[in] a  first property
   # @param[in] b  second property
@@ -40,6 +40,12 @@ class TestEoS(EoS):
   def testProperty(self, a, b, dda, ddb):
     c = a * dda + b * ddb
     return (c, dda, ddb)
+
+  def rho(self, p, T):
+    return self.testProperty(p, T, self.drho_dp, self.drho_dT)
+
+  def rho_from_p_s(self, p, s):
+    return self.testProperty(p, s, self.drho_dp, self.drho_ds)
 
   def e(self, v, p):
     return self.testProperty(v, p, self.de_dv, self.de_dp)

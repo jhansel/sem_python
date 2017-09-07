@@ -14,6 +14,10 @@ class EoS(object):
     pass
 
   @abstractmethod
+  def rho_from_p_s(self, p, s):
+    pass
+
+  @abstractmethod
   def e(self, v, p):
     pass
 
@@ -35,4 +39,8 @@ class EoS(object):
 
   @abstractmethod
   def p(self, h, s):
+    pass
+
+  @abstractmethod
+  def p_from_h_s(self, h, s):
     pass

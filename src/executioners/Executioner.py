@@ -132,7 +132,7 @@ class Executioner(object):
         rho = initial_rho(x)
       else:
         T = initial_T(x)
-        rho = eos_phase.rho(p, T)
+        rho, _, _ = eos_phase.rho(p, T)
       e = eos_phase.e(1.0 / rho, p)[0]
       E = e + 0.5 * u * u
       self.U[self.dof_handler.i(k, arhoA_index)] = vf * rho * A

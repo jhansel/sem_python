@@ -17,7 +17,27 @@ class IdealGasEoS(EoS):
     self.cv = self.cp / self.gamma
 
   def rho(self, p, T):
-    return p / (self.gamma - 1) / self.cv / T
+    rho = p / ((self.gamma - 1) * self.cv * T)
+    drho_dp = 1.0 / ((self.gamma - 1) * self.cv * T)
+    drho_dT = -p * ((self.gamma - 1) * self.cv * T)**-2 * (self.gamma - 1) * self.cv
+
+    return (rho, drho_dp, drho_dT)
+
+  def rho_from_p_s(self, p, s):
+    aux = (s + self.cv * log(p**(self.gamma - 1.0))) / self.cv
+    daux_ds = 1.0 / self.cv
+    daux_dp = 1.0 / p**(self.gamma - 1.0) * (self.gamma - 1.0) * p**(self.gamma - 2.0)
+
+    T = exp(aux)**(1.0 / self.gamma)
+    dT_daux = 1.0 / self.gamma * exp(aux)**(1.0 / self.gamma)
+    dT_ds = dT_daux * daux_ds
+    dT_dp = dT_daux * daux_dp
+
+    rho, drho_dp_partial, drho_dT = self.rho(p, T)
+    drho_dp = drho_dp_partial + drho_dT * dT_dp
+    drho_ds = drho_dT * dT_ds
+
+    return (rho, drho_dp, drho_ds)
 
   def e(self, v, p):
     e_value = 1.0 / (self.gamma - 1) * v * p
