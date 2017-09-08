@@ -1,6 +1,14 @@
-from numpy import sqrt, log, exp
+from numpy import sqrt, log, exp, vectorize
 
 from EoS import EoS, EoSParameters
+from error_utilities import error
+
+def assertNonNegativeSoundSpeedArgSingle(arg, p, v):
+  if arg < 0:
+    error("Sound speed: negative x in sqrt(x), where x = gamma * p * v:\n" +
+      "p = " + str(p) + "\nv = " + str(v))
+
+assertNonNegativeSoundSpeedArg = vectorize(assertNonNegativeSoundSpeedArgSingle)
 
 class IdealGasEoSParameters(EoSParameters):
   def __init__(self):
@@ -58,6 +66,10 @@ class IdealGasEoS(EoS):
     return (T_value, dT_dv, dT_de)
 
   def c(self, v, p):
+    # check for sqrt() of negative number
+    arg = self.gamma * p * v
+    assertNonNegativeSoundSpeedArg(arg, p, v)
+
     c_value = sqrt(self.gamma * p * v)
     dc_dv = 0.5 / sqrt(self.gamma * p * v) * self.gamma * p
     dc_dp = 0.5 / sqrt(self.gamma * p * v) * self.gamma * v

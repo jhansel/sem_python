@@ -1,4 +1,16 @@
+from numpy import vectorize
+
 from AuxQuantity1Phase import AuxQuantity1Phase, AuxQuantity1PhaseParameters
+from error_utilities import error
+
+def assertNonNegativeSpecificInternalEnergySingle(e, E, u):
+  if e < 0:
+    error("Negative specific internal energy:\n" +
+      "  e = " + str(e) + "\n" +
+      "  E = " + str(E) + "\n" +
+      "  u = " + str(u))
+
+assertNonNegativeSpecificInternalEnergy = vectorize(assertNonNegativeSpecificInternalEnergySingle)
 
 class SpecificInternalEnergyParameters(AuxQuantity1PhaseParameters):
   def __init__(self):
@@ -13,6 +25,8 @@ class SpecificInternalEnergy(AuxQuantity1Phase):
     u = data[self.u]
     E = data[self.E]
     data[self.name] = E - 0.5 * u * u
+
+    assertNonNegativeSpecificInternalEnergy(data[self.name], data[self.E], data[self.u])
 
     de_dE = 1.0
     de_du = - u
