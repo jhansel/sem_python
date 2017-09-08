@@ -88,6 +88,9 @@ class NewCompressibleJunction(Junction1Phase):
     h0_junction = U[self.i_h0_junction]
 
     # extract solution data
+    k = self.node_indices[i]
+
+    A = self.dof_handler.A[k]
     arhouA = U[self.i_arhouA[i]]
     arhoEA = U[self.i_arhoEA[i]]
 
@@ -119,21 +122,21 @@ class NewCompressibleJunction(Junction1Phase):
     r[i_mass] += arhouA * nx
     J[i_mass][i_momentum] += nx
 
-    r[i_momentum] += (arhouA * u + vf * p) * nx
-    J[i_momentum][self.i_h0_junction] += vf * dp_dh0_junction * nx
-    J[i_momentum][self.i_s_junction]  += vf * dp_ds_junction  * nx
-    # J[i_momentum][i_vf] += (self.dvf_daA1[i] * p + vf * dp_daA1) * nx
-    J[i_momentum][i_mass] += (arhouA * self.du_darhoA[i] + vf * dp_darhoA) * nx
-    J[i_momentum][i_momentum] += (arhouA * self.du_darhouA[i] + u + vf * dp_darhouA) * nx
-    J[i_momentum][i_energy] += vf * dp_darhoEA * nx
+    r[i_momentum] += (arhouA * u + vf * p * A) * nx
+    J[i_momentum][self.i_h0_junction] += vf * dp_dh0_junction * A * nx
+    J[i_momentum][self.i_s_junction]  += vf * dp_ds_junction  * A * nx
+    # J[i_momentum][i_vf] += (self.dvf_daA1[i] * p + vf * dp_daA1) * A * nx
+    J[i_momentum][i_mass] += (arhouA * self.du_darhoA[i] + vf * dp_darhoA * A) * nx
+    J[i_momentum][i_momentum] += (arhouA * self.du_darhouA[i] + u + vf * dp_darhouA * A) * nx
+    J[i_momentum][i_energy] += vf * dp_darhoEA * A * nx
 
-    r[i_energy] += (arhoEA + vf * p) * u * nx
-    J[i_energy][self.i_h0_junction] += vf * dp_dh0_junction * u * nx
-    J[i_energy][self.i_s_junction]  += vf * dp_ds_junction  * u * nx
-    # J[i_energy][i_vf] += (self.dvf_daA1[i] * p + vf * dp_daA1) * u * nx
-    J[i_energy][i_mass] += ((arhoEA + vf * p) * self.du_darhoA[i] + vf * dp_darhoA * u) * nx
-    J[i_energy][i_momentum] += ((arhoEA + vf * p) * self.du_darhouA[i] + vf * dp_darhouA * u) * nx
-    J[i_energy][i_energy] += (1 + vf * dp_darhoEA) * u * nx
+    r[i_energy] += (arhoEA + vf * p * A) * u * nx
+    J[i_energy][self.i_h0_junction] += vf * dp_dh0_junction * A * u * nx
+    J[i_energy][self.i_s_junction]  += vf * dp_ds_junction  * A * u * nx
+    # J[i_energy][i_vf] += (self.dvf_daA1[i] * p + vf * dp_daA1) * A * u * nx
+    J[i_energy][i_mass] += ((arhoEA + vf * p * A) * self.du_darhoA[i] + vf * dp_darhoA * A * u) * nx
+    J[i_energy][i_momentum] += ((arhoEA + vf * p * A) * self.du_darhouA[i] + vf * dp_darhouA * A * u) * nx
+    J[i_energy][i_energy] += (1 + vf * dp_darhoEA * A) * u * nx
 
   def applyStronglyToNonlinearSystem(self, U, U_old, r, J):
     r[self.i_constraint_mass] = sum(self.f_mass)

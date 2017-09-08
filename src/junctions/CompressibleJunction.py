@@ -111,6 +111,8 @@ class CompressibleJunction(Junction1Phase):
     U[RR_old] = U_old
 
     # initialize lists
+    A = [0] * n_values
+
     rho = [0] * n_values
     drho_daA1 = [0] * n_values
     drho_darhoA = [0] * n_values
@@ -145,14 +147,14 @@ class CompressibleJunction(Junction1Phase):
 
     # loop over subscript/superscript combinations
     for i in xrange(n_values):
-      A = self.dof_handler.A[k[i]]
+      A[i] = self.dof_handler.A[k[i]]
       aA1 = self.dof_handler.aA1(U[i], k[i])
-      vf, dvf_daA1 = computeVolumeFraction(aA1, A, self.phase, self.model_type)
+      vf, dvf_daA1 = computeVolumeFraction(aA1, A[i], self.phase, self.model_type)
       arhoA  = U[i][i_arhoA[i]]
       arhouA = U[i][i_arhouA[i]]
       arhoEA = U[i][i_arhoEA[i]]
 
-      rho[i], drho_dvf, drho_darhoA[i], _ = computeDensity(vf, arhoA, A)
+      rho[i], drho_dvf, drho_darhoA[i], _ = computeDensity(vf, arhoA, A[i])
       drho_daA1[i] = drho_dvf * dvf_daA1
 
       u[i], du_darhoA[i], du_darhouA[i] = computeVelocity(arhoA, arhouA)
@@ -253,34 +255,34 @@ class CompressibleJunction(Junction1Phase):
     else:
       error("Assumption violated: Neither velocity condition was true.")
 
-    self.r_i4 = rho[L] * u[L] - rho[R] * u[R]
-    self.J_i4_vf1L = drho_daA1[L] * u[L]
-    self.J_i4_arhoAL = drho_darhoA[L] * u[L] + rho[L] * du_darhoA[L]
-    self.J_i4_arhouAL = rho[L] * du_darhouA[L]
-    self.J_i4_vf1R = -drho_daA1[R] * u[R]
-    self.J_i4_arhoAR = -(drho_darhoA[R] * u[R] + rho[R] * du_darhoA[R])
-    self.J_i4_arhouAR = -rho[R] * du_darhouA[R]
+    self.r_i4 = rho[L] * u[L] * A[L] - rho[R] * u[R] * A[R]
+    self.J_i4_vf1L = drho_daA1[L] * u[L] * A[L]
+    self.J_i4_arhoAL = (drho_darhoA[L] * u[L] + rho[L] * du_darhoA[L]) * A[L]
+    self.J_i4_arhouAL = rho[L] * du_darhouA[L] * A[L]
+    self.J_i4_vf1R = -drho_daA1[R] * u[R] * A[R]
+    self.J_i4_arhoAR = -(drho_darhoA[R] * u[R] + rho[R] * du_darhoA[R]) * A[R]
+    self.J_i4_arhouAR = -rho[R] * du_darhouA[R] * A[R]
 
-    self.r_i5 = e[L] + p[L] / rho[L] + 0.5 * u[L]**2 - (e[R] + p[R] / rho[R] + 0.5 * u[R]**2)
-    self.J_i5_vf1L = dp_daA1[L] / rho[L] - p[L] / rho[L]**2 * drho_daA1[L]
-    self.J_i5_arhoAL = de_darhoA[L] + dp_darhoA[L] / rho[L] - p[L] / rho[L]**2 * drho_darhoA[L] + u[L] * du_darhoA[L]
-    self.J_i5_arhouAL = de_darhouA[L] + dp_darhouA[L] / rho[L] + u[L] * du_darhouA[L]
-    self.J_i5_arhoEAL = de_darhoEA[L] + dp_darhoEA[L] / rho[L]
-    self.J_i5_vf1R = -(dp_daA1[R] / rho[R] - p[R] / rho[R]**2 * drho_daA1[R])
-    self.J_i5_arhoAR = -(de_darhoA[R] + dp_darhoA[R] / rho[R] - p[R] / rho[R]**2 * drho_darhoA[R] + u[R] * du_darhoA[R])
-    self.J_i5_arhouAR = -(de_darhouA[R] + dp_darhouA[R] / rho[R] + u[R] * du_darhouA[R])
-    self.J_i5_arhoEAR = -(de_darhoEA[R] + dp_darhoEA[R] / rho[R])
+    self.r_i5 = (e[L] + p[L] / rho[L] + 0.5 * u[L]**2) * A[L] - (e[R] + p[R] / rho[R] + 0.5 * u[R]**2) * A[R]
+    self.J_i5_vf1L = (dp_daA1[L] / rho[L] - p[L] / rho[L]**2 * drho_daA1[L]) * A[L]
+    self.J_i5_arhoAL = (de_darhoA[L] + dp_darhoA[L] / rho[L] - p[L] / rho[L]**2 * drho_darhoA[L] + u[L] * du_darhoA[L]) * A[L]
+    self.J_i5_arhouAL = (de_darhouA[L] + dp_darhouA[L] / rho[L] + u[L] * du_darhouA[L]) * A[L]
+    self.J_i5_arhoEAL = (de_darhoEA[L] + dp_darhoEA[L] / rho[L]) * A[L]
+    self.J_i5_vf1R = -(dp_daA1[R] / rho[R] - p[R] / rho[R]**2 * drho_daA1[R]) * A[R]
+    self.J_i5_arhoAR = -(de_darhoA[R] + dp_darhoA[R] / rho[R] - p[R] / rho[R]**2 * drho_darhoA[R] + u[R] * du_darhoA[R]) * A[R]
+    self.J_i5_arhouAR = -(de_darhouA[R] + dp_darhouA[R] / rho[R] + u[R] * du_darhouA[R]) * A[R]
+    self.J_i5_arhoEAR = -(de_darhoEA[R] + dp_darhoEA[R] / rho[R]) * A[R]
 
     if self.use_momentum_flux_balance:
-      self.r_i6 = rho[L] * u[L]**2 + p[L] - (rho[R] * u[R]**2 + p[R])
-      self.J_i6_vf1L = drho_daA1[L] * u[L]**2 + dp_daA1[L]
-      self.J_i6_arhoAL = drho_darhoA[L] * u[L]**2 + rho[L] * 2.0 * u[L] * du_darhoA[L] + dp_darhoA[L]
-      self.J_i6_arhouAL = rho[L] * 2.0 * u[L] * du_darhouA[L] + dp_darhouA[L]
-      self.J_i6_arhoEAL = dp_darhoEA[L]
-      self.J_i6_vf1R = -(drho_daA1[R] * u[R]**2 + dp_daA1[R])
-      self.J_i6_arhoAR = -(drho_darhoA[R] * u[R]**2 + rho[R] * 2.0 * u[R] * du_darhoA[R] + dp_darhoA[R])
-      self.J_i6_arhouAR = -(rho[R] * 2.0 * u[R] * du_darhouA[R] + dp_darhouA[R])
-      self.J_i6_arhoEAR = -dp_darhoEA[R]
+      self.r_i6 = (rho[L] * u[L]**2 + p[L]) * A[L] - (rho[R] * u[R]**2 + p[R]) * A[R]
+      self.J_i6_vf1L = (drho_daA1[L] * u[L]**2 + dp_daA1[L]) * A[L]
+      self.J_i6_arhoAL = (drho_darhoA[L] * u[L]**2 + rho[L] * 2.0 * u[L] * du_darhoA[L] + dp_darhoA[L]) * A[L]
+      self.J_i6_arhouAL = (rho[L] * 2.0 * u[L] * du_darhouA[L] + dp_darhouA[L]) * A[L]
+      self.J_i6_arhoEAL = dp_darhoEA[L] * A[L]
+      self.J_i6_vf1R = -(drho_daA1[R] * u[R]**2 + dp_daA1[R]) * A[R]
+      self.J_i6_arhoAR = -(drho_darhoA[R] * u[R]**2 + rho[R] * 2.0 * u[R] * du_darhoA[R] + dp_darhoA[R]) * A[R]
+      self.J_i6_arhouAR = -(rho[R] * 2.0 * u[R] * du_darhouA[R] + dp_darhouA[R]) * A[R]
+      self.J_i6_arhoEAR = -dp_darhoEA[R] * A[R]
     else:
       self.r_i6 = p0[L] - p0[R]
       self.J_i6_vf1L = dp0_daA1[L]

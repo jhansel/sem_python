@@ -175,6 +175,9 @@ class Junction1Phase(Junction):
 
   def computeFluxes(self, U):
     for i in xrange(self.n_meshes):
+      k = self.node_indices[i]
+
+      A = self.dof_handler.A[k]
       arhouA = U[self.i_arhouA[i]]
       arhoEA = U[self.i_arhoEA[i]]
 
@@ -187,17 +190,17 @@ class Junction1Phase(Junction):
       self.f_mass[i] = arhouA * nx
       self.df_mass_darhouA[i] = nx
 
-      self.f_momentum[i] = (arhouA * u + vf * p) * nx
-      self.df_momentum_daA1[i] = (self.dvf_daA1[i] * p + vf * self.dp_daA1[i]) * nx
-      self.df_momentum_darhoA[i] = (arhouA * self.du_darhoA[i] + vf * self.dp_darhoA[i]) * nx
-      self.df_momentum_darhouA[i] = (arhouA * self.du_darhouA[i] + u + vf * self.dp_darhouA[i]) * nx
-      self.df_momentum_darhoEA[i] = vf * self.dp_darhoEA[i] * nx
+      self.f_momentum[i] = (arhouA * u + vf * p * A) * nx
+      self.df_momentum_daA1[i] = (self.dvf_daA1[i] * p + vf * self.dp_daA1[i]) * A * nx
+      self.df_momentum_darhoA[i] = (arhouA * self.du_darhoA[i] + vf * self.dp_darhoA[i] * A) * nx
+      self.df_momentum_darhouA[i] = (arhouA * self.du_darhouA[i] + u + vf * self.dp_darhouA[i] * A) * nx
+      self.df_momentum_darhoEA[i] = vf * self.dp_darhoEA[i] * A * nx
 
-      self.f_energy[i] = (arhoEA + vf * p) * u * nx
-      self.df_energy_daA1[i] = (self.dvf_daA1[i] * p + vf * self.dp_daA1[i]) * u * nx
-      self.df_energy_darhoA[i] = ((arhoEA + vf * p) * self.du_darhoA[i] + vf * self.dp_darhoA[i] * u) * nx
-      self.df_energy_darhouA[i] = ((arhoEA + vf * p) * self.du_darhouA[i] + vf * self.dp_darhouA[i] * u) * nx
-      self.df_energy_darhoEA[i] = (1 + vf * self.dp_darhoEA[i]) * u * nx
+      self.f_energy[i] = (arhoEA + vf * p * A) * u * nx
+      self.df_energy_daA1[i] = (self.dvf_daA1[i] * p + vf * self.dp_daA1[i]) * A * u * nx
+      self.df_energy_darhoA[i] = ((arhoEA + vf * p * A) * self.du_darhoA[i] + vf * self.dp_darhoA[i] * A * u) * nx
+      self.df_energy_darhouA[i] = ((arhoEA + vf * p * A) * self.du_darhouA[i] + vf * self.dp_darhouA[i] * A * u) * nx
+      self.df_energy_darhoEA[i] = (1 + vf * self.dp_darhoEA[i] * A) * u * nx
 
   def applyWeaklyToNonlinearSystem(self, U, U_old, r, J):
     self.computeFlowQuantities(U)
