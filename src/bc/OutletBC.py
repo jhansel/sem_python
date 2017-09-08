@@ -28,9 +28,9 @@ class OutletBC(OnePhaseBC):
     J[self.i_arhoA,self.i_arhouA] += self.nx
 
     # momentum
-    r[self.i_arhouA] += (arhouA * u + vf * self.p) * self.nx
+    r[self.i_arhouA] += (arhouA * u + vf * self.p * A) * self.nx
     if (self.model_type == ModelType.TwoPhase):
-      J[self.i_arhouA,self.i_aA1] += dvf_daA1 * self.p * self.nx
+      J[self.i_arhouA,self.i_aA1] += dvf_daA1 * self.p * A * self.nx
     J[self.i_arhouA,self.i_arhoA] += arhouA * du_darhoA * self.nx
     J[self.i_arhouA,self.i_arhouA] += (arhouA * du_darhouA + u) * self.nx
 
@@ -51,7 +51,7 @@ class OutletBC(OnePhaseBC):
     dv_daA1 = dv_drho * drho_daA1
     dv_darhoA = dv_drho * drho_darhoA
 
-    e, de_dv, de_dp = self.eos.e(v, self.p)
+    e, de_dv, _ = self.eos.e(v, self.p)
     de_daA1 = de_dv * dv_daA1
     de_darhoA = de_dv * dv_darhoA
 
@@ -83,7 +83,7 @@ class OutletBC(OnePhaseBC):
     u, du_darhoA, du_darhouA = computeVelocity(arhoA, arhouA)
     rho, drho_dvf, drho_darhoA = computeDensity(vf, arhoA)
     v, dv_drho = computeSpecificVolume(rho)
-    e, de_dv, de_dp = self.eos.e(v, self.p)
+    e, de_dv, _ = self.eos.e(v, self.p)
     arhoEA = arhoA * (e + 0.5 * u * u)
 
     b[self.i_arhoEA] = arhoEA

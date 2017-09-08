@@ -58,14 +58,14 @@ class InletRhoUBC(OnePhaseBC):
     vf, dvf_daA1 = computeVolumeFraction(aA1, A, self.phase, self.model_type)
     arhoA = U[self.i_arhoA]
 
-    arhoBC = vf * self.rho
-    darhoBC_daA1 = self.rho * dvf_daA1
+    arhoABC = vf * self.rho * A
+    darhoABC_daA1 = self.rho
 
     # mass
-    r[self.i_arhoA] = arhoA - arhoBC
+    r[self.i_arhoA] = arhoA - arhoABC
     J[self.i_arhoA,:] = 0
     if (self.model_type == ModelType.TwoPhase):
-      J[self.i_arhoA,self.i_aA1] = - darhoBC_daA1
+      J[self.i_arhoA,self.i_aA1] = - darhoABC_daA1
     J[self.i_arhoA,self.i_arhoA] = 1
 
   def applyStrongBCLinearSystemMatrix(self, A):
@@ -76,5 +76,5 @@ class InletRhoUBC(OnePhaseBC):
     A = self.dof_handler.A[self.k]
     aA1 = self.dof_handler.aA1(U_old, self.k)
     vf, dvf_daA1 = computeVolumeFraction(aA1, A, self.phase, self.model_type)
-    arhoA = vf * self.rho
+    arhoA = vf * self.rho * A
     b[self.i_arhoA] = arhoA

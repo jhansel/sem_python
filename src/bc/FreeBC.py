@@ -48,17 +48,17 @@ class FreeBC(OnePhaseBC):
     J[self.i_arhoA,self.i_arhouA] += self.nx
 
     # momentum
-    r[self.i_arhouA] += (arhouA * u + vf * p) * self.nx
+    r[self.i_arhouA] += (arhouA * u + vf * p * A) * self.nx
     if (self.model_type == ModelType.TwoPhase):
-      J[self.i_arhouA,self.i_aA1] += (dvf_daA1 * p + vf * dp_daA1) * self.nx
-    J[self.i_arhouA,self.i_arhoA] += (arhouA * du_darhoA + vf * dp_darhoA) * self.nx
-    J[self.i_arhouA,self.i_arhouA] += (arhouA * du_darhouA + u + vf * dp_darhouA) * self.nx
-    J[self.i_arhouA,self.i_arhoEA] += vf * dp_darhoEA * self.nx
+      J[self.i_arhouA,self.i_aA1] += (dvf_daA1 * p + vf * dp_daA1) * A * self.nx
+    J[self.i_arhouA,self.i_arhoA] += (arhouA * du_darhoA + vf * dp_darhoA * A) * self.nx
+    J[self.i_arhouA,self.i_arhouA] += (arhouA * du_darhouA + u + vf * dp_darhouA * A) * self.nx
+    J[self.i_arhouA,self.i_arhoEA] += vf * dp_darhoEA * A * self.nx
 
     # energy
-    r[self.i_arhoEA] += (arhoEA + vf * p) * u * self.nx
+    r[self.i_arhoEA] += (arhoEA + vf * p * A) * u * self.nx
     if (self.model_type == ModelType.TwoPhase):
-      J[self.i_arhoEA,self.i_aA1] += (dvf_daA1 * p + vf * dp_daA1) * u * self.nx
-    J[self.i_arhoEA,self.i_arhoA] += ((arhoEA + vf * p) * du_darhoA + vf * dp_darhoA * u) * self.nx
-    J[self.i_arhoEA,self.i_arhouA] += ((arhoEA + vf * p) * du_darhouA + vf * dp_darhouA * u) * self.nx
-    J[self.i_arhoEA,self.i_arhoEA] += (1 + vf * dp_darhoEA) * u * self.nx
+      J[self.i_arhoEA,self.i_aA1] += (dvf_daA1 * p + vf * dp_daA1) * A * u * self.nx
+    J[self.i_arhoEA,self.i_arhoA] += ((arhoEA + vf * p * A) * du_darhoA + vf * dp_darhoA * A * u) * self.nx
+    J[self.i_arhoEA,self.i_arhouA] += ((arhoEA + vf * p * A) * du_darhouA + vf * dp_darhouA * A * u) * self.nx
+    J[self.i_arhoEA,self.i_arhoEA] += (1 + vf * dp_darhoEA * A) * u * self.nx
