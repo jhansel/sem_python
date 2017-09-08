@@ -156,7 +156,10 @@ class DoFHandler(object):
   # @param[in] k  global node index
   # @param[in] var_index  variable index
   def i(self, k, var_index):
-    return k * self.n_var + var_index + self.n_constraints[self.node_to_mesh_index[k]]
+    # get mesh index from node index
+    m = self.node_to_mesh_index[k]
+
+    return k * self.n_var + var_index + sum(self.n_constraints[0:m+1])
 
   ## Returns global node index for an element index and local node index
   # @param[in] e  element index
