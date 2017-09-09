@@ -13,14 +13,14 @@ test_aux = SpecificInternalEnergy(params)
 params = TestAuxParameters()
 params.set("var", "u1")
 params.set("other_vars", ["arhoA1", "arhouA1"])
-params.set("coefs", [2.0, 3.0])
+params.set("coefs", [1.1, 1.2])
 u_aux = TestAux(params)
 
 # specific total energy aux
 params = TestAuxParameters()
 params.set("var", "E1")
 params.set("other_vars", ["arhoA1", "arhoEA1"])
-params.set("coefs", [2.5, 3.5])
+params.set("coefs", [3.3, 3.9])
 E_aux = TestAux(params)
 
 other_aux = [u_aux, E_aux]
