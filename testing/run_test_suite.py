@@ -13,9 +13,9 @@ import sys
 from unittest import TestSuite, defaultTestLoader
 
 # add source file paths
-source_directories = os.listdir("../src")
+source_directories = os.listdir("../sem_python")
 for source_dir in source_directories:
-  sys.path.append("../src/" + source_dir)
+  sys.path.append("../sem_python/" + source_dir)
 
 # tests
 for root, subdirs, files in os.walk("tests"):

@@ -20,12 +20,13 @@ There are a few python modules that are required (to be listed later):
 
 To have import paths within the package work properly, one needs to add
 all of the source paths to the environment variable `PYTHONPATH`. This includes
-all of the subdirectories of the `src/` directory. For example, one might add
-the following lines to their `.bashrc` or equivalent startup file:
+all of the subdirectories of the `sem_python/sem_python/` directory. For
+example, one might add the following lines to their `.bashrc` or equivalent
+startup file:
 ```
 export PYTHONPATH=$PYTHONPATH:~/sem_python/
-export PYTHONPATH=$PYTHONPATH:~/sem_python/src/aux/
-export PYTHONPATH=$PYTHONPATH:~/sem_python/src/base/
+export PYTHONPATH=$PYTHONPATH:~/sem_python/sem_python/aux/
+export PYTHONPATH=$PYTHONPATH:~/sem_python/sem_python/base/
 ...
 ```
 
