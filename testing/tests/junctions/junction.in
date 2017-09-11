@@ -96,8 +96,15 @@
 []
 
 [Output]
-  plot_solution = True
-  plot_file = junction.pdf
-  save_solution = True
-  solution_file = junction.csv
+  [csv]
+    type = CSVOutput
+    file_name = junction.csv
+    names = rho u p
+  []
+  [plot]
+    type = PlotOutput
+    file_name = junction.pdf
+    plot_sets = rho u p T
+    plot_by_mesh = True
+  []
 []

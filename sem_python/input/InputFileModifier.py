@@ -5,7 +5,7 @@ class InputFileModifier(object):
     self.subblock_parameter_changes = list()
 
   def removeSubblock(self, block, subblock):
-    self.subblocks_to_remove((block, subblock))
+    self.subblocks_to_remove.append((block, subblock))
 
   def modifyBlockParam(self, block, param, value):
     self.block_parameter_changes.append((block, param, value))

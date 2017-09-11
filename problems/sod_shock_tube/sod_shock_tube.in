@@ -76,8 +76,8 @@
 []
 
 [Output]
-  plot_solution = True
-  print_solution = False
-  save_solution = True
-  solution_file = solution.csv
+  [plot]
+    type = PlotOutput
+    plot_sets = rho u p T
+  []
 []

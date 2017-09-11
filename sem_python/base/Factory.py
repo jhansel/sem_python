@@ -102,7 +102,9 @@ from EnergyVolumeFractionGradient import EnergyVolumeFractionGradient, EnergyVol
 from UniformMesh import UniformMesh, UniformMeshParameters
 
 # output
-from Output import Output, OutputParameters
+from CSVOutput import CSVOutput, CSVOutputParameters
+from PlotOutput import PlotOutput, PlotOutputParameters
+from ScreenOutput import ScreenOutput, ScreenOutputParameters
 
 # solvers
 from NonlinearSolver import NonlinearSolver, NonlinearSolverParameters

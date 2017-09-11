@@ -47,6 +47,9 @@
 []
 
 [Output]
-  plot_file = junction_3pipes.pdf
-  solution_file = junction_3pipes.csv
+  [plot]
+    type = PlotOutput
+    file_name = junction_3pipes.pdf
+    plot_sets = rho u p T
+  []
 []

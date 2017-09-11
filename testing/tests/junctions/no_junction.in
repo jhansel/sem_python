@@ -21,6 +21,10 @@
 -[Junctions]
 
 [Output]
-  plot_file = no_junction.pdf
-  solution_file = no_junction.csv
+  [csv]
+    file_name = no_junction.csv
+  []
+  [plot]
+    file_name = no_junction.pdf
+  []
 []

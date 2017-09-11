@@ -48,6 +48,9 @@
 []
 
 [Output]
-  plot_file = junction_deadend.pdf
-  solution_file = junction_deadend.csv
+  [plot]
+    type = PlotOutput
+    file_name = junction_deadend.pdf
+    plot_sets = rho u p T
+  []
 []

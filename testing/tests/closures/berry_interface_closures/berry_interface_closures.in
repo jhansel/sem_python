@@ -90,5 +90,12 @@
 []
 
 [Output]
-  plot_solution = True
+  [csv]
+    type = CSVOutput
+    names = vf1 rho1 u1 p1 rho2 u2 p2
+  []
+  [plot]
+    type = PlotOutput
+    plot_sets = vf1 [p1,p2] [u1,u1] [T1,T2]
+  []
 []

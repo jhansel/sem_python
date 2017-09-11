@@ -15,10 +15,15 @@ Arguments:
 """
 
 from docopt import docopt
+from collections import OrderedDict
 
 # base
 from enums import ModelType
 from Factory import Factory
+
+# closures
+from thermodynamic_functions import computeDensity, computeVelocity, computeSpecificVolume,\
+  computeSpecificTotalEnergy, computeSpecificInternalEnergy
 
 # input
 from InputFileParser import InputFileParser
@@ -221,14 +226,96 @@ def run(input_file, input_file_modifier=InputFileModifier()):
   executioner = factory.createObject(executioner_type, executioner_param_data)
   U = executioner.run()
 
-  # create and run the output
-  output_param_data = input_file_parser.getBlockData("Output")
-  output_param_data["model"] = model
-  output_param_data["eos_list"] = eos_list
-  output_param_data["dof_handler"] = dof_handler
-  output_param_data["meshes"] = meshes
-  output = factory.createObject("Output", output_param_data)
-  output.run(U)
+  # perform post-processing
+
+  if input_file_parser.blockExists("Output"):
+    # get solution and compute aux quantities
+    vf1, arhoA1, arhouA1, arhoEA1 = dof_handler.getPhaseSolution(U, 0)
+    if (model_type != ModelType.OnePhase):
+      vf2, arhoA2, arhouA2, arhoEA2 = dof_handler.getPhaseSolution(U, 1)
+    rho1 = computeDensity(vf1, arhoA1, dof_handler.A)[0]
+    u1 = computeVelocity(arhoA1, arhouA1)[0]
+    v1 = computeSpecificVolume(rho1)[0]
+    E1 = computeSpecificTotalEnergy(arhoA1, arhoEA1)[0]
+    e1 = computeSpecificInternalEnergy(u1, E1)[0]
+    eos1 = eos_list[0]
+    p1 = eos1.p(v1, e1)[0]
+    T1 = eos1.T(v1, e1)[0]
+    if (model_type != ModelType.OnePhase):
+      rho2 = computeDensity(vf2, arhoA2, dof_handler.A)[0]
+      u2 = computeVelocity(arhoA2, arhouA2)[0]
+      v2 = computeSpecificVolume(rho2)[0]
+      E2 = computeSpecificTotalEnergy(arhoA2, arhoEA2)[0]
+      e2 = computeSpecificInternalEnergy(u2, E2)[0]
+      eos2 = eos_list[1]
+      p2 = eos2.p(v2, e2)[0]
+      T2 = eos2.T(v2, e2)[0]
+
+    # create an ordered data dictionary
+    data = OrderedDict()
+    data["x"] = dof_handler.x
+    data["A"] = dof_handler.A
+    if model_type == ModelType.OnePhase:
+      data["rhoA"] = arhoA1
+      data["rhouA"] = arhouA1
+      data["rhoEA"] = arhoEA1
+      data["rho"] = rho1
+      data["u"] = u1
+      data["v"] = v1
+      data["E"] = E1
+      data["e"] = e1
+      data["p"] = p1
+      data["T"] = T1
+    else:
+      # phase 1
+      data["vf1"] = vf1
+      data["arhoA1"] = arhoA1
+      data["arhouA1"] = arhouA1
+      data["arhoEA1"] = arhoEA1
+      data["rho1"] = rho1
+      data["u1"] = u1
+      data["v1"] = v1
+      data["E1"] = E1
+      data["e1"] = e1
+      data["p1"] = p1
+      data["T1"] = T1
+
+      # phase 2
+      data["vf2"] = vf2
+      data["arhoA2"] = arhoA2
+      data["arhouA2"] = arhouA2
+      data["arhoEA2"] = arhoEA2
+      data["rho2"] = rho2
+      data["u2"] = u2
+      data["v2"] = v2
+      data["E2"] = E2
+      data["e2"] = e2
+      data["p2"] = p2
+      data["T2"] = T2
+
+    if model_type == ModelType.OnePhase:
+      default_print_list = ["rho", "u", "p"]
+    elif model_type == ModelType.TwoPhaseNonInteracting:
+      default_print_list = ["rho1", "u1", "p1", "rho2", "u2", "p2"]
+    else: # model_type == ModelType.TwoPhase
+      default_print_list = ["vf1", "rho1", "u1", "p1", "rho2", "u2", "p2"]
+
+    # create and run outputs
+    output_subblocks = input_file_parser.getSubblockNames("Output")
+    for output_subblock in output_subblocks:
+      # extract the output parameter data
+      output_param_data = input_file_parser.getSubblockData("Output", output_subblock)
+      output_class = output_param_data["type"]
+      output_param_data["dof_handler"] = dof_handler
+      # add additional parameters for specific classes
+      if output_class == "ScreenOutput":
+        if "data_names" not in output_param_data:
+          output_param_data["data_names"] = default_print_list
+      # create the output
+      output = factory.createObject(output_class, output_param_data)
+
+      # run the output
+      output.run(data)
 
 ## Gets the input file from the command line and runs it
 def main():

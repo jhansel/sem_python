@@ -13,9 +13,8 @@ class SolutionTester(object):
     # add default modifications
     self.input_file_modifier.modifyBlockParam("Executioner", "verbose", False)
     self.input_file_modifier.modifyBlockParam("NonlinearSolver", "verbose", False)
-    self.input_file_modifier.modifyBlockParam("Output", "save_solution", True)
-    self.input_file_modifier.modifyBlockParam("Output", "solution_file", self.test_dir + self.solution_file_name)
-    self.input_file_modifier.modifyBlockParam("Output", "plot_solution", False)
+    self.input_file_modifier.modifySubblockParam("Output", "csv", "file_name", self.test_dir + self.solution_file_name)
+    self.input_file_modifier.removeSubblock("Output", "plot")
 
     sem.run(self.input_file, self.input_file_modifier)
 

@@ -56,5 +56,12 @@
 []
 
 [Output]
-  plot_solution = True
+  [csv]
+    type = CSVOutput
+    names = rho u p
+  []
+  [plot]
+    type = PlotOutput
+    plot_sets = rho u p T
+  []
 []

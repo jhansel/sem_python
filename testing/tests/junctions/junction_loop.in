@@ -97,6 +97,9 @@
 []
 
 [Output]
-  plot_solution = True
-  plot_file = junction_loop.pdf
+  [plot]
+    type = PlotOutput
+    file_name = junction_loop.pdf
+    plot_sets = rho u p T
+  []
 []
