@@ -193,6 +193,7 @@ class InputFileParser(object):
       for subblock in input_file_parser_diff.subblock_data[block]:
         if subblock not in self.subblock_data[block]:
           self.subblock_data[block][subblock] = dict()
+          self.subblock_list[block].append(subblock)
         for parameter in input_file_parser_diff.subblock_data[block][subblock]:
           self.subblock_data[block][subblock][parameter] = input_file_parser_diff.subblock_data[block][subblock][parameter]
 
