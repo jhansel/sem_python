@@ -10,13 +10,13 @@ class DoFHandlerParameters(Parameters):
   def __init__(self):
     Parameters.__init__(self)
     self.registerParameter("meshes", "List of meshes")
-    self.registerFunctionParameter("A", "Cross-sectional area function")
+    self.registerParameter("ics", "List of initial conditions")
 
 class DoFHandler(object):
   __metaclass__ = ABCMeta
   def __init__(self, params):
     self.meshes = params.get("meshes")
-    A = params.get("A")
+    self.ics = params.get("ics")
 
     # number of cells and nodes
     self.n_cell = 0
@@ -32,17 +32,21 @@ class DoFHandler(object):
     self.h = np.zeros(self.n_cell)
     self.elem_to_mesh_index = [0] * self.n_cell
     self.node_to_mesh_index = [0] * self.n_node
+    self.n_nodes_before_mesh = [0] * self.n_meshes
     k_begin = 0
     elem_begin = 0
     for i_mesh, mesh in enumerate(self.meshes):
       self.mesh_name_to_mesh_index[mesh.name] = i_mesh
-      mesh_n_node = mesh.n_cell + 1
+      mesh_n_node = mesh.n_node
       k_end = k_begin + mesh_n_node - 1
       elem_end = elem_begin + mesh.n_cell - 1
       self.x[k_begin:k_end+1] = mesh.x
       self.h[elem_begin:elem_end+1] = mesh.h
       self.elem_to_mesh_index[elem_begin:elem_end+1] = [i_mesh] * mesh.n_cell
-      self.node_to_mesh_index[k_begin:k_end+1] = [i_mesh] * (mesh.n_cell + 1)
+      self.node_to_mesh_index[k_begin:k_end+1] = [i_mesh] * mesh_n_node
+      if i_mesh != self.n_meshes - 1:
+        for j_mesh in xrange(i_mesh + 1, self.n_meshes):
+          self.n_nodes_before_mesh[j_mesh] += mesh_n_node
       k_begin += mesh_n_node
       elem_begin += mesh.n_cell
 
@@ -61,8 +65,17 @@ class DoFHandler(object):
 
     # compute area at each node
     self.A = np.zeros(self.n_node)
-    for k in xrange(self.n_node):
-      self.A[k] = A(self.x[k])
+    for ic in self.ics:
+      # get corresponding mesh
+      mesh_name = ic.mesh_name
+      i_mesh = self.mesh_name_to_mesh_index[mesh_name]
+      mesh = self.meshes[i_mesh]
+
+      # compute area for each node on mesh
+      A = ic.A
+      for k_mesh in xrange(mesh.n_node):
+        k = self.k_from_k_mesh(k_mesh, i_mesh)
+        self.A[k] = A(mesh.x[k_mesh])
 
   def updateWithJunctionConstraints(self, junctions):
     # add the number of constraints from each junction
@@ -166,6 +179,12 @@ class DoFHandler(object):
   # @param[in] k_local  local node index
   def k(self, e, k_local):
     return e + k_local + self.elem_to_mesh_index[e]
+
+  ## Returns global node index from a node index on a mesh
+  # @param[in] k_mesh  node index on a mesh
+  # @param[in] i_mesh  mesh index
+  def k_from_k_mesh(self, k_mesh, i_mesh):
+    return k_mesh + self.n_nodes_before_mesh[i_mesh]
 
   ## Returns a node index for a mesh, counted from the left
   # @param[in] mesh_name  name of the mesh

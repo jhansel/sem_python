@@ -6,6 +6,7 @@ class InitialConditions2PhaseParameters(Parameters):
     Parameters.__init__(self)
     def one(x):
       return 1
+    self.registerStringParameter("mesh_name", "Name of the mesh to which this corresponds")
     self.registerParsedFunctionParameter("A", "Cross-sectional area of flow channel", one)
     self.registerParsedFunctionParameter("vf1", "Volume fraction of phase 1")
     self.registerParsedFunctionParameter("rho1", "Density of phase 1")
@@ -19,6 +20,7 @@ class InitialConditions2PhaseParameters(Parameters):
 
 class InitialConditions2Phase(object):
   def __init__(self, params):
+    self.mesh_name = params.get("mesh_name")
     self.A = params.get("A")
     self.vf1 = params.get("vf1")
     self.p = [params.get("p1"), params.get("p2")]

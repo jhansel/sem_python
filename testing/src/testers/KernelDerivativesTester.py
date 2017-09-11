@@ -21,21 +21,21 @@ class KernelDerivativesTester(object):
     params = {"n_cell": 1}
     meshes = [factory.createObject("UniformMesh", params)]
 
-    # area function
-    def A(x):
-      return 2.0
-
     # DoF handler
-    dof_handler_params = {"meshes": meshes, "A": A}
+    dof_handler_params = {"meshes": meshes}
     if self.model_type == ModelType.OnePhase:
+      ic_params = {"mesh_name": meshes[0].name, "A": "2", "rho": "1", "u": "1", "p": "1"}
+      ics = [factory.createObject("InitialConditions1Phase", ic_params)]
       dof_handler_class = "DoFHandler1Phase"
-    elif self.model_type == ModelType.TwoPhaseNonInteracting:
-      dof_handler_class = "DoFHandler2PhaseNonInteracting"
-      def vf1_initial(x):
-        return 0.3
-      dof_handler_params["initial_vf1"] = vf1_initial
-    elif self.model_type == ModelType.TwoPhase:
-      dof_handler_class = "DoFHandler2Phase"
+    else:
+      ic_params = {"mesh_name": meshes[0].name, "A": "2", "vf1": "0.3",
+        "rho1": "1", "u1": "1", "p1": "1", "rho2": "1", "u2": "1", "p2": "1"}
+      ics = [factory.createObject("InitialConditions2Phase", ic_params)]
+      if self.model_type == ModelType.TwoPhaseNonInteracting:
+        dof_handler_class = "DoFHandler2PhaseNonInteracting"
+      elif self.model_type == ModelType.TwoPhase:
+        dof_handler_class = "DoFHandler2Phase"
+    dof_handler_params["ics"] = ics
     dof_handler = factory.createObject(dof_handler_class, dof_handler_params)
 
     # quadrature

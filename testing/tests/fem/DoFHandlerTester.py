@@ -33,12 +33,12 @@ class DoFHandlerTester(unittest.TestCase):
       params = {"name": name, "n_cell": n_cells}
       meshes.append(factory.createObject("UniformMesh", params))
 
-    # area function
-    def A(x):
-      return 2.0
+    # ICs
+    ics = [factory.createObject("InitialConditions1Phase", {"mesh_name": meshes[0].name,
+      "A": "1", "rho": "1", "u": "1", "p": "1"})]
 
     # create the DoF handler
-    params = {"meshes": meshes, "A": A}
+    params = {"meshes": meshes, "ics": ics}
     dof_handler = factory.createObject("DoFHandler1Phase", params)
 
     # create an EoS

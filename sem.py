@@ -102,19 +102,34 @@ def run(input_file, mods=list()):
     eos_list.append(factory.createObject(eos_class, eos_param_data))
 
   # initial conditions / initial guess
-  ic_param_data = input_file_parser.getBlockData("IC")
-  if model_type == ModelType.OnePhase:
-    ics = factory.createObject("InitialConditions1Phase", ic_param_data)
+  ic_subblocks = input_file_parser.getSubblockNames("IC")
+  ics = list()
+  if len(ic_subblocks) == 0:
+    # ICs are to be used for every mesh
+    for mesh_name in mesh_names:
+      ic_param_data = input_file_parser.getBlockData("IC")
+      ic_param_data["mesh_name"] = mesh_name
+      if model_type == ModelType.OnePhase:
+        ics.append(factory.createObject("InitialConditions1Phase", ic_param_data))
+      else:
+        ics.append(factory.createObject("InitialConditions2Phase", ic_param_data))
   else:
-    ics = factory.createObject("InitialConditions2Phase", ic_param_data)
+    for ic_subblock in ic_subblocks:
+      ic_param_data = input_file_parser.getSubblockData("IC", ic_subblock)
+
+      # for now, assume that IC blocks are named by corresponding mesh names
+      ic_param_data["mesh_name"] = ic_subblock
+      if model_type == ModelType.OnePhase:
+        ics.append(factory.createObject("InitialConditions1Phase", ic_param_data))
+      else:
+        ics.append(factory.createObject("InitialConditions2Phase", ic_param_data))
 
   # DoF handler
-  dof_handler_params = {"meshes": meshes, "A": ics.A}
+  dof_handler_params = {"meshes": meshes, "ics": ics}
   if model_type == ModelType.OnePhase:
     dof_handler_class = "DoFHandler1Phase"
   elif model_type == ModelType.TwoPhaseNonInteracting:
     dof_handler_class = "DoFHandler2PhaseNonInteracting"
-    dof_handler_params["initial_vf1"] = ics.vf1
   elif model_type == ModelType.TwoPhase:
     dof_handler_class = "DoFHandler2Phase"
   dof_handler = factory.createObject(dof_handler_class, dof_handler_params)

@@ -23,21 +23,28 @@ class JunctionTester(object):
     params2 = {"n_cell": 1, "name": "mesh2"}
     meshes = [factory.createObject("UniformMesh", params1), factory.createObject("UniformMesh", params2)]
 
-    # area function
-    def A(x):
-      return 0.2
-
     # DoF handler
-    dof_handler_params = {"meshes": meshes, "A": A}
+    dof_handler_params = {"meshes": meshes}
     if model_type == ModelType.OnePhase:
+      ic_params1 = {"mesh_name": meshes[0].name, "A": "0.2", "rho": "1", "u": "1", "p": "1"}
+      ic_params2 = {"mesh_name": meshes[1].name, "A": "0.2", "rho": "1", "u": "1", "p": "1"}
+      ics = list()
+      ics.append(factory.createObject("InitialConditions1Phase", ic_params1))
+      ics.append(factory.createObject("InitialConditions1Phase", ic_params2))
       dof_handler_class = "DoFHandler1Phase"
-    elif model_type == ModelType.TwoPhaseNonInteracting:
-      dof_handler_class = "DoFHandler2PhaseNonInteracting"
-      def vf1_initial(x):
-        return 0.3
-      dof_handler_params["initial_vf1"] = vf1_initial
-    elif model_type == ModelType.TwoPhase:
-      dof_handler_class = "DoFHandler2Phase"
+    else:
+      ic_params1 = {"mesh_name": meshes[0].name, "A": "0.2", "vf1": "0.3",
+        "rho1": "1", "u1": "1", "p1": "1", "rho2": "1", "u2": "1", "p2": "1"}
+      ic_params2 = {"mesh_name": meshes[1].name, "A": "0.2", "vf1": "0.3",
+        "rho1": "1", "u1": "1", "p1": "1", "rho2": "1", "u2": "1", "p2": "1"}
+      ics = list()
+      ics.append(factory.createObject("InitialConditions2Phase", ic_params1))
+      ics.append(factory.createObject("InitialConditions2Phase", ic_params2))
+      if model_type == ModelType.TwoPhaseNonInteracting:
+        dof_handler_class = "DoFHandler2PhaseNonInteracting"
+      elif model_type == ModelType.TwoPhase:
+        dof_handler_class = "DoFHandler2Phase"
+    dof_handler_params["ics"] = ics
     dof_handler = factory.createObject(dof_handler_class, dof_handler_params)
 
     # equation of state

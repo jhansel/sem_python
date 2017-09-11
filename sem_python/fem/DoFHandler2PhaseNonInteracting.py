@@ -6,12 +6,10 @@ from DoFHandler import DoFHandler, DoFHandlerParameters
 class DoFHandler2PhaseNonInteractingParameters(DoFHandlerParameters):
   def __init__(self):
     DoFHandlerParameters.__init__(self)
-    self.registerFunctionParameter("initial_vf1", "Initial phase-1 volume fraction function")
 
 class DoFHandler2PhaseNonInteracting(DoFHandler):
   def __init__(self, params):
     DoFHandler.__init__(self, params)
-    initial_vf1 = params.get("initial_vf1")
     self.model_type = ModelType.TwoPhaseNonInteracting
     self.n_phases = 2
     self.n_vf_equations = 0
@@ -19,8 +17,17 @@ class DoFHandler2PhaseNonInteracting(DoFHandler):
 
     # create array for volume fraction
     self.vf1 = np.zeros(self.n_node)
-    for k in xrange(self.n_node):
-      self.vf1[k] = initial_vf1(self.x[k])
+    for ic in self.ics:
+      # get corresponding mesh
+      mesh_name = ic.mesh_name
+      i_mesh = self.mesh_name_to_mesh_index[mesh_name]
+      mesh = self.meshes[i_mesh]
+
+      # compute volume fraction for each node on mesh
+      vf1 = ic.vf1
+      for k_mesh in xrange(mesh.n_node):
+        k = self.k_from_k_mesh(k_mesh, i_mesh)
+        self.vf1[k] = vf1(mesh.x[k_mesh])
 
   def aA1(self, U, k):
     return self.vf1[k] * self.A[k]

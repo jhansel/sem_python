@@ -13,6 +13,7 @@ class UniformMesh(Mesh):
   def __init__(self, params):
     Mesh.__init__(self, params)
     self.n_cell = params.get("n_cell")
+    self.n_node = self.n_cell + 1
     self.L = params.get("length")
     self.x_min = params.get("x_min")
     h = self.L / self.n_cell

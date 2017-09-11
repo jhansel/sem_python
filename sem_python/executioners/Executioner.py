@@ -99,55 +99,72 @@ class Executioner(object):
       self.fem_kernels += self.source_kernels
 
   def initializePhaseSolution(self, ics, phase):
-    # get appropriate volume fraction function
-    if self.model_type == ModelType.OnePhase:
-      def initial_vf(x):
-        return 1
-    else:
-      initial_vf1 = ics.vf1
-      if phase == 0:
-        initial_vf = initial_vf1
-      else:
-        def initial_vf(x):
-          return 1 - initial_vf1(x)
-
-    # get relevant IC functions
-    A_function = ics.A
-    initial_p = ics.p[phase]
-    initial_u = ics.u[phase]
-    if ics.specified_rho:
-      initial_rho = ics.rho[phase]
-    else:
-      initial_T = ics.T[phase]
-
-    # compute IC
     eos_phase = self.eos_list[phase]
     arhoA_index = self.dof_handler.variable_index[VariableName.ARhoA][phase]
     arhouA_index = self.dof_handler.variable_index[VariableName.ARhoUA][phase]
     arhoEA_index = self.dof_handler.variable_index[VariableName.ARhoEA][phase]
-    for k in xrange(self.dof_handler.n_node):
-      x = self.dof_handler.x[k]
 
-      A = A_function(x)
-      vf = initial_vf(x)
-      p = initial_p(x)
-      u = initial_u(x)
-      if ics.specified_rho:
-        rho = initial_rho(x)
+    for ic in ics:
+      # get corresponding mesh
+      mesh_name = ic.mesh_name
+      i_mesh = self.dof_handler.mesh_name_to_mesh_index[mesh_name]
+      mesh = self.meshes[i_mesh]
+
+      # get appropriate volume fraction function
+      if self.model_type == ModelType.OnePhase:
+        def initial_vf(x):
+          return 1
       else:
-        T = initial_T(x)
-        rho, _, _ = eos_phase.rho(p, T)
-      e = eos_phase.e(1.0 / rho, p)[0]
-      E = e + 0.5 * u * u
-      self.U[self.dof_handler.i(k, arhoA_index)] = vf * rho * A
-      self.U[self.dof_handler.i(k, arhouA_index)] = vf * rho * u * A
-      self.U[self.dof_handler.i(k, arhoEA_index)] = vf * rho * E * A
+        initial_vf1 = ic.vf1
+        if phase == 0:
+          initial_vf = initial_vf1
+        else:
+          def initial_vf(x):
+            return 1 - initial_vf1(x)
+
+      # get relevant IC functions
+      A_function = ic.A
+      initial_p = ic.p[phase]
+      initial_u = ic.u[phase]
+      if ic.specified_rho:
+        initial_rho = ic.rho[phase]
+      else:
+        initial_T = ic.T[phase]
+
+      # compute IC
+      for k_mesh in xrange(mesh.n_node):
+        k = self.dof_handler.k_from_k_mesh(k_mesh, i_mesh)
+
+        x = self.dof_handler.x[k]
+
+        A = A_function(x)
+        vf = initial_vf(x)
+        p = initial_p(x)
+        u = initial_u(x)
+        if ic.specified_rho:
+          rho = initial_rho(x)
+        else:
+          T = initial_T(x)
+          rho, _, _ = eos_phase.rho(p, T)
+        e = eos_phase.e(1.0 / rho, p)[0]
+        E = e + 0.5 * u * u
+        self.U[self.dof_handler.i(k, arhoA_index)] = vf * rho * A
+        self.U[self.dof_handler.i(k, arhouA_index)] = vf * rho * u * A
+        self.U[self.dof_handler.i(k, arhoEA_index)] = vf * rho * E * A
 
   def initializeVolumeFractionSolution(self, ics):
     aA1_index = self.dof_handler.variable_index[VariableName.AA1][0]
-    for k in xrange(self.dof_handler.n_node):
-      x = self.dof_handler.x[k]
-      self.U[self.dof_handler.i(k, aA1_index)] = ics.vf1(x) * ics.A(x)
+
+    for ic in ics:
+      # get corresponding mesh
+      mesh_name = ic.mesh_name
+      i_mesh = self.dof_handler.mesh_name_to_mesh_index[mesh_name]
+      mesh = self.meshes[i_mesh]
+
+      for k_mesh in xrange(mesh.n_node):
+        k = self.dof_handler.k_from_k_mesh(k_mesh, i_mesh)
+        x = self.dof_handler.x[k]
+        self.U[self.dof_handler.i(k, aA1_index)] = ic.vf1(x) * ic.A(x)
 
   def createIndependentPhaseAuxQuantities(self, phase):
     # create list of aux quantities to create
