@@ -1,0 +1,52 @@
+# This tests an arbitrary 1-phase junction with a 3-mesh chain.
+#
+#     1     2     3
+#  *-----*-----*-----*
+#    ->    ->    ->
+#
+
+[BaseInputFile]
+  base = junction.in
+[]
+
+[Mesh]
+  [mesh3]
+    type = UniformMesh
+    start = 2 0 0
+    length = 1
+    orientation = 1 0 0
+    n_cell = 20
+  []
+[]
+
+[IC]
+  [mesh3]
+    T = 250
+    u = 1
+    p = 1e5
+  []
+[]
+
+[BC]
+  [right]
+    mesh_name = mesh3
+  []
+[]
+
+[Junctions]
+  [junction2]
+    type = NewerCompressibleJunction
+    phase = air
+    mesh_names = mesh2 mesh3
+    mesh_sides = right left
+  []
+[]
+
+[Executioner]
+  end_time = 1.5
+[]
+
+[Output]
+  plot_file = junction_3pipes.pdf
+  solution_file = junction_3pipes.csv
+[]
