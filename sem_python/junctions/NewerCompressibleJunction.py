@@ -47,22 +47,38 @@ class NewerCompressibleJunction(Junction1Phase):
 
   def applyWeaklyToNonlinearSystem(self, U_new, U_old, r, J):
     self.computeFlowQuantities(U_new)
+    self.computeJunctionStagnationEnthalpy()
+
+    # add the boundary fluxes; characteristic theory is used to decide how
+    # many pieces of information are supplied to inlets vs. outlets
+    for i in xrange(self.n_meshes):
+      if self.u[i] * self.nx[i] > 0: # inlets to the junction; outlet BC
+        self.addOutletBC(i, U_new, r, J)
+      else: # outlets from the junction; inlet BC
+        self.addInletBC(i, U_new, r, J)
+
+    # the normal boundary fluxes are computed only because the mass fluxes are
+    # needed by the mass flux balance constraint
     self.computeFluxes(U_new)
 
+  ## Computes junction stagnation enthalpy and its derivatives
+  def computeJunctionStagnationEnthalpy(self):
     # compute junction stagnation enthalpy h0J and its derivatives
-    at_least_one_inlet = False
     num = 0
     den = 0
+    num_alt = 0
+    den_alt = 0
     dnum_darhoA  = [0] * self.n_meshes
     dnum_darhouA = [0] * self.n_meshes
     dnum_darhoEA = [0] * self.n_meshes
     dden_darhoA  = [0] * self.n_meshes
     dden_darhouA = [0] * self.n_meshes
     dden_darhoEA = [0] * self.n_meshes
+    dnum_alt_darhoA  = [0] * self.n_meshes
+    dnum_alt_darhouA = [0] * self.n_meshes
+    dnum_alt_darhoEA = [0] * self.n_meshes
     for i in xrange(self.n_meshes):
       if self.u[i] * self.nx[i] > 0: # mesh serves as inlet
-        at_least_one_inlet = True
-
         num += self.rho[i] * self.u[i] * self.h0[i] * self.A[i] * self.nx[i]
         den += self.rho[i] * self.u[i] * self.A[i] * self.nx[i]
         dnum_darhoA[i] = (self.drho_darhoA[i] * self.u[i] * self.h0[i] \
@@ -74,25 +90,31 @@ class NewerCompressibleJunction(Junction1Phase):
         dden_darhoA[i] = (self.drho_darhoA[i] * self.u[i] + self.rho[i] * self.du_darhoA[i]) * self.A[i] * self.nx[i]
         dden_darhouA[i] = self.rho[i] * self.du_darhouA[i] * self.A[i] * self.nx[i]
         dden_darhoA[i] = 0
+      else: # add to separate numerator / denominator in case there is little or no flow into junction
+        num_alt += self.h0[i]
+        dnum_alt_darhoA[i]  = self.dh0_darhoA[i]
+        dnum_alt_darhouA[i] = self.dh0_darhouA[i]
+        dnum_alt_darhoEA[i] = self.dh0_darhoEA[i]
+        den_alt += 1
 
-    if not at_least_one_inlet:
-      error("No inlets to junction")
-
-    # finish computation of h0J and its derivatives
-    self.h0J = num / den
+    # finish computing h0J and its derivatives
     self.dh0J_darhoA  = [0] * self.n_meshes
     self.dh0J_darhouA = [0] * self.n_meshes
     self.dh0J_darhoEA = [0] * self.n_meshes
-    for i in xrange(self.n_meshes):
-      self.dh0J_darhoA[i]  = dnum_darhoA[i]  / den - num / den**2 * dden_darhoA[i]
-      self.dh0J_darhouA[i] = dnum_darhouA[i] / den - num / den**2 * dden_darhouA[i]
-      self.dh0J_darhoEA[i] = dnum_darhoEA[i] / den - num / den**2 * dden_darhoEA[i]
-
-    for i in xrange(self.n_meshes):
-      if self.u[i] * self.nx[i] > 0: # inlets to the junction; outlet BC
-        self.addOutletBC(i, U_new, r, J)
-      else: # outlets from the junction; inlet BC
-        self.addInletBC(i, U_new, r, J)
+    if den > 1e-10:
+      # use normal definition
+      self.h0J = num / den
+      for i in xrange(self.n_meshes):
+        self.dh0J_darhoA[i]  = dnum_darhoA[i]  / den - num / den**2 * dden_darhoA[i]
+        self.dh0J_darhouA[i] = dnum_darhouA[i] / den - num / den**2 * dden_darhouA[i]
+        self.dh0J_darhoEA[i] = dnum_darhoEA[i] / den - num / den**2 * dden_darhoEA[i]
+    else: # little or no flow into the junction
+      # use alternate definition
+      self.h0J = num_alt / den_alt
+      for i in xrange(self.n_meshes):
+        self.dh0J_darhoA[i]  = dnum_alt_darhoA[i]  / den_alt
+        self.dh0J_darhouA[i] = dnum_alt_darhouA[i] / den_alt
+        self.dh0J_darhoEA[i] = dnum_alt_darhoEA[i] / den_alt
 
   def addInletBC(self, i, U, r, J):
     # get the junction entropy
