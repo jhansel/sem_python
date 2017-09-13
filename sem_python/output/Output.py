@@ -106,19 +106,31 @@ class Output(object):
       x = self.dof_handler.x
       x_min = min(x)
       x_max = max(x)
+
+      def addSets(plotter, x, y, y_label, scale=1):
+        for i_mesh in xrange(self.dof_handler.n_meshes):
+          modified_y_label = y_label + ", Mesh " + str(i_mesh+1)
+          plotter.addSet(x[i_mesh], y[i_mesh], modified_y_label, color=i_mesh+1, marker=i_mesh+1, scale=scale)
+
       if (self.model_type == ModelType.OnePhase):
+        x_by_mesh = self.dof_handler.separateNodalQuantityByMesh(x)
+        rho1_by_mesh = self.dof_handler.separateNodalQuantityByMesh(rho1)
+        u1_by_mesh = self.dof_handler.separateNodalQuantityByMesh(u1)
+        p1_by_mesh = self.dof_handler.separateNodalQuantityByMesh(p1)
+        T1_by_mesh = self.dof_handler.separateNodalQuantityByMesh(T1)
+
         plotter = Plotter("", "Density, $\\rho$", (2,2))
         plotter.setXRange(x_min, x_max)
-        plotter.addSet(x, rho1, "$\\rho$")
+        addSets(plotter, x_by_mesh, rho1_by_mesh, "$\\rho$")
         plotter.fixNearConstantPlot()
         plotter.nextSubplot("", "Velocity, $u$")
-        plotter.addSet(x, u1, "$u$")
+        addSets(plotter, x_by_mesh, u1_by_mesh, "$u$")
         plotter.fixNearConstantPlot()
         plotter.nextSubplot(x_label, "Pressure, $p$ [kPa]")
-        plotter.addSet(x, p1, "$p$", scale=1e-3)
+        addSets(plotter, x_by_mesh, p1_by_mesh, "$p$", 1e-3)
         plotter.fixNearConstantPlot()
         plotter.nextSubplot(x_label, "Temperature, $T$ [K]")
-        plotter.addSet(x, T1, "$T$")
+        addSets(plotter, x_by_mesh, T1_by_mesh, "$T$")
         plotter.fixNearConstantPlot()
       elif (self.model_type == ModelType.TwoPhaseNonInteracting):
         plotter = Plotter(x_label, "Density, $\\rho$", (2,2))

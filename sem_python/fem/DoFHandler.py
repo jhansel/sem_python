@@ -224,6 +224,14 @@ class DoFHandler(object):
     arhoEA = self.getSolution(U, VariableName.ARhoEA, phase)
     return (vf, arhoA, arhouA, arhoEA)
 
+  def separateNodalQuantityByMesh(self, y):
+    y_by_mesh = [0] * self.n_meshes
+    for i_mesh in xrange(self.n_meshes):
+      k_min = self.n_nodes_before_mesh[i_mesh]
+      k_max = k_min + self.meshes[i_mesh].n_node
+      y_by_mesh[i_mesh] = y[k_min:k_max]
+    return y_by_mesh
+
   # aggregates local cell vector into global vector
   def aggregateLocalCellVector(self, r, r_cell, e):
     i_min = self.i(self.k(e, 0), 0)
