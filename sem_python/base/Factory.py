@@ -40,6 +40,7 @@ from Model import Model, ModelParameters
 # bc
 from FreeBC import FreeBC, FreeBCParameters
 from DirichletVolumeFractionBC import DirichletVolumeFractionBC, DirichletVolumeFractionBCParameters
+from InletP0T0BC import InletP0T0BC, InletP0T0BCParameters
 from InletRhoUBC import InletRhoUBC, InletRhoUBCParameters
 from OutletBC import OutletBC, OutletBCParameters
 from SolidWallBC import SolidWallBC, SolidWallBCParameters
