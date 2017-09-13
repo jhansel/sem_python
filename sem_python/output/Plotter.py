@@ -76,12 +76,16 @@ class Plotter(object):
     def setYRange(self, ymin, ymax):
         self.ax.set_ylim([ymin, ymax])
 
-    def fixNearConstantPlot(self, dy_min=1.0):
+    def fixNearConstantPlot(self, dy_rel_min=1e-8):
       ymin, ymax = self.ax.get_ylim()
-      if (ymax - ymin < dy_min):
+      dy = ymax - ymin
+      max_abs_y = max(abs(ymin), abs(ymax))
+      dy_rel = dy / max_abs_y
+      if (dy_rel < dy_rel_min):
         yavg = 0.5 * (ymin + ymax)
-        ymin_new = yavg - 0.5 * dy_min
-        ymax_new = yavg + 0.5 * dy_min
+        dy_new = dy_rel_min * max_abs_y
+        ymin_new = yavg - 0.5 * dy_new
+        ymax_new = yavg + 0.5 * dy_new
         self.setYRange(ymin_new, ymax_new)
 
     def putLegendOutside(self):
