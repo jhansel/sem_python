@@ -35,22 +35,25 @@
 []
 
 [EoS]
-  [air]
-    type = IdealGasEoS
-    gamma = 1.4
-    R = 290
+  [water]
+    type = StiffenedGasEoS
+    gamma = 2.35
+    cv = 1816
+    q = -1.167e6
+    p_inf = 1e9
+    q_prime = 0
   []
 []
 
 [IC]
   [mesh1]
-    T = 250
-    u = 1
+    T = 300
+    u = 0
     p = 1e5
   []
   [mesh2]
-    T = 250
-    u = 1
+    T = 300
+    u = 0
     p = 1e5
   []
 []
@@ -61,13 +64,13 @@
 [Junctions]
   [junction1]
     type = NewerCompressibleJunction
-    phase = air
+    phase = water
     mesh_names = mesh1 mesh2
     mesh_sides = right left
   []
   [junction2]
     type = NewerCompressibleJunction
-    phase = air
+    phase = water
     mesh_names = mesh1 mesh2
     mesh_sides = left  right
   []
