@@ -10,11 +10,12 @@ class Density(AuxQuantity1Phase):
     self.name = self.rho
 
   def compute(self, data, der):
+    A = data["A"]
     vf = data[self.vf]
-    data[self.name] = data[self.arhoA] / vf
+    data[self.name] = data[self.arhoA] / vf / A
 
-    drho_dvf = - data[self.arhoA] / vf / vf
+    drho_dvf = - data[self.arhoA] / vf / vf / A
     drho_daA1 = drho_dvf * der[self.vf]["aA1"]
-    drho_darhoA = 1.0 / vf
+    drho_darhoA = 1.0 / vf / A
     der[self.name]["aA1"] = drho_daA1
     der[self.name][self.arhoA] = drho_darhoA
