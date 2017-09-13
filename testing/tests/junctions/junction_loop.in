@@ -1,14 +1,21 @@
-# This tests an arbitrary 1-phase junction. The setup consists of 2 meshes
-# connected by a junction. At t = 0, a wave of differing density enters the left
-# boundary, and it should propagate through the junction without any
-# disturbance; ideally, it should be the same solution as without the junction.
+# This tests a 2-pipe loop under the influence of gravity:
+#
+#      *-*
+#      | |
+#      | |    g |
+#      | |      v
+#      *-*
+#      1 2
+#
+# This should develop a hydrostatic pressure distribution in both pipes,
+# irrespective of their orientation convention.
 
 [Model]
   model = 1phase
 []
 
 [Physics]
-  gravity = 0 0 0
+  gravity = 9.8 0 0
 []
 
 [Mesh]
@@ -20,6 +27,7 @@
   []
   [mesh2]
     type = UniformMesh
+    orientation = -1 0 0
     start = 1 0 0
     length = 1
     n_cell = 20
@@ -36,8 +44,7 @@
 
 [IC]
   [mesh1]
-    # hump profile on left half
-    T = 300 + 50 * sin(2*pi*x + 1.5*pi) if x < 1 else 250
+    T = 250
     u = 1
     p = 1e5
   []
@@ -49,29 +56,20 @@
 []
 
 [BC]
-  [left]
-    type = InletRhoUBC
-    mesh_name = mesh1
-    boundary = left
-    phase = air
-    # rho at T = 250 K, p = 1e5 Pa
-    rho = 1.37931034483
-    u = 1
-  []
-  [right]
-    type = OutletBC
-    mesh_name = mesh2
-    boundary = right
-    phase = air
-    p = 1.0e5
-  []
 []
 
 [Junctions]
   [junction1]
-    type = PLACEHOLDER
+    type = NewerCompressibleJunction
+    phase = air
     mesh_names = mesh1 mesh2
     mesh_sides = right left
+  []
+  [junction2]
+    type = NewerCompressibleJunction
+    phase = air
+    mesh_names = mesh1 mesh2
+    mesh_sides = left  right
   []
 []
 
@@ -97,7 +95,5 @@
 
 [Output]
   plot_solution = True
-  plot_file = junction.pdf
-  save_solution = True
-  solution_file = junction.csv
+  plot_file = junction_loop.pdf
 []

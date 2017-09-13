@@ -1,0 +1,53 @@
+# This tests an arbitrary 1-phase junction with a dead-ended T junction:
+#
+#         3
+#        ///
+#         |
+#         |
+#  1 -----*------ 2
+#      ->    ->
+#
+# In the steady-state, no flow should go into pipe 3.
+
+[BaseInputFile]
+  base = junction.in
+[]
+
+[Mesh]
+  [mesh3]
+    type = UniformMesh
+    start = 1 0 0
+    length = 1
+    orientation = 0 1 0
+    n_cell = 20
+  []
+[]
+
+[IC]
+  [mesh3]
+    T = 250
+    u = 0
+    p = 1e5
+  []
+[]
+
+[BC]
+  [deadend]
+    type = SolidWallBC
+    mesh_name = mesh3
+    boundary = right
+    phase = air
+  []
+[]
+
+[Junctions]
+  [junction1]
+    mesh_names = mesh1 mesh2 mesh3
+    mesh_sides = right left  left
+  []
+[]
+
+[Output]
+  plot_file = junction_deadend.pdf
+  solution_file = junction_deadend.csv
+[]
