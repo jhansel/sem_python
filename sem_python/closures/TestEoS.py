@@ -27,6 +27,8 @@ class TestEoS(EoS):
     self.ds_de = self.nextSlope()
     self.dp_dh = self.nextSlope()
     self.dp_ds = self.nextSlope()
+    self.dh_dp = self.nextSlope()
+    self.dh_dT = self.nextSlope()
 
   def nextSlope(self):
     self.slope += self.slope_increment
@@ -64,3 +66,6 @@ class TestEoS(EoS):
 
   def p_from_h_s(self, h, s):
     return self.testProperty(h, s, self.dp_dh, self.dp_ds)
+
+  def h(self, p, T):
+    return self.testProperty(p, T, self.dh_dp, self.dh_dT)

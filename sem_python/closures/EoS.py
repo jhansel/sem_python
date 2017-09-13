@@ -44,3 +44,7 @@ class EoS(object):
   @abstractmethod
   def p_from_h_s(self, h, s):
     pass
+
+  @abstractmethod
+  def h(self, p, T):
+    pass

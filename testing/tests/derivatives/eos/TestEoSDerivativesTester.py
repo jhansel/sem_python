@@ -39,6 +39,11 @@ class TestEoSFunctionDerivativesTester(unittest.TestCase):
     for reldiff in reldiffs:
       self.assertLessEqual(reldiff, 1e-6)
 
+  def testSpecificEnthalpy(self):
+    reldiffs = self.derivative_tester.checkDerivatives(self.eos.h, 2)
+    for reldiff in reldiffs:
+      self.assertLessEqual(reldiff, 1e-6)
+
 if __name__ == "__main__":
   params = TestEoSParameters()
   eos = TestEoS(params)

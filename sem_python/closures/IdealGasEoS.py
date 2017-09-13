@@ -100,3 +100,9 @@ class IdealGasEoS(EoS):
       * exp(-s / ((self.gamma - 1) * self.cv)) / -((self.gamma - 1) * self.cv)
 
     return (p, dp_dh, dp_ds)
+
+  def h(self, p, T):
+    h = self.gamma * self.cv * T
+    dh_dp = 0
+    dh_dT = self.gamma * self.cv
+    return (h, dh_dp, dh_dT)
