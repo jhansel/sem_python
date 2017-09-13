@@ -16,6 +16,7 @@ class OutputParameters(Parameters):
     self.registerIntParameter("output_precision", "Precision used in solution output file", 5)
     self.registerBoolParameter("plot_solution", "Option to plot solution", False)
     self.registerStringParameter("plot_file", "Name of plot file", "solution.pdf")
+    self.registerBoolParameter("plot_area", "Option to plot area instead of temperature", False)
 
     self.registerParameter("model", "Model")
     self.registerParameter("eos_list", "List of equations of state")
@@ -30,6 +31,7 @@ class Output(object):
     self.output_precision = params.get("output_precision")
     self.plot_solution = params.get("plot_solution")
     self.plot_file = params.get("plot_file")
+    self.plot_area = params.get("plot_area")
 
     model = params.get("model")
     self.model_type = model.model_type
@@ -114,6 +116,7 @@ class Output(object):
 
       if (self.model_type == ModelType.OnePhase):
         x_by_mesh = self.dof_handler.separateNodalQuantityByMesh(x)
+        A_by_mesh = self.dof_handler.separateNodalQuantityByMesh(self.dof_handler.A)
         rho1_by_mesh = self.dof_handler.separateNodalQuantityByMesh(rho1)
         u1_by_mesh = self.dof_handler.separateNodalQuantityByMesh(u1)
         p1_by_mesh = self.dof_handler.separateNodalQuantityByMesh(p1)
@@ -129,8 +132,12 @@ class Output(object):
         plotter.nextSubplot(x_label, "Pressure, $p$ [kPa]")
         addSets(plotter, x_by_mesh, p1_by_mesh, "$p$", 1e-3)
         plotter.fixNearConstantPlot()
-        plotter.nextSubplot(x_label, "Temperature, $T$ [K]")
-        addSets(plotter, x_by_mesh, T1_by_mesh, "$T$")
+        if self.plot_area:
+          plotter.nextSubplot(x_label, "Area, $A$ [m$^2$]")
+          addSets(plotter, x_by_mesh, A_by_mesh, "$A$")
+        else:
+          plotter.nextSubplot(x_label, "Temperature, $T$ [K]")
+          addSets(plotter, x_by_mesh, T1_by_mesh, "$T$")
         plotter.fixNearConstantPlot()
       elif (self.model_type == ModelType.TwoPhaseNonInteracting):
         plotter = Plotter(x_label, "Density, $\\rho$", (2,2))
