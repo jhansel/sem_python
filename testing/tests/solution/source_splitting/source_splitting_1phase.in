@@ -11,7 +11,7 @@
 
 [Mesh]
   type = UniformMesh
-  x_min = 0
+  start = 0 0 0
   length = 1
   n_cell = 50
 []

@@ -8,6 +8,7 @@ class MeshParameters(Parameters):
     Parameters.__init__(self)
     self.registerStringParameter("name", "Name to assign to mesh", "Mesh")
     self.registerFloatListParameter("orientation", "3-D orientation vector of mesh", [1,0,0])
+    self.registerFloatListParameter("start", "Position of start of domain", [0,0,0])
 
 class Mesh(object):
   __metaclass__ = ABCMeta
@@ -20,6 +21,12 @@ class Mesh(object):
       error("Mesh orientation vector must have 3 elements")
     magnitude = norm(orientation)
     self.orientation = [x / magnitude for x in orientation]
+
+    # get start position vector
+    start = params.get("start")
+    if len(start) != 3:
+      error("Mesh start position vector must have 3 elements")
+    self.start = start
 
   def getMinimumCellWidth(self):
     pass

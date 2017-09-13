@@ -50,13 +50,6 @@ class DoFHandler(object):
       k_begin += mesh_n_node
       elem_begin += mesh.n_cell
 
-    # determine min and max x-positions
-    self.x_min = self.meshes[0].x_min
-    self.x_max = self.meshes[0].x_max
-    for mesh in self.meshes:
-      self.x_min = min(self.x_min, mesh.x_min)
-      self.x_max = max(self.x_max, mesh.x_max)
-
     # number of DoFs per cell per variable (2 for linear FEM)
     self.n_dof_per_cell_per_var = 2
 
