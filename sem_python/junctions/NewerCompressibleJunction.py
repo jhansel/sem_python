@@ -47,12 +47,13 @@ class NewerCompressibleJunction(Junction1Phase):
 
   def applyWeaklyToNonlinearSystem(self, U_new, U_old, r, J):
     self.computeFlowQuantities(U_new)
-    self.computeJunctionStagnationEnthalpy()
+    self.computeJunctionStagnationEnthalpy(U_old)
 
     # add the boundary fluxes; characteristic theory is used to decide how
     # many pieces of information are supplied to inlets vs. outlets
     for i in xrange(self.n_meshes):
-      if self.u[i] * self.nx[i] > 0: # inlets to the junction; outlet BC
+      arhouA_old = U_old[self.i_arhouA[i]]
+      if arhouA_old * self.nx[i] > 0: # inlets to the junction; outlet BC
         self.addOutletBC(i, U_new, r, J)
       else: # outlets from the junction; inlet BC
         self.addInletBC(i, U_new, r, J)
@@ -62,7 +63,7 @@ class NewerCompressibleJunction(Junction1Phase):
     self.computeFluxes(U_new)
 
   ## Computes junction stagnation enthalpy and its derivatives
-  def computeJunctionStagnationEnthalpy(self):
+  def computeJunctionStagnationEnthalpy(self, U_old):
     # compute junction stagnation enthalpy h0J and its derivatives
     num = 0
     den = 0
@@ -78,7 +79,8 @@ class NewerCompressibleJunction(Junction1Phase):
     dnum_alt_darhouA = [0] * self.n_meshes
     dnum_alt_darhoEA = [0] * self.n_meshes
     for i in xrange(self.n_meshes):
-      if self.u[i] * self.nx[i] > 0: # mesh serves as inlet
+      arhouA_old = U_old[self.i_arhouA[i]]
+      if arhouA_old * self.nx[i] > 0: # mesh serves as inlet
         num += self.rho[i] * self.u[i] * self.h0[i] * self.A[i] * self.nx[i]
         den += self.rho[i] * self.u[i] * self.A[i] * self.nx[i]
         dnum_darhoA[i] = (self.drho_darhoA[i] * self.u[i] * self.h0[i] \
