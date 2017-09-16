@@ -1,6 +1,6 @@
 import unittest
 
-from ParameterModification import BlockParameterModification, SubblockParameterModification
+from InputFileModifier import InputFileModifier
 from SolutionTester import SolutionTester
 from JunctionTester import JunctionTester
 
@@ -9,12 +9,12 @@ class EqualSolutionLM1PhaseJunctionTester(unittest.TestCase):
     test_dir = "tests/junctions/equal_solution_lm_1phase_junction/"
     input_file = "tests/junctions/junction.in"
 
-    mods = list()
-    mods.append(SubblockParameterModification("Junctions", "junction1", "type", "EqualSolutionLM1PhaseJunction"))
-    mods.append(SubblockParameterModification("Junctions", "junction1", "phase", "air"))
-    mods.append(BlockParameterModification("Executioner", "end_time", 0.05))
+    input_file_modifier = InputFileModifier()
+    input_file_modifier.modifySubblockParam("Junctions", "junction1", "type", "EqualSolutionLM1PhaseJunction")
+    input_file_modifier.modifySubblockParam("Junctions", "junction1", "phase", "air")
+    input_file_modifier.modifyBlockParam("Executioner", "end_time", 0.05)
 
-    solution_tester = SolutionTester(test_dir, input_file, mods)
+    solution_tester = SolutionTester(test_dir, input_file, input_file_modifier)
     self.assertTrue(solution_tester.solutionsAreEqual())
 
   def runDerivativeTest(self, test_option):

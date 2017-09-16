@@ -22,14 +22,15 @@ from Factory import Factory
 
 # input
 from InputFileParser import InputFileParser
+from InputFileModifier import InputFileModifier
 
 # utilities
 from error_utilities import error
 
 ## Runs the code with the given input file
 # @param input_file  input file to run
-# @param mods  input file modifications
-def run(input_file, mods=list()):
+# @param input_file_modifier  input file modifier object
+def run(input_file, input_file_modifier=InputFileModifier()):
   # parse the input file
   input_file_parser_original = InputFileParser()
   input_file_parser_original.parse(input_file)
@@ -49,8 +50,7 @@ def run(input_file, mods=list()):
     input_file_parser = input_file_parser_original
 
   # apply modifications to input parameters, if any
-  for mod in mods:
-    input_file_parser.applyModification(mod)
+  input_file_parser.applyModifications(input_file_modifier)
 
   # create the factory
   factory = Factory()

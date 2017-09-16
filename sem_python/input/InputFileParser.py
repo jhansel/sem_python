@@ -161,20 +161,27 @@ class InputFileParser(object):
     if self.level != 0:
       error("All blocks and sub-blocks must be ended with '[]'.")
 
-  ## Applies a modification to a parameter
-  # @param mod  input file modification object
-  def applyModification(self, mod):
-    block = mod.block
-    param = mod.param
-    value = mod.value
-
-    if mod.is_subblock_param:
-      subblock = mod.subblock
-      self.assertSubblockExists(block, subblock)
-      self.subblock_data[block][subblock][param] = value
-    else:
+  ## Applies modifications to input file
+  # @param input_file_modifier  input file modifier object
+  def applyModifications(self, input_file_modifier):
+    # apply block parameter changes
+    for block_parameter_change in input_file_modifier.block_parameter_changes:
+      block, param, value = block_parameter_change
       self.assertBlockExists(block)
       self.block_data[block][param] = value
+
+    # apply sub-block parameter changes
+    for subblock_parameter_change in input_file_modifier.subblock_parameter_changes:
+      block, subblock, param, value = subblock_parameter_change
+      self.assertSubblockExists(block, subblock)
+      self.subblock_data[block][subblock][param] = value
+
+    # remove sub-blocks
+    for subblock_to_remove in input_file_modifier.subblocks_to_remove:
+      block, subblock = subblock_to_remove
+      if subblock in self.subblock_list[block]:
+        del self.subblock_data[block][subblock]
+        self.subblock_list[block].remove(subblock)
 
   ## Applies modifications to data from a differential input file parser
   # @param input_file_parser_diff  differential input file parser
