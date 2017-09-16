@@ -82,19 +82,14 @@
   type = ImplicitEulerExecutioner
   dt = 0.01
   end_time = 0.01
-  verbose = False
 []
 
 [NonlinearSolver]
-  verbose = False
   absolute_tolerance = 1e-5
   relative_tolerance = 1e-5
   max_iterations = 10
 []
 
 [Output]
-  plot_solution = False
-  print_solution = False
-  save_solution = True
-  solution_file = tests/closures/ambroso_interface_closures/solution.csv
+  plot_solution = True
 []

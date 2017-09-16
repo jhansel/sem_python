@@ -78,14 +78,10 @@
 []
 
 [NonlinearSolver]
-  verbose = False
   absolute_tolerance = 1e-5
   max_iterations = 10
 []
 
 [Output]
-  plot_solution = False
-  print_solution = False
-  save_solution = True
-  solution_file = tests/mesh/multi_mesh/solution.csv
+  plot_solution = True
 []

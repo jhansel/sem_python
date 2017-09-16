@@ -13,7 +13,6 @@ class TransientExecutionerParameters(ExecutionerParameters):
     self.registerFloatParameter("cfl", "CFL number to compute time step size")
     self.registerFloatParameter("end_time", "End time")
     self.registerBoolParameter("lump_mass_matrix", "Lump the mass matrix?", False)
-    self.registerBoolParameter("verbose", "Print time step information?", True)
 
 class TransientExecutioner(Executioner):
   def __init__(self, params):
@@ -35,7 +34,6 @@ class TransientExecutioner(Executioner):
 
     self.end_time = params.get("end_time")
     self.lump_mass_matrix = params.get("lump_mass_matrix")
-    self.verbose = params.get("verbose")
 
     # tolerance to prevent small final time steps due to floating point precision error
     self.end_tolerance = 1e-12

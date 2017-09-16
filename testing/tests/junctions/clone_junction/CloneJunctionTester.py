@@ -1,26 +1,20 @@
 import unittest
 
-import sem
 from ParameterModification import BlockParameterModification, SubblockParameterModification
-from CSVTester import CSVTester
+from SolutionTester import SolutionTester
 from JunctionTester import JunctionTester
 
 class CloneJunctionTester(unittest.TestCase):
   def testSolution(self):
-    input_dir = "tests/junctions/"
-    test_dir = input_dir + "clone_junction/"
-    solution_file = test_dir + "clone_junction.csv"
+    test_dir = "tests/junctions/clone_junction/"
+    input_file = "tests/junctions/junction.in"
+
     mods = list()
     mods.append(SubblockParameterModification("Junctions", "junction1", "type", "CloneJunction"))
-    mods.append(BlockParameterModification("NonlinearSolver", "verbose", False))
-    mods.append(BlockParameterModification("Executioner", "verbose", False))
     mods.append(BlockParameterModification("Executioner", "end_time", 0.05))
-    mods.append(BlockParameterModification("Output", "solution_file", solution_file))
-    mods.append(BlockParameterModification("Output", "plot_solution", False))
-    sem.run(input_dir + "junction.in", mods)
 
-    csv_tester = CSVTester(test_dir, "clone_junction.csv")
-    self.assertTrue(csv_tester.filesAreEqual())
+    solution_tester = SolutionTester(test_dir, input_file, mods)
+    self.assertTrue(solution_tester.solutionsAreEqual())
 
   def runDerivativeTest(self, test_option):
     tester = JunctionTester("CloneJunction")

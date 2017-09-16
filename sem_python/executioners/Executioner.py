@@ -22,6 +22,7 @@ class ExecutionerParameters(Parameters):
     self.registerParameter("stabilization", "Stabilization")
     self.registerParameter("factory", "Factory")
     self.registerBoolParameter("split_source", "Use source-splitting?", False)
+    self.registerBoolParameter("verbose", "Print execution information?", True)
 
 class Executioner(object):
   def __init__(self, params):
@@ -39,6 +40,7 @@ class Executioner(object):
     self.factory = params.get("factory")
     stabilization = params.get("stabilization")
     self.split_source = params.get("split_source")
+    self.verbose = params.get("verbose")
     self.need_solution_gradients = stabilization.needSolutionGradients()
 
     # quadrature
