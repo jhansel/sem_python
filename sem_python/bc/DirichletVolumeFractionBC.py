@@ -16,11 +16,13 @@ class DirichletVolumeFractionBC(VolumeFractionBC):
 
   def applyStrongBCNonlinearSystem(self, U, r, J):
     A = self.dof_handler.A[self.k]
-    vf1 = U[self.i_aA1]
+    aA1 = self.dof_handler.aA1(U, self.k)
+
+    vf1, dvf1_daA1 = computeVolumeFraction(aA1, A, self.phase, self.model_type)
 
     r[self.i_aA1] = vf1 - self.vf1
     J[self.i_aA1,:] = 0
-    J[self.i_aA1,self.i_aA1] = 1.0 / A
+    J[self.i_aA1,self.i_aA1] = dvf1_daA1
 
   def applyStrongBCLinearSystemMatrix(self, A):
     A[self.i_aA1,:] = 0
