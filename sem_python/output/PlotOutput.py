@@ -9,6 +9,8 @@ class PlotOutputParameters(OutputParameters):
     self.registerStringListParameter("plot_sets", "List of data to plot")
     self.registerBoolParameter("plot_by_mesh", "Flag to plot each mesh separately on a plot", False)
     self.registerStringParameter("legend_location", "Location of legend", "upper right")
+    self.registerFloatParameter("size_x", "Default x-length of figure in inches", 8)
+    self.registerFloatParameter("size_y", "Default y-length of figure in inches", 6)
 
 class PlotOutput(Output):
   def __init__(self, params):
@@ -17,6 +19,8 @@ class PlotOutput(Output):
     plot_sets_raw = params.get("plot_sets")
     self.plot_by_mesh = params.get("plot_by_mesh")
     self.legend_location = params.get("legend_location")
+    self.size_x = params.get("size_x")
+    self.size_y = params.get("size_y")
 
     self.n_subplots = len(plot_sets_raw)
     if self.n_subplots < 1:
@@ -143,7 +147,8 @@ class PlotOutput(Output):
 
       # advance sub-plot
       if i_subplot == 0:
-        plotter = Plotter(x_label_this_subplot, y_label, self.subplot_layout)
+        plotter = Plotter(x_label_this_subplot, y_label, self.subplot_layout, \
+          default_size_x=self.size_x, default_size_y=self.size_y)
       else:
         plotter.nextSubplot(x_label_this_subplot, y_label)
 

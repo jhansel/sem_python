@@ -14,7 +14,8 @@ linetypes = ['-','--',':']
 markers = ["", ".", "x", "o", "s", "^", "D"]
 
 class Plotter(object):
-    def __init__(self, x_label, y_label, n_subplots=1, logscale_x=False, logscale_y=False):
+    def __init__(self, x_label, y_label, n_subplots=1, logscale_x=False, logscale_y=False,
+      default_size_x=8, default_size_y=6):
         # get number of subplots in each dimension
         if isinstance(n_subplots, tuple):
           self.n_subplots_x, self.n_subplots_y = n_subplots
@@ -26,17 +27,17 @@ class Plotter(object):
 
         # set figure size; default is 8 in X 6 in
         if self.n_subplots_x == 1:
-          size_x = 8
+          size_x = default_size_x
         elif self.n_subplots_x == 2:
-          size_x = 16
+          size_x = default_size_x * 2
         else:
           error("The number of sub-plots in x-direction must be <= 2")
         if self.n_subplots_y == 1:
-          size_y = 6
+          size_y = default_size_y
         elif self.n_subplots_y == 2:
-          size_y = 12
+          size_y = default_size_y * 2
         elif self.n_subplots_y == 3:
-          size_y = 12
+          size_y = default_size_y * 2
         else:
           error("The number of sub-plots in y-direction must be <= 3")
         plt.figure(figsize=(size_x, size_y))
