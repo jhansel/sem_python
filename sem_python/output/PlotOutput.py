@@ -8,6 +8,7 @@ class PlotOutputParameters(OutputParameters):
     self.registerStringParameter("file_name", "Name of solution output file", "solution.pdf")
     self.registerStringListParameter("plot_sets", "List of data to plot")
     self.registerBoolParameter("plot_by_mesh", "Flag to plot each mesh separately on a plot", False)
+    self.registerStringParameter("legend_location", "Location of legend", "upper right")
 
 class PlotOutput(Output):
   def __init__(self, params):
@@ -15,6 +16,7 @@ class PlotOutput(Output):
     self.file_name = params.get("file_name")
     plot_sets_raw = params.get("plot_sets")
     self.plot_by_mesh = params.get("plot_by_mesh")
+    self.legend_location = params.get("legend_location")
 
     self.n_subplots = len(plot_sets_raw)
     if self.n_subplots < 1:
@@ -163,6 +165,8 @@ class PlotOutput(Output):
 
         # don't plot "noise" in a near-constant solution
         plotter.fixNearConstantPlot()
+
+        plotter.setLegendLocation(self.legend_location)
 
     # save plot
     plotter.save(self.file_name)
