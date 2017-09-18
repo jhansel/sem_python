@@ -23,7 +23,7 @@ from Factory import Factory
 
 # closures
 from thermodynamic_functions import computeDensity, computeVelocity, computeSpecificVolume,\
-  computeSpecificTotalEnergy, computeSpecificInternalEnergy
+  computeSpecificTotalEnergy, computeSpecificInternalEnergy, computeSpecificEnthalpy
 
 # input
 from InputFileParser import InputFileParser
@@ -241,6 +241,10 @@ def run(input_file, input_file_modifier=InputFileModifier()):
     eos1 = eos_list[0]
     p1 = eos1.p(v1, e1)[0]
     T1 = eos1.T(v1, e1)[0]
+    h1 = computeSpecificEnthalpy(e1, p1, rho1)[0]
+    H1 = h1 + 0.5 * u1**2
+    s1 = eos1.s(v1, e1)[0]
+    p01 = eos1.p_from_h_s(H1, s1)[0]
     if (model_type != ModelType.OnePhase):
       rho2 = computeDensity(vf2, arhoA2, dof_handler.A)[0]
       u2 = computeVelocity(arhoA2, arhouA2)[0]
@@ -250,6 +254,10 @@ def run(input_file, input_file_modifier=InputFileModifier()):
       eos2 = eos_list[1]
       p2 = eos2.p(v2, e2)[0]
       T2 = eos2.T(v2, e2)[0]
+      h2 = computeSpecificEnthalpy(e2, p2, rho2)[0]
+      H2 = h2 + 0.5 * u2**2
+      s2 = eos2.s(v2, e2)[0]
+      p02 = eos2.p_from_h_s(H2, s2)[0]
 
     # create an ordered data dictionary
     data = OrderedDict()
@@ -266,6 +274,10 @@ def run(input_file, input_file_modifier=InputFileModifier()):
       data["e"] = e1
       data["p"] = p1
       data["T"] = T1
+      data["h"] = h1
+      data["H"] = H1
+      data["s"] = s1
+      data["p0"] = p01
     else:
       # phase 1
       data["vf1"] = vf1
@@ -279,6 +291,10 @@ def run(input_file, input_file_modifier=InputFileModifier()):
       data["e1"] = e1
       data["p1"] = p1
       data["T1"] = T1
+      data["h1"] = h1
+      data["H1"] = H1
+      data["s1"] = s1
+      data["p01"] = p01
 
       # phase 2
       data["vf2"] = vf2
@@ -292,6 +308,10 @@ def run(input_file, input_file_modifier=InputFileModifier()):
       data["e2"] = e2
       data["p2"] = p2
       data["T2"] = T2
+      data["h2"] = h2
+      data["H2"] = H2
+      data["s2"] = s2
+      data["p02"] = p02
 
     if model_type == ModelType.OnePhase:
       default_print_list = ["rho", "u", "p"]
