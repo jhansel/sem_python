@@ -12,7 +12,14 @@
   q_prime = 0
 []
 
-# values defining the thermodynamic state
+# Values defining the thermodynamic state. One may supply any of the following
+# combinations:
+#   * (p, T)
+#   * (p, T, u)
+#   * (rho, T)
+#   * (rho, T, u)
+# If velocity (u) is supplied, then some stagnation properties are output in
+# addition to the static state properties.
 [ThermodynamicState]
   rho = 1
   p = 1e5
