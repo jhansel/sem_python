@@ -14,15 +14,7 @@ linetypes = ['-','--',':']
 markers = ["", ".", "x", "o", "s", "^", "D"]
 
 class Plotter(object):
-    def __init__(self, x_label, y_label, n_subplots=1, logscale_x=False, logscale_y=False,
-      size_x=12, size_y=9):
-        # set figure size
-        plt.figure(figsize=(size_x, size_y))
-
-        # use latex
-        plt.rc('text', usetex=True)
-        plt.rc('font', family='sans-serif')
-
+    def __init__(self, x_label, y_label, n_subplots=1, logscale_x=False, logscale_y=False):
         # get number of subplots in each dimension
         if isinstance(n_subplots, tuple):
           self.n_subplots_x, self.n_subplots_y = n_subplots
@@ -31,6 +23,27 @@ class Plotter(object):
           self.n_subplots_x = 1
         self.n_subplots = self.n_subplots_x * self.n_subplots_y
         self.current_subplot_index = 1
+
+        # set figure size; default is 8 in X 6 in
+        if self.n_subplots_x == 1:
+          size_x = 8
+        elif self.n_subplots_x == 2:
+          size_x = 16
+        else:
+          error("The number of sub-plots in x-direction must be <= 2")
+        if self.n_subplots_y == 1:
+          size_y = 6
+        elif self.n_subplots_y == 2:
+          size_y = 12
+        elif self.n_subplots_y == 3:
+          size_y = 12
+        else:
+          error("The number of sub-plots in y-direction must be <= 3")
+        plt.figure(figsize=(size_x, size_y))
+
+        # use latex
+        plt.rc('text', usetex=True)
+        plt.rc('font', family='sans-serif')
 
         # get axes of first subplot
         self.ax = plt.subplot(self.n_subplots_y, self.n_subplots_x, 1)
