@@ -11,6 +11,7 @@ class PlotOutputParameters(OutputParameters):
     self.registerStringParameter("legend_location", "Location of legend", "upper right")
     self.registerFloatParameter("size_x", "Default x-length of figure in inches", 8)
     self.registerFloatParameter("size_y", "Default y-length of figure in inches", 6)
+    self.registerFloatListParameter("y_bounds", "Bounds for y-axis, after scaling")
 
 class PlotOutput(Output):
   def __init__(self, params):
@@ -21,12 +22,18 @@ class PlotOutput(Output):
     self.legend_location = params.get("legend_location")
     self.size_x = params.get("size_x")
     self.size_y = params.get("size_y")
+    self.supplied_y_bounds = params.has("y_bounds")
+    if self.supplied_y_bounds:
+      self.y_bounds = params.get("y_bounds")
 
     self.n_subplots = len(plot_sets_raw)
     if self.n_subplots < 1:
       error("There must be at least one set specified by the 'plot_sets' parameter")
     elif self.n_subplots > 4:
       error("The maximum number of sub-plots is 4")
+
+    if self.supplied_y_bounds and self.n_subplots > 1:
+      error("Y-bounds can only be specified if there is only 1 sub-plot")
 
     # parse the plot set list in case there are multi-sets for a subplot
     # multi-sets must be of the format "[a,b,c]" (no spaces)
@@ -153,6 +160,9 @@ class PlotOutput(Output):
         plotter.nextSubplot(x_label_this_subplot, y_label)
 
       plotter.setXRange(x_min, x_max)
+
+      if self.supplied_y_bounds:
+        plotter.setYRange(self.y_bounds[0], self.y_bounds[1])
 
       # loop over quantities in sub-plot
       for i_name, name in enumerate(plot_set):
