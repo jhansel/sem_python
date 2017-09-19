@@ -194,6 +194,19 @@ def run(input_file, input_file_modifier=InputFileModifier()):
   if len(gravity) != 3:
     error("Gravity vector must have 3 elements")
 
+  # heat transfer data
+  # initialize heat transfer data such that no heat transfer occurs
+  ht_param_data_default = {"T_wall": 0, "htc_wall": 0, "P_heat": 1}
+  ht_data_default = factory.createObject("HeatTransferData", ht_param_data_default)
+  ht_data = [ht_data_default] * len(meshes)
+  ht_subblocks = input_file_parser.getSubblockNames("HeatTransfer")
+  for subblock in ht_subblocks:
+    # sub-blocks should be named by the corresponding mesh names
+    mesh_name = subblock
+    i_mesh = dof_handler.mesh_name_to_mesh_index[mesh_name]
+    ht_data_mesh = input_file_parser.getSubblockData("HeatTransfer", subblock)
+    ht_data[i_mesh] = factory.createObject("HeatTransferData", ht_data_mesh)
+
   # nonlinear solver options
   nonlinear_solver_params = input_file_parser.getBlockData("NonlinearSolver")
 

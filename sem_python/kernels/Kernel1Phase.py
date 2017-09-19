@@ -38,6 +38,7 @@ class Kernel1Phase(Kernel):
     self.v = "v" + phase_str
     self.e = "e" + phase_str
     self.p = "p" + phase_str
+    self.T = "T" + phase_str
 
     self.grad_arhoA = "grad_" + self.arhoA
     self.grad_arhouA = "grad_" + self.arhouA
