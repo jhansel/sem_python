@@ -1,17 +1,9 @@
 import matplotlib.pyplot as plt
 from matplotlib.ticker import FormatStrFormatter
 
-# colors:
-# 0: black
-# 1: red
-# 2: orange
-# 3: green
-# 4: blue
-# 5: purple
-# 6: hot pink
-colors = ['k','indianred','orange','lightgreen','cornflowerblue','slateblue','orchid']
+colors = ['k','indianred','orange','lightgreen','cornflowerblue','slateblue','orchid','turquoise','peru']
 linetypes = ['-','--',':']
-markers = ["", ".", "x", "o", "s", "^", "D"]
+markers = ["", ".", "x", "o", "s", "^", "D", "v", "*"]
 
 class Plotter(object):
     def __init__(self, x_label, y_label, n_subplots=1, logscale_x=False, logscale_y=False,
