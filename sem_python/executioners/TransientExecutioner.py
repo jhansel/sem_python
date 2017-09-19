@@ -13,6 +13,7 @@ class TransientExecutionerParameters(ExecutionerParameters):
     self.registerFloatParameter("cfl", "CFL number to compute time step size")
     self.registerFloatParameter("end_time", "End time")
     self.registerBoolParameter("lump_mass_matrix", "Lump the mass matrix?", False)
+    self.registerFloatParameter("ss_tol", "Tolerance for steady-state check")
 
 class TransientExecutioner(Executioner):
   def __init__(self, params):
@@ -34,6 +35,12 @@ class TransientExecutioner(Executioner):
 
     self.end_time = params.get("end_time")
     self.lump_mass_matrix = params.get("lump_mass_matrix")
+
+    if params.has("ss_tol"):
+      self.check_ss = True
+      self.ss_tol = params.get("ss_tol")
+    else:
+      self.check_ss = False
 
     # tolerance to prevent small final time steps due to floating point precision error
     self.end_tolerance = 1e-12
@@ -210,8 +217,6 @@ class TransientExecutioner(Executioner):
     transient_incomplete = True
     t = 0.0
     time_step = 1
-    if self.verbose:
-      print ""
     while (transient_incomplete):
       # compute time step size
       if self.use_cfl_dt:
@@ -230,7 +235,7 @@ class TransientExecutioner(Executioner):
       t += self.dt
 
       if self.verbose:
-        print "Time step %i: t = %g, dt = %g" % (time_step, t, self.dt)
+        print "\nTime step %i: t = %g, dt = %g" % (time_step, t, self.dt)
 
       # solve the time step
       self.solve()
@@ -239,12 +244,28 @@ class TransientExecutioner(Executioner):
       if self.split_source:
         self.takeSourceStep(self.U, self.dt)
 
+      # check for steady-state
+      if self.check_ss:
+        U_diff = self.U - self.U_old
+        U_diff_norm = np.linalg.norm(U_diff, 2)
+        U_old_norm = np.linalg.norm(self.U_old, 2)
+        U_change_norm = U_diff_norm / U_old_norm
+        if self.verbose:
+          print "Relative solution change: %e" % (U_change_norm)
+        if U_change_norm < self.ss_tol:
+          if self.verbose:
+            print colored("\nConverged to steady-state!\n", "green")
+          return self.U
+
       # store the old solution
       self.U_old = deepcopy(self.U)
 
       # save old solution and increment time step index
       self.U_old = deepcopy(self.U)
       time_step += 1
+
+    if self.verbose:
+      print ""
 
     return self.U
 

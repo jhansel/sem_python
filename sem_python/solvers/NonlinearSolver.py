@@ -151,7 +151,7 @@ class NonlinearSolver(object):
       # check for convergence
       if r_norm_abs <= self.absolute_tol or r_norm_rel <= self.relative_tol:
         if self.verbose:
-          print colored("Solution converged!\n", "green")
+          print colored("Solution converged!", "green")
         converged = True
         break
 
