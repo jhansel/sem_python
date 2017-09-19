@@ -95,8 +95,8 @@ class DoFHandler(object):
       k_previous = self.getNodeIndexFromRight(self.meshes[mesh_index_min].name, 0)
       i_previous += (k_previous + 1) * self.n_var - 1
       # add the constraint DoFs
-      for mesh_index in xrange(mesh_index_min):
-        i_previous += self.n_constraints[mesh_index_min]
+      for mesh_index in xrange(mesh_index_min + 1):
+        i_previous += self.n_constraints[mesh_index]
 
       # finish computation of the constraint DoF indices
       n_constraints = junction.n_constraints
