@@ -3,43 +3,43 @@ import unittest
 from FunctionDerivativesTester import FunctionDerivativesTester
 from TestEoS import TestEoS, TestEoSParameters
 
-class TestEoSFunctionDerivativesTester(unittest.TestCase):
+class TestEoSTester(unittest.TestCase):
   def setUp(self):
     params = TestEoSParameters()
     self.eos = TestEoS(params)
     self.derivative_tester = FunctionDerivativesTester()
 
-  def testSpecificInternalEnergy(self):
+  def testSpecificInternalEnergyDerivatives(self):
     reldiffs = self.derivative_tester.checkDerivatives(self.eos.e, 2)
     for reldiff in reldiffs:
       self.assertLessEqual(reldiff, 1e-6)
 
-  def testPressure(self):
+  def testPressureDerivatives(self):
     reldiffs = self.derivative_tester.checkDerivatives(self.eos.p, 2)
     for reldiff in reldiffs:
       self.assertLessEqual(reldiff, 1e-6)
 
-  def testTemperature(self):
+  def testTemperatureDerivatives(self):
     reldiffs = self.derivative_tester.checkDerivatives(self.eos.T, 2)
     for reldiff in reldiffs:
       self.assertLessEqual(reldiff, 1e-6)
 
-  def testSoundSpeed(self):
+  def testSoundSpeedDerivatives(self):
     reldiffs = self.derivative_tester.checkDerivatives(self.eos.c, 2)
     for reldiff in reldiffs:
       self.assertLessEqual(reldiff, 1e-6)
 
-  def testEntropy(self):
+  def testEntropyDerivatives(self):
     reldiffs = self.derivative_tester.checkDerivatives(self.eos.s, 2)
     for reldiff in reldiffs:
       self.assertLessEqual(reldiff, 1e-6)
 
-  def testPressureFromEnthalpyEntropy(self):
+  def testPressureFromEnthalpyEntropyDerivatives(self):
     reldiffs = self.derivative_tester.checkDerivatives(self.eos.p_from_h_s, 2)
     for reldiff in reldiffs:
       self.assertLessEqual(reldiff, 1e-6)
 
-  def testSpecificEnthalpy(self):
+  def testSpecificEnthalpyDerivatives(self):
     reldiffs = self.derivative_tester.checkDerivatives(self.eos.h, 2)
     for reldiff in reldiffs:
       self.assertLessEqual(reldiff, 1e-6)
