@@ -16,6 +16,7 @@ Arguments:
 
 from docopt import docopt
 from collections import OrderedDict
+import warnings
 
 # base
 from enums import ModelType
@@ -244,7 +245,10 @@ def run(input_file, input_file_modifier=InputFileModifier()):
     h1 = computeSpecificEnthalpy(e1, p1, rho1)[0]
     H1 = h1 + 0.5 * u1**2
     s1 = eos1.s(v1, e1)[0]
-    p01 = eos1.p_from_h_s(H1, s1)[0]
+    # overflow can occur in p(h,s) with small gamma values
+    with warnings.catch_warnings():
+      warnings.simplefilter("ignore")
+      p01 = eos1.p_from_h_s(H1, s1)[0]
     if (model_type != ModelType.OnePhase):
       rho2 = computeDensity(vf2, arhoA2, dof_handler.A)[0]
       u2 = computeVelocity(arhoA2, arhouA2)[0]
@@ -257,7 +261,10 @@ def run(input_file, input_file_modifier=InputFileModifier()):
       h2 = computeSpecificEnthalpy(e2, p2, rho2)[0]
       H2 = h2 + 0.5 * u2**2
       s2 = eos2.s(v2, e2)[0]
-      p02 = eos2.p_from_h_s(H2, s2)[0]
+      # overflow can occur in p(h,s) with small gamma values
+      with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        p02 = eos2.p_from_h_s(H2, s2)[0]
 
     # create an ordered data dictionary
     data = OrderedDict()
