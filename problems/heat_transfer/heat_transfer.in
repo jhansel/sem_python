@@ -1,0 +1,77 @@
+# This tests heat transfer. Air is enclosed in a pipe with a constant wall temperature
+# higher than the initial temperature of the fluid. The temperature of the
+# fluid should approach the wall temperature, density should remain constant,
+# pressure should increase, and the velocity should stay zero.
+#
+# rho @ (p = 1e5 Pa, T = 300 K) = 1.1494252873563 kg/m^3
+
+[Model]
+  model = 1phase
+[]
+
+[Physics]
+  gravity = 0 0 0
+[]
+
+[Mesh]
+  type = UniformMesh
+  start = 0 0 0
+  length = 1
+  n_cell = 2
+[]
+
+[EoS]
+  [air]
+    type = IdealGasEoS
+    gamma = 1.4
+    R = 290
+  []
+[]
+
+[IC]
+  p = 1.0e5
+  T = 300
+  u = 0
+[]
+
+[BC]
+  [left]
+    type = SolidWallBC
+    boundary = left
+    phase = air
+  []
+  [right]
+    type = SolidWallBC
+    boundary = right
+    phase = air
+  []
+[]
+
+[HeatTransfer]
+  htc_wall = 1e3
+  T_wall = 310
+  P_heat = 0.5
+[]
+
+[Executioner]
+  type = ImplicitEulerExecutioner
+  dt = 5.0
+  end_time = 50.0
+[]
+
+[NonlinearSolver]
+  verbose = True
+  absolute_tolerance = 1e-5
+  max_iterations = 10
+[]
+
+[Output]
+  [csv]
+    type = CSVOutput
+    names = rho u p T
+  []
+  [plot]
+    type = PlotOutput
+    plot_sets = rho u p T
+  []
+[]

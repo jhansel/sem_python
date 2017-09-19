@@ -16,6 +16,7 @@ class ExecutionerParameters(Parameters):
     self.registerParameter("eos_list", "List of equations of state")
     self.registerParameter("interface_closures", "Interface closures")
     self.registerFloatListParameter("gravity", "3-D gravitational acceleration vector")
+    self.registerParameter("ht_data", "List of HeatTransferData objects")
     self.registerParameter("dof_handler", "Degree of freedom handler")
     self.registerParameter("meshes", "List of meshes")
     self.registerParameter("nonlinear_solver_params", "Nonlinear solver parameters")
@@ -34,6 +35,7 @@ class Executioner(object):
     self.eos_list = params.get("eos_list")
     interface_closures = params.get("interface_closures")
     self.gravity = params.get("gravity")
+    self.ht_data = params.get("ht_data")
     self.dof_handler = params.get("dof_handler")
     self.meshes = params.get("meshes")
     self.nonlinear_solver_params = params.get("nonlinear_solver_params")
@@ -212,7 +214,7 @@ class Executioner(object):
 
   def createIndependentPhaseSourceKernels(self, phase):
     params = {"phase": phase, "dof_handler": self.dof_handler, "is_nodal": self.split_source}
-    kernel_names = ["MomentumGravity", "EnergyGravity"]
+    kernel_names = ["MomentumGravity", "EnergyGravity", "EnergyHeatTransfer"]
     kernels = [self.factory.createObject(kernel_name, params) for kernel_name in kernel_names]
     return kernels
 
@@ -315,10 +317,15 @@ class Executioner(object):
       r_cell = np.zeros(self.dof_handler.n_dof_per_cell)
       J_cell = np.zeros(shape=(self.dof_handler.n_dof_per_cell, self.dof_handler.n_dof_per_cell))
 
+      i_mesh = self.dof_handler.elem_to_mesh_index[elem]
+
       data["grad_phi"] = self.fe_values.get_grad_phi(elem)
       data["JxW"] = self.fe_values.get_JxW(elem)
       data["dx"] = self.dof_handler.h[elem]
-      data["g"] = np.dot(self.meshes[self.dof_handler.elem_to_mesh_index[elem]].orientation, self.gravity)
+      data["g"] = np.dot(self.meshes[i_mesh].orientation, self.gravity)
+      data["T_wall"] = self.ht_data[i_mesh].T_wall
+      data["htc_wall"] = self.ht_data[i_mesh].htc_wall
+      data["P_heat"] = self.ht_data[i_mesh].P_heat
 
       # compute solution
       self.computeLocalCellSolution(U, elem, data)

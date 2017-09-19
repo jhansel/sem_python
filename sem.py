@@ -199,13 +199,20 @@ def run(input_file, input_file_modifier=InputFileModifier()):
   ht_param_data_default = {"T_wall": 0, "htc_wall": 0, "P_heat": 1}
   ht_data_default = factory.createObject("HeatTransferData", ht_param_data_default)
   ht_data = [ht_data_default] * len(meshes)
-  ht_subblocks = input_file_parser.getSubblockNames("HeatTransfer")
-  for subblock in ht_subblocks:
-    # sub-blocks should be named by the corresponding mesh names
-    mesh_name = subblock
-    i_mesh = dof_handler.mesh_name_to_mesh_index[mesh_name]
-    ht_data_mesh = input_file_parser.getSubblockData("HeatTransfer", subblock)
-    ht_data[i_mesh] = factory.createObject("HeatTransferData", ht_data_mesh)
+  if input_file_parser.blockExists("HeatTransfer"):
+    ht_subblocks = input_file_parser.getSubblockNames("HeatTransfer")
+    if len(ht_subblocks) == 0:
+      # use same heat transfer data for every mesh
+      ht_data_params = input_file_parser.getBlockData("HeatTransfer")
+      ht_data_mesh = factory.createObject("HeatTransferData", ht_data_params)
+      ht_data = [ht_data_mesh] * len(meshes)
+    else:
+      for subblock in ht_subblocks:
+        # sub-blocks should be named by the corresponding mesh names
+        mesh_name = subblock
+        i_mesh = dof_handler.mesh_name_to_mesh_index[mesh_name]
+        ht_data_mesh = input_file_parser.getSubblockData("HeatTransfer", subblock)
+        ht_data[i_mesh] = factory.createObject("HeatTransferData", ht_data_mesh)
 
   # nonlinear solver options
   nonlinear_solver_params = input_file_parser.getBlockData("NonlinearSolver")
@@ -232,6 +239,7 @@ def run(input_file, input_file_modifier=InputFileModifier()):
   executioner_param_data["eos_list"] = eos_list
   executioner_param_data["interface_closures"] = interface_closures
   executioner_param_data["gravity"] = gravity
+  executioner_param_data["ht_data"] = ht_data
   executioner_param_data["dof_handler"] = dof_handler
   executioner_param_data["meshes"] = meshes
   executioner_param_data["nonlinear_solver_params"] = nonlinear_solver_params

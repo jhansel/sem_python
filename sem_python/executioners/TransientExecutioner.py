@@ -137,7 +137,12 @@ class TransientExecutioner(Executioner):
       r_node = np.zeros(n_var)
       J_node = np.zeros(shape=(n_var, n_var))
 
-      data["g"] = np.dot(self.meshes[self.dof_handler.node_to_mesh_index[k]].orientation, self.gravity)
+      i_mesh = self.dof_handler.node_to_mesh_index[k]
+
+      data["g"] = np.dot(self.meshes[i_mesh].orientation, self.gravity)
+      data["T_wall"] = self.ht_data[i_mesh].T_wall
+      data["htc_wall"] = self.ht_data[i_mesh].htc_wall
+      data["P_heat"] = self.ht_data[i_mesh].P_heat
 
       # compute solution
       self.computeLocalNodeSolution(U, k, data)

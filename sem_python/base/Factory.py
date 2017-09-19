@@ -65,6 +65,9 @@ from DoFHandler2Phase import DoFHandler2Phase, DoFHandler2PhaseParameters
 from FEValues import FEValues, FEValuesParameters
 from Quadrature import Quadrature, QuadratureParameters
 
+# heat transfer
+from HeatTransferData import HeatTransferData, HeatTransferDataParameters
+
 # ic
 from InitialConditions1Phase import InitialConditions1Phase, InitialConditions1PhaseParameters
 from InitialConditions2Phase import InitialConditions2Phase, InitialConditions2PhaseParameters

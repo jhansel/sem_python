@@ -84,6 +84,9 @@ class KernelDerivativesTester(object):
     i = 0
     j = 1
     q = 0
+    data["htc_wall"] = 0.2
+    data["T_wall"] = 1.3
+    data["P_heat"] = 0.6
     data["grad_A"] = 0.3
     data["phi"] = self.fe_values.get_phi()
     data["grad_phi"] = self.fe_values.get_grad_phi(self.elem)
