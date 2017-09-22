@@ -1,9 +1,11 @@
 [BlockA]
   paramA1 = old_value_paramA1
   paramA2 = old_value_paramA2
+  paramA3 = old_value_paramA3
   [SubblockAA]
     subparamAA1 = old_value_subparamAA1
     subparamAA2 = old_value_subparamAA2
+    subparamAA3 = old_value_subparamAA3
   []
   [SubblockAB]
     subparamAB1 = old_value_subparamAB1
@@ -17,7 +19,7 @@
     subparamBA1 = old_value_subparamBA1
   []
 []
-    
+
 [BlockC]
   paramC1 = old_value_paramC1
 []

@@ -3,12 +3,14 @@ import unittest
 from InputFileModifier import InputFileModifier
 from InputFileParser import InputFileParser
 
-class InputFileParserTester(unittest.TestCase):
+class InputFileModifierTester(unittest.TestCase):
   def setUp(self):
     # create modifications
     input_file_modifier = InputFileModifier()
     input_file_modifier.removeBlock("BlockC")
     input_file_modifier.removeSubblock("BlockA", "SubblockAB")
+    input_file_modifier.removeBlockParam("BlockA", "paramA3")
+    input_file_modifier.removeSubblockParam("BlockA", "SubblockAA", "subparamAA3")
     input_file_modifier.modifyBlockParam("BlockA", "paramA1", "new_value_paramA1")
     input_file_modifier.modifySubblockParam("BlockA", "SubblockAA", "subparamAA1", "new_value_subparamAA1")
 
@@ -27,6 +29,14 @@ class InputFileParserTester(unittest.TestCase):
     no_SubblockAB = ("SubblockAB" not in self.input_file_parser.subblock_data) \
       and ("SubblockAB" not in self.input_file_parser.subblock_list["BlockA"])
     self.assertTrue(no_SubblockAB)
+
+  def testBlockParameterRemoval(self):
+    no_paramA3 = "paramA3" not in self.input_file_parser.block_data["BlockA"]
+    self.assertTrue(no_paramA3)
+
+  def testSubblockParameterRemoval(self):
+    no_subparamAA3 = "subparamAA3" not in self.input_file_parser.subblock_data["BlockA"]["SubblockAA"]
+    self.assertTrue(no_subparamAA3)
 
   def testBlockParameterPreserve(self):
     old_paramA2 = self.input_file_parser.block_data["BlockA"]["paramA2"] == "old_value_paramA2"
