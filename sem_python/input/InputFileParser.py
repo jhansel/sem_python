@@ -176,6 +176,15 @@ class InputFileParser(object):
       self.assertSubblockExists(block, subblock)
       self.subblock_data[block][subblock][param] = value
 
+    # remove blocks
+    for block in input_file_modifier.blocks_to_remove:
+      if block in self.block_data:
+        del self.block_data[block]
+      if block in self.subblock_data:
+        del self.subblock_data[block]
+      if block in self.subblock_list:
+        del self.subblock_list[block]
+
     # remove sub-blocks
     for subblock_to_remove in input_file_modifier.subblocks_to_remove:
       block, subblock = subblock_to_remove

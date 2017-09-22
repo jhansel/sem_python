@@ -1,33 +1,27 @@
 import unittest
 
+from InputFileModifier import InputFileModifier
 from InputFileParser import InputFileParser
 
 class InputFileParserTester(unittest.TestCase):
   def setUp(self):
-    differential_input_file = "tests/input/input_file_parser/differential.in"
-    input_file_parser_differential = InputFileParser()
-    input_file_parser_differential.parse(differential_input_file)
+    # create modifications
+    input_file_modifier = InputFileModifier()
+    input_file_modifier.removeBlock("BlockC")
+    input_file_modifier.removeSubblock("BlockA", "SubblockAB")
+    input_file_modifier.modifyBlockParam("BlockA", "paramA1", "new_value_paramA1")
+    input_file_modifier.modifySubblockParam("BlockA", "SubblockAA", "subparamAA1", "new_value_subparamAA1")
 
-    # get the name of the base input file and parse it
-    base_input_file = input_file_parser_differential.getBlockData("BaseInputFile")["base"]
+    # parse the input file and apply modifications
+    input_file = "tests/input/input_file_parser/base.in"
     self.input_file_parser = InputFileParser()
-    self.input_file_parser.parse(base_input_file)
-
-    # apply modifications to base input file parser
-    self.input_file_parser.applyDifferentialInputFileParser(input_file_parser_differential)
+    self.input_file_parser.parse(input_file)
+    self.input_file_parser.applyModifications(input_file_modifier)
 
   def testBlockRemoval(self):
     no_BlockC = ("BlockC" not in self.input_file_parser.block_data) \
       and ("BlockC" not in self.input_file_parser.subblock_data)
     self.assertTrue(no_BlockC)
-
-  def testBlockReplacement(self):
-    no_SubblockBA = ("SubblockBA" not in self.input_file_parser.subblock_data["BlockB"]) \
-      and ("SubblockBA" not in self.input_file_parser.subblock_list["BlockB"])
-    no_paramB1 = "paramB1" not in self.input_file_parser.block_data["BlockB"]
-    new_paramB2 = self.input_file_parser.block_data["BlockB"]["paramB2"] == "new_value_paramB2"
-    new_subparamBB1 = self.input_file_parser.subblock_data["BlockB"]["SubblockBB"]["subparamBB1"] == "new_value_subparamBB1"
-    self.assertTrue(no_SubblockBA and no_paramB1 and new_paramB2 and new_subparamBB1)
 
   def testSubblockRemoval(self):
     no_SubblockAB = ("SubblockAB" not in self.input_file_parser.subblock_data) \
