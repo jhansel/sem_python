@@ -186,24 +186,6 @@ class InputFileParser(object):
   ## Applies modifications to data from a differential input file parser
   # @param input_file_parser_diff  differential input file parser
   def applyDifferentialInputFileParser(self, input_file_parser_diff):
-    # apply block parameter value changes
-    for block in input_file_parser_diff.block_data:
-      if block not in self.block_data:
-        self.block_data[block] = dict()
-      for parameter in input_file_parser_diff.block_data[block]:
-        self.block_data[block][parameter] = input_file_parser_diff.block_data[block][parameter]
-
-    # apply sub-block parameter value changes
-    for block in input_file_parser_diff.subblock_data:
-      if block not in self.subblock_data:
-        self.subblock_data[block] = dict()
-      for subblock in input_file_parser_diff.subblock_data[block]:
-        if subblock not in self.subblock_data[block]:
-          self.subblock_data[block][subblock] = dict()
-          self.subblock_list[block].append(subblock)
-        for parameter in input_file_parser_diff.subblock_data[block][subblock]:
-          self.subblock_data[block][subblock][parameter] = input_file_parser_diff.subblock_data[block][subblock][parameter]
-
     # delete blocks
     for block in input_file_parser_diff.blocks_to_delete:
       del self.block_data[block]
@@ -217,6 +199,26 @@ class InputFileParser(object):
       for subblock in input_file_parser_diff.subblocks_to_delete[block]:
         del self.subblock_data[block][subblock]
         self.subblock_list[block].remove(subblock)
+
+    # apply block parameter value changes
+    for block in input_file_parser_diff.block_data:
+      if block not in self.block_data:
+        self.block_data[block] = dict()
+      for parameter in input_file_parser_diff.block_data[block]:
+        self.block_data[block][parameter] = input_file_parser_diff.block_data[block][parameter]
+
+    # apply sub-block parameter value changes
+    for block in input_file_parser_diff.subblock_data:
+      if block not in self.subblock_data:
+        self.subblock_data[block] = dict()
+      if block not in self.subblock_list:
+        self.subblock_list[block] = list()
+      for subblock in input_file_parser_diff.subblock_data[block]:
+        if subblock not in self.subblock_data[block]:
+          self.subblock_data[block][subblock] = dict()
+          self.subblock_list[block].append(subblock)
+        for parameter in input_file_parser_diff.subblock_data[block][subblock]:
+          self.subblock_data[block][subblock][parameter] = input_file_parser_diff.subblock_data[block][subblock][parameter]
 
   ## Gets dictionary of a block's data
   # @param block  block from which to take data

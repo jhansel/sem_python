@@ -1,0 +1,21 @@
+[BaseInputFile]
+  base = tests/input/input_file_parser/base.in
+[]
+
+[BlockA]
+  paramA1 = new_value_paramA1
+  [SubblockAA]
+    subparamAA1 = new_value_subparamAA1
+  []
+  -[SubblockAB]
+[]
+
+-[BlockB]
+[BlockB]
+  paramB2 = new_value_paramB2
+  [SubblockBB]
+    subparamBB1 = new_value_subparamBB1
+  []
+[]
+
+-[BlockC]
