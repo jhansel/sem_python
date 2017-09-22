@@ -19,7 +19,7 @@ class ExplicitEulerExecutioner(TransientExecutioner):
 
   def solve(self):
     # compute steady-state residual vector (as it would be on LHS)
-    r_ss, J_ss = self.assembleSteadyStateSystemWithoutStrongBC(self.U_old)
+    r_ss, J_ss = self.assembleSteadyStateSystemWithoutStrongConstraints(self.U_old)
 
     # compute linear system RHS vector
     b = np.matmul(self.M, self.U_old) - self.dt * r_ss

@@ -243,7 +243,7 @@ class Executioner(object):
     return kernels
 
   # computes the steady-state residual and Jacobian without applying strong BC
-  def assembleSteadyStateSystemWithoutStrongBC(self, U):
+  def assembleSteadyStateSystemWithoutStrongConstraints(self, U):
     r = np.zeros(self.dof_handler.n_dof)
     J = np.zeros(shape=(self.dof_handler.n_dof, self.dof_handler.n_dof))
 
@@ -258,12 +258,6 @@ class Executioner(object):
     for junction in self.junctions:
       junction.applyWeaklyToNonlinearSystem(U, self.U_old, r, J)
 
-    return (r, J)
-
-  # computes the full steady-state residual and Jacobian (strong BC applied)
-  def assembleSteadyStateSystem(self, U):
-    r, J = self.assembleSteadyStateSystemWithoutStrongBC(U)
-    self.applyStrongConstraintsToNonlinearSystem(U, r, J)
     return (r, J)
 
   ## Applies strong constraints to a nonlinear system solved with Newton's method
