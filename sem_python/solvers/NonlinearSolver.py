@@ -59,7 +59,7 @@ class NonlinearSolver(object):
     self.scaling[VariableName.ARhoUA] = [params.get("scaling_arhouA1"), params.get("scaling_arhouA2")]
     self.scaling[VariableName.ARhoEA] = [params.get("scaling_arhoEA1"), params.get("scaling_arhoEA2")]
 
-  def solve(self, U, residual_factor=1.0):
+  def solve(self, U):
     # begin Newton solve
     it = 1
     converged = False
@@ -110,10 +110,8 @@ class NonlinearSolver(object):
         # exit
         sys.exit()
 
-      # apply residual factor
-      r_scaled = r / residual_factor
-
       # apply scaling factors
+      r_scaled = deepcopy(r)
       self.dof_handler.applyScalingFactors(r_scaled, self.scaling)
 
       # compute absolute nonlinear residual norm

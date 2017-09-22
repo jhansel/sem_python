@@ -275,8 +275,4 @@ class TransientExecutioner(Executioner):
     return self.U
 
   def solve(self):
-    if self.dt > 1e-15:
-      residual_factor = self.dt
-    else:
-      residual_factor = 1
-    self.nonlinear_solver.solve(self.U, residual_factor=residual_factor)
+    self.nonlinear_solver.solve(self.U)
