@@ -7,11 +7,10 @@ from JunctionTester import JunctionTester
 class EqualSolutionLM1PhaseJunctionTester(unittest.TestCase):
   def testSolution(self):
     test_dir = "tests/junctions/equal_solution_lm_1phase_junction/"
-    input_file = "tests/junctions/junction.in"
+    input_file = "../problems/junction/junction.in"
 
     input_file_modifier = InputFileModifier()
     input_file_modifier.modifySubblockParam("Junctions", "junction1", "type", "EqualSolutionLM1PhaseJunction")
-    input_file_modifier.modifySubblockParam("Junctions", "junction1", "phase", "air")
     input_file_modifier.modifyBlockParam("Executioner", "end_time", 0.05)
 
     solution_tester = SolutionTester(test_dir, input_file, input_file_modifier)

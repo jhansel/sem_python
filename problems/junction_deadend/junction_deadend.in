@@ -10,7 +10,7 @@
 # In the steady-state, no flow should go into pipe 3.
 
 [BaseInputFile]
-  base = junction.in
+  base = ../junction/junction.in
 []
 
 [Mesh]
@@ -24,11 +24,11 @@
 []
 
 [IC]
-  [mesh3]
-    T = 250
-    u = 0
-    p = 1e5
-  []
+  -[mesh1]
+  -[mesh2]
+  T = 250
+  u = 0
+  p = 1e5
 []
 
 [BC]
@@ -47,10 +47,34 @@
   []
 []
 
+[Executioner]
+  end_time = 50
+  ss_tol = 1e-10
+[]
+
 [Output]
-  [plot]
+  -[csv]
+  -[plot]
+  [plot_p]
     type = PlotOutput
-    file_name = junction_deadend.pdf
-    plot_sets = rho u p T
+    file_name = junction_deadend_p.pdf
+    plot_sets = p
+    plot_by_mesh = True
+  []
+  [plot_p0]
+    type = PlotOutput
+    file_name = junction_deadend_p0.pdf
+    plot_sets = p0
+    plot_by_mesh = True
+    y_bounds = 99.9999 100.0007
+    legend_location = lower right
+  []
+  [plot_u]
+    type = PlotOutput
+    file_name = junction_deadend_u.pdf
+    plot_sets = u
+    plot_by_mesh = True
+    y_bounds = -0.2 1.2
+    legend_location = lower right
   []
 []

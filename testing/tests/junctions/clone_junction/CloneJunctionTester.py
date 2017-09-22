@@ -7,10 +7,11 @@ from JunctionTester import JunctionTester
 class CloneJunctionTester(unittest.TestCase):
   def testSolution(self):
     test_dir = "tests/junctions/clone_junction/"
-    input_file = "tests/junctions/junction.in"
+    input_file = "../problems/junction/junction.in"
 
     input_file_modifier = InputFileModifier()
     input_file_modifier.modifySubblockParam("Junctions", "junction1", "type", "CloneJunction")
+    input_file_modifier.removeSubblockParam("Junctions", "junction1", "phase")
     input_file_modifier.modifyBlockParam("Executioner", "end_time", 0.05)
 
     solution_tester = SolutionTester(test_dir, input_file, input_file_modifier)

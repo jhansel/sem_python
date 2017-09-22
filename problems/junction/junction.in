@@ -50,13 +50,13 @@
 
 [BC]
   [left]
-    type = InletRhoUBC
+    type = InletP0T0BC
     mesh_name = mesh1
     boundary = left
     phase = air
-    # rho at T = 250 K, p = 1e5 Pa
-    rho = 1.37931034483
-    u = 1
+    # p0, T0 @ (p = 1e5, T = 250 K, u = 1 m/s)
+    p0 = 100000.68965687
+    T0 = 250.00049261084
   []
   [right]
     type = OutletBC
@@ -69,7 +69,8 @@
 
 [Junctions]
   [junction1]
-    type = PLACEHOLDER
+    type = NewerCompressibleJunction
+    phase = air
     mesh_names = mesh1 mesh2
     mesh_sides = right left
   []
@@ -98,13 +99,12 @@
 [Output]
   [csv]
     type = CSVOutput
-    file_name = junction.csv
-    names = rho u p
+    names = rho u p A
+    save_by_mesh = True
   []
   [plot]
     type = PlotOutput
-    file_name = junction.pdf
-    plot_sets = rho u p T
+    plot_sets = rho u p A
     plot_by_mesh = True
   []
 []
