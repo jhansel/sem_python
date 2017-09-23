@@ -251,10 +251,10 @@ class TransientExecutioner(Executioner):
 
       # check for steady-state
       if self.check_ss:
-        U_diff = self.U - self.U_old
-        U_diff_norm = np.linalg.norm(U_diff, 2)
+        dU_dt = (self.U - self.U_old) / self.dt
+        dU_dt_norm = np.linalg.norm(dU_dt, 2)
         U_old_norm = np.linalg.norm(self.U_old, 2)
-        U_change_norm = U_diff_norm / U_old_norm
+        U_change_norm = dU_dt_norm / U_old_norm
         if self.verbose:
           print "Relative solution change: %e" % (U_change_norm)
         if U_change_norm < self.ss_tol:

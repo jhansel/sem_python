@@ -48,8 +48,9 @@
 []
 
 [Executioner]
+  dt = 1
   end_time = 50
-  ss_tol = 1e-10
+  ss_tol = 1e-8
 []
 
 [Output]
