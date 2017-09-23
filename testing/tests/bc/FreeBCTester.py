@@ -3,11 +3,9 @@ import unittest
 from BCTester import BCTester
 
 class FreeBCTester(unittest.TestCase):
-  def setUp(self):
-    self.tester = BCTester()
-
   def testJacobian(self):
-    rel_diffs = self.tester.checkJacobian("FreeBC")
+    self.tester = BCTester()
+    rel_diffs = self.tester.checkJacobian("FreeBC", bc_params={"phase": "0"})
     n_i, n_j = rel_diffs.shape
     for i in xrange(n_i):
       for j in xrange(n_j):
@@ -15,4 +13,4 @@ class FreeBCTester(unittest.TestCase):
 
 if __name__ == "__main__":
   tester = BCTester(True)
-  _ = tester.checkJacobian("FreeBC")
+  _ = tester.checkJacobian("FreeBC", bc_params={"phase": "0"})

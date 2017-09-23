@@ -9,9 +9,8 @@ class BCTester(object):
   def __init__(self, verbose=False):
     self.verbose = verbose
 
-  def checkJacobian(self, bc_name, model_type=ModelType.OnePhase, phase=0, boundary="right", bc_params=dict(), fd_eps=1e-8):
+  def checkJacobian(self, bc_name, model_type=ModelType.OnePhase, boundary="right", bc_params=dict(), fd_eps=1e-8):
     self.model_type = model_type
-    self.phase = phase
 
     # factory
     factory = Factory()
@@ -56,7 +55,6 @@ class BCTester(object):
     bc_params["boundary"] = boundary
     bc_params["dof_handler"] = dof_handler
     bc_params["eos_list"] = eos_list
-    bc_params["phase"] = phase
     bc = factory.createObject(bc_name, bc_params)
 
     # compute base solution
