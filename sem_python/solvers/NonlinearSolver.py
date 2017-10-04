@@ -16,6 +16,7 @@ class NonlinearSolverParameters(Parameters):
     self.registerFloatParameter("absolute_tolerance", "Absolute tolerance for nonlinear solve", 1e-6)
     self.registerFloatParameter("relative_tolerance", "Relative tolerance for nonlinear solve", 1e-6)
     self.registerIntParameter("max_iterations", "Maximum number of nonlinear iterations", 10)
+
     self.registerBoolParameter("print_variable_residual_norms", "Option to print the individual variable residual norms", False)
     self.registerBoolParameter("print_residual", "Option to print the residual vector", False)
     self.registerBoolParameter("debug_jacobian", "Option to debug the Jacobian", False)
@@ -24,6 +25,7 @@ class NonlinearSolverParameters(Parameters):
     self.registerBoolParameter("verbose", "Option to print out iterations", True)
     self.registerBoolParameter("print_svd", "Option to print singular value decomposition", False)
     self.registerBoolParameter("print_eigenvalues", "Option to print eigenvalues", False)
+    self.registerBoolParameter("save_linear_system", "Option to save nonlinear residual and jacobian to CSV files", False)
 
     self.registerFloatParameter("scaling_vf1", "Scaling factor for vf1", 1)
     self.registerFloatParameter("scaling_arhoA1", "Scaling factor for arhoA1", 1)
@@ -44,6 +46,7 @@ class NonlinearSolver(object):
     self.max_iterations = params.get("max_iterations")
     self.absolute_tol = params.get("absolute_tolerance")
     self.relative_tol = params.get("relative_tolerance")
+
     self.print_variable_residual_norms = params.get("print_variable_residual_norms")
     self.print_residual = params.get("print_residual")
     self.debug_jacobian = params.get("debug_jacobian")
@@ -52,6 +55,7 @@ class NonlinearSolver(object):
     self.verbose = params.get("verbose")
     self.print_eigenvalues = params.get("print_eigenvalues")
     self.print_svd = params.get("print_svd")
+    self.save_linear_system = params.get("save_linear_system")
 
     self.scaling = dict()
     self.scaling[VariableName.AA1] = [params.get("scaling_vf1")]
@@ -108,6 +112,12 @@ class NonlinearSolver(object):
         printRelativeMatrixDifference(J_relative_difference, J - J_fd, 1e-1, 1e-3)
 
         # exit
+        sys.exit()
+
+      # save the linear system to CSV files
+      if self.save_linear_system:
+        np.savetxt("residual.csv", r, delimiter=",")
+        np.savetxt("jacobian.csv", J, delimiter=",")
         sys.exit()
 
       # apply scaling factors
