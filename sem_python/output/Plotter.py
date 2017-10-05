@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 from matplotlib.ticker import FormatStrFormatter
+import warnings
 
 colors = ['k','indianred','orange','lightgreen','cornflowerblue','slateblue','orchid','turquoise','peru']
 linetypes = ['-','--',':']
@@ -157,6 +158,12 @@ class Plotter(object):
               bbox_to_anchor=(1,0.5), prop={'size':12})
         else:
           self.ax.legend(self.legend_entries, frameon=self.frame_legend, prop={'size':12}, loc=self.legend_location)
+
+        # use tight layout to prevent clipping and overlap of axis labels
+        # This issues a warning, so a context manager is used to catch it
+        with warnings.catch_warnings():
+          warnings.simplefilter("ignore")
+          plt.tight_layout()
 
         # save the figure
         plt.savefig(outputfile, dpi=300)
