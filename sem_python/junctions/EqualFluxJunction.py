@@ -13,6 +13,8 @@ class EqualFluxJunction(Junction1Phase):
   def __init__(self, params):
     Junction1Phase.__init__(self, params)
 
+    self.initializeVariableVectors()
+
   def applyStronglyToNonlinearSystem(self, U, U_old, r, J):
     m = 0
     r[self.i_arhoA[m]] = sum(self.f_mass)

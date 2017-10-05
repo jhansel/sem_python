@@ -24,6 +24,9 @@ class Junction1Phase(Junction):
     self.arhoEA_index = self.dof_handler.variable_index[VariableName.ARhoEA][self.phase]
 
     # initialize lists
+    self.initializeVariableVectors()
+
+  def initializeVariableVectors(self):
     self.aA1 = [0] * self.n_meshes
     self.arhoA = [0] * self.n_meshes
     self.arhouA = [0] * self.n_meshes

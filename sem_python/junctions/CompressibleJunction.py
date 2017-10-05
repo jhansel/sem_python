@@ -33,6 +33,8 @@ class CompressibleJunction(Junction1Phase):
     self.k_left_adjacent = self.adjacent_node_indices[0]
     self.k_right_adjacent = self.adjacent_node_indices[1]
 
+    self.initializeVariableVectors()
+
   def setDoFIndices(self):
     Junction1Phase.setDoFIndices(self)
 

@@ -16,6 +16,8 @@ class NewerCompressibleJunction(Junction1Phase):
 
     self.n_constraints += 1
 
+    self.initializeVariableVectors()
+
   def setDoFIndices(self):
     Junction1Phase.setDoFIndices(self)
 

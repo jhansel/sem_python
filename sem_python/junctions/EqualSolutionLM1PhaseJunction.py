@@ -15,6 +15,8 @@ class EqualSolutionLM1PhaseJunction(Junction1Phase):
     self.n_var = self.dof_handler.n_var
     self.n_constraints += self.n_var
 
+    self.initializeVariableVectors()
+
   def setDoFIndices(self):
     Junction1Phase.setDoFIndices(self)
 
