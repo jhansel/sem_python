@@ -41,6 +41,14 @@ def computeSpecificEnthalpy(e, p, rho):
 
   return (h, dh_de, dh_dp, dh_drho)
 
+## Adds kinetic energy; this can be used with either E or H, for example
+def addKineticEnergy(e, u):
+  E = e + 0.5 * u * u
+  dE_de = 1
+  dE_du = u
+
+  return (E, dE_de, dE_du)
+
 def computeVelocity(arhoA, arhouA):
   u = arhouA / arhoA
   du_darhoA = - arhouA / arhoA / arhoA
