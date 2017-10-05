@@ -1,5 +1,5 @@
-from Kernel2Phase import Kernel2Phase, Kernel2PhaseParameters
-from enums import VariableName
+from .Kernel2Phase import Kernel2Phase, Kernel2PhaseParameters
+from ..base.enums import VariableName
 
 class VolumeFractionAdvectionParameters(Kernel2PhaseParameters):
   def __init__(self):

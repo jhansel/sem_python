@@ -1,4 +1,4 @@
-from AuxQuantity import AuxQuantity, AuxQuantityParameters
+from .AuxQuantity import AuxQuantity, AuxQuantityParameters
 
 class IdenticalAuxParameters(AuxQuantityParameters):
   def __init__(self):

@@ -1,5 +1,5 @@
-from enums import VariableName
-from BC import BC, BCParameters
+from ..base.enums import VariableName
+from .BC import BC, BCParameters
 
 class VolumeFractionBCParameters(BCParameters):
   def __init__(self):

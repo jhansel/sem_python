@@ -1,7 +1,7 @@
 from collections import OrderedDict
 
-from Output import Output, OutputParameters
-from file_utilities import writeCSVFile
+from .Output import Output, OutputParameters
+from ..utilities.file_utilities import writeCSVFile
 
 class CSVOutputParameters(OutputParameters):
   def __init__(self):

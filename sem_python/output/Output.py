@@ -1,6 +1,6 @@
 from abc import ABCMeta, abstractmethod
 
-from Parameters import Parameters
+from ..input.Parameters import Parameters
 
 class OutputParameters(Parameters):
   def __init__(self):

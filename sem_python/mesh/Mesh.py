@@ -1,7 +1,7 @@
 from abc import ABCMeta, abstractmethod
 from numpy.linalg import norm
 
-from Parameters import Parameters
+from ..input.Parameters import Parameters
 
 class MeshParameters(Parameters):
   def __init__(self):

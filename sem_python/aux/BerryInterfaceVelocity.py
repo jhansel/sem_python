@@ -1,6 +1,6 @@
 from numpy import sign
 
-from AuxQuantity2Phase import AuxQuantity2Phase, AuxQuantity2PhaseParameters
+from .AuxQuantity2Phase import AuxQuantity2Phase, AuxQuantity2PhaseParameters
 
 class BerryInterfaceVelocityParameters(AuxQuantity2PhaseParameters):
   def __init__(self):

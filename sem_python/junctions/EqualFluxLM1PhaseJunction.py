@@ -1,5 +1,5 @@
-from Junction1Phase import Junction1Phase, Junction1PhaseParameters
-from enums import ModelType
+from .Junction1Phase import Junction1Phase, Junction1PhaseParameters
+from ..base.enums import ModelType
 
 class EqualFluxLM1PhaseJunctionParameters(Junction1PhaseParameters):
   def __init__(self):

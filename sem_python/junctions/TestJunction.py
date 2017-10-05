@@ -1,4 +1,4 @@
-from Junction import Junction, JunctionParameters
+from .Junction import Junction, JunctionParameters
 
 class TestJunctionParameters(JunctionParameters):
   def __init__(self):

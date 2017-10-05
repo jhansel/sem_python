@@ -1,4 +1,4 @@
-from Output import Output, OutputParameters
+from .Output import Output, OutputParameters
 
 class ScreenOutputParameters(OutputParameters):
   def __init__(self):

@@ -1,4 +1,4 @@
-from OnePhaseBC import OnePhaseBC, OnePhaseBCParameters
+from .OnePhaseBC import OnePhaseBC, OnePhaseBCParameters
 
 class SolidWallBCParameters(OnePhaseBCParameters):
   def __init__(self):

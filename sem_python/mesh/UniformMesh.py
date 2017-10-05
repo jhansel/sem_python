@@ -1,6 +1,6 @@
 import numpy as np
 
-from Mesh import Mesh, MeshParameters
+from .Mesh import Mesh, MeshParameters
 
 class UniformMeshParameters(MeshParameters):
   def __init__(self):

@@ -1,7 +1,7 @@
 from numpy import sqrt, log, exp, vectorize
 
-from EoS import EoS, EoSParameters
-from error_utilities import error
+from .EoS import EoS, EoSParameters
+from ..utilities.error_utilities import error
 
 def assertNonNegativeSoundSpeedArgSingle(arg, p, v):
   if arg < 0:

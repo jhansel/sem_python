@@ -1,8 +1,8 @@
 import re
 
-from conversion_utilities import stringToInt, stringToFloat
-from error_utilities import error, inputError
-from file_utilities import checkFileExists
+from ..utilities.conversion_utilities import stringToInt, stringToFloat
+from ..utilities.error_utilities import error, inputError
+from ..utilities.file_utilities import checkFileExists
 
 ## Class for parsing input files to retrieve parameters
 class InputFileParser(object):

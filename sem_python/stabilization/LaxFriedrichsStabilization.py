@@ -1,5 +1,5 @@
-from enums import VariableName, ModelType
-from Stabilization import Stabilization, StabilizationParameters
+from ..base.enums import VariableName, ModelType
+from .Stabilization import Stabilization, StabilizationParameters
 
 class LaxFriedrichsStabilizationParameters(StabilizationParameters):
   def __init__(self):

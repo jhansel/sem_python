@@ -1,4 +1,4 @@
-from AuxQuantity2Phase import AuxQuantity2Phase, AuxQuantity2PhaseParameters
+from .AuxQuantity2Phase import AuxQuantity2Phase, AuxQuantity2PhaseParameters
 
 class BerryInterfacialAreaDensityParameters(AuxQuantity2PhaseParameters):
   def __init__(self):

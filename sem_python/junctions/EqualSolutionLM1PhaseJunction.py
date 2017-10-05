@@ -1,5 +1,5 @@
-from Junction1Phase import Junction1Phase, Junction1PhaseParameters
-from error_utilities import error
+from .Junction1Phase import Junction1Phase, Junction1PhaseParameters
+from ..utilities.error_utilities import error
 
 class EqualSolutionLM1PhaseJunctionParameters(Junction1PhaseParameters):
   def __init__(self):

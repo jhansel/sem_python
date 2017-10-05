@@ -1,5 +1,5 @@
-from enums import ModelType
-from Kernel import Kernel, KernelParameters
+from ..base.enums import ModelType
+from .Kernel import Kernel, KernelParameters
 
 class Kernel1PhaseParameters(KernelParameters):
   def __init__(self):

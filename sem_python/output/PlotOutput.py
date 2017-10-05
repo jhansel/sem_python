@@ -1,6 +1,6 @@
-from Output import Output, OutputParameters
-from Plotter import Plotter
-from error_utilities import error
+from .Output import Output, OutputParameters
+from .Plotter import Plotter
+from ..utilities.error_utilities import error
 
 class PlotOutputParameters(OutputParameters):
   def __init__(self):

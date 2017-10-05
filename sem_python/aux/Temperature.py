@@ -1,4 +1,4 @@
-from AuxQuantity1Phase import AuxQuantity1Phase, AuxQuantity1PhaseParameters
+from .AuxQuantity1Phase import AuxQuantity1Phase, AuxQuantity1PhaseParameters
 
 class TemperatureParameters(AuxQuantity1PhaseParameters):
   def __init__(self):

@@ -19,19 +19,19 @@ from collections import OrderedDict
 import warnings
 
 # base
-from enums import ModelType
-from Factory import Factory
+from sem_python.base.enums import ModelType
+from sem_python.base.Factory import Factory
 
 # closures
-from thermodynamic_functions import computeDensity, computeVelocity, computeSpecificVolume,\
+from sem_python.closures.thermodynamic_functions import computeDensity, computeVelocity, computeSpecificVolume,\
   computeSpecificTotalEnergy, computeSpecificInternalEnergy, computeSpecificEnthalpy
 
 # input
-from InputFileParser import InputFileParser
-from InputFileModifier import InputFileModifier
+from sem_python.input.InputFileParser import InputFileParser
+from sem_python.input.InputFileModifier import InputFileModifier
 
 # utilities
-from error_utilities import error
+from sem_python.utilities.error_utilities import error
 
 ## Runs the code with the given input file
 # @param input_file  input file to run

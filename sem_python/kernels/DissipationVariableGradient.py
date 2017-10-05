@@ -1,4 +1,4 @@
-from Kernel1Phase import Kernel1Phase, Kernel1PhaseParameters
+from .Kernel1Phase import Kernel1Phase, Kernel1PhaseParameters
 
 class DissipationVariableGradientParameters(Kernel1PhaseParameters):
   def __init__(self):

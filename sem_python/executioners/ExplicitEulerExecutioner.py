@@ -1,7 +1,7 @@
 from copy import deepcopy
 import numpy as np
 
-from TransientExecutioner import TransientExecutioner, TransientExecutionerParameters
+from .TransientExecutioner import TransientExecutioner, TransientExecutionerParameters
 
 class ExplicitEulerExecutionerParameters(TransientExecutionerParameters):
   def __init__(self):

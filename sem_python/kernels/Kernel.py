@@ -1,7 +1,7 @@
 from abc import ABCMeta, abstractmethod
 import numpy as np
 
-from Parameters import Parameters
+from ..input.Parameters import Parameters
 
 class KernelParameters(Parameters):
   def __init__(self):

@@ -1,6 +1,6 @@
-from Junction import Junction, JunctionParameters
-from enums import ModelType, VariableName
-from thermodynamic_functions import computeVolumeFraction, computeDensity, \
+from .Junction import Junction, JunctionParameters
+from ..base.enums import ModelType, VariableName
+from ..closures.thermodynamic_functions import computeVolumeFraction, computeDensity, \
   computeSpecificVolume, computeVelocity, computeSpecificTotalEnergy, \
   computeSpecificInternalEnergy, computeSpecificEnthalpy
 

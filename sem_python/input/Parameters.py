@@ -1,5 +1,5 @@
-from conversion_utilities import stringToBool, stringToInt, stringToFloat, stringToFloatList, stringToFunction, stringToStringList
-from error_utilities import error
+from ..utilities.conversion_utilities import stringToBool, stringToInt, stringToFloat, stringToFloatList, stringToFunction, stringToStringList
+from ..utilities.error_utilities import error
 
 ## Class for declaring and retrieving input parameters
 class Parameters(object):

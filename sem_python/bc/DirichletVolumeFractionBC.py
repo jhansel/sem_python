@@ -1,4 +1,4 @@
-from VolumeFractionBC import VolumeFractionBC, VolumeFractionBCParameters
+from .VolumeFractionBC import VolumeFractionBC, VolumeFractionBCParameters
 
 class DirichletVolumeFractionBCParameters(VolumeFractionBCParameters):
   def __init__(self):

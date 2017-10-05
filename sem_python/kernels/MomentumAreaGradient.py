@@ -1,5 +1,5 @@
-from Kernel1Phase import Kernel1Phase, Kernel1PhaseParameters
-from enums import VariableName
+from .Kernel1Phase import Kernel1Phase, Kernel1PhaseParameters
+from ..base.enums import VariableName
 
 class MomentumAreaGradientParameters(Kernel1PhaseParameters):
   def __init__(self):

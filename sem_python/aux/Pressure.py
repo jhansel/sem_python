@@ -1,7 +1,7 @@
 from numpy import vectorize
 
-from AuxQuantity1Phase import AuxQuantity1Phase, AuxQuantity1PhaseParameters
-from error_utilities import error
+from .AuxQuantity1Phase import AuxQuantity1Phase, AuxQuantity1PhaseParameters
+from ..utilities.error_utilities import error
 
 def assertNonNegativePressureSingle(p, v, e):
   if p < 0:

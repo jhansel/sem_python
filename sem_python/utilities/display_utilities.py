@@ -2,7 +2,7 @@ import numpy as np
 import sys
 from termcolor import colored
 
-from numeric_utilities import computeRelativeDifference
+from .numeric_utilities import computeRelativeDifference
 
 def computeRelativeDifferenceMatrix(A, B):
   n = A.shape[0]

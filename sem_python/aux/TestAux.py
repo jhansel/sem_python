@@ -1,6 +1,6 @@
-from AuxQuantity import AuxQuantity, AuxQuantityParameters
+from .AuxQuantity import AuxQuantity, AuxQuantityParameters
 
-from error_utilities import error
+from ..utilities.error_utilities import error
 
 class TestAuxParameters(AuxQuantityParameters):
   def __init__(self):

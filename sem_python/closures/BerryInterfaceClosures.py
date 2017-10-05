@@ -1,4 +1,4 @@
-from InterfaceClosures import InterfaceClosures, InterfaceClosuresParameters
+from .InterfaceClosures import InterfaceClosures, InterfaceClosuresParameters
 
 class BerryInterfaceClosuresParameters(InterfaceClosuresParameters):
   def __init__(self):

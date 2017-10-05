@@ -1,6 +1,6 @@
 from math import sqrt
 
-from Parameters import Parameters
+from ..input.Parameters import Parameters
 
 class QuadratureParameters(Parameters):
   def __init__(self):

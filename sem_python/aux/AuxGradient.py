@@ -1,6 +1,6 @@
 import numpy as np
 
-from AuxQuantity import AuxQuantity, AuxQuantityParameters
+from .AuxQuantity import AuxQuantity, AuxQuantityParameters
 
 class AuxGradientParameters(AuxQuantityParameters):
   def __init__(self):

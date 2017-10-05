@@ -1,7 +1,7 @@
 from collections import OrderedDict
 
-from Parameters import Parameters
-from error_utilities import error
+from ..input.Parameters import Parameters
+from ..utilities.error_utilities import error
 
 class ThermodynamicStateParameters(Parameters):
   def __init__(self):

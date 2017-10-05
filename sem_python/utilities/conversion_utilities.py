@@ -1,7 +1,7 @@
 from numpy import sin, cos, exp, log, pi
 import parser
 
-from error_utilities import error
+from .error_utilities import error
 
 def stringToBool(s):
   if s == "True" or s == True:

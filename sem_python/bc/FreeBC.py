@@ -1,6 +1,6 @@
-from enums import ModelType
-from OnePhaseBC import OnePhaseBC, OnePhaseBCParameters
-from thermodynamic_functions import computeVolumeFraction, computeDensity, \
+from ..base.enums import ModelType
+from .OnePhaseBC import OnePhaseBC, OnePhaseBCParameters
+from ..closures.thermodynamic_functions import computeVolumeFraction, computeDensity, \
   computeSpecificVolume, computeVelocity, computeSpecificTotalEnergy, \
   computeSpecificInternalEnergy
 

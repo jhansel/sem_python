@@ -1,7 +1,7 @@
-from Junction1Phase import Junction1Phase, Junction1PhaseParameters
-from enums import ModelType
-from error_utilities import error
-from thermodynamic_functions import computeVolumeFraction, computeDensity, \
+from .Junction1Phase import Junction1Phase, Junction1PhaseParameters
+from ..base.enums import ModelType
+from ..utilities.error_utilities import error
+from ..closures.thermodynamic_functions import computeVolumeFraction, computeDensity, \
   computeSpecificVolume, computeVelocity, computeSpecificTotalEnergy, \
   computeSpecificInternalEnergy, computeSpecificEnthalpy
 
