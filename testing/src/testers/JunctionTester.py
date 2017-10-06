@@ -14,7 +14,8 @@ class JunctionTester(object):
     self.rel_tol = rel_tol
     self.abs_tol = abs_tol
 
-  def checkJacobian(self, test_option, model_type=ModelType.OnePhase, phase=0, junction_params=dict(), fd_eps=1e-8):
+  def checkJacobian(self, test_option, model_type=ModelType.OnePhase, phase=0,
+      junction_params=dict(), fd_eps=1e-8, use_zero_velocity=False):
     # factory
     factory = Factory()
 
@@ -47,6 +48,16 @@ class JunctionTester(object):
     dof_handler_params["ics"] = ics
     dof_handler = factory.createObject(dof_handler_class, dof_handler_params)
 
+    # get indices of arhouA DoFs
+    if model_type == ModelType.OnePhase:
+      i_arhouA = [dof_handler.i(k, 2) for k in range(dof_handler.n_node)]
+    elif model_type == ModelType.TwoPhaseNonInteracting:
+      i_arhouA = [dof_handler.i(k, 2) for k in range(dof_handler.n_node)] \
+        + [dof_handler.i(k, 5) for k in range(dof_handler.n_node)]
+    else:
+      i_arhouA = [dof_handler.i(k, 3) for k in range(dof_handler.n_node)] \
+        + [dof_handler.i(k, 6) for k in range(dof_handler.n_node)]
+
     # equation of state
     eos_params1 = {"slope_initial": 1.0, "slope_increment": 0.1}
     eos_list = [factory.createObject("TestEoS", eos_params1)]
@@ -74,8 +85,12 @@ class JunctionTester(object):
     U = np.zeros(n_dof)
     U_old = np.zeros(n_dof)
     for i in xrange(n_dof):
-      U[i] = i + 1.0
-      U_old[i] = i + 2.0
+      if use_zero_velocity and i in i_arhouA:
+        U[i] = 0
+        U_old[i] = 0
+      else:
+        U[i] = i + 1.0
+        U_old[i] = i + 2.0
 
     # determine evaluation function
     if test_option == "weak":
