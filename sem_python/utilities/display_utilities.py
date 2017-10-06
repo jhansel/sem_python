@@ -98,3 +98,40 @@ def printDoFVector(U, dof_handler):
     entry_items = (k,) + tuple(items_k)
     print entry_format % entry_items
   print ""
+
+def printMatrixSparsity(A):
+  n = A.shape[0]
+
+  print ""
+  row_is_zero = n * [True]
+  for i in xrange(n):
+    line = ""
+    for j in xrange(n):
+      if abs(A[i,j]) > 1e-14:
+        line += "X"
+        row_is_zero[j] = False
+      else:
+        line += " "
+    print line
+
+  column_is_zero = n * [True]
+  for j in xrange(n):
+    for i in xrange(n):
+      if abs(A[i,j]) > 1e-14:
+        column_is_zero[j] = False
+
+  print ""
+  no_zero_rows = True
+  no_zero_columns = True
+  for i in xrange(n):
+    if row_is_zero[i]:
+      print "WARNING: Row ", i, " is zero."
+      no_zero_rows = False
+    if column_is_zero[i]:
+      print "WARNING: Column ", i, " is zero."
+      no_zero_columns = False
+  if no_zero_rows:
+    print "There were no zero rows."
+  if no_zero_columns:
+    print "There were no zero columns."
+  print ""

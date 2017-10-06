@@ -7,7 +7,7 @@ from termcolor import colored
 from enums import VariableName
 from Parameters import Parameters
 from display_utilities import computeRelativeDifferenceMatrix, printMatrix, \
-  printRelativeMatrixDifference, printDoFVector
+  printRelativeMatrixDifference, printDoFVector, printMatrixSparsity
 from error_utilities import errorNoTraceback
 
 class NonlinearSolverParameters(Parameters):
@@ -20,6 +20,7 @@ class NonlinearSolverParameters(Parameters):
     self.registerBoolParameter("print_variable_residual_norms", "Option to print the individual variable residual norms", False)
     self.registerBoolParameter("print_residual", "Option to print the residual vector", False)
     self.registerBoolParameter("debug_jacobian", "Option to debug the Jacobian", False)
+    self.registerBoolParameter("visualize_sparsity", "Option to visualize the Jacobian sparsity pattern", False)
     self.registerFloatParameter("finite_difference_eps", "Parameter for the FD debug Jacobian", 1e-4)
     self.registerBoolParameter("print_jacobian_inverse", "Option to print the inverse of the Jacobian", False)
     self.registerBoolParameter("verbose", "Option to print out iterations", True)
@@ -50,6 +51,7 @@ class NonlinearSolver(object):
     self.print_variable_residual_norms = params.get("print_variable_residual_norms")
     self.print_residual = params.get("print_residual")
     self.debug_jacobian = params.get("debug_jacobian")
+    self.visualize_sparsity = params.get("visualize_sparsity")
     self.fd_eps = params.get("finite_difference_eps")
     self.print_jacobian_inverse = params.get("print_jacobian_inverse")
     self.verbose = params.get("verbose")
@@ -112,6 +114,11 @@ class NonlinearSolver(object):
         printRelativeMatrixDifference(J_relative_difference, J - J_fd, 1e-1, 1e-3)
 
         # exit
+        sys.exit()
+
+      # visualize sparsity pattern of Jacobian
+      if (self.visualize_sparsity):
+        printMatrixSparsity(J)
         sys.exit()
 
       # save the linear system to CSV files
