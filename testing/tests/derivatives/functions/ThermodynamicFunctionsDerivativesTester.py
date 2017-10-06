@@ -3,7 +3,7 @@ import unittest
 from FunctionDerivativesTester import FunctionDerivativesTester
 from thermodynamic_functions import computeSpecificVolume, computeDensity, \
   computeVelocity, computeSpecificTotalEnergy, computeSpecificInternalEnergy, \
-  addKineticEnergy
+  addKineticEnergy, subtractKineticEnergy
 
 class ThermodynamicFunctionsFunctionDerivativesTester(unittest.TestCase):
   def setUp(self):
@@ -44,6 +44,11 @@ class ThermodynamicFunctionsFunctionDerivativesTester(unittest.TestCase):
     for reldiff in reldiffs:
       self.assertLessEqual(reldiff, 1e-7)
 
+  def testSubtractKineticEnergy(self):
+    reldiffs = self.derivative_tester.checkDerivatives(subtractKineticEnergy, 2)
+    for reldiff in reldiffs:
+      self.assertLessEqual(reldiff, 1e-7)
+
 if __name__ == "__main__":
   tester = FunctionDerivativesTester(False)
   tester.checkDerivatives(computeVelocity, 2)
@@ -52,3 +57,4 @@ if __name__ == "__main__":
   tester.checkDerivatives(computeSpecificTotalEnergy, 2)
   tester.checkDerivatives(computeSpecificInternalEnergy, 2)
   tester.checkDerivatives(addKineticEnergy, 2)
+  tester.checkDerivatives(subtractKineticEnergy, 2)
