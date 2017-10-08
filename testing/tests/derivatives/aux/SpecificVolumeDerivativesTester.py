@@ -2,7 +2,7 @@ import unittest
 
 from SpecificVolume import SpecificVolume, SpecificVolumeParameters
 from TestAux import TestAux, TestAuxParameters
-from AuxDerivativesTester import AuxDerivativesTester
+from ....src.testers.AuxDerivativesTester import AuxDerivativesTester
 
 # specific volume aux
 params = SpecificVolumeParameters()

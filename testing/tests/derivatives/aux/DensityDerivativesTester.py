@@ -2,7 +2,7 @@ import unittest
 
 from Density import Density, DensityParameters
 from VolumeFractionPhase1 import VolumeFractionPhase1, VolumeFractionPhase1Parameters
-from AuxDerivativesTester import AuxDerivativesTester
+from ....src.testers.AuxDerivativesTester import AuxDerivativesTester
 
 params = DensityParameters()
 params.set("phase", 0)

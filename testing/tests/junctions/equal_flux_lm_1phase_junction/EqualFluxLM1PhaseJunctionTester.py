@@ -1,7 +1,7 @@
 import unittest
 
 import sem
-from JunctionTester import JunctionTester
+from ....src.testers.JunctionTester import JunctionTester
 
 class EqualFluxLM1PhaseJunctionTester(unittest.TestCase):
   # Currently the LM contributions to the non-constraint equations still need

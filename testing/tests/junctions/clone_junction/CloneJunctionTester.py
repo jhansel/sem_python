@@ -1,13 +1,13 @@
 import unittest
 
 from InputFileModifier import InputFileModifier
-from SolutionTester import SolutionTester
-from JunctionTester import JunctionTester
+from ....src.testers.SolutionTester import SolutionTester
+from ....src.testers.JunctionTester import JunctionTester
 
 class CloneJunctionTester(unittest.TestCase):
   def testSolution(self):
-    test_dir = "tests/junctions/clone_junction/"
-    input_file = "../problems/junction/junction.in"
+    test_dir = "testing/tests/junctions/clone_junction/"
+    input_file = "problems/junction/junction.in"
 
     input_file_modifier = InputFileModifier()
     input_file_modifier.modifySubblockParam("Junctions", "junction1", "type", "CloneJunction")

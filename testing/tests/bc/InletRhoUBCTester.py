@@ -1,6 +1,6 @@
 import unittest
 
-from BCTester import BCTester
+from ...src.testers.BCTester import BCTester
 
 bc_params={"phase": "0", "rho": "1.2", "u": "0.6"}
 

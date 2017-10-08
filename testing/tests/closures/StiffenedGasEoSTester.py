@@ -1,7 +1,7 @@
 import unittest
 
-from EoSConsistencyTester import EoSConsistencyTester
-from FunctionDerivativesTester import FunctionDerivativesTester
+from ...src.testers.EoSConsistencyTester import EoSConsistencyTester
+from ...src.testers.FunctionDerivativesTester import FunctionDerivativesTester
 from StiffenedGasEoS import StiffenedGasEoS, StiffenedGasEoSParameters
 
 class StiffenedGasEoSTester(unittest.TestCase):

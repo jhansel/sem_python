@@ -2,7 +2,7 @@ import unittest
 
 from LaxFriedrichsCoefficientVolumeFraction import LaxFriedrichsCoefficientVolumeFraction, LaxFriedrichsCoefficientVolumeFractionParameters
 from TestAux import TestAux, TestAuxParameters
-from AuxDerivativesTester import AuxDerivativesTester
+from ....src.testers.AuxDerivativesTester import AuxDerivativesTester
 
 # Lax-Friedrichs coefficient aux
 params = LaxFriedrichsCoefficientVolumeFractionParameters()

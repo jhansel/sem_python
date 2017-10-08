@@ -1,7 +1,7 @@
 import unittest
 
 from enums import ModelType
-from KernelDerivativesTester import KernelDerivativesTester
+from ....src.testers.KernelDerivativesTester import KernelDerivativesTester
 
 class MomentumVolumeFractionGradientDerivativesTester(unittest.TestCase):
   def setUp(self):

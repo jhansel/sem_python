@@ -1,7 +1,7 @@
 import unittest
 
 from enums import ModelType
-from KernelDerivativesTester import KernelDerivativesTester
+from ....src.testers.KernelDerivativesTester import KernelDerivativesTester
 
 aux = dict()
 

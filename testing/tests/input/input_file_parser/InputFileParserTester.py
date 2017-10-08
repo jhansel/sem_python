@@ -4,7 +4,7 @@ from InputFileParser import InputFileParser
 
 class InputFileParserTester(unittest.TestCase):
   def setUp(self):
-    differential_input_file = "tests/input/input_file_parser/differential.in"
+    differential_input_file = "testing/tests/input/input_file_parser/differential.in"
     input_file_parser_differential = InputFileParser()
     input_file_parser_differential.parse(differential_input_file)
 

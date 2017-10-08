@@ -1,7 +1,7 @@
 import unittest
 
 from Velocity import Velocity, VelocityParameters
-from AuxDerivativesTester import AuxDerivativesTester
+from ....src.testers.AuxDerivativesTester import AuxDerivativesTester
 
 params = VelocityParameters()
 params.set("phase", 0)

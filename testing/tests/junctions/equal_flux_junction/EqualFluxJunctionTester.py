@@ -2,8 +2,8 @@ import unittest
 
 import sem
 from InputFileModifier import InputFileModifier
-from CSVTester import CSVTester
-from JunctionTester import JunctionTester
+from ....src.testers.CSVTester import CSVTester
+from ....src.testers.JunctionTester import JunctionTester
 
 class EqualFluxJunctionTester(unittest.TestCase):
   def testJacobian(self):

@@ -2,7 +2,7 @@ import unittest
 
 from SpecificTotalEnergy import SpecificTotalEnergy, SpecificTotalEnergyParameters
 from TestAux import TestAux, TestAuxParameters
-from AuxDerivativesTester import AuxDerivativesTester
+from ....src.testers.AuxDerivativesTester import AuxDerivativesTester
 
 params = SpecificTotalEnergyParameters()
 params.set("phase", 0)

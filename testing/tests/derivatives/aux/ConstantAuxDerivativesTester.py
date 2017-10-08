@@ -2,7 +2,7 @@ import unittest
 
 from ConstantAux import ConstantAux, ConstantAuxParameters
 from TestAux import TestAux, TestAuxParameters
-from AuxDerivativesTester import AuxDerivativesTester
+from ....src.testers.AuxDerivativesTester import AuxDerivativesTester
 
 # test aux
 params = ConstantAuxParameters()

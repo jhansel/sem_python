@@ -1,6 +1,6 @@
 import unittest
 
-from BCTester import BCTester
+from ...src.testers.BCTester import BCTester
 
 class InletP0T0BCTester(unittest.TestCase):
   def setUp(self):

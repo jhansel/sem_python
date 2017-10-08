@@ -2,7 +2,7 @@ import unittest
 
 from IdenticalAux import IdenticalAux, IdenticalAuxParameters
 from TestAux import TestAux, TestAuxParameters
-from AuxDerivativesTester import AuxDerivativesTester
+from ....src.testers.AuxDerivativesTester import AuxDerivativesTester
 
 # original aux
 params = TestAuxParameters()

@@ -1,6 +1,6 @@
 import unittest
 
-from FunctionDerivativesTester import FunctionDerivativesTester
+from ....src.testers.FunctionDerivativesTester import FunctionDerivativesTester
 from thermodynamic_functions import computeSpecificVolume, computeDensity, \
   computeVelocity, computeSpecificTotalEnergy, computeSpecificInternalEnergy, \
   addKineticEnergy, subtractKineticEnergy

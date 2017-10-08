@@ -1,7 +1,7 @@
 import unittest
 
 from VolumeFractionPhase1 import VolumeFractionPhase1, VolumeFractionPhase1Parameters
-from AuxDerivativesTester import AuxDerivativesTester
+from ....src.testers.AuxDerivativesTester import AuxDerivativesTester
 
 params = VolumeFractionPhase1Parameters()
 params.set("phase", 0)

@@ -4,7 +4,7 @@ import unittest
 
 from display_utilities import printDoFVector
 from Factory import Factory
-from OutputCaptor import OutputCaptor
+from ...src.utilities.OutputCaptor import OutputCaptor
 
 def outputPrintDoFVectorToFile(path):
   # create the DoF handler
@@ -31,7 +31,7 @@ def outputPrintDoFVectorToFile(path):
 
 class DisplayUtilitiesTester(unittest.TestCase):
   def testPrintDoFVector(self):
-    path = "tests/utilities/"
+    path = "testing/tests/utilities/"
     outputPrintDoFVectorToFile(path)
     self.assertTrue(cmp(path + "print_dof_vector.txt", path + "gold/print_dof_vector.txt"))
 

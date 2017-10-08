@@ -2,7 +2,7 @@ import unittest
 
 from AmbrosoInterfacePressure import AmbrosoInterfacePressure, AmbrosoInterfacePressureParameters
 from TestAux import TestAux, TestAuxParameters
-from AuxDerivativesTester import AuxDerivativesTester
+from ....src.testers.AuxDerivativesTester import AuxDerivativesTester
 
 # interface pressure aux
 params = AmbrosoInterfacePressureParameters()

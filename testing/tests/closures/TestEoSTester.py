@@ -1,6 +1,6 @@
 import unittest
 
-from FunctionDerivativesTester import FunctionDerivativesTester
+from ...src.testers.FunctionDerivativesTester import FunctionDerivativesTester
 from TestEoS import TestEoS, TestEoSParameters
 
 class TestEoSTester(unittest.TestCase):

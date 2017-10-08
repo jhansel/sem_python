@@ -1,7 +1,7 @@
 import unittest
 
 from enums import ModelType
-from BCTester import BCTester
+from ...src.testers.BCTester import BCTester
 
 class DirichletVolumeFractionBCTester(unittest.TestCase):
   def setUp(self):

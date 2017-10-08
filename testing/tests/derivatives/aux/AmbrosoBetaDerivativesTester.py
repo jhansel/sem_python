@@ -2,7 +2,7 @@ import unittest
 
 from AmbrosoBeta import AmbrosoBeta, AmbrosoBetaParameters
 from TestAux import TestAux, TestAuxParameters
-from AuxDerivativesTester import AuxDerivativesTester
+from ....src.testers.AuxDerivativesTester import AuxDerivativesTester
 
 # beta aux
 params = AmbrosoBetaParameters()

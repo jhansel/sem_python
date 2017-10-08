@@ -1,7 +1,7 @@
 import unittest
 
 from enums import ModelType, VariableName
-from KernelDerivativesTester import KernelDerivativesTester
+from ....src.testers.KernelDerivativesTester import KernelDerivativesTester
 
 class DissipationAuxFluxDerivativesTester(unittest.TestCase):
   def setUp(self):

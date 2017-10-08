@@ -2,7 +2,7 @@ import unittest
 
 from AuxGradient import AuxGradient, AuxGradientParameters
 from TestAux import TestAux, TestAuxParameters
-from AuxDerivativesTester import AuxDerivativesTester
+from ....src.testers.AuxDerivativesTester import AuxDerivativesTester
 
 # gradient of test aux
 params = AuxGradientParameters()

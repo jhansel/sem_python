@@ -2,7 +2,7 @@ import unittest
 
 from AcousticImpedance import AcousticImpedance, AcousticImpedanceParameters
 from TestAux import TestAux, TestAuxParameters
-from AuxDerivativesTester import AuxDerivativesTester
+from ....src.testers.AuxDerivativesTester import AuxDerivativesTester
 
 # test aux
 params = AcousticImpedanceParameters()

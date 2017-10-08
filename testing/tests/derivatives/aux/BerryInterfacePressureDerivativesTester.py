@@ -2,7 +2,7 @@ import unittest
 
 from BerryInterfacePressure import BerryInterfacePressure, BerryInterfacePressureParameters
 from TestAux import TestAux, TestAuxParameters
-from AuxDerivativesTester import AuxDerivativesTester
+from ....src.testers.AuxDerivativesTester import AuxDerivativesTester
 
 # test aux
 params = BerryInterfacePressureParameters()

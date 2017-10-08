@@ -2,7 +2,7 @@ import unittest
 
 from SoundSpeed import SoundSpeed, SoundSpeedParameters
 from TestAux import TestAux, TestAuxParameters
-from AuxDerivativesTester import AuxDerivativesTester
+from ....src.testers.AuxDerivativesTester import AuxDerivativesTester
 
 def computeSoundSpeed(v, e):
   v_slope = 2.0

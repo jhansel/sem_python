@@ -1,7 +1,7 @@
 import unittest
 
 from TestAux import TestAux, TestAuxParameters
-from AuxDerivativesTester import AuxDerivativesTester
+from ....src.testers.AuxDerivativesTester import AuxDerivativesTester
 
 params = TestAuxParameters()
 params.set("var", "test")

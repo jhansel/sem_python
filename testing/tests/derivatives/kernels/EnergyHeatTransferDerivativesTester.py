@@ -1,7 +1,7 @@
 import unittest
 
 from enums import ModelType
-from KernelDerivativesTester import KernelDerivativesTester
+from ....src.testers.KernelDerivativesTester import KernelDerivativesTester
 
 aux = {"T1": ["aA1", "arhoA1", "arhouA1", "arhoEA1"]}
 

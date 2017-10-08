@@ -2,7 +2,7 @@ import unittest
 
 from Pressure import Pressure, PressureParameters
 from TestAux import TestAux, TestAuxParameters
-from AuxDerivativesTester import AuxDerivativesTester
+from ....src.testers.AuxDerivativesTester import AuxDerivativesTester
 
 def computePressure(v, e):
   v_slope = 2.0

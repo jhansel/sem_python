@@ -2,7 +2,7 @@ import unittest
 
 from SpecificInternalEnergy import SpecificInternalEnergy, SpecificInternalEnergyParameters
 from TestAux import TestAux, TestAuxParameters
-from AuxDerivativesTester import AuxDerivativesTester
+from ....src.testers.AuxDerivativesTester import AuxDerivativesTester
 
 # specific internal energy aux
 params = SpecificInternalEnergyParameters()

@@ -2,7 +2,7 @@ import unittest
 
 from InternalEnergyDensity import InternalEnergyDensity, InternalEnergyDensityParameters
 from TestAux import TestAux, TestAuxParameters
-from AuxDerivativesTester import AuxDerivativesTester
+from ....src.testers.AuxDerivativesTester import AuxDerivativesTester
 
 # internal energy density aux
 params = InternalEnergyDensityParameters()

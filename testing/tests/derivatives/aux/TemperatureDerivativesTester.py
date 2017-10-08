@@ -2,7 +2,7 @@ import unittest
 
 from Temperature import Temperature, TemperatureParameters
 from TestAux import TestAux, TestAuxParameters
-from AuxDerivativesTester import AuxDerivativesTester
+from ....src.testers.AuxDerivativesTester import AuxDerivativesTester
 
 def computeTemperature(v, e):
   v_slope = 2.0

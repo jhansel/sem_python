@@ -1,5 +1,5 @@
 [BaseInputFile]
-  base = tests/input/input_file_parser/base.in
+  base = testing/tests/input/input_file_parser/base.in
 []
 
 [BlockA]

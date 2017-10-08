@@ -1,7 +1,7 @@
 import unittest
 
-from EoSConsistencyTester import EoSConsistencyTester
-from FunctionDerivativesTester import FunctionDerivativesTester
+from ...src.testers.EoSConsistencyTester import EoSConsistencyTester
+from ...src.testers.FunctionDerivativesTester import FunctionDerivativesTester
 from IdealGasEoS import IdealGasEoS, IdealGasEoSParameters
 
 class IdealGasEoSTester(unittest.TestCase):

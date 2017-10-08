@@ -15,7 +15,7 @@ class InputFileModifierTester(unittest.TestCase):
     input_file_modifier.modifySubblockParam("BlockA", "SubblockAA", "subparamAA1", "new_value_subparamAA1")
 
     # parse the input file and apply modifications
-    input_file = "tests/input/input_file_parser/base.in"
+    input_file = "testing/tests/input/input_file_parser/base.in"
     self.input_file_parser = InputFileParser()
     self.input_file_parser.parse(input_file)
     self.input_file_parser.applyModifications(input_file_modifier)

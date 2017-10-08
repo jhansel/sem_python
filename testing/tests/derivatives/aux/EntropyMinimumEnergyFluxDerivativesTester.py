@@ -3,7 +3,7 @@ import unittest
 from EntropyMinimumEnergyFlux import EntropyMinimumEnergyFlux, EntropyMinimumEnergyFluxParameters
 from TestAux import TestAux, TestAuxParameters
 from VolumeFractionPhase1 import VolumeFractionPhase1, VolumeFractionPhase1Parameters
-from AuxDerivativesTester import AuxDerivativesTester
+from ....src.testers.AuxDerivativesTester import AuxDerivativesTester
 
 # viscous flux aux
 params = EntropyMinimumEnergyFluxParameters()

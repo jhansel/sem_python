@@ -2,8 +2,8 @@ import unittest
 
 import sem
 from InputFileModifier import InputFileModifier
-from CSVTester import CSVTester
-from JunctionTester import JunctionTester
+from ....src.testers.CSVTester import CSVTester
+from ....src.testers.JunctionTester import JunctionTester
 
 class CompressibleJunctionTester(unittest.TestCase):
   def runDerivativeTest(self, test_option, use_momentum_flux_balance, use_lm):
