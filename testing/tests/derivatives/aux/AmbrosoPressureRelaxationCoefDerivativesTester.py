@@ -1,7 +1,7 @@
 import unittest
 
-from AmbrosoPressureRelaxationCoef import AmbrosoPressureRelaxationCoef, AmbrosoPressureRelaxationCoefParameters
-from TestAux import TestAux, TestAuxParameters
+from sem_python.aux.AmbrosoPressureRelaxationCoef import AmbrosoPressureRelaxationCoef, AmbrosoPressureRelaxationCoefParameters
+from sem_python.aux.TestAux import TestAux, TestAuxParameters
 from ....src.testers.AuxDerivativesTester import AuxDerivativesTester
 
 # pressure relaxation aux

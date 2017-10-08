@@ -1,11 +1,11 @@
 from copy import deepcopy
 import numpy as np
 
-from display_utilities import computeRelativeDifferenceMatrix, printRelativeMatrixDifference, printMatrix
-from enums import ModelType
-from error_utilities import error
-from Factory import Factory
-from numeric_utilities import computeRelativeDifference
+from sem_python.utilities.display_utilities import computeRelativeDifferenceMatrix, printRelativeMatrixDifference, printMatrix
+from sem_python.base.enums import ModelType
+from sem_python.utilities.error_utilities import error
+from sem_python.base.Factory import Factory
+from sem_python.utilities.numeric_utilities import computeRelativeDifference
 
 class JunctionTester(object):
   def __init__(self, junction_name, verbose=False, rel_tol=1e-6, abs_tol=1e-6):

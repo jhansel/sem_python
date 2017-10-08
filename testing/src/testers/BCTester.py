@@ -1,9 +1,9 @@
 from copy import deepcopy
 import numpy as np
 
-from enums import ModelType
-from Factory import Factory
-from numeric_utilities import computeRelativeDifference
+from sem_python.base.enums import ModelType
+from sem_python.base.Factory import Factory
+from sem_python.utilities.numeric_utilities import computeRelativeDifference
 
 class BCTester(object):
   def __init__(self, verbose=False):

@@ -1,7 +1,7 @@
 import unittest
 
-from IdenticalAux import IdenticalAux, IdenticalAuxParameters
-from TestAux import TestAux, TestAuxParameters
+from sem_python.aux.IdenticalAux import IdenticalAux, IdenticalAuxParameters
+from sem_python.aux.TestAux import TestAux, TestAuxParameters
 from ....src.testers.AuxDerivativesTester import AuxDerivativesTester
 
 # original aux

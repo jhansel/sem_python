@@ -1,7 +1,7 @@
 import unittest
 
-from AcousticImpedance import AcousticImpedance, AcousticImpedanceParameters
-from TestAux import TestAux, TestAuxParameters
+from sem_python.aux.AcousticImpedance import AcousticImpedance, AcousticImpedanceParameters
+from sem_python.aux.TestAux import TestAux, TestAuxParameters
 from ....src.testers.AuxDerivativesTester import AuxDerivativesTester
 
 # test aux

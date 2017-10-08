@@ -1,7 +1,7 @@
 import unittest
 
 import sem
-from InputFileModifier import InputFileModifier
+from sem_python.input.InputFileModifier import InputFileModifier
 from ....src.testers.CSVTester import CSVTester
 from ....src.testers.JunctionTester import JunctionTester
 

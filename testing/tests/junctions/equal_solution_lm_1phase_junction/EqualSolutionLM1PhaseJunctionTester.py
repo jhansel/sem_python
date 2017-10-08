@@ -1,6 +1,6 @@
 import unittest
 
-from InputFileModifier import InputFileModifier
+from sem_python.input.InputFileModifier import InputFileModifier
 from ....src.testers.SolutionTester import SolutionTester
 from ....src.testers.JunctionTester import JunctionTester
 

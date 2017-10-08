@@ -1,7 +1,7 @@
 import unittest
 
-from AuxGradient import AuxGradient, AuxGradientParameters
-from TestAux import TestAux, TestAuxParameters
+from sem_python.aux.AuxGradient import AuxGradient, AuxGradientParameters
+from sem_python.aux.TestAux import TestAux, TestAuxParameters
 from ....src.testers.AuxDerivativesTester import AuxDerivativesTester
 
 # gradient of test aux

@@ -1,7 +1,7 @@
 from copy import deepcopy
 
-from TestAux import TestAux, TestAuxParameters
-from numeric_utilities import computeRelativeDifference
+from sem_python.aux.TestAux import TestAux, TestAuxParameters
+from sem_python.utilities.numeric_utilities import computeRelativeDifference
 
 class AuxDerivativesTester(object):
   def __init__(self, verbose=False):

@@ -2,7 +2,7 @@ import unittest
 
 from ...src.testers.EoSConsistencyTester import EoSConsistencyTester
 from ...src.testers.FunctionDerivativesTester import FunctionDerivativesTester
-from StiffenedGasEoS import StiffenedGasEoS, StiffenedGasEoSParameters
+from sem_python.closures.StiffenedGasEoS import StiffenedGasEoS, StiffenedGasEoSParameters
 
 class StiffenedGasEoSTester(unittest.TestCase):
   def setUp(self):

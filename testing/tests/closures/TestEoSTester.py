@@ -1,7 +1,7 @@
 import unittest
 
 from ...src.testers.FunctionDerivativesTester import FunctionDerivativesTester
-from TestEoS import TestEoS, TestEoSParameters
+from sem_python.closures.TestEoS import TestEoS, TestEoSParameters
 
 class TestEoSTester(unittest.TestCase):
   def setUp(self):

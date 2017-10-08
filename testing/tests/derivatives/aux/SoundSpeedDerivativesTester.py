@@ -1,7 +1,7 @@
 import unittest
 
-from SoundSpeed import SoundSpeed, SoundSpeedParameters
-from TestAux import TestAux, TestAuxParameters
+from sem_python.aux.SoundSpeed import SoundSpeed, SoundSpeedParameters
+from sem_python.aux.TestAux import TestAux, TestAuxParameters
 from ....src.testers.AuxDerivativesTester import AuxDerivativesTester
 
 def computeSoundSpeed(v, e):

@@ -1,7 +1,7 @@
 import unittest
 
-from AmbrosoBeta import AmbrosoBeta, AmbrosoBetaParameters
-from TestAux import TestAux, TestAuxParameters
+from sem_python.aux.AmbrosoBeta import AmbrosoBeta, AmbrosoBetaParameters
+from sem_python.aux.TestAux import TestAux, TestAuxParameters
 from ....src.testers.AuxDerivativesTester import AuxDerivativesTester
 
 # beta aux

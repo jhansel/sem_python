@@ -1,4 +1,4 @@
-from numeric_utilities import computeRelativeDifference
+from sem_python.utilities.numeric_utilities import computeRelativeDifference
 
 class EoSConsistencyTester(object):
   def __init__(self, verbose=False):

@@ -1,7 +1,7 @@
 import unittest
 
 from ....src.testers.FunctionDerivativesTester import FunctionDerivativesTester
-from thermodynamic_functions import computeSpecificVolume, computeDensity, \
+from sem_python.closures.thermodynamic_functions import computeSpecificVolume, computeDensity, \
   computeVelocity, computeSpecificTotalEnergy, computeSpecificInternalEnergy, \
   addKineticEnergy, subtractKineticEnergy
 

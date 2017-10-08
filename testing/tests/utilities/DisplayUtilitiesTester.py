@@ -2,8 +2,8 @@ from filecmp import cmp
 import sys
 import unittest
 
-from display_utilities import printDoFVector
-from Factory import Factory
+from sem_python.utilities.display_utilities import printDoFVector
+from sem_python.base.Factory import Factory
 from ...src.utilities.OutputCaptor import OutputCaptor
 
 def outputPrintDoFVectorToFile(path):

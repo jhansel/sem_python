@@ -1,6 +1,6 @@
 import unittest
 
-from enums import ModelType
+from sem_python.base.enums import ModelType
 from ....src.testers.KernelDerivativesTester import KernelDerivativesTester
 
 class EnergyPressureRelaxationDerivativesTester(unittest.TestCase):

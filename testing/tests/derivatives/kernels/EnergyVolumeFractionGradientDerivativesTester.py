@@ -1,6 +1,6 @@
 import unittest
 
-from enums import ModelType
+from sem_python.base.enums import ModelType
 from ....src.testers.KernelDerivativesTester import KernelDerivativesTester
 
 aux = {"uI": ["aA1", "arhoA1", "arhouA1", "arhoEA1", "arhoA2", "arhouA2", "arhoEA2"],

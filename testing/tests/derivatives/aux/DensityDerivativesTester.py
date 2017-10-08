@@ -1,7 +1,7 @@
 import unittest
 
-from Density import Density, DensityParameters
-from VolumeFractionPhase1 import VolumeFractionPhase1, VolumeFractionPhase1Parameters
+from sem_python.aux.Density import Density, DensityParameters
+from sem_python.aux.VolumeFractionPhase1 import VolumeFractionPhase1, VolumeFractionPhase1Parameters
 from ....src.testers.AuxDerivativesTester import AuxDerivativesTester
 
 params = DensityParameters()

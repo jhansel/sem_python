@@ -1,6 +1,6 @@
 import unittest
 
-from InputFileParser import InputFileParser
+from sem_python.input.InputFileParser import InputFileParser
 
 class InputFileParserTester(unittest.TestCase):
   def setUp(self):

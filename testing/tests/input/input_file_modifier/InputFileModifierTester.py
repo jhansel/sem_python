@@ -1,7 +1,7 @@
 import unittest
 
-from InputFileModifier import InputFileModifier
-from InputFileParser import InputFileParser
+from sem_python.input.InputFileModifier import InputFileModifier
+from sem_python.input.InputFileParser import InputFileParser
 
 class InputFileModifierTester(unittest.TestCase):
   def setUp(self):

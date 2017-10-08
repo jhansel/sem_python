@@ -2,7 +2,7 @@ import unittest
 
 from ...src.testers.EoSConsistencyTester import EoSConsistencyTester
 from ...src.testers.FunctionDerivativesTester import FunctionDerivativesTester
-from IdealGasEoS import IdealGasEoS, IdealGasEoSParameters
+from sem_python.closures.IdealGasEoS import IdealGasEoS, IdealGasEoSParameters
 
 class IdealGasEoSTester(unittest.TestCase):
   def setUp(self):

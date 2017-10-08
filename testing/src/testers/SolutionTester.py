@@ -1,6 +1,7 @@
 import sem
-from InputFileModifier import InputFileModifier
-from CSVTester import CSVTester
+
+from sem_python.input.InputFileModifier import InputFileModifier
+from .CSVTester import CSVTester
 
 class SolutionTester(object):
   def __init__(self, test_dir, input_file, input_file_modifier=InputFileModifier(), solution_file_name="solution.csv"):
