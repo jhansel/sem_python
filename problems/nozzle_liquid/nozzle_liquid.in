@@ -1,0 +1,68 @@
+[Model]
+  model = 1phase
+[]
+
+[Physics]
+  gravity = 0 0 0
+[]
+
+[Mesh]
+  type = UniformMesh
+  x_min = 0
+  length = 1
+  n_cell = 50
+[]
+
+[EoS]
+  [air]
+    type = StiffenedGasEoS
+    gamma = 2.04
+    p_inf = 8.5e8
+    q = -1151e3
+    q_prime = 0
+    cv = 2069
+  []
+[]
+
+[IC]
+  A = 1e-4 * (1 + 0.5 * cos(2 * pi * x))
+  p = 0.5e6
+  T = 453
+  u = 0
+[]
+
+[BC]
+  [left]
+    type = InletRhoUBC
+    boundary = left
+    phase = air
+  []
+  [right]
+    type = OutletBC
+    boundary = right
+    phase = air
+    p = 0.5e6
+  []
+[]
+
+[Executioner]
+  type = ImplicitEulerExecutioner
+  dt = 0.01
+  end_time = 0.1
+[]
+
+[NonlinearSolver]
+  absolute_tolerance = 1e-6
+  max_iterations = 10
+
+  scaling_arhoA = 1
+  scaling_arhouA = 1e-2
+  scaling_arhoEA = 1e-6
+[]
+
+[Output]
+  plot_solution = True
+  print_solution = False
+  save_solution = True
+  solution_file = solution.csv
+[]

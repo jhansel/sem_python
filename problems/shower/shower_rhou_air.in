@@ -1,0 +1,35 @@
+[BaseInputFile]
+  base = shower.in
+[]
+
+[EoS]
+  -[eos]
+  [eos]
+    type = IdealGasEoS
+    gamma = 1.4
+    R = 290
+  []
+[]
+
+[BC]
+  -[cold_in]
+  [cold_in]
+    type = InletRhoUBC
+    mesh_name = cold_pipe
+    boundary = left
+    phase = eos
+    # rho @ (p = 1e5, T = 280 K)
+    rho = 1.2315270935961
+    u = 1
+  []
+  -[hot_in]
+  [hot_in]
+    type = InletRhoUBC
+    mesh_name = hot_pipe
+    boundary = left
+    phase = eos
+    # rho @ (p = 1e5, T = 310 K)
+    rho = 1.1123470522803
+    u = 1
+  []
+[]

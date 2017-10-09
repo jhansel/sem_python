@@ -1,0 +1,79 @@
+# This test problem is the classic Lax shock tube test problem,
+# which is a Riemann problem with the following parameters:
+#   * domain = (0,1)
+#   * gravity = 0
+#   * fluid = air (ideal gas with gamma = 1.4, R = 287.058)
+#   * interface: x = 0.5
+#   * typical end time: 0.15
+# Left initial values:
+#   * rho = 0.445
+#   * vel = 0.698
+#   * p = 3.528
+# Right initial values:
+#   * rho = 0.5
+#   * vel = 0
+#   * p = 0.571
+
+[Model]
+  model = 1phase
+[]
+
+[Physics]
+  gravity = 0 0 0
+[]
+
+[Mesh]
+  type = UniformMesh
+  start = 0 0 0
+  length = 1
+  n_cell = 50
+[]
+
+[EoS]
+  [air]
+    type = IdealGasEoS
+    gamma = 1.4
+    R = 287.058
+  []
+[]
+
+[IC]
+  rho = 0.445 if x < 0.5 else 0.5
+  u = 0.698 if x < 0.5 else 0
+  p = 3.528 if x < 0.5 else 0.571
+[]
+
+[BC]
+  [left]
+    type = FreeBC
+    boundary = left
+    phase = air
+  []
+  [right]
+    type = FreeBC
+    boundary = right
+    phase = air
+  []
+[]
+
+[Stabilization]
+  type = LaxFriedrichsStabilization
+[]
+
+[Executioner]
+  type = ImplicitEulerExecutioner
+  dt = 0.01
+  end_time = 0.15
+[]
+
+[NonlinearSolver]
+  absolute_tolerance = 1e-6
+  max_iterations = 10
+[]
+
+[Output]
+  [plot]
+    type = PlotOutput
+    plot_sets = rho u p T
+  []
+[]

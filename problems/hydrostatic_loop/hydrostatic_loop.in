@@ -1,0 +1,172 @@
+# This problem models a loop of water that should attain a hydrostatic pressure distribution.
+#
+#        *-----*
+#        |     |
+#        |     |
+#  *-----*-----*
+#
+#       g ->
+
+[Model]
+  model = 1phase
+[]
+
+[Physics]
+  gravity = 9.8 0 0
+[]
+
+[Mesh]
+  [mesh0]
+    type = UniformMesh
+    start = -1 0 0
+    length = 1
+    n_cell = 20
+  []
+  [mesh1]
+    type = UniformMesh
+    start = 0 0 0
+    length = 1
+    n_cell = 20
+  []
+  [mesh2]
+    type = UniformMesh
+    start = 1 0 0
+    orientation = 0 1 0
+    length = 1
+    n_cell = 20
+  []
+  [mesh3]
+    type = UniformMesh
+    start = 1 1 0
+    orientation = -1 0 0
+    length = 1
+    n_cell = 20
+  []
+  [mesh4]
+    type = UniformMesh
+    start = 0 1 0
+    orientation = 0 -1 0
+    length = 1
+    n_cell = 20
+  []
+[]
+
+[EoS]
+  [water]
+    type = StiffenedGasEoS
+    gamma = 2.35
+    cv = 1816.0
+    q = -1.167e6
+    p_inf = 1.0e9
+    q_prime = 0
+  []
+[]
+
+[IC]
+  [mesh0]
+    A = 1
+    T = 300
+    u = 0
+    p = 1e5
+  []
+  [mesh1]
+    A = 1
+    T = 300
+    u = 0
+    p = 1e5
+  []
+  [mesh2]
+    A = 1
+    T = 300
+    u = 0
+    p = 1e5
+  []
+  [mesh3]
+    A = 1
+    T = 300
+    u = 0
+    p = 1e5
+  []
+  [mesh4]
+    A = 1
+    T = 300
+    u = 0
+    p = 1e5
+  []
+[]
+
+[BC]
+  [inlet]
+    type = InletP0T0BC
+    phase = water
+    mesh_name = mesh0
+    boundary = left
+    p0 = 1e5
+    T0 = 300
+  []
+[]
+
+[Junctions]
+  [junction1]
+    type = NewerCompressibleJunction
+    phase = water
+    mesh_names = mesh1 mesh2
+    mesh_sides = right left
+  []
+  [junction2]
+    type = NewerCompressibleJunction
+    phase = water
+    mesh_names = mesh2 mesh3
+    mesh_sides = right left
+  []
+  [junction3]
+    type = NewerCompressibleJunction
+    phase = water
+    mesh_names = mesh3 mesh4
+    mesh_sides = right left
+  []
+  [junction4]
+    type = NewerCompressibleJunction
+    phase = water
+    mesh_names = mesh0 mesh4 mesh1
+    mesh_sides = right right left
+  []
+[]
+
+[Stabilization]
+  type = NoStabilization
+[]
+
+[Executioner]
+  type = ImplicitEulerExecutioner
+  dt = 0.05
+  end_time = 50
+  ss_tol = 1e-10
+[]
+
+[NonlinearSolver]
+  verbose = True
+  absolute_tolerance = 1e-5
+  max_iterations = 10
+
+  scaling_arhoA1  = 1
+  scaling_arhouA1 = 1e-1
+  scaling_arhoEA1 = 1e-5
+[]
+
+[Output]
+  [plot_p]
+    type = PlotOutput
+    file_name = hydrostatic_loop_p.pdf
+    plot_sets = p
+    plot_by_mesh = True
+    legend_location = lower right
+  []
+  [plot_u]
+    type = PlotOutput
+    file_name = hydrostatic_loop_u.pdf
+    plot_sets = u
+    plot_by_mesh = True
+    legend_location = upper left
+  []
+[]

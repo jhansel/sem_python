@@ -1,0 +1,123 @@
+# Models two pipe segments of unequal area connected by a junction.
+
+[Model]
+  model = 1phase
+[]
+
+[Physics]
+  gravity = 0 0 0
+[]
+
+[Mesh]
+  [mesh1]
+    type = UniformMesh
+    start = 0 0 0
+    length = 1
+    n_cell = 20
+  []
+  [mesh2]
+    type = UniformMesh
+    start = 1 0 0
+    length = 1
+    n_cell = 20
+  []
+[]
+
+[EoS]
+  [water]
+    type = StiffenedGasEoS
+    gamma = 2.35
+    cv = 1816.0
+    q = -1.167e6
+    p_inf = 1.0e9
+    q_prime = 0
+  []
+[]
+
+[IC]
+  [mesh1]
+    A = 1
+    T = 300
+    u = 0
+    p = 1e5
+  []
+  [mesh2]
+    A = 2
+    T = 300
+    u = 0
+    p = 1e5
+  []
+[]
+
+[BC]
+  [left]
+    type = InletP0T0BC
+    mesh_name = mesh1
+    boundary = left
+    phase = water
+    p0 = 100679.89621913
+    T0 = 300.00011716187
+  []
+  [right]
+    type = OutletBC
+    mesh_name = mesh2
+    boundary = right
+    phase = water
+    p = 1e5
+  []
+[]
+
+[Junctions]
+  [junction1]
+    type = NewerCompressibleJunction
+    phase = water
+    mesh_names = mesh1 mesh2
+    mesh_sides = right left
+  []
+[]
+
+[Stabilization]
+  type = NoStabilization
+[]
+
+[Executioner]
+  type = ImplicitEulerExecutioner
+  dt = 0.05
+  end_time = 50
+  ss_tol = 1e-10
+[]
+
+[NonlinearSolver]
+  verbose = True
+  absolute_tolerance = 1e-5
+  max_iterations = 10
+
+  scaling_arhoA1  = 1
+  scaling_arhouA1 = 1e-1
+  scaling_arhoEA1 = 1e-5
+[]
+
+[Output]
+  [plot_u]
+    type = PlotOutput
+    file_name = junction_unequal_area_u.pdf
+    plot_sets = u
+    plot_by_mesh = True
+    y_bounds = 0.8 2.2
+  []
+  [plot_p]
+    type = PlotOutput
+    file_name = junction_unequal_area_p.pdf
+    plot_sets = p
+    plot_by_mesh = True
+    y_bounds = 97.5 101
+    legend_location = lower right
+  []
+  [plot_p0]
+    type = PlotOutput
+    file_name = junction_unequal_area_p0.pdf
+    plot_sets = p0
+    y_bounds = 97.5 101
+    plot_by_mesh = True
+  []
+[]

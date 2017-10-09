@@ -1,0 +1,28 @@
+# This version uses the (rho, u) inlet boundary condition.
+
+[BaseInputFile]
+  base = shower.in
+[]
+
+[BC]
+  -[cold_in]
+  [cold_in]
+    type = InletRhoUBC
+    mesh_name = cold_pipe
+    boundary = left
+    phase = eos
+    # rho @ (p = 1e5, T = 280 K)
+    rho = 1456.9202619863
+    u = 1
+  []
+  -[hot_in]
+  [hot_in]
+    type = InletRhoUBC
+    mesh_name = hot_pipe
+    boundary = left
+    phase = eos
+    # rho @ (p = 1e5, T = 310 K)
+    rho = 1315.9279785683
+    u = 1
+  []
+[]

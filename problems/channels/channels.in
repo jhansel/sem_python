@@ -1,0 +1,172 @@
+# Models flow entering and exiting 3 channels:
+#
+#                2 *--------*
+#   1 *--------* 3 *--------* 5 *--------*
+#                4 *--------*
+
+[Model]
+  model = 1phase
+[]
+
+[Physics]
+  gravity = 0 0 0
+[]
+
+[Mesh]
+  [mesh1]
+    type = UniformMesh
+    start = 0 0 0
+    length = 1
+    n_cell = 20
+  []
+  [mesh2]
+    type = UniformMesh
+    start = 1 1 0
+    length = 1
+    n_cell = 20
+  []
+  [mesh3]
+    type = UniformMesh
+    start = 1 0 0
+    length = 1
+    n_cell = 20
+  []
+  [mesh4]
+    type = UniformMesh
+    start = 1 -1 0
+    length = 1
+    n_cell = 20
+  []
+  [mesh5]
+    type = UniformMesh
+    start = 2 0 0
+    length = 1
+    n_cell = 20
+  []
+[]
+
+[EoS]
+  [air]
+    type = IdealGasEoS
+    gamma = 1.4
+    R = 290
+  []
+[]
+
+[IC]
+  [mesh1]
+    T = 300
+    u = 0
+    p = 1e5
+    A = 1
+  []
+  [mesh2]
+    T = 300
+    u = 0
+    p = 1e5
+    A = 0.4
+  []
+  [mesh3]
+    T = 300
+    u = 0
+    p = 1e5
+    A = 0.3
+  []
+  [mesh4]
+    T = 300
+    u = 0
+    p = 1e5
+    A = 0.1
+  []
+  [mesh5]
+    T = 300
+    u = 0
+    p = 1e5
+    A = 1
+  []
+[]
+
+[BC]
+  [left]
+    type = InletP0T0BC
+    mesh_name = mesh1
+    boundary = left
+    phase = air
+    # p0, T0 @ (p = 1e5, T = 300 K, u = 1 m/s)
+    p0 = 100000.57471382
+    T0 = 300.00049261084
+  []
+  [right]
+    type = OutletBC
+    mesh_name = mesh5
+    boundary = right
+    phase = air
+    p = 1.0e5
+  []
+[]
+
+[Junctions]
+  [junction1]
+    type = NewerCompressibleJunction
+    phase = air
+    mesh_names = mesh1 mesh2 mesh3 mesh4
+    mesh_sides = right left  left  left
+  []
+  [junction2]
+    type = NewerCompressibleJunction
+    phase = air
+    mesh_names = mesh5 mesh2 mesh3 mesh4
+    mesh_sides = left  right right right
+  []
+[]
+
+[Stabilization]
+  type = NoStabilization
+[]
+
+[Executioner]
+  type = ImplicitEulerExecutioner
+  dt = 0.05
+  end_time = 50.0
+  ss_tol = 1e-8
+[]
+
+[NonlinearSolver]
+  verbose = True
+  absolute_tolerance = 1e-6
+  max_iterations = 10
+
+  scaling_arhoA1  = 1
+  scaling_arhouA1 = 1e-1
+  scaling_arhoEA1 = 1e-5
+[]
+
+[Output]
+  [plot_u]
+    type = PlotOutput
+    file_name = channels_u.pdf
+    plot_sets = u
+    plot_by_mesh = True
+  []
+  [plot_p]
+    type = PlotOutput
+    file_name = channels_p.pdf
+    plot_sets = p
+    plot_by_mesh = True
+    legend_location = lower right
+  []
+  [plot_p0]
+    type = PlotOutput
+    file_name = channels_p0.pdf
+    plot_sets = p0
+    plot_by_mesh = True
+  []
+  [plot_A]
+    type = PlotOutput
+    file_name = channels_A.pdf
+    plot_sets = A
+    plot_by_mesh = True
+    y_bounds = 0 1.2
+    legend_location = lower right
+  []
+[]

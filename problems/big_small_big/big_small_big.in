@@ -1,0 +1,143 @@
+# Tests flow through a discontinuous area restriction pipe segment, using junctions.
+
+[Model]
+  model = 1phase
+[]
+
+[Physics]
+  gravity = 0 0 0
+[]
+
+[Mesh]
+  [mesh1]
+    type = UniformMesh
+    start = 0 0 0
+    length = 1
+    n_cell = 20
+  []
+  [mesh2]
+    type = UniformMesh
+    start = 1 0 0
+    length = 1
+    n_cell = 20
+  []
+  [mesh3]
+    type = UniformMesh
+    start = 2 0 0
+    length = 1
+    n_cell = 20
+  []
+[]
+
+[EoS]
+  [air]
+    type = IdealGasEoS
+    gamma = 1.4
+    R = 290
+  []
+[]
+
+[IC]
+  [mesh1]
+    A = 1
+    T = 300
+    u = 1
+    p = 1e5
+  []
+  [mesh2]
+    A = 0.5
+    T = 300
+    u = 1
+    p = 1e5
+  []
+  [mesh3]
+    A = 1
+    T = 300
+    u = 1
+    p = 1e5
+  []
+[]
+
+[BC]
+  [left]
+    type = InletP0T0BC
+    mesh_name = mesh1
+    boundary = left
+    phase = air
+    # p0, T0 @ (p = 1e5, T = 300 K, u = 1 m/s)
+    p0 = 100000.57471382
+    T0 = 300.00049261084
+  []
+  [right]
+    type = OutletBC
+    mesh_name = mesh3
+    boundary = right
+    phase = air
+    p = 1.0e5
+  []
+[]
+
+[Junctions]
+  [junction1]
+    type = NewerCompressibleJunction
+    phase = air
+    mesh_names = mesh1 mesh2
+    mesh_sides = right left
+  []
+  [junction2]
+    type = NewerCompressibleJunction
+    phase = air
+    mesh_names = mesh2 mesh3
+    mesh_sides = right left
+  []
+[]
+
+[Stabilization]
+  type = NoStabilization
+[]
+
+[Executioner]
+  type = ImplicitEulerExecutioner
+  dt = 0.05
+  end_time = 5.0
+  ss_tol = 1e-6
+[]
+
+[NonlinearSolver]
+  verbose = True
+  absolute_tolerance = 1e-6
+  max_iterations = 10
+
+  scaling_arhoA1  = 1
+  scaling_arhouA1 = 1e-1
+  scaling_arhoEA1 = 1e-5
+[]
+
+[Output]
+  [plot_p]
+    type = PlotOutput
+    file_name = big_small_big_p.pdf
+    plot_sets = p
+    plot_by_mesh = True
+  []
+  [plot_p0]
+    type = PlotOutput
+    file_name = big_small_big_p0.pdf
+    plot_sets = p0
+    plot_by_mesh = True
+  []
+  [plot_u]
+    type = PlotOutput
+    file_name = big_small_big_u.pdf
+    plot_sets = u
+    plot_by_mesh = True
+  []
+  [plot_A]
+    type = PlotOutput
+    file_name = big_small_big_A.pdf
+    plot_sets = A
+    plot_by_mesh = True
+    y_bounds = 0.4 1.1
+    legend_location = lower right
+  []
+[]

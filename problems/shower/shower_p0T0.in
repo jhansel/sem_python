@@ -1,0 +1,152 @@
+# This problem models a "shower" setup: water from a hot pipe and a cold pipe
+# mix in a junction and exit in a warm mixture.
+#
+#      HOT ->
+#  *------------*   WARM ->
+#               *------------*
+#  *------------*
+#     COLD ->
+#
+# This version uses the (p0, T0) inlet boundary condition. Currently, this
+# doesn't run; one must use (rho, u) inlet boundary condition instead.
+
+[Model]
+  model = 1phase
+[]
+
+[Physics]
+  gravity = 0 0 0
+[]
+
+[Mesh]
+  [cold_pipe]
+    type = UniformMesh
+    start = 0 0 0
+    length = 1
+    n_cell = 20
+  []
+  [hot_pipe]
+    type = UniformMesh
+    start = 0 2 0
+    length = 1
+    n_cell = 20
+  []
+  [warm_pipe]
+    type = UniformMesh
+    start = 1 1 0
+    length = 1
+    n_cell = 20
+  []
+[]
+
+[EoS]
+  [eos]
+    type = StiffenedGasEoS
+    gamma = 2.35
+    cv = 1816
+    q = -1.167e6
+    p_inf = 1e9
+    q_prime = 0
+  []
+[]
+
+[IC]
+  [cold_pipe]
+    p = 1e5
+    T = 300
+    u = 0
+    A = 1
+  []
+  [hot_pipe]
+    p = 1e5
+    T = 300
+    u = 0
+    A = 1
+  []
+  [warm_pipe]
+    p = 1e5
+    T = 300
+    u = 0
+    A = 2
+  []
+[]
+
+[BC]
+  [cold_in]
+    type = InletP0T0BC
+    mesh_name = cold_pipe
+    boundary = left
+    phase = eos
+    # p0, T0 @ (p = 1e5, T = 280 K, u = 1 m/s)
+    p0 = 100728.46024203
+    T0 = 280.00011716187
+  []
+  [hot_in]
+    type = InletP0T0BC
+    mesh_name = hot_pipe
+    boundary = left
+    phase = eos
+    # p0, T0 @ (p = 1e5, T = 310 K, u = 1 m/s)
+    p0 = 100657.96408069
+    T0 = 310.00011716187
+  []
+  [warm_out]
+    type = OutletBC
+    mesh_name = warm_pipe
+    boundary = right
+    phase = eos
+    p = 1e5
+  []
+[]
+
+[Junctions]
+  [junction]
+    type = NewerCompressibleJunction
+    phase = eos
+    mesh_names = cold_pipe hot_pipe warm_pipe
+    mesh_sides = right     right    left
+  []
+[]
+
+[Stabilization]
+  type = NoStabilization
+[]
+
+[Executioner]
+  type = ImplicitEulerExecutioner
+  dt = 0.05
+  end_time = 50.0
+  ss_tol = 1e-8
+[]
+
+[NonlinearSolver]
+  verbose = True
+  absolute_tolerance = 1e-6
+  max_iterations = 10
+
+  scaling_arhoA1  = 1
+  scaling_arhouA1 = 1e-1
+  scaling_arhoEA1 = 1e-5
+[]
+
+[Output]
+  [csv]
+    type = CSVOutput
+    file_name = shower.csv
+    names = p T u A
+    save_by_mesh = True
+  []
+  [plot_p]
+    type = PlotOutput
+    file_name = shower_p.pdf
+    plot_sets = p
+    plot_by_mesh = True
+  []
+  [plot_T]
+    type = PlotOutput
+    file_name = shower_T.pdf
+    plot_sets = T
+    plot_by_mesh = True
+    y_bounds = 275 315
+  []
+[]
