@@ -174,13 +174,29 @@ class NonlinearSolver(object):
       try:
         dU = np.linalg.solve(J, -r)
       except:
+        # If the linear solve fails, it is assumed that the matrix is singular
+        # and thus is rank-deficient. If the concatenated matrix J|r resolves
+        # a deficiency, i.e., rank(J|r) > rank(J), then this implies that there
+        # are contradictions in the system and thus there are no solutions.
+        # Else the ranks are equal, which implies that there is a redundancy
+        # in the system. For example, suppose the following equations are in
+        # the system:
+        #   x1 = A
+        #   x1 = B
+        # Assuming B does not equal A, this implies a contradiction and thus no
+        # solution exists. Assuming the other equations are linearly independent,
+        # the Jacobian matrix J will have rank N-1. However,tThe matrix J|r has
+        # rank N. If B were equal to A, then there would be no contradiction,
+        # just a redundancy, so there would be infinite solutions. In this case,
+        # the matrix J|r would have the same rank as J: N-1.
         n = r.size
         Jr = np.concatenate((J, -r.reshape((n, 1))), axis=1)
-        if (matrix_rank(Jr) == matrix_rank(J)):
+        if matrix_rank(Jr) == matrix_rank(J):
           errorNoTraceback("Infinitely many solutions!\n")
-        elif (matrix_rank(Jr) == matrix_rank(J) + 1):
+        elif matrix_rank(Jr) > matrix_rank(J):
           errorNoTraceback("No solutions!\n")
         else:
+          # This should not be possible
           errorNoTraceback("Unknown number of solutions!\n")
 
       # update solution
