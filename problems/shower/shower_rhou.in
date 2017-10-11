@@ -1,7 +1,7 @@
 # This version uses the (rho, u) inlet boundary condition.
 
 [BaseInputFile]
-  base = shower.in
+  base = shower_p0T0.in
 []
 
 [BC]

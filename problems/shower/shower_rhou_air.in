@@ -1,5 +1,5 @@
 [BaseInputFile]
-  base = shower.in
+  base = shower_p0T0.in
 []
 
 [EoS]
