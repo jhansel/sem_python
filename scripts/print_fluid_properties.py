@@ -10,9 +10,9 @@ Options:
 
 from docopt import docopt
 
-from Factory import Factory
-from ThermodynamicState import ThermodynamicState
-from InputFileParser import InputFileParser
+from sem_python.base.Factory import Factory
+from sem_python.closures.ThermodynamicState import ThermodynamicState
+from sem_python.input.InputFileParser import InputFileParser
 
 ## Runs the script
 # @param mods  input file modifications

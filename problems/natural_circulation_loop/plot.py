@@ -1,5 +1,5 @@
-from file_utilities import readCSVData
-from Plotter import Plotter
+from sem_python.utilities.file_utilities import readCSVData
+from sem_python.output.Plotter import Plotter
 
 n_pipes = 8
 problem_name = "natural_circulation_loop"

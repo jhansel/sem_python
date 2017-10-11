@@ -1,5 +1,5 @@
-from file_utilities import readCSVData
-from Plotter import Plotter
+from sem_python.utilities.file_utilities import readCSVData
+from sem_python.output.Plotter import Plotter
 
 no_junction = readCSVData("no_junction.csv")
 junction_1 = readCSVData("solution_1.csv")
