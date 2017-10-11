@@ -68,7 +68,7 @@
     type = UniformMesh
     start = 0 2 0
     orientation = 0 -1 0
-    length = 1
+    length = 2
     n_cell = 20
   []
   [mesh8]
