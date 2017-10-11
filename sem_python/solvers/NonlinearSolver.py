@@ -1,6 +1,6 @@
 from copy import deepcopy
 import numpy as np
-from numpy.linalg import matrix_rank, inv, eigvals, svd
+from numpy.linalg import matrix_rank, inv, eigvals, svd, cond
 import sys
 from termcolor import colored
 
@@ -19,6 +19,7 @@ class NonlinearSolverParameters(Parameters):
 
     self.registerBoolParameter("print_variable_residual_norms", "Option to print the individual variable residual norms", False)
     self.registerBoolParameter("print_residual", "Option to print the residual vector", False)
+    self.registerBoolParameter("print_condition_number", "Option to print Jacobian condition number", False)
     self.registerBoolParameter("debug_jacobian", "Option to debug the Jacobian", False)
     self.registerBoolParameter("visualize_sparsity", "Option to visualize the Jacobian sparsity pattern", False)
     self.registerFloatParameter("finite_difference_eps", "Parameter for the FD debug Jacobian", 1e-4)
@@ -50,6 +51,7 @@ class NonlinearSolver(object):
 
     self.print_variable_residual_norms = params.get("print_variable_residual_norms")
     self.print_residual = params.get("print_residual")
+    self.print_condition_number = params.get("print_condition_number")
     self.debug_jacobian = params.get("debug_jacobian")
     self.visualize_sparsity = params.get("visualize_sparsity")
     self.fd_eps = params.get("finite_difference_eps")
@@ -162,6 +164,10 @@ class NonlinearSolver(object):
         # print residual vector
         if self.print_residual:
           printDoFVector(r_scaled, self.dof_handler)
+
+      # print condition number
+      if self.print_condition_number:
+        print "cond(J) = %10.2e" % cond(J)
 
       # check for convergence
       if r_norm_abs <= self.absolute_tol or r_norm_rel <= self.relative_tol:
