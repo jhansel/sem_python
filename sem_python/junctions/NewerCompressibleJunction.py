@@ -8,11 +8,20 @@ from ..closures.thermodynamic_functions import computeVolumeFraction, computeDen
 class NewerCompressibleJunctionParameters(Junction1PhaseParameters):
   def __init__(self):
     Junction1PhaseParameters.__init__(self)
+    self.registerFloatListParameter("loss_coefficients", "List of loss coefficients for each mesh")
 
 ## Junction that uses compressible flow assumption
 class NewerCompressibleJunction(Junction1Phase):
   def __init__(self, params):
     Junction1Phase.__init__(self, params)
+
+    # get loss coefficients, if any
+    if params.has("loss_coefficients"):
+      self.loss_coefficients = params.get("loss_coefficients")
+      if len(self.loss_coefficients) != self.n_meshes:
+        error("The list parameters 'loss_coefficients' and 'mesh_names' must have the same size.")
+    else:
+      self.loss_coefficients = [0] * self.n_meshes
 
     self.n_constraints += 1
 
