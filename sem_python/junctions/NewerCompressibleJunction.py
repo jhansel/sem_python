@@ -64,9 +64,9 @@ class NewerCompressibleJunction(Junction1Phase):
     # many pieces of information are supplied to inlets vs. outlets
     for i in xrange(self.n_meshes):
       if self.u[i] * self.nx[i] > 0: # inlets to the junction; outlet BC
-        self.addOutletBC(i, U_new, r, J)
+        self.addJunctionInletFlux(i, U_new, r, J)
       else: # outlets from the junction; inlet BC
-        self.addInletBC(i, U_new, r, J)
+        self.addJunctionOutletFlux(i, U_new, r, J)
 
     # the normal boundary fluxes are computed only because the mass fluxes are
     # needed by the mass flux balance constraint
@@ -127,7 +127,7 @@ class NewerCompressibleJunction(Junction1Phase):
         self.dh0J_darhouA[i] = dnum_alt_darhouA[i] / den_alt
         self.dh0J_darhoEA[i] = dnum_alt_darhoEA[i] / den_alt
 
-  def addInletBC(self, i, U, r, J):
+  def addJunctionOutletFlux(self, i, U, r, J):
     # get the junction entropy
     sJ = U[self.i_sJ]
 
@@ -244,7 +244,7 @@ class NewerCompressibleJunction(Junction1Phase):
         J[i_energy][j_momentum] += vf * u * (drho_darhouAj * E + rho * dE_darhouAj + dp_darhouAj) * A * nx
         J[i_energy][j_energy]   += vf * u * (drho_darhoEAj * E + rho * dE_darhoEAj + dp_darhoEAj) * A * nx
 
-  def addOutletBC(self, i, U, r, J):
+  def addJunctionInletFlux(self, i, U, r, J):
     # get the junction entropy
     sJ = U[self.i_sJ]
 
