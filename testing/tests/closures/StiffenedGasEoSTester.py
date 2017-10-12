@@ -50,6 +50,11 @@ class StiffenedGasEoSTester(unittest.TestCase):
     for reldiff in reldiffs:
       self.assertLessEqual(reldiff, 5e-6)
 
+  def testEntropyFromEnthalpyPressureDerivatives(self):
+    reldiffs = self.derivative_tester.checkDerivatives(self.eos.s_from_h_p, 2)
+    for reldiff in reldiffs:
+      self.assertLessEqual(reldiff, 5e-6)
+
   def testPressureFromEnthalpyEntropyDerivatives(self):
     reldiffs = self.derivative_tester.checkDerivatives(self.eos.p_from_h_s, 2)
     for reldiff in reldiffs:
@@ -84,6 +89,7 @@ if __name__ == "__main__":
   tester.checkDerivatives(eos.T, 2)
   tester.checkDerivatives(eos.c, 2)
   tester.checkDerivatives(eos.s, 2)
+  tester.checkDerivatives(eos.s_from_h_p, 2)
   tester.checkDerivatives(eos.p_from_h_s, 2)
 
   eos_consistency_tester = EoSConsistencyTester(True)

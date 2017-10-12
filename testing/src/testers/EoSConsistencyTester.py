@@ -21,6 +21,7 @@ class EoSConsistencyTester(object):
     T_from_v_e, _, _ = eos.T(v, e)
     p_from_h_s, _, _ = eos.p_from_h_s(h, s)
     h_from_e_p_rho = e + p / rho
+    s_from_h_p, _, _ = eos.s_from_h_p(h, p)
 
     base_values = dict()
     base_values["rho_from_p_s"] = rho
@@ -28,6 +29,7 @@ class EoSConsistencyTester(object):
     base_values["T_from_v_e"] = T
     base_values["p_from_h_s"] = p
     base_values["h_from_e_p_rho"] = h
+    base_values["s_from_h_p"] = s
 
     test_values = dict()
     test_values["rho_from_p_s"] = rho_from_p_s
@@ -35,6 +37,7 @@ class EoSConsistencyTester(object):
     test_values["T_from_v_e"] = T_from_v_e
     test_values["p_from_h_s"] = p_from_h_s
     test_values["h_from_e_p_rho"] = h_from_e_p_rho
+    test_values["s_from_h_p"] = s_from_h_p
 
     # compute relative differences
     reldiffs = dict()

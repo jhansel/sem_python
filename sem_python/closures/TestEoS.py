@@ -25,6 +25,8 @@ class TestEoS(EoS):
     self.dc_dp = self.nextSlope()
     self.ds_dv = self.nextSlope()
     self.ds_de = self.nextSlope()
+    self.ds_dh = self.nextSlope()
+    self.ds_dp = self.nextSlope()
     self.dp_dh = self.nextSlope()
     self.dp_ds = self.nextSlope()
     self.dh_dp = self.nextSlope()
@@ -63,6 +65,9 @@ class TestEoS(EoS):
 
   def s(self, v, e):
     return self.testProperty(v, e, self.ds_dv, self.ds_de)
+
+  def s_from_h_p(self, h, p):
+    return self.testProperty(h, p, self.ds_dh, self.ds_dp)
 
   def p_from_h_s(self, h, s):
     return self.testProperty(h, s, self.dp_dh, self.dp_ds)

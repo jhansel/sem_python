@@ -91,6 +91,18 @@ class IdealGasEoS(EoS):
 
     return (s, ds_dv, ds_de)
 
+  def s_from_h_p(self, h, p):
+    aux = p * (h / (self.gamma * self.cv))**(-self.gamma/(self.gamma - 1))
+    daux_dh = p * (h / (self.gamma * self.cv))**(-self.gamma/(self.gamma - 1) - 1) \
+      * (-self.gamma/(self.gamma - 1)) / (self.gamma * self.cv)
+    daux_dp = (h / (self.gamma * self.cv))**(-self.gamma/(self.gamma - 1))
+
+    s = - (self.gamma - 1) * self.cv * log(aux)
+    ds_dh = - (self.gamma - 1) * self.cv / aux * daux_dh
+    ds_dp = - (self.gamma - 1) * self.cv / aux * daux_dp
+
+    return (s, ds_dh, ds_dp)
+
   def p_from_h_s(self, h, s):
     p = (h / (self.gamma * self.cv))**(self.gamma / (self.gamma - 1)) \
       * exp(-s / ((self.gamma - 1) * self.cv))
