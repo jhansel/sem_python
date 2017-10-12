@@ -142,39 +142,50 @@ class NewerCompressibleJunction(Junction1Phase):
     vf = self.vf[i]
     u = self.u[i]
 
-    h = self.h0J - 0.5 * u**2
-    dh_darhoA  = self.dh0J_darhoA[i]  -u * self.du_darhoA[i]
-    dh_darhouA = self.dh0J_darhouA[i] -u * self.du_darhouA[i]
-    dh_darhoEA = self.dh0J_darhoEA[i]
+    H = self.h0J
+    dH_darhoA  = self.dh0J_darhoA[i]
+    dH_darhouA = self.dh0J_darhouA[i]
+    dH_darhoEA = self.dh0J_darhoEA[i]
 
-    p, dp_dh, dp_dsJ = self.eos.p_from_h_s(h, sJ)
-    dp_darhoA  = dp_dh * dh_darhoA
-    dp_darhouA = dp_dh * dh_darhouA
-    dp_darhoEA = dp_dh * dh_darhoEA
+    p0J, dp0J_dh0J, dp0J_dsJ = self.eos.p_from_h_s(self.h0J, sJ)
+    dp0J_darhoA  = dp0J_dh0J * self.dh0J_darhoA[i]
+    dp0J_darhouA = dp0J_dh0J * self.dh0J_darhouA[i]
+    dp0J_darhoEA = dp0J_dh0J * self.dh0J_darhoEA[i]
 
-    rho, drho_dp, drho_dsJ_partial = self.eos.rho_from_p_s(p, sJ)
-    drho_dsJ = drho_dsJ_partial + drho_dp * dp_dsJ
-    drho_darhoA  = drho_dp * dp_darhoA
-    drho_darhouA = drho_dp * dp_darhouA
-    drho_darhoEA = drho_dp * dp_darhoEA
+    p0 = p0J - self.loss_coefficients[i] * (p0J - self.p[i])
+    dp0_dp0J = 1 - self.loss_coefficients[i]
+    dp0_dp = self.loss_coefficients[i]
+    dp0_daA1    = dp0_dp * self.dp_daA1[i]
+    dp0_darhoA  = dp0_dp0J * dp0J_darhoA  + dp0_dp * self.dp_darhoA[i]
+    dp0_darhouA = dp0_dp0J * dp0J_darhouA + dp0_dp * self.dp_darhouA[i]
+    dp0_darhoEA = dp0_dp0J * dp0J_darhoEA + dp0_dp * self.dp_darhoEA[i]
+    dp0_dsJ = dp0_dp0J * dp0J_dsJ
 
-    v, dv_drho = computeSpecificVolume(rho)
-    dv_dsJ = dv_drho * drho_dsJ
-    dv_darhoA  = dv_drho * drho_darhoA
-    dv_darhouA = dv_drho * drho_darhouA
-    dv_darhoEA = dv_drho * drho_darhoEA
+    s, ds_dH, ds_dp0 = self.eos.s_from_h_p(H, p0)
+    ds_daA1 = ds_dp0 * dp0_daA1
+    ds_darhoA  = ds_dH * dH_darhoA  + ds_dp0 * dp0_darhoA
+    ds_darhouA = ds_dH * dH_darhouA + ds_dp0 * dp0_darhouA
+    ds_darhoEA = ds_dH * dH_darhoEA + ds_dp0 * dp0_darhoEA
+    ds_dsJ = ds_dp0 * dp0_dsJ
 
-    e, de_dv, de_dp = self.eos.e(v, p)
-    de_dsJ = de_dv * dv_dsJ + de_dp * dp_dsJ
-    de_darhoA  = de_dv * dv_darhoA  + de_dp * dp_darhoA
-    de_darhouA = de_dv * dv_darhouA + de_dp * dp_darhouA
-    de_darhoEA = de_dv * dv_darhoEA + de_dp * dp_darhoEA
+    h = H - 0.5 * u**2
+    dh_darhoA  = dH_darhoA  - u * self.du_darhoA[i]
+    dh_darhouA = dH_darhouA - u * self.du_darhouA[i]
+    dh_darhoEA = dH_darhoEA
 
-    E = e + 0.5 * u**2
-    dE_dsJ = de_dsJ
-    dE_darhoA  = de_darhoA  + u * self.du_darhoA[i]
-    dE_darhouA = de_darhouA + u * self.du_darhouA[i]
-    dE_darhoEA = de_darhoEA
+    p, dp_dh, dp_ds = self.eos.p_from_h_s(h, s)
+    dp_daA1 = dp_ds * ds_daA1
+    dp_darhoA  = dp_dh * dh_darhoA  + dp_ds * ds_darhoA
+    dp_darhouA = dp_dh * dh_darhouA + dp_ds * ds_darhouA
+    dp_darhoEA = dp_dh * dh_darhoEA + dp_ds * ds_darhoEA
+    dp_dsJ = dp_ds * ds_dsJ
+
+    rho, drho_dp, drho_ds = self.eos.rho_from_p_s(p, s)
+    drho_daA1    = drho_dp * dp_daA1    + drho_ds * ds_daA1
+    drho_darhoA  = drho_dp * dp_darhoA  + drho_ds * ds_darhoA
+    drho_darhouA = drho_dp * dp_darhouA + drho_ds * ds_darhouA
+    drho_darhoEA = drho_dp * dp_darhoEA + drho_ds * ds_darhoEA
+    drho_dsJ     = drho_dp * dp_dsJ     + drho_ds * ds_dsJ
 
     # compute the fluxes
     i_mass = self.i_arhoA[i]
@@ -193,40 +204,44 @@ class NewerCompressibleJunction(Junction1Phase):
     J[i_momentum][i_momentum] += vf * (drho_darhouA * u**2 + rho * 2 * u * self.du_darhouA[i] + dp_darhouA) * A * nx
     J[i_momentum][i_energy] += vf * (drho_darhoEA * u**2 + dp_darhoEA) * A * nx
 
-    r[i_energy] += vf * u * (rho * E + p) * A * nx
-    J[i_energy][self.i_sJ] += vf * u * (drho_dsJ * E + rho * dE_dsJ + dp_dsJ) * A * nx
-    J[i_energy][i_mass] += vf * (self.du_darhoA[i] * (rho * E + p) \
-      + u * (drho_darhoA * E + rho * dE_darhoA + dp_darhoA)) * A * nx
-    J[i_energy][i_momentum] += vf * (self.du_darhouA[i] * (rho * E + p) \
-      + u * (drho_darhouA * E + rho * dE_darhouA + dp_darhouA)) * A * nx
-    J[i_energy][i_energy] += vf * u * (drho_darhoEA * E + rho * dE_darhoEA + dp_darhoEA) * A * nx
+    r[i_energy] += vf * u * rho * H * A * nx
+    J[i_energy][self.i_sJ] += vf * u * drho_dsJ * H * A * nx
+    J[i_energy][i_mass] += vf * (self.du_darhoA[i] * rho * H \
+      + u * (drho_darhoA * H + rho * dH_darhoA)) * A * nx
+    J[i_energy][i_momentum] += vf * (self.du_darhouA[i] * rho * H \
+      + u * (drho_darhouA * H + rho * dH_darhouA)) * A * nx
+    J[i_energy][i_energy] += vf * u * (drho_darhoEA * H + rho * dH_darhoEA) * A * nx
 
     # add contributions from other inlets through h0J
     for j in xrange(self.n_meshes):
       if j != i:
-        dh_darhoAj  = self.dh0J_darhoA[j]
-        dh_darhouAj = self.dh0J_darhouA[j]
-        dh_darhoEAj = self.dh0J_darhoEA[j]
+        dH_darhoAj  = self.dh0J_darhoA[j]
+        dH_darhouAj = self.dh0J_darhouA[j]
+        dH_darhoEAj = self.dh0J_darhoEA[j]
 
-        dp_darhoAj  = dp_dh * dh_darhoAj
-        dp_darhouAj = dp_dh * dh_darhouAj
-        dp_darhoEAj = dp_dh * dh_darhoEAj
+        dp0J_darhoAj  = dp0J_dh0J * dH_darhoAj
+        dp0J_darhouAj = dp0J_dh0J * dH_darhouAj
+        dp0J_darhoEAj = dp0J_dh0J * dH_darhoEAj
 
-        drho_darhoAj  = drho_dp * dp_darhoAj
-        drho_darhouAj = drho_dp * dp_darhouAj
-        drho_darhoEAj = drho_dp * dp_darhoEAj
+        dp0_darhoAj  = dp0_dp0J * dp0J_darhoAj
+        dp0_darhouAj = dp0_dp0J * dp0J_darhouAj
+        dp0_darhoEAj = dp0_dp0J * dp0J_darhoEAj
 
-        dv_darhoAj  = dv_drho * drho_darhoAj
-        dv_darhouAj = dv_drho * drho_darhouAj
-        dv_darhoEAj = dv_drho * drho_darhoEAj
+        ds_darhoAj  = ds_dH * dH_darhoAj  + ds_dp0 * dp0_darhoAj
+        ds_darhouAj = ds_dH * dH_darhouAj + ds_dp0 * dp0_darhouAj
+        ds_darhoEAj = ds_dH * dH_darhoEAj + ds_dp0 * dp0_darhoEAj
 
-        de_darhoAj  = de_dv * dv_darhoAj  + de_dp * dp_darhoAj
-        de_darhouAj = de_dv * dv_darhouAj + de_dp * dp_darhouAj
-        de_darhoEAj = de_dv * dv_darhoEAj + de_dp * dp_darhoEAj
+        dh_darhoAj  = dH_darhoAj
+        dh_darhouAj = dH_darhouAj
+        dh_darhoEAj = dH_darhoEAj
 
-        dE_darhoAj  = de_darhoAj
-        dE_darhouAj = de_darhouAj
-        dE_darhoEAj = de_darhoEAj
+        dp_darhoAj  = dp_dh * dh_darhoAj  + dp_ds * ds_darhoAj
+        dp_darhouAj = dp_dh * dh_darhouAj + dp_ds * ds_darhouAj
+        dp_darhoEAj = dp_dh * dh_darhoEAj + dp_ds * ds_darhoEAj
+
+        drho_darhoAj  = drho_dp * dp_darhoAj  + drho_ds * ds_darhoAj
+        drho_darhouAj = drho_dp * dp_darhouAj + drho_ds * ds_darhouAj
+        drho_darhoEAj = drho_dp * dp_darhoEAj + drho_ds * ds_darhoEAj
 
         j_mass = self.i_arhoA[j]
         j_momentum = self.i_arhouA[j]
@@ -240,9 +255,9 @@ class NewerCompressibleJunction(Junction1Phase):
         J[i_momentum][j_momentum] += vf * (drho_darhouAj * u**2 + dp_darhouAj) * A * nx
         J[i_momentum][j_energy]   += vf * (drho_darhoEAj * u**2 + dp_darhoEAj) * A * nx
 
-        J[i_energy][j_mass]     += vf * u * (drho_darhoAj  * E + rho * dE_darhoAj  + dp_darhoAj)  * A * nx
-        J[i_energy][j_momentum] += vf * u * (drho_darhouAj * E + rho * dE_darhouAj + dp_darhouAj) * A * nx
-        J[i_energy][j_energy]   += vf * u * (drho_darhoEAj * E + rho * dE_darhoEAj + dp_darhoEAj) * A * nx
+        J[i_energy][j_mass]     += vf * u * (drho_darhoAj  * H + rho * dH_darhoAj)  * A * nx
+        J[i_energy][j_momentum] += vf * u * (drho_darhouAj * H + rho * dH_darhouAj) * A * nx
+        J[i_energy][j_energy]   += vf * u * (drho_darhoEAj * H + rho * dH_darhoEAj) * A * nx
 
   def addJunctionInletFlux(self, i, U, r, J):
     # get the junction entropy
