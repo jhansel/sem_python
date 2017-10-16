@@ -1,0 +1,109 @@
+# Models two pipe segments of equal area connected by a junction that has
+# losses. The inlet BC uses (p0, T0), and the outlet BC uses p. With a loss
+# coefficient of 0.5, the stagnation pressure in the downstream pipe should be
+# halfway between the the stagnation pressure of the inlet p0 value and the
+# outlet p value. Therefore, the correct p0 value in the second pipe should
+# be p0 = 1.29788778926625 Pa.
+
+[Model]
+  model = 1phase
+[]
+
+[Physics]
+  gravity = 0 0 0
+[]
+
+[Mesh]
+  [mesh1]
+    type = UniformMesh
+    start = 0 0 0
+    length = 1
+    n_cell = 20
+  []
+  [mesh2]
+    type = UniformMesh
+    start = 1 0 0
+    length = 1
+    n_cell = 20
+  []
+[]
+
+[EoS]
+  [air]
+    type = IdealGasEoS
+    gamma = 1.4
+    R = 290
+  []
+[]
+
+[IC]
+  A = 1
+  rho = 1
+  u = 0
+  p = 1
+[]
+
+[BC]
+  [left]
+    type = InletP0T0BC
+    mesh_name = mesh1
+    boundary = left
+    phase = air
+    # (p0, T0) @ (p = 1, rho = 1, u = 1)
+    p0 = 1.5957755785325
+    T0 = 0.0039408866995074
+  []
+  [right]
+    type = OutletBC
+    mesh_name = mesh2
+    boundary = right
+    phase = air
+    p = 1
+  []
+[]
+
+[Junctions]
+  [junction1]
+    type = NewerCompressibleJunction
+    phase = air
+    mesh_names = mesh1 mesh2
+    mesh_sides = right left
+    loss_coefficients = 0 0.5
+  []
+[]
+
+[Stabilization]
+  type = NoStabilization
+[]
+
+[Executioner]
+  type = ImplicitEulerExecutioner
+  dt = 0.05
+  end_time = 50
+  ss_tol = 1e-10
+[]
+
+[NonlinearSolver]
+  verbose = True
+  absolute_tolerance = 1e-5
+  max_iterations = 10
+
+  scaling_arhoA1  = 1
+  scaling_arhouA1 = 1e-1
+  scaling_arhoEA1 = 1e-5
+[]
+
+[Output]
+  [csv]
+    type = CSVOutput
+    file_name = junction_pressure_drop.csv
+    names = u p p0
+    save_by_mesh = True
+  []
+  [plot]
+    type = PlotOutput
+    file_name = junction_pressure_drop.pdf
+    plot_sets = u p p0
+    plot_by_mesh = True
+  []
+[]
