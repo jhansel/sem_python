@@ -1,9 +1,6 @@
 from sem_python.utilities.numeric_utilities import computeRelativeDifference
 
 class EoSConsistencyTester(object):
-  def __init__(self, verbose=False):
-    self.verbose = verbose
-
   def checkConsistency(self, eos):
     p = 1e5
     T = 300
@@ -44,13 +41,12 @@ class EoSConsistencyTester(object):
     for check in test_values:
       reldiffs[check] = computeRelativeDifference(test_values[check], base_values[check])
 
-    if self.verbose:
-      print "EoS Consistency Check:\n"
-      print "%-20s%-20s%-20s%-20s" % ("Check", "Base value", "Test value", "Relative difference")
-      print "=" * 80
-      for check in reldiffs:
-        print "%-20s%-20g%-20g%-20g" % (check, base_values[check], test_values[check], reldiffs[check])
-      print ""
+    print "EoS Consistency Check:\n"
+    print "%-20s%-20s%-20s%-20s" % ("Check", "Base value", "Test value", "Relative difference")
+    print "=" * 80
+    for check in reldiffs:
+      print "%-20s%-20g%-20g%-20g" % (check, base_values[check], test_values[check], reldiffs[check])
+    print ""
 
     # take absolute values of relative differences
     abs_reldiffs = dict()

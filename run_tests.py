@@ -35,8 +35,10 @@ def main():
   regex = command_line_arguments["<REGEX>"]
   if regex:
     search_pattern = "*" + regex + "*Tester.py"
+    hide_output = False
   else:
     search_pattern = "*Tester.py"
+    hide_output = True
 
   # add tests to test suite
   suite = defaultTestLoader.discover(
@@ -44,9 +46,9 @@ def main():
 
   # run test suite
   if print_in_color:
-    ColourTextTestRunner(verbosity=2).run(suite)
+    ColourTextTestRunner(verbosity=2, buffer=hide_output).run(suite)
   else:
-    TextTestRunner(verbosity=2).run(suite)
+    TextTestRunner(verbosity=2, buffer=hide_output).run(suite)
 
 if __name__ == "__main__":
   main()

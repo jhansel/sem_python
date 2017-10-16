@@ -63,7 +63,7 @@ class IdealGasEoSTester(unittest.TestCase):
       self.assertLessEqual(reldiff, 1e-6)
 
   def testEoSConsistency(self):
-    eos_consistency_tester = EoSConsistencyTester(False)
+    eos_consistency_tester = EoSConsistencyTester()
     reldiffs = eos_consistency_tester.checkConsistency(self.eos)
     for check in reldiffs:
       self.assertLessEqual(reldiffs[check], 1e-12)

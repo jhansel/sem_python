@@ -7,9 +7,6 @@ from sem_python.base.Factory import Factory
 from sem_python.utilities.numeric_utilities import computeRelativeDifference
 
 class KernelDerivativesTester(object):
-  def __init__(self, verbose=False):
-    self.verbose = verbose
-
   def checkDerivatives(self, kernel_name, model_type, phase, aux_dependencies, aux_gradients=list(), kernel_params=dict(), fd_eps=1e-8):
     self.model_type = model_type
     self.phase = phase
@@ -124,13 +121,12 @@ class KernelDerivativesTester(object):
       rel_diffs[var_index] = computeRelativeDifference(J_hand_coded[var_index], J_fd[var_index])
 
     # print results
-    if self.verbose:
-      for var_index in kernel.var_indices:
-        var = dof_handler.variable_names[var_index]
-        print "\nDerivative variable:", var
-        print "  Hand-coded        =", J_hand_coded[var_index]
-        print "  Finite difference =", J_fd[var_index]
-        print "  Rel. difference   =", rel_diffs[var_index]
+    for var_index in kernel.var_indices:
+      var = dof_handler.variable_names[var_index]
+      print "\nDerivative variable:", var
+      print "  Hand-coded        =", J_hand_coded[var_index]
+      print "  Finite difference =", J_fd[var_index]
+      print "  Rel. difference   =", rel_diffs[var_index]
 
     # take the absolute value of the relative differences
     for x in rel_diffs:

@@ -6,9 +6,6 @@ from sem_python.base.Factory import Factory
 from sem_python.utilities.numeric_utilities import computeRelativeDifference
 
 class BCTester(object):
-  def __init__(self, verbose=False):
-    self.verbose = verbose
-
   def checkJacobian(self, bc_name, model_type=ModelType.OnePhase, boundary="right", bc_params=dict(), fd_eps=1e-8):
     self.model_type = model_type
 
@@ -90,18 +87,17 @@ class BCTester(object):
         rel_diffs[var_index_i][var_index_j] = computeRelativeDifference(J_hand_coded[i][j], J_fd[var_index_i][var_index_j])
 
     # print results
-    if self.verbose:
-      for var_index_i in xrange(n_var):
-        i = dof_handler.i(k_test, var_index_i)
-        var_i = dof_handler.variable_names[var_index_i]
-        print "\nEquation variable:", var_i
-        for var_index_j in xrange(n_var):
-          j = dof_handler.i(k_test, var_index_j)
-          var_j = dof_handler.variable_names[var_index_j]
-          print "\n  Derivative variable:", var_j
-          print "    Hand-coded        =", J_hand_coded[i][j]
-          print "    Finite difference =", J_fd[var_index_i][var_index_j]
-          print "    Rel. difference   =", rel_diffs[var_index_i][var_index_j]
+    for var_index_i in xrange(n_var):
+      i = dof_handler.i(k_test, var_index_i)
+      var_i = dof_handler.variable_names[var_index_i]
+      print "\nEquation variable:", var_i
+      for var_index_j in xrange(n_var):
+        j = dof_handler.i(k_test, var_index_j)
+        var_j = dof_handler.variable_names[var_index_j]
+        print "\n  Derivative variable:", var_j
+        print "    Hand-coded        =", J_hand_coded[i][j]
+        print "    Finite difference =", J_fd[var_index_i][var_index_j]
+        print "    Rel. difference   =", rel_diffs[var_index_i][var_index_j]
 
     # take the absolute value of the relative differences
     return abs(rel_diffs)

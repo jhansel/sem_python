@@ -3,8 +3,7 @@ from inspect import getargspec
 from sem_python.utilities.numeric_utilities import computeRelativeDifference
 
 class FunctionDerivativesTester(object):
-  def __init__(self, in_unittest_mode=True, use_debug_mode=False):
-    self.in_unittest_mode = in_unittest_mode
+  def __init__(self, use_debug_mode=False):
     self.use_debug_mode = use_debug_mode
 
   def checkDerivatives(self, f, n_args, fd_eps=1e-8):
@@ -19,25 +18,24 @@ class FunctionDerivativesTester(object):
       print "df/dU (hand-coded) =", df_dU_coded
 
     # print header
-    if not self.in_unittest_mode:
-      # get the name of the function arguments and remove "self" if applicable
-      args = getargspec(f).args
-      if len(args) != n_args:
-        if len(args) == n_args + 1:
-          args.pop(0)
-        else:
-          raise Exception("Unexpected number of arguments.")
+    # get the name of the function arguments and remove "self" if applicable
+    args = getargspec(f).args
+    if len(args) != n_args:
+      if len(args) == n_args + 1:
+        args.pop(0)
+      else:
+        raise Exception("Unexpected number of arguments.")
 
-      # determine the max string length of the arguments for formatting
-      max_arg_length = 3
-      for arg in args:
-        max_arg_length = max(max_arg_length, len(arg))
+    # determine the max string length of the arguments for formatting
+    max_arg_length = 3
+    for arg in args:
+      max_arg_length = max(max_arg_length, len(arg))
 
-      # print header for table
-      print f.__name__ + "(" + ",".join(args) + ") Derivatives:\n"
-      format_string = "%" + str(max_arg_length) + "s%13s%13s%13s%13s"
-      print format_string % ("Arg","Coded","FD","Abs Diff","Rel Diff")
-      print "=" * (max_arg_length + 52)
+    # print header for table
+    print f.__name__ + "(" + ",".join(args) + ") Derivatives:\n"
+    format_string = "%" + str(max_arg_length) + "s%13s%13s%13s%13s"
+    print format_string % ("Arg","Coded","FD","Abs Diff","Rel Diff")
+    print "=" * (max_arg_length + 52)
 
     # compute finite difference derivatives
     reldiffs = []
@@ -58,12 +56,8 @@ class FunctionDerivativesTester(object):
       reldiffs.append(reldiff)
 
       # print results
-      if not self.in_unittest_mode:
-        format_string = "%" + str(max_arg_length) + "s%13.4e%13.4e%13.4e%13.4e"
-        print format_string % (args[i], df_dU_coded[i], df_dUi_fd, absdiff, reldiff)
+      format_string = "%" + str(max_arg_length) + "s%13.4e%13.4e%13.4e%13.4e\n"
+      print format_string % (args[i], df_dU_coded[i], df_dUi_fd, absdiff, reldiff)
 
     # return relative differences if in unittest mode
-    if self.in_unittest_mode:
-      return [abs(x) for x in reldiffs]
-    else:
-      print "\n"
+    return [abs(x) for x in reldiffs]

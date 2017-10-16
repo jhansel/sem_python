@@ -8,9 +8,8 @@ from sem_python.base.Factory import Factory
 from sem_python.utilities.numeric_utilities import computeRelativeDifference
 
 class JunctionTester(object):
-  def __init__(self, junction_name, verbose=False, rel_tol=1e-6, abs_tol=1e-6):
+  def __init__(self, junction_name, rel_tol=1e-6, abs_tol=1e-6):
     self.junction_name = junction_name
-    self.verbose = verbose
     self.rel_tol = rel_tol
     self.abs_tol = abs_tol
 
@@ -129,14 +128,13 @@ class JunctionTester(object):
     rel_diffs = computeRelativeDifferenceMatrix(J_hand_coded, J_fd)
 
     # print results
-    if self.verbose:
-      print "\nJacobian, " + test_option + " contributions:"
-      print "Hand-coded:"
-      printMatrix(J_hand_coded)
-      print "Finite-difference:"
-      printMatrix(J_fd)
-      print "Relative difference:"
-      printRelativeMatrixDifference(rel_diffs, abs_diffs, 1e-1, 1e-3)
+    print "\nJacobian, " + test_option + " contributions:"
+    print "Hand-coded:"
+    printMatrix(J_hand_coded)
+    print "Finite-difference:"
+    printMatrix(J_fd)
+    print "Relative difference:"
+    printRelativeMatrixDifference(rel_diffs, abs_diffs, 1e-1, 1e-3)
 
     matched = np.zeros((n_dof, n_dof), dtype=bool)
     for i in xrange(n_dof):

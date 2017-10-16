@@ -4,9 +4,6 @@ from sem_python.aux.TestAux import TestAux, TestAuxParameters
 from sem_python.utilities.numeric_utilities import computeRelativeDifference
 
 class AuxDerivativesTester(object):
-  def __init__(self, verbose=False):
-    self.verbose = verbose
-
   def checkDerivatives(self, test_aux, other_aux, root_vars, constant_data=dict(), fd_eps=1e-8):
     # name of test aux
     test_var = test_aux.name
@@ -46,13 +43,12 @@ class AuxDerivativesTester(object):
       rel_diffs[x] = computeRelativeDifference(hand_der[test_var][x], fd_der[x])
 
     # print results
-    if self.verbose:
-      print "\nTest quantity:", test_var
-      for x in root_vars:
-        print "\nDerivative:", x
-        print "  Hand-coded        =", hand_der[test_var][x]
-        print "  Finite difference =", fd_der[x]
-        print "  Rel. difference   =", rel_diffs[x]
+    print "\nTest quantity:", test_var
+    for x in root_vars:
+      print "\nDerivative:", x
+      print "  Hand-coded        =", hand_der[test_var][x]
+      print "  Finite difference =", fd_der[x]
+      print "  Rel. difference   =", rel_diffs[x]
 
     # take the absolute value of the relative differences
     for x in rel_diffs:
