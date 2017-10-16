@@ -70,27 +70,3 @@ class StiffenedGasEoSTester(unittest.TestCase):
     reldiffs = eos_consistency_tester.checkConsistency(self.eos)
     for check in reldiffs:
       self.assertLessEqual(reldiffs[check], 1e-12)
-
-if __name__ == "__main__":
-  params = StiffenedGasEoSParameters()
-  params.set("gamma", 1.4)
-  params.set("cv", 2.0)
-  params.set("q", -5.0)
-  params.set("p_inf", 0.75)
-  params.set("q_prime", 6.0)
-
-  eos = StiffenedGasEoS(params)
-
-  tester = FunctionDerivativesTester(False)
-  tester.checkDerivatives(eos.rho, 2)
-  tester.checkDerivatives(eos.rho_from_p_s, 2)
-  tester.checkDerivatives(eos.e, 2)
-  tester.checkDerivatives(eos.p, 2)
-  tester.checkDerivatives(eos.T, 2)
-  tester.checkDerivatives(eos.c, 2)
-  tester.checkDerivatives(eos.s, 2)
-  tester.checkDerivatives(eos.s_from_h_p, 2)
-  tester.checkDerivatives(eos.p_from_h_s, 2)
-
-  eos_consistency_tester = EoSConsistencyTester(True)
-  _ = eos_consistency_tester.checkConsistency(eos)

@@ -14,7 +14,3 @@ class SolidWallBCTester(unittest.TestCase):
     for i in xrange(n_i):
       for j in xrange(n_j):
         self.assertLessEqual(rel_diffs[i,j], 1e-6)
-
-if __name__ == "__main__":
-  tester = BCTester(True)
-  _ = tester.checkJacobian("SolidWallBC", bc_params=bc_params)

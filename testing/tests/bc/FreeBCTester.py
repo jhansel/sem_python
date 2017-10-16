@@ -10,7 +10,3 @@ class FreeBCTester(unittest.TestCase):
     for i in xrange(n_i):
       for j in xrange(n_j):
         self.assertLessEqual(rel_diffs[i,j], 1e-6)
-
-if __name__ == "__main__":
-  tester = BCTester(True)
-  _ = tester.checkJacobian("FreeBC", bc_params={"phase": "0"})

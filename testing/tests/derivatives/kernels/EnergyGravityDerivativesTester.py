@@ -23,7 +23,3 @@ class EnergyGravityDerivativesTester(unittest.TestCase):
     rel_diffs = self.derivatives_tester.checkDerivatives("EnergyGravity", ModelType.TwoPhase, 0, aux)
     for key in rel_diffs:
       self.assertLessEqual(rel_diffs[key], 1e-6)
-
-if __name__ == "__main__":
-  derivatives_tester = KernelDerivativesTester(True)
-  _ = derivatives_tester.checkDerivatives("EnergyGravity", ModelType.TwoPhaseNonInteracting, 0, aux)

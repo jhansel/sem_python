@@ -13,7 +13,3 @@ class EqualFluxJunctionTester(unittest.TestCase):
     for i in xrange(n_i):
       for j in xrange(n_j):
         self.assertTrue(matched[i,j])
-
-if __name__ == "__main__":
-  tester = JunctionTester("EqualFluxJunction", verbose=True)
-  _ = tester.checkJacobian("both")

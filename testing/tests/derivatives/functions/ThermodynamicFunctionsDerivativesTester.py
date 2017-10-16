@@ -48,13 +48,3 @@ class ThermodynamicFunctionsFunctionDerivativesTester(unittest.TestCase):
     reldiffs = self.derivative_tester.checkDerivatives(subtractKineticEnergy, 2)
     for reldiff in reldiffs:
       self.assertLessEqual(reldiff, 1e-7)
-
-if __name__ == "__main__":
-  tester = FunctionDerivativesTester(False)
-  tester.checkDerivatives(computeVelocity, 2)
-  tester.checkDerivatives(computeDensity, 3)
-  tester.checkDerivatives(computeSpecificVolume, 1)
-  tester.checkDerivatives(computeSpecificTotalEnergy, 2)
-  tester.checkDerivatives(computeSpecificInternalEnergy, 2)
-  tester.checkDerivatives(addKineticEnergy, 2)
-  tester.checkDerivatives(subtractKineticEnergy, 2)

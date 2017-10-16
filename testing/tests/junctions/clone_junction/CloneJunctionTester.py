@@ -30,8 +30,3 @@ class CloneJunctionTester(unittest.TestCase):
 
   def testJacobianStrong(self):
     self.runDerivativeTest("strong")
-
-if __name__ == "__main__":
-  tester = JunctionTester("CloneJunction", verbose=True)
-  _ = tester.checkJacobian("weak")
-  _ = tester.checkJacobian("strong")

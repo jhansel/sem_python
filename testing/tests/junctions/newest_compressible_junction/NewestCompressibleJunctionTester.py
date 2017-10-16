@@ -25,10 +25,3 @@ class NewestCompressibleJunctionTester(unittest.TestCase):
 
   def testJacobianBothZeroVelocity(self):
     self.runDerivativeTest("both", True)
-
-if __name__ == "__main__":
-  tester = JunctionTester("NewestCompressibleJunction", verbose=True)
-  _ = tester.checkJacobian("weak", use_zero_velocity=False)
-  _ = tester.checkJacobian("both", use_zero_velocity=False)
-  _ = tester.checkJacobian("weak", use_zero_velocity=True)
-  _ = tester.checkJacobian("both", use_zero_velocity=True)

@@ -18,8 +18,3 @@ class MomentumVolumeFractionGradientDerivativesTester(unittest.TestCase):
     rel_diffs = self.derivatives_tester.checkDerivatives("MomentumVolumeFractionGradient", ModelType.TwoPhase, 1, aux, aux_gradients=["vf1"])
     for key in rel_diffs:
       self.assertLessEqual(rel_diffs[key], 5e-5)
-
-if __name__ == "__main__":
-  derivatives_tester = KernelDerivativesTester(True)
-  aux = {"pI": ["aA1", "arhoA1", "arhouA1", "arhoEA1", "arhoA2", "arhouA2", "arhoEA2"], "vf1": ["aA1"]}
-  _ = derivatives_tester.checkDerivatives("MomentumVolumeFractionGradient", ModelType.TwoPhase, 0, aux, aux_gradients=["vf1"])

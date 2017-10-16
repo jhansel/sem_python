@@ -20,7 +20,3 @@ class EnergyVolumeFractionGradientDerivativesTester(unittest.TestCase):
     rel_diffs = self.derivatives_tester.checkDerivatives("EnergyVolumeFractionGradient", ModelType.TwoPhase, 1, aux, aux_gradients=["vf1"])
     for key in rel_diffs:
       self.assertLessEqual(rel_diffs[key], 5e-6)
-
-if __name__ == "__main__":
-  derivatives_tester = KernelDerivativesTester(True)
-  _ = derivatives_tester.checkDerivatives("EnergyVolumeFractionGradient", ModelType.TwoPhase, 0, aux, aux_gradients=["vf1"])

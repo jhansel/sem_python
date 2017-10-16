@@ -19,8 +19,3 @@ class NewerCompressibleJunctionTester(unittest.TestCase):
 
   def testJacobianBoth(self):
     self.runDerivativeTest("both")
-
-if __name__ == "__main__":
-  tester = JunctionTester("NewerCompressibleJunction", verbose=True)
-  _ = tester.checkJacobian("weak")
-  _ = tester.checkJacobian("both")

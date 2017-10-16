@@ -34,6 +34,3 @@ class DisplayUtilitiesTester(unittest.TestCase):
     path = "testing/tests/utilities/"
     outputPrintDoFVectorToFile(path)
     self.assertTrue(cmp(path + "print_dof_vector.txt", path + "gold/print_dof_vector.txt"))
-
-if __name__ == "__main__":
-  outputPrintDoFVectorToFile("")

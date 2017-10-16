@@ -40,7 +40,3 @@ class BerryPressureRelaxationCoefDerivativesTester(unittest.TestCase):
     rel_diffs = self.derivatives_tester.checkDerivatives(test_aux, other_aux, root_vars)
     for key in rel_diffs:
       self.assertLessEqual(rel_diffs[key], 5e-6)
-
-if __name__ == "__main__":
-  derivatives_tester = AuxDerivativesTester(True)
-  _ = derivatives_tester.checkDerivatives(test_aux, other_aux, root_vars)

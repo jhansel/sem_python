@@ -19,8 +19,3 @@ class Junction1PhaseTester(unittest.TestCase):
 
   def testJacobianStrong(self):
     self.runDerivativeTest("strong")
-
-if __name__ == "__main__":
-  tester = JunctionTester("Junction1Phase", verbose=True)
-  _ = tester.checkJacobian("weak")
-  _ = tester.checkJacobian("strong")

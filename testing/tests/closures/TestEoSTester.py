@@ -48,16 +48,3 @@ class TestEoSTester(unittest.TestCase):
     reldiffs = self.derivative_tester.checkDerivatives(self.eos.h, 2)
     for reldiff in reldiffs:
       self.assertLessEqual(reldiff, 1e-6)
-
-if __name__ == "__main__":
-  params = TestEoSParameters()
-  eos = TestEoS(params)
-
-  tester = FunctionDerivativesTester(False)
-  tester.checkDerivatives(eos.e, 2)
-  tester.checkDerivatives(eos.p, 2)
-  tester.checkDerivatives(eos.T, 2)
-  tester.checkDerivatives(eos.c, 2)
-  tester.checkDerivatives(eos.s, 2)
-  tester.checkDerivatives(eos.s_from_h_p, 2)
-  tester.checkDerivatives(eos.p_from_h_s, 2)

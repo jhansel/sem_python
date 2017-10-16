@@ -20,9 +20,3 @@ class DissipationVariableGradientDerivativesTester(unittest.TestCase):
     rel_diffs = self.derivatives_tester.checkDerivatives("DissipationVariableGradient", ModelType.TwoPhase, 0, aux, kernel_params=kernel_params)
     for key in rel_diffs:
       self.assertLessEqual(rel_diffs[key], 5e-6)
-
-if __name__ == "__main__":
-  aux = {"visccoef_arhouA1": ["aA1", "arhoA1", "arhouA1", "arhoEA1"]}
-  kernel_params = {"var_enum": VariableName.ARhoUA}
-  derivatives_tester = KernelDerivativesTester(True)
-  _ = derivatives_tester.checkDerivatives("DissipationVariableGradient", ModelType.TwoPhase, 0, aux, kernel_params=kernel_params)
