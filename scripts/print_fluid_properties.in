@@ -16,8 +16,8 @@
 # combinations:
 #   * (p, T)
 #   * (p, T, u)
-#   * (rho, T)
-#   * (rho, T, u)
+#   * (p, rho)
+#   * (p, rho, u)
 # If velocity (u) is supplied, then some stagnation properties are output in
 # addition to the static state properties.
 [ThermodynamicState]
