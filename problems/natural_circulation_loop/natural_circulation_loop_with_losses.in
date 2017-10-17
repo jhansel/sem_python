@@ -1,0 +1,41 @@
+# Adds loss coefficients to the natural circulation loop problem.
+
+[BaseInputFile]
+  base = natural_circulation_loop.in
+[]
+
+[Junctions]
+  [junction1]
+    loss_coefficients = 0 0
+  []
+  [junction2]
+    loss_coefficients = 0.5 0.5
+  []
+  [junction3]
+    loss_coefficients = 0 0 0
+  []
+  [junction4]
+    loss_coefficients = 0 0
+  []
+  [junction5]
+    loss_coefficients = 0 0
+  []
+  [junction6]
+    loss_coefficients = -0.5 -0.5
+  []
+  [junction7]
+    loss_coefficients = 0 0
+  []
+[]
+
+[Output]
+  [csv]
+    file_name = natural_circulation_loop_with_losses.csv
+  []
+  [plot_rho_u_T]
+    file_name = natural_circulation_loop_with_losses_rho_u_T.pdf
+  []
+  [plot_p_p0]
+    file_name = natural_circulation_loop_with_losses_p_p0.pdf
+  []
+[]

@@ -179,13 +179,19 @@
   [csv]
     type = CSVOutput
     file_name = natural_circulation_loop.csv
-    names = rho u p T
+    names = rho u p p0 T
     save_by_mesh = True
   []
-  [plot]
+  [plot_rho_u_T]
     type = PlotOutput
-    file_name = natural_circulation_loop.pdf
-    plot_sets = rho u p T
+    file_name = natural_circulation_loop_rho_u_T.pdf
+    plot_sets = rho u T
+    plot_by_mesh = True
+  []
+  [plot_p_p0]
+    type = PlotOutput
+    file_name = natural_circulation_loop_p_p0.pdf
+    plot_sets = p p0
     plot_by_mesh = True
   []
 []
