@@ -8,12 +8,14 @@ class InletP0T0BCParameters(OnePhaseBCParameters):
     OnePhaseBCParameters.__init__(self)
     self.registerFloatParameter("p0", "Specified stagnation pressure")
     self.registerFloatParameter("T0", "Specified stagnation temperature")
+    self.registerBoolParameter("strongly_enforce_energy", "Strongly enforce energy?", False)
 
 class InletP0T0BC(OnePhaseBC):
   def __init__(self, params):
     OnePhaseBC.__init__(self, params)
     self.p0 = params.get("p0")
     self.T0 = params.get("T0")
+    self.strongly_enforce_energy = params.get("strongly_enforce_energy")
 
   def applyWeakBC(self, U, r, J):
     self.computeQuantities(U)
@@ -30,13 +32,14 @@ class InletP0T0BC(OnePhaseBC):
     J[self.i_arhouA,self.i_arhouA] += vf * (self.drho_darhouA * self.u**2 + self.rho * 2 * self.u * self.du_darhouA + self.dp_darhouA) * A * self.nx
 
     # energy
-    r[self.i_arhoEA] += self.u * vf * (self.rho * self.E + self.p) * A * self.nx
-    if (self.model_type == ModelType.TwoPhase):
-      J[self.i_arhoEA,self.i_aA1] += self.u * dvf_daA1 * (self.rho * self.E + self.p) * A * self.nx
-    J[self.i_arhoEA,self.i_arhoA] += vf * (self.du_darhoA * (self.rho * self.E + self.p) \
-      + self.u * (self.drho_darhoA * self.E + self.rho * self.dE_darhoA + self.dp_darhoA)) * A * self.nx
-    J[self.i_arhoEA,self.i_arhouA] += vf * (self.du_darhouA * (self.rho * self.E + self.p) \
-      + self.u * (self.drho_darhouA * self.E + self.rho * self.dE_darhouA + self.dp_darhouA)) * A * self.nx
+    if not self.strongly_enforce_energy:
+      r[self.i_arhoEA] += self.u * vf * (self.rho * self.E + self.p) * A * self.nx
+      if (self.model_type == ModelType.TwoPhase):
+        J[self.i_arhoEA,self.i_aA1] += self.u * dvf_daA1 * (self.rho * self.E + self.p) * A * self.nx
+      J[self.i_arhoEA,self.i_arhoA] += vf * (self.du_darhoA * (self.rho * self.E + self.p) \
+        + self.u * (self.drho_darhoA * self.E + self.rho * self.dE_darhoA + self.dp_darhoA)) * A * self.nx
+      J[self.i_arhoEA,self.i_arhouA] += vf * (self.du_darhouA * (self.rho * self.E + self.p) \
+        + self.u * (self.drho_darhouA * self.E + self.rho * self.dE_darhouA + self.dp_darhouA)) * A * self.nx
 
   def applyStrongBCNonlinearSystem(self, U, r, J):
     A = self.dof_handler.A[self.k]
@@ -56,6 +59,23 @@ class InletP0T0BC(OnePhaseBC):
       J[self.i_arhoA,self.i_aA1] = -darhoABC_daA1
     J[self.i_arhoA,self.i_arhoA] = 1 - darhoABC_darhoA
     J[self.i_arhoA,self.i_arhouA] = -darhoABC_darhouA
+
+    # energy
+    if self.strongly_enforce_energy:
+      arhoEA = U[self.i_arhoEA]
+
+      arhoEABC = vf * self.rho * self.E * A
+      darhoEABC_daA1 = dvf_daA1 * self.rho * self.E * A
+      darhoEABC_darhoA = vf * (self.drho_darhoA * self.E + self.rho * self.dE_darhoA) * A
+      darhoEABC_darhouA = vf * (self.drho_darhouA * self.E + self.rho * self.dE_darhouA) * A
+
+      r[self.i_arhoEA] = arhoEA - arhoEABC
+      J[self.i_arhoEA,:] = 0
+      if self.model_type == ModelType.TwoPhase:
+        J[self.i_arhoEA, self.i_aA1] = -darhoEABC_daA1
+      J[self.i_arhoEA, self.i_arhoA] = -darhoEABC_darhoA
+      J[self.i_arhoEA, self.i_arhouA] = -darhoEABC_darhouA
+      J[self.i_arhoEA, self.i_arhoEA] = 1
 
   def applyStrongBCLinearSystemMatrix(self, A):
     pass
