@@ -23,6 +23,8 @@ class BC(object):
       self.nx = 1.0
       self.k = self.dof_handler.getNodeIndexFromRight(self.mesh_name, 0)
 
+    self.A = self.dof_handler.A[self.k]
+
   def applyWeakBC(self, U, r, J):
     pass
 
