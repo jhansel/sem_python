@@ -13,6 +13,7 @@ class TransientExecutionerParameters(ExecutionerParameters):
     self.registerFloatParameter("cfl", "CFL number to compute time step size")
     self.registerFloatParameter("end_time", "End time")
     self.registerBoolParameter("lump_mass_matrix", "Lump the mass matrix?", False)
+    self.registerBoolParameter("multiply_by_dt", "Multiply the nonlinear system by dt?", True)
     self.registerFloatParameter("ss_tol", "Tolerance for steady-state check")
 
 class TransientExecutioner(Executioner):
@@ -35,6 +36,7 @@ class TransientExecutioner(Executioner):
 
     self.end_time = params.get("end_time")
     self.lump_mass_matrix = params.get("lump_mass_matrix")
+    self.multiply_by_dt = params.get("multiply_by_dt")
 
     if params.has("ss_tol"):
       self.check_ss = True
