@@ -37,7 +37,7 @@ def run(mods=list()):
   state_data = input_file_parser.getBlockData("ThermodynamicState")
   state = factory.createObject("ThermodynamicState", state_data)
   state.computeRemainingProperties(eos)
-  print state
+  print(state)
 
 if __name__ == "__main__":
   run()

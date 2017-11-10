@@ -7,15 +7,15 @@ from .numeric_utilities import computeRelativeDifference
 def computeRelativeDifferenceMatrix(A, B):
   n = A.shape[0]
   C = np.zeros(shape=(n, n))
-  for i in xrange(n):
-    for j in xrange(n):
+  for i in range(n):
+    for j in range(n):
       C[i,j] = computeRelativeDifference(A[i,j], B[i,j])
   return C
 
 def printMatrix(A):
   n = A.shape[0]
-  for i in xrange(n):
-    for j in xrange(n):
+  for i in range(n):
+    for j in range(n):
       # underline the diagonal
       if i == j:
         attrs = ["underline"]
@@ -35,8 +35,8 @@ def printMatrix(A):
 
 def printMatrixDifference(A, red_threshold=None, yellow_threshold=None):
   n = A.shape[0]
-  for i in xrange(n):
-    for j in xrange(n):
+  for i in range(n):
+    for j in range(n):
       # underline the diagonal
       if i == j:
         attrs = ["underline"]
@@ -60,8 +60,8 @@ def printMatrixDifference(A, red_threshold=None, yellow_threshold=None):
 
 def printRelativeMatrixDifference(A, A_diff, red_threshold=None, yellow_threshold=None, abs_threshold=1e-6):
   n = A.shape[0]
-  for i in xrange(n):
-    for j in xrange(n):
+  for i in range(n):
+    for j in range(n):
       # underline the diagonal
       if i == j:
         attrs = ["underline"]
@@ -89,49 +89,49 @@ def printDoFVector(U, dof_handler):
   header_items = ("i",) + tuple(dof_handler.variable_names)
   header_format = "%4s" + " %12s" * n_var
   entry_format = "%4i" + " %12.3e" * n_var
-  print header_format % header_items
-  for k in xrange(dof_handler.n_node):
+  print(header_format % header_items)
+  for k in range(dof_handler.n_node):
     items_k = list()
-    for m in xrange(n_var):
+    for m in range(n_var):
       i_k_m = dof_handler.i(k, m)
       items_k.append(U[i_k_m])
     entry_items = (k,) + tuple(items_k)
-    print entry_format % entry_items
-  print ""
+    print(entry_format % entry_items)
+  print("")
 
 def printMatrixSparsity(A):
   n = A.shape[0]
 
-  print ""
+  print("")
   row_is_zero = n * [True]
-  for i in xrange(n):
+  for i in range(n):
     line = ""
-    for j in xrange(n):
+    for j in range(n):
       if abs(A[i,j]) > 1e-14:
         line += "X"
         row_is_zero[j] = False
       else:
         line += " "
-    print line
+    print(line)
 
   column_is_zero = n * [True]
-  for j in xrange(n):
-    for i in xrange(n):
+  for j in range(n):
+    for i in range(n):
       if abs(A[i,j]) > 1e-14:
         column_is_zero[j] = False
 
-  print ""
+  print("")
   no_zero_rows = True
   no_zero_columns = True
-  for i in xrange(n):
+  for i in range(n):
     if row_is_zero[i]:
-      print "WARNING: Row ", i, " is zero."
+      print("WARNING: Row ", i, " is zero.")
       no_zero_rows = False
     if column_is_zero[i]:
-      print "WARNING: Column ", i, " is zero."
+      print("WARNING: Column ", i, " is zero.")
       no_zero_columns = False
   if no_zero_rows:
-    print "There were no zero rows."
+    print("There were no zero rows.")
   if no_zero_columns:
-    print "There were no zero columns."
-  print ""
+    print("There were no zero columns.")
+  print("")

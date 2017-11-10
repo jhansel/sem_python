@@ -10,9 +10,7 @@ class KernelParameters(Parameters):
     self.registerParameter("dof_handler", "Degree of freedom handler")
     self.registerBoolParameter("is_nodal", "Is this a nodal kernel?", False)
 
-class Kernel(object):
-  __metaclass__ = ABCMeta
-
+class Kernel(object, metaclass=ABCMeta):
   def __init__(self, params):
     self.var_index = params.get("var_index")
     self.dof_handler = params.get("dof_handler")
@@ -32,11 +30,11 @@ class Kernel(object):
   # @param[inout] J  local Jacobian matrix
   def apply(self, data, der, r, J):
     # loop over test functions on element (loop over nodes)
-    for i_local in xrange(self.n):
+    for i_local in range(self.n):
       i = self.i(i_local, self.var_index)
       r[i] += sum(self.computeResidual(data, i_local))
       # loop over basis functions on element (loop over nodes)
-      for j_local in xrange(self.n):
+      for j_local in range(self.n):
         # loop over variables
         for var_index in self.var_indices:
           j = self.i(j_local, var_index)

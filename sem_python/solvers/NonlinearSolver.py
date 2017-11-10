@@ -78,12 +78,12 @@ class NonlinearSolver(object):
 
       # print eigenvalues
       if self.print_eigenvalues:
-        print eigvals(J)
+        print(eigvals(J))
 
       # print SVD
       if self.print_svd:
         _, svds, _ = svd(J, full_matrices=True)
-        print np.sort(svds)
+        print(np.sort(svds))
 
       # print the Jacobian inverse if specified
       if (self.print_jacobian_inverse):
@@ -99,7 +99,7 @@ class NonlinearSolver(object):
         # compute finite difference Jacobian
         n = r.size
         J_fd = np.zeros(shape=(n, n))
-        for j in xrange(n):
+        for j in range(n):
           U_forward = deepcopy(U)
           U_eps = max(self.fd_eps, abs(U[j] * self.fd_eps))
           U_forward[j] += U_eps
@@ -154,25 +154,25 @@ class NonlinearSolver(object):
                          + colored("abs = %.3e, rel = %.3e\n" % (r_norm_abs, r_norm_rel), color))
         # print individual variable residual norms
         if self.print_variable_residual_norms:
-          for m in xrange(self.dof_handler.n_var):
+          for m in range(self.dof_handler.n_var):
             r_m = np.zeros(self.dof_handler.n_node)
-            for k in xrange(self.dof_handler.n_node):
+            for k in range(self.dof_handler.n_node):
               r_m[k] = r_scaled[k * self.dof_handler.n_var + m]
             r_m_norm = np.linalg.norm(r_m, 2)
-            print "%7s: abs = %.3e" % (self.dof_handler.variable_names[m], r_m_norm)
-          print ""
+            print("%7s: abs = %.3e" % (self.dof_handler.variable_names[m], r_m_norm))
+          print("")
         # print residual vector
         if self.print_residual:
           printDoFVector(r_scaled, self.dof_handler)
 
       # print condition number
       if self.print_condition_number:
-        print "cond(J) = %10.2e" % cond(J)
+        print("cond(J) = %10.2e" % cond(J))
 
       # check for convergence
       if r_norm_abs <= self.absolute_tol or r_norm_rel <= self.relative_tol:
         if self.verbose:
-          print colored("Solution converged!", "green")
+          print(colored("Solution converged!", "green"))
         converged = True
         break
 

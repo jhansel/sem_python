@@ -5,7 +5,7 @@ def error(message):
   raise Exception(colored("\nERROR: " + message, "red"))
 
 def errorNoTraceback(message):
-  print colored("\n" + message, "red")
+  print(colored("\n" + message, "red"))
   sys.exit()
 
 def inputError(line_number, message):

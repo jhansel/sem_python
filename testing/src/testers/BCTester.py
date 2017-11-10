@@ -56,7 +56,7 @@ class BCTester(object):
 
     # compute base solution
     U = np.zeros(n_dof)
-    for i in xrange(n_dof):
+    for i in range(n_dof):
       U[i] = i + 1.0
 
     # base calculation
@@ -67,7 +67,7 @@ class BCTester(object):
     # finite difference Jacobians
     rel_diffs = np.zeros(shape=(n_var, n_var))
     J_fd = np.zeros(shape=(n_var, n_var))
-    for var_index_j in xrange(dof_handler.n_var):
+    for var_index_j in range(dof_handler.n_var):
       # solution index to perturb
       j = dof_handler.i(k_test, var_index_j)
 
@@ -79,7 +79,7 @@ class BCTester(object):
       r_perturbed = np.zeros(n_dof)
       J_perturbed = np.zeros(shape=(n_dof, n_dof))
       bc.applyWeakBC(U_perturbed, r_perturbed, J_perturbed)
-      for var_index_i in xrange(n_var):
+      for var_index_i in range(n_var):
         # residual index tested
         i = dof_handler.i(k_test, var_index_i)
 
@@ -87,17 +87,17 @@ class BCTester(object):
         rel_diffs[var_index_i][var_index_j] = computeRelativeDifference(J_hand_coded[i][j], J_fd[var_index_i][var_index_j])
 
     # print results
-    for var_index_i in xrange(n_var):
+    for var_index_i in range(n_var):
       i = dof_handler.i(k_test, var_index_i)
       var_i = dof_handler.variable_names[var_index_i]
-      print "\nEquation variable:", var_i
-      for var_index_j in xrange(n_var):
+      print("\nEquation variable:", var_i)
+      for var_index_j in range(n_var):
         j = dof_handler.i(k_test, var_index_j)
         var_j = dof_handler.variable_names[var_index_j]
-        print "\n  Derivative variable:", var_j
-        print "    Hand-coded        =", J_hand_coded[i][j]
-        print "    Finite difference =", J_fd[var_index_i][var_index_j]
-        print "    Rel. difference   =", rel_diffs[var_index_i][var_index_j]
+        print("\n  Derivative variable:", var_j)
+        print("    Hand-coded        =", J_hand_coded[i][j])
+        print("    Finite difference =", J_fd[var_index_i][var_index_j])
+        print("    Rel. difference   =", rel_diffs[var_index_i][var_index_j])
 
     # take the absolute value of the relative differences
     return abs(rel_diffs)

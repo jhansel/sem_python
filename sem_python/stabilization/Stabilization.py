@@ -10,9 +10,7 @@ class StabilizationParameters(Parameters):
     self.registerParameter("model_type", "Model type")
 
 ## Abstract base class for stabilization
-class Stabilization(object):
-  __metaclass__ = ABCMeta
-
+class Stabilization(object, metaclass=ABCMeta):
   def __init__(self, params):
     self.factory = params.get("factory")
     self.dof_handler = params.get("dof_handler")

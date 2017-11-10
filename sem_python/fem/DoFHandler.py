@@ -12,8 +12,7 @@ class DoFHandlerParameters(Parameters):
     self.registerParameter("meshes", "List of meshes")
     self.registerParameter("ics", "List of initial conditions")
 
-class DoFHandler(object):
-  __metaclass__ = ABCMeta
+class DoFHandler(object, metaclass=ABCMeta):
   def __init__(self, params):
     self.meshes = params.get("meshes")
     self.ics = params.get("ics")
@@ -45,7 +44,7 @@ class DoFHandler(object):
       self.elem_to_mesh_index[elem_begin:elem_end+1] = [i_mesh] * mesh.n_cell
       self.node_to_mesh_index[k_begin:k_end+1] = [i_mesh] * mesh_n_node
       if i_mesh != self.n_meshes - 1:
-        for j_mesh in xrange(i_mesh + 1, self.n_meshes):
+        for j_mesh in range(i_mesh + 1, self.n_meshes):
           self.n_nodes_before_mesh[j_mesh] += mesh_n_node
       k_begin += mesh_n_node
       elem_begin += mesh.n_cell
@@ -66,7 +65,7 @@ class DoFHandler(object):
 
       # compute area for each node on mesh
       A = ic.A
-      for k_mesh in xrange(mesh.n_node):
+      for k_mesh in range(mesh.n_node):
         k = self.k_from_k_mesh(k_mesh, i_mesh)
         self.A[k] = A(mesh.x[k_mesh])
 
@@ -95,14 +94,14 @@ class DoFHandler(object):
       k_previous = self.getNodeIndexFromRight(self.meshes[mesh_index_min].name, 0)
       i_previous += (k_previous + 1) * self.n_var - 1
       # add the constraint DoFs
-      for mesh_index in xrange(mesh_index_min + 1):
+      for mesh_index in range(mesh_index_min + 1):
         i_previous += self.n_constraints[mesh_index]
 
       # finish computation of the constraint DoF indices
       n_constraints = junction.n_constraints
       i_local_begin = current_local_constraint_index[mesh_index_min]
-      local_constraint_dof_indices = range(i_local_begin, i_local_begin + n_constraints)
-      constraint_dof_indices = map(add, [i_previous] * n_constraints, local_constraint_dof_indices)
+      local_constraint_dof_indices = list(range(i_local_begin, i_local_begin + n_constraints))
+      constraint_dof_indices = list(map(add, [i_previous] * n_constraints, local_constraint_dof_indices))
 
       # set the constraint DoF indices for the junction
       junction.setConstraintDoFIndices(constraint_dof_indices)
@@ -124,7 +123,7 @@ class DoFHandler(object):
     self.variable_names = [""] * self.n_var
     self.index_to_variable = dict()
     self.index_to_phase = dict()
-    for phase in xrange(self.n_phases):
+    for phase in range(self.n_phases):
       self.arhoA_index.append(self.n_vf_equations + phase * 3 + arhoA_index_phase)
       self.arhouA_index.append(self.n_vf_equations + phase * 3 + arhouA_index_phase)
       self.arhoEA_index.append(self.n_vf_equations + phase * 3 + arhoEA_index_phase)
@@ -185,7 +184,7 @@ class DoFHandler(object):
   def getNodeIndexFromLeft(self, mesh_name, k_i):
     i_mesh = self.mesh_name_to_mesh_index[mesh_name]
     k = 0
-    for i in xrange(i_mesh):
+    for i in range(i_mesh):
       k += self.meshes[i].n_cell + 1
     k += k_i
     return k
@@ -196,7 +195,7 @@ class DoFHandler(object):
   def getNodeIndexFromRight(self, mesh_name, k_i):
     i_mesh = self.mesh_name_to_mesh_index[mesh_name]
     k = 0
-    for i in xrange(i_mesh + 1):
+    for i in range(i_mesh + 1):
       k += self.meshes[i].n_cell + 1
     k -= (k_i + 1)
     return k
@@ -214,10 +213,10 @@ class DoFHandler(object):
 
   def getSolution(self, U, variable_name, phase):
     var_index = self.variable_index[variable_name][phase]
-    return np.array([U[self.i(k, var_index)] for k in xrange(self.n_node)])
+    return np.array([U[self.i(k, var_index)] for k in range(self.n_node)])
 
   def getPhaseSolution(self, U, phase):
-    aA1 = np.array([self.aA1(U, k) for k in xrange(self.n_node)])
+    aA1 = np.array([self.aA1(U, k) for k in range(self.n_node)])
     vf, _ = computeVolumeFraction(aA1, self.A, phase, self.model_type)
     arhoA = self.getSolution(U, VariableName.ARhoA, phase)
     arhouA = self.getSolution(U, VariableName.ARhoUA, phase)
@@ -226,7 +225,7 @@ class DoFHandler(object):
 
   def separateNodalQuantityByMesh(self, y):
     y_by_mesh = [0] * self.n_meshes
-    for i_mesh in xrange(self.n_meshes):
+    for i_mesh in range(self.n_meshes):
       k_min = self.n_nodes_before_mesh[i_mesh]
       k_max = k_min + self.meshes[i_mesh].n_node
       y_by_mesh[i_mesh] = y[k_min:k_max]
@@ -260,11 +259,11 @@ class DoFHandler(object):
   # @param[in,out] r  nonlinear residual vector to modify
   # @param[in] scaling  dictionary of variable name and phase to scaling factor
   def applyScalingFactors(self, r, scaling):
-    for m in xrange(self.n_var):
+    for m in range(self.n_var):
       variable_m = self.index_to_variable[m]
       phase_m = self.index_to_phase[m]
       scaling_m = scaling[variable_m][phase_m]
-      for k in xrange(self.n_node):
+      for k in range(self.n_node):
         r[self.i(k, m)] *= scaling_m
 
   ## Initializes derivative data to zero for each solution variable

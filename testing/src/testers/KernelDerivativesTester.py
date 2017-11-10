@@ -91,7 +91,7 @@ class KernelDerivativesTester(object):
 
     # compute base solution
     U = np.zeros(dof_handler.n_dof)
-    for k in xrange(dof_handler.n_dof):
+    for k in range(dof_handler.n_dof):
       U[k] = k + 1.0
     self.computeSolutionDependentData(U, data)
     for aux in aux_list:
@@ -123,10 +123,10 @@ class KernelDerivativesTester(object):
     # print results
     for var_index in kernel.var_indices:
       var = dof_handler.variable_names[var_index]
-      print "\nDerivative variable:", var
-      print "  Hand-coded        =", J_hand_coded[var_index]
-      print "  Finite difference =", J_fd[var_index]
-      print "  Rel. difference   =", rel_diffs[var_index]
+      print("\nDerivative variable:", var)
+      print("  Hand-coded        =", J_hand_coded[var_index])
+      print("  Finite difference =", J_fd[var_index])
+      print("  Rel. difference   =", rel_diffs[var_index])
 
     # take the absolute value of the relative differences
     for x in rel_diffs:

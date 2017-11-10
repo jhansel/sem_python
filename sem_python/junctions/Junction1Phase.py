@@ -114,7 +114,7 @@ class Junction1Phase(Junction):
     self.i_arhoEA = [self.dof_handler.i(k, self.arhoEA_index) for k in self.node_indices]
 
   def computeFlowQuantities(self, U):
-    for i in xrange(self.n_meshes):
+    for i in range(self.n_meshes):
       k = self.node_indices[i]
 
       aA1 = self.dof_handler.aA1(U, k)
@@ -177,7 +177,7 @@ class Junction1Phase(Junction):
       self.dp0_darhoEA[i] = dp0_dh0 * self.dh0_darhoEA[i] + dp0_ds * self.ds_darhoEA[i]
 
   def computeFluxes(self, U):
-    for i in xrange(self.n_meshes):
+    for i in range(self.n_meshes):
       k = self.node_indices[i]
 
       A = self.dof_handler.A[k]
@@ -208,7 +208,7 @@ class Junction1Phase(Junction):
   def applyWeaklyToNonlinearSystem(self, U, U_old, r, J):
     self.computeFlowQuantities(U)
     self.computeFluxes(U)
-    for m in xrange(self.n_meshes):
+    for m in range(self.n_meshes):
       r[self.i_arhoA[m]] += self.f_mass[m]
       r[self.i_arhouA[m]] += self.f_momentum[m]
       r[self.i_arhoEA[m]] += self.f_energy[m]

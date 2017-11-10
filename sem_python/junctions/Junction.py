@@ -40,7 +40,7 @@ class Junction(object):
     # get normal vectors and areas
     self.nx = list()
     self.A = [self.dof_handler.A[k] for k in self.node_indices]
-    for i in xrange(self.n_meshes):
+    for i in range(self.n_meshes):
       if self.mesh_sides[i] == "left":
         self.nx.append(-1.0)
       else:

@@ -33,7 +33,7 @@ class NewCompressibleJunction(Junction1Phase):
     # initialize the junction h0 and s with the average of all IC values for these quantities
     h0_sum = 0
     s_sum = 0
-    for i in xrange(self.n_meshes):
+    for i in range(self.n_meshes):
       k = self.node_indices[i]
 
       aA1 = self.dof_handler.aA1(U, k)
@@ -70,7 +70,7 @@ class NewCompressibleJunction(Junction1Phase):
 
     at_least_one_inlet = False
     at_least_one_outlet = False
-    for i in xrange(self.n_meshes):
+    for i in range(self.n_meshes):
       # inlets to the junction; outlet BC
       if self.u[i] * self.nx[i] > 0:
         # flag that at least one inlet was found
@@ -147,7 +147,7 @@ class NewCompressibleJunction(Junction1Phase):
     J[self.i_constraint_mass,:] = 0
     J[self.i_constraint_momentum,:] = 0
 
-    for n in xrange(self.n_meshes):
+    for n in range(self.n_meshes):
       J[self.i_constraint_mass,self.i_arhouA[n]] = self.df_mass_darhouA[n]
 
       J[self.i_constraint_momentum,self.i_arhoA[n]] = self.df_momentum_darhoA[n]

@@ -7,9 +7,7 @@ class InterfaceClosuresParameters(Parameters):
     Parameters.__init__(self)
     self.registerParameter("factory", "Factory")
 
-class InterfaceClosures(object):
-  __metaclass__ = ABCMeta
-
+class InterfaceClosures(object, metaclass=ABCMeta):
   def __init__(self, params):
     self.factory = params.get("factory")
 

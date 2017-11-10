@@ -7,9 +7,7 @@ class OutputParameters(Parameters):
     Parameters.__init__(self)
     self.registerParameter("dof_handler", "Degree of freedom handler")
 
-class Output(object):
-  __metaclass__ = ABCMeta
-
+class Output(object, metaclass=ABCMeta):
   def __init__(self, params):
     self.dof_handler = params.get("dof_handler")
 

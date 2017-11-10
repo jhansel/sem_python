@@ -6,9 +6,7 @@ class AuxQuantityParameters(Parameters):
   def __init__(self):
     Parameters.__init__(self)
 
-class AuxQuantity(object):
-  __metaclass__ = ABCMeta
-
+class AuxQuantity(object, metaclass=ABCMeta):
   def __init__(self, params):
     pass
 

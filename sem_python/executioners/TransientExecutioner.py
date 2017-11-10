@@ -69,16 +69,16 @@ class TransientExecutioner(Executioner):
     arhouA_index = self.dof_handler.variable_index[VariableName.ARhoUA][phase]
     arhoEA_index = self.dof_handler.variable_index[VariableName.ARhoEA][phase]
 
-    for e in xrange(self.dof_handler.n_cell):
+    for e in range(self.dof_handler.n_cell):
       M_cell = np.zeros(shape=(self.dof_handler.n_dof_per_cell, self.dof_handler.n_dof_per_cell))
 
       JxW = self.fe_values.get_JxW(e)
-      for q in xrange(self.quadrature.n_q):
-        for k_local in xrange(self.dof_handler.n_dof_per_cell_per_var):
+      for q in range(self.quadrature.n_q):
+        for k_local in range(self.dof_handler.n_dof_per_cell_per_var):
           i_arhoA = self.dof_handler.i(k_local, arhoA_index)
           i_arhouA = self.dof_handler.i(k_local, arhouA_index)
           i_arhoEA = self.dof_handler.i(k_local, arhoEA_index)
-          for l_local in xrange(self.dof_handler.n_dof_per_cell_per_var):
+          for l_local in range(self.dof_handler.n_dof_per_cell_per_var):
             if self.lump_mass_matrix:
               M_cell[i_arhoA,i_arhoA] += phi[k_local,q] * phi[l_local,q] * JxW[q]
               M_cell[i_arhouA,i_arhouA] += phi[k_local,q] * phi[l_local,q] * JxW[q]
@@ -100,14 +100,14 @@ class TransientExecutioner(Executioner):
 
     aA1_index = self.dof_handler.variable_index[VariableName.AA1][0]
 
-    for e in xrange(self.dof_handler.n_cell):
+    for e in range(self.dof_handler.n_cell):
       M_cell = np.zeros(shape=(self.dof_handler.n_dof_per_cell, self.dof_handler.n_dof_per_cell))
 
       JxW = self.fe_values.get_JxW(e)
-      for q in xrange(self.quadrature.n_q):
-        for k_local in xrange(self.dof_handler.n_dof_per_cell_per_var):
+      for q in range(self.quadrature.n_q):
+        for k_local in range(self.dof_handler.n_dof_per_cell_per_var):
           i_aA1 = self.dof_handler.i(k_local, aA1_index)
-          for l_local in xrange(self.dof_handler.n_dof_per_cell_per_var):
+          for l_local in range(self.dof_handler.n_dof_per_cell_per_var):
             if self.lump_mass_matrix:
               M_cell[i_aA1,i_aA1] += phi[k_local,q] * phi[l_local,q] * JxW[q]
             else:
@@ -135,7 +135,7 @@ class TransientExecutioner(Executioner):
     n_var = self.dof_handler.n_var
 
     # loop over nodes
-    for k in xrange(self.dof_handler.n_node):
+    for k in range(self.dof_handler.n_node):
       r_node = np.zeros(n_var)
       J_node = np.zeros(shape=(n_var, n_var))
 
@@ -170,7 +170,7 @@ class TransientExecutioner(Executioner):
       vf_classes = ["VolumeFractionPhase1", "VolumeFractionPhase2"]
       self.n_phases = 2
 
-    for phase in xrange(self.n_phases):
+    for phase in range(self.n_phases):
       names = [vf_classes[phase]] + ["Density", "SpecificVolume", "Velocity", "SpecificTotalEnergy",
         "SpecificInternalEnergy", "Pressure", "SoundSpeed"]
       for name in names:
@@ -194,7 +194,7 @@ class TransientExecutioner(Executioner):
     data = dict()
     der = self.dof_handler.initializeDerivativeData(self.cfl_aux_names)
 
-    for phase in xrange(self.n_phases):
+    for phase in range(self.n_phases):
       phase_str = str(phase + 1)
       vf = "vf" + phase_str
       arhoA = "arhoA" + phase_str
@@ -206,7 +206,7 @@ class TransientExecutioner(Executioner):
       aux.compute(data, der)
 
     wave_speed_max = 0
-    for phase in xrange(self.n_phases):
+    for phase in range(self.n_phases):
       phase_str = str(phase + 1)
       u = "u" + phase_str
       c = "c" + phase_str
@@ -242,7 +242,7 @@ class TransientExecutioner(Executioner):
       t += self.dt
 
       if self.verbose:
-        print "\nTime step %i: t = %g, dt = %g" % (time_step, t, self.dt)
+        print("\nTime step %i: t = %g, dt = %g" % (time_step, t, self.dt))
 
       # solve the time step
       self.solve()
@@ -258,10 +258,10 @@ class TransientExecutioner(Executioner):
         U_old_norm = np.linalg.norm(self.U_old, 2)
         U_change_norm = dU_dt_norm / U_old_norm
         if self.verbose:
-          print "Relative solution change: %e" % (U_change_norm)
+          print("Relative solution change: %e" % (U_change_norm))
         if U_change_norm < self.ss_tol:
           if self.verbose:
-            print colored("\nConverged to steady-state!\n", "green")
+            print(colored("\nConverged to steady-state!\n", "green"))
           return self.U
 
       # store the old solution
@@ -272,7 +272,7 @@ class TransientExecutioner(Executioner):
       time_step += 1
 
     if self.verbose:
-      print ""
+      print("")
 
     return self.U
 

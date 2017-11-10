@@ -83,7 +83,7 @@ class JunctionTester(object):
     # compute base solution
     U = np.zeros(n_dof)
     U_old = np.zeros(n_dof)
-    for i in xrange(n_dof):
+    for i in range(n_dof):
       if use_zero_velocity and i in i_arhouA:
         U[i] = 0
         U_old[i] = 0
@@ -111,7 +111,7 @@ class JunctionTester(object):
     # finite difference Jacobians
     rel_diffs = np.zeros(shape=(n_dof, n_dof))
     J_fd = np.zeros(shape=(n_dof, n_dof))
-    for j in xrange(n_dof):
+    for j in range(n_dof):
       # perturb solution
       U_perturbed = deepcopy(U)
       U_perturbed[j] += fd_eps
@@ -120,7 +120,7 @@ class JunctionTester(object):
       r_perturbed = np.zeros(n_dof)
       J_perturbed = np.zeros(shape=(n_dof, n_dof))
       f(U_perturbed, U_old, r_perturbed, J_perturbed)
-      for i in xrange(n_dof):
+      for i in range(n_dof):
         J_fd[i,j] = (r_perturbed[i] - r[i]) / fd_eps
 
     # compute difference matrices
@@ -128,17 +128,17 @@ class JunctionTester(object):
     rel_diffs = computeRelativeDifferenceMatrix(J_hand_coded, J_fd)
 
     # print results
-    print "\nJacobian, " + test_option + " contributions:"
-    print "Hand-coded:"
+    print("\nJacobian, " + test_option + " contributions:")
+    print("Hand-coded:")
     printMatrix(J_hand_coded)
-    print "Finite-difference:"
+    print("Finite-difference:")
     printMatrix(J_fd)
-    print "Relative difference:"
+    print("Relative difference:")
     printRelativeMatrixDifference(rel_diffs, abs_diffs, 1e-1, 1e-3)
 
     matched = np.zeros((n_dof, n_dof), dtype=bool)
-    for i in xrange(n_dof):
-      for j in xrange(n_dof):
+    for i in range(n_dof):
+      for j in range(n_dof):
         matched[i,j] = abs_diffs[i,j] < self.abs_tol or rel_diffs[i,j] < self.rel_tol
 
     return matched

@@ -15,12 +15,12 @@ class UniformMesh(Mesh):
     self.n_node = self.n_cell + 1
     self.L = params.get("length")
     h = self.L / self.n_cell
-    self.h = [h for e in xrange(self.n_cell)]
+    self.h = [h for e in range(self.n_cell)]
 
     self.x = np.zeros(self.n_cell + 1)
     self.x[0] = self.start[0]
     nx = self.orientation[0]
-    for e in xrange(self.n_cell):
+    for e in range(self.n_cell):
       self.x[e + 1] = self.x[e] + self.h[e] * nx
 
   def getMinimumCellWidth(self):

@@ -36,7 +36,7 @@ class NewerCompressibleJunction(Junction1Phase):
   def initializeConstraintVariables(self, U):
     # initialize the junction h0 and s with the average of all IC values for these quantities
     s_sum = 0
-    for i in xrange(self.n_meshes):
+    for i in range(self.n_meshes):
       k = self.node_indices[i]
 
       aA1 = self.dof_handler.aA1(U, k)
@@ -62,7 +62,7 @@ class NewerCompressibleJunction(Junction1Phase):
 
     # add the boundary fluxes; characteristic theory is used to decide how
     # many pieces of information are supplied to inlets vs. outlets
-    for i in xrange(self.n_meshes):
+    for i in range(self.n_meshes):
       if self.u[i] * self.nx[i] > 0: # inlets to the junction; outlet BC
         self.addJunctionInletFlux(i, U_new, r, J)
       else: # outlets from the junction; inlet BC
@@ -88,7 +88,7 @@ class NewerCompressibleJunction(Junction1Phase):
     dnum_alt_darhoA  = [0] * self.n_meshes
     dnum_alt_darhouA = [0] * self.n_meshes
     dnum_alt_darhoEA = [0] * self.n_meshes
-    for i in xrange(self.n_meshes):
+    for i in range(self.n_meshes):
       if self.u[i] * self.nx[i] > 0: # mesh serves as inlet
         num += self.rho[i] * self.u[i] * self.h0[i] * self.A[i] * self.nx[i]
         den += self.rho[i] * self.u[i] * self.A[i] * self.nx[i]
@@ -115,14 +115,14 @@ class NewerCompressibleJunction(Junction1Phase):
     if den > 1e-10:
       # use normal definition
       self.h0J = num / den
-      for i in xrange(self.n_meshes):
+      for i in range(self.n_meshes):
         self.dh0J_darhoA[i]  = dnum_darhoA[i]  / den - num / den**2 * dden_darhoA[i]
         self.dh0J_darhouA[i] = dnum_darhouA[i] / den - num / den**2 * dden_darhouA[i]
         self.dh0J_darhoEA[i] = dnum_darhoEA[i] / den - num / den**2 * dden_darhoEA[i]
     else: # little or no flow into the junction
       # use alternate definition
       self.h0J = num_alt / den_alt
-      for i in xrange(self.n_meshes):
+      for i in range(self.n_meshes):
         self.dh0J_darhoA[i]  = dnum_alt_darhoA[i]  / den_alt
         self.dh0J_darhouA[i] = dnum_alt_darhouA[i] / den_alt
         self.dh0J_darhoEA[i] = dnum_alt_darhoEA[i] / den_alt
@@ -213,7 +213,7 @@ class NewerCompressibleJunction(Junction1Phase):
     J[i_energy][i_energy] += vf * u * (drho_darhoEA * H + rho * dH_darhoEA) * A * nx
 
     # add contributions from other inlets through h0J
-    for j in xrange(self.n_meshes):
+    for j in range(self.n_meshes):
       if j != i:
         dH_darhoAj  = self.dh0J_darhoA[j]
         dH_darhouAj = self.dh0J_darhouA[j]
@@ -321,7 +321,7 @@ class NewerCompressibleJunction(Junction1Phase):
     J[i_energy][i_energy] += vf * u * (rho * dE_darhoEA + dp_darhoEA) * A * nx
 
     # add contributions from other inlets through h0J
-    for j in xrange(self.n_meshes):
+    for j in range(self.n_meshes):
       if j != i:
         dh_darhoAj  = self.dh0J_darhoA[j]
         dh_darhouAj = self.dh0J_darhouA[j]
@@ -354,7 +354,7 @@ class NewerCompressibleJunction(Junction1Phase):
   def applyStronglyToNonlinearSystem(self, U, U_old, r, J):
     r[self.i_constraint_mass] = sum(self.f_mass)
     J[self.i_constraint_mass,:] = 0
-    for n in xrange(self.n_meshes):
+    for n in range(self.n_meshes):
       J[self.i_constraint_mass,self.i_arhouA[n]] = self.df_mass_darhouA[n]
 
   def applyStronglyToLinearSystemMatrix(self, A):

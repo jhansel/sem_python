@@ -280,4 +280,4 @@ class InputFileParser(object):
 if __name__ == "__main__":
   parser = InputFileParser()
   parser.parse("../../input/one_phase_ss.in")
-  print parser.block_data
+  print(parser.block_data)

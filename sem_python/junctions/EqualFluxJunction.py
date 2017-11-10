@@ -24,7 +24,7 @@ class EqualFluxJunction(Junction1Phase):
     J[self.i_arhouA[m],:] = 0
     J[self.i_arhoEA[m],:] = 0
 
-    for n in xrange(self.n_meshes):
+    for n in range(self.n_meshes):
       J[self.i_arhoA[m],self.i_arhouA[n]] = self.df_mass_darhouA[n]
 
       J[self.i_arhouA[m],self.i_arhoA[n]] = self.df_momentum_darhoA[n]

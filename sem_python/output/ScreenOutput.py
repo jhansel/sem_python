@@ -22,8 +22,8 @@ class ScreenOutput(Output):
     n_node = self.dof_handler.n_node
 
     # print solution
-    print self.header_format % self.header_tuple
-    for k in xrange(n_node):
+    print(self.header_format % self.header_tuple)
+    for k in range(n_node):
       data_value_list = [self.data_list[name][k] for name in self.data_list]
       data_tuple = tuple(data_value_list)
-      print self.data_format % data_tuple
+      print(self.data_format % data_tuple)

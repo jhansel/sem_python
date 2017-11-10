@@ -10,8 +10,8 @@ class NewCompressibleJunctionTester(unittest.TestCase):
     tester = JunctionTester("NewCompressibleJunction")
     matched = tester.checkJacobian(test_option)
     n_i, n_j = matched.shape
-    for i in xrange(n_i):
-      for j in xrange(n_j):
+    for i in range(n_i):
+      for j in range(n_j):
         self.assertTrue(matched[i,j])
 
   def testJacobianWeak(self):

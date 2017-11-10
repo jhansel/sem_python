@@ -25,10 +25,10 @@ n = A.shape[0]
 rank = matrix_rank(A)
 
 if rank == n:
-  print "Matrix is of full rank."
+  print("Matrix is of full rank.")
   exit()
 else:
-  print "Matrix is rank-deficient: Rank = ", rank, ", Size = ", n
+  print(("Matrix is rank-deficient: Rank = ", rank, ", Size = ", n))
 
 i_dep = []
 not_finished = True
@@ -40,11 +40,11 @@ while not_finished:
     n_rows = len(i_dep)
     rank = matrix_rank(A[i_dep,:])
     if rank < n_rows:
-      print "Minimum set of linearly dependent rows:", i_dep
+      print(("Minimum set of linearly dependent rows:", i_dep))
       break
 
   i_test = deepcopy(i_dep)
-  for i in xrange(n):
+  for i in range(n):
     if i not in i_test:
       i_test.append(i)
       n_rows = len(i_test)
@@ -59,18 +59,18 @@ j_max_nonzero = 0
 for k in i_dep:
   # find minimum j that is nonzero
   row_is_zero = True
-  for j in xrange(n):
+  for j in range(n):
     if abs(A[k,j]) > 1e-14:
       row_is_zero = False
       j_min_nonzero = min(j_min_nonzero, j)
       j_max_nonzero = max(j_max_nonzero, j)
   if row_is_zero:
-    print "Row %d is a zero row." % (k)
+    print(("Row %d is a zero row." % (k)))
 
-print "Nonzero range: j in (%d, %d)" % (j_min_nonzero, j_max_nonzero)
+print(("Nonzero range: j in (%d, %d)" % (j_min_nonzero, j_max_nonzero)))
 
-print "Nonzeros for each linearly dependent row:"
+print("Nonzeros for each linearly dependent row:")
 n_entries = j_max_nonzero - j_min_nonzero + 1
 line_format = "%10.2e" * n_entries
 for k in i_dep:
-  print line_format % tuple(A[k,j_min_nonzero:j_max_nonzero+1])
+  print((line_format % tuple(A[k,j_min_nonzero:j_max_nonzero+1])))

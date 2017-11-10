@@ -53,7 +53,7 @@ class DoFHandlerTester(unittest.TestCase):
     meshes_list = [["mesh1", "mesh2"], ["mesh2", "mesh3"], ["mesh1", "mesh2"], ["mesh3", "mesh4"]]
     sides_list = [["right", "left"]] * n_junctions
     junctions = list()
-    for i in xrange(n_junctions):
+    for i in range(n_junctions):
       params = {"mesh_names": meshes_list[i], "mesh_sides": sides_list[i],
         "dof_handler": dof_handler, "eos_list": eos_list, "n_constraints": n_constraints_list[i]}
       junctions.append(factory.createObject("TestJunction", params))

@@ -17,7 +17,7 @@ class CloneJunction(Junction):
     self.k_slave = self.node_indices[1]
 
   def setDoFIndices(self):
-    self.variable_indices = range(self.dof_handler.n_var)
+    self.variable_indices = list(range(self.dof_handler.n_var))
     self.i_master = [self.dof_handler.i(self.k_master, m) for m in self.variable_indices]
     self.i_slave = [self.dof_handler.i(self.k_slave, m) for m in self.variable_indices]
 

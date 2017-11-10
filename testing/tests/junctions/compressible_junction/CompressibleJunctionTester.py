@@ -11,8 +11,8 @@ class CompressibleJunctionTester(unittest.TestCase):
     matched = tester.checkJacobian(test_option,
       junction_params={"use_momentum_flux_balance": use_momentum_flux_balance, "use_lm": use_lm})
     n_i, n_j = matched.shape
-    for i in xrange(n_i):
-      for j in xrange(n_j):
+    for i in range(n_i):
+      for j in range(n_j):
         self.assertTrue(matched[i,j])
 
   def testJacobianTechnique1NoLM(self):

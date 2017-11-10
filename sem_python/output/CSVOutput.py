@@ -23,19 +23,19 @@ class CSVOutput(Output):
   def run(self, data):
     if self.save_by_mesh:
       save_data = list()
-      for i_mesh in xrange(self.dof_handler.n_meshes):
+      for i_mesh in range(self.dof_handler.n_meshes):
         save_data.append(OrderedDict())
 
       x = self.dof_handler.separateNodalQuantityByMesh(data["x"])
-      for i_mesh in xrange(self.dof_handler.n_meshes):
+      for i_mesh in range(self.dof_handler.n_meshes):
         save_data[i_mesh]["x"] = x[i_mesh]
 
       for name in self.names:
         data_name = self.dof_handler.separateNodalQuantityByMesh(data[name])
-        for i_mesh in xrange(self.dof_handler.n_meshes):
+        for i_mesh in range(self.dof_handler.n_meshes):
           save_data[i_mesh][name] = data_name[i_mesh]
 
-      for i_mesh in xrange(self.dof_handler.n_meshes):
+      for i_mesh in range(self.dof_handler.n_meshes):
         mesh_file_name = stripStringFromRight(self.file_name, ".csv") + "_" + str(i_mesh+1) + ".csv"
         writeCSVFile(save_data[i_mesh], mesh_file_name, self.output_precision)
     else:

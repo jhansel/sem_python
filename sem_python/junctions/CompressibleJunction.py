@@ -148,7 +148,7 @@ class CompressibleJunction(Junction1Phase):
       dp0_darhoEA = [0] * n_values
 
     # loop over subscript/superscript combinations
-    for i in xrange(n_values):
+    for i in range(n_values):
       A[i] = self.dof_handler.A[k[i]]
       aA1 = self.dof_handler.aA1(U[i], k[i])
       vf, dvf_daA1 = computeVolumeFraction(aA1, A[i], self.phase, self.model_type)

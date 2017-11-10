@@ -25,7 +25,7 @@ class DoFHandler2PhaseNonInteracting(DoFHandler):
 
       # compute volume fraction for each node on mesh
       vf1 = ic.vf1
-      for k_mesh in xrange(mesh.n_node):
+      for k_mesh in range(mesh.n_node):
         k = self.k_from_k_mesh(k_mesh, i_mesh)
         self.vf1[k] = vf1(mesh.x[k_mesh])
 

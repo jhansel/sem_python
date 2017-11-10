@@ -19,8 +19,8 @@ class NewerCompressibleJunctionTester(unittest.TestCase):
     tester = JunctionTester("NewerCompressibleJunction", rel_tol=1e-5)
     matched = tester.checkJacobian(test_option, junction_params={"loss_coefficients": [0.3, 0.4]})
     n_i, n_j = matched.shape
-    for i in xrange(n_i):
-      for j in xrange(n_j):
+    for i in range(n_i):
+      for j in range(n_j):
         self.assertTrue(matched[i,j])
 
   def testJacobianWeak(self):

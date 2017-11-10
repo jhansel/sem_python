@@ -15,7 +15,7 @@ def checkFileExists(filename):
 # @param filename  name of the output file
 # @param precision  precision of entries in file
 def writeCSVFile(data, filename, precision):
-  with open(filename, 'wb') as csvfile:
+  with open(filename, 'w') as csvfile:
     writer = csv.writer(csvfile)
 
     # write header row

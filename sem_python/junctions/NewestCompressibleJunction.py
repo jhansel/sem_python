@@ -63,7 +63,7 @@ class NewestCompressibleJunction(Junction1Phase):
     p_sum = 0
     H_sum = 0
     s_sum = 0
-    for i in xrange(self.n_meshes):
+    for i in range(self.n_meshes):
       k = self.node_indices[i]
 
       aA1 = self.dof_handler.aA1(U, k)
@@ -272,7 +272,7 @@ class NewestCompressibleJunction(Junction1Phase):
   def computeAverageQuantities(self, U):
     self.H_avg = 0
     self.s_avg = 0
-    for i in xrange(self.n_meshes):
+    for i in range(self.n_meshes):
       k = self.node_indices[i]
 
       A = self.A[i]
@@ -334,7 +334,7 @@ class NewestCompressibleJunction(Junction1Phase):
     # add the boundary fluxes; characteristic theory is used to decide how
     # many pieces of information are supplied to inlets vs. outlets
     self.total_mass_flux = 0
-    for i in xrange(self.n_meshes):
+    for i in range(self.n_meshes):
       A = self.A[i]
       aA1 = self.dof_handler.aA1(U_old, self.node_indices[i])
       arhoA = U_old[self.i_arhoA[i]]
@@ -357,7 +357,7 @@ class NewestCompressibleJunction(Junction1Phase):
 
     r[self.i_constraint_mass] = sum(self.f_mass)
     J[self.i_constraint_mass,:] = 0
-    for i in xrange(self.n_meshes):
+    for i in range(self.n_meshes):
       J[self.i_constraint_mass,self.i_arhoA[i]]  = self.df_mass_darhoA[i]
       J[self.i_constraint_mass,self.i_arhouA[i]] = self.df_mass_darhouA[i]
       J[self.i_constraint_mass,self.i_HJ]       += self.df_mass_dHJ[i]
@@ -370,7 +370,7 @@ class NewestCompressibleJunction(Junction1Phase):
       r[self.i_constraint_entropy] = sJ - self.s_avg
       J[self.i_constraint_energy,:]  = 0
       J[self.i_constraint_entropy,:] = 0
-      for i in xrange(self.n_meshes):
+      for i in range(self.n_meshes):
         J[self.i_constraint_energy,self.i_arhoA[i]]  = -self.dH_avg_darhoA[i]
         J[self.i_constraint_energy,self.i_arhouA[i]] = -self.dH_avg_darhouA[i]
         J[self.i_constraint_energy,self.i_arhoEA[i]] = -self.dH_avg_darhoEA[i]
@@ -385,7 +385,7 @@ class NewestCompressibleJunction(Junction1Phase):
       r[self.i_constraint_entropy] = sum(self.f_entropy)
       J[self.i_constraint_energy,:]  = 0
       J[self.i_constraint_entropy,:] = 0
-      for i in xrange(self.n_meshes):
+      for i in range(self.n_meshes):
         J[self.i_constraint_energy,self.i_arhoA[i]]  = self.df_energy_darhoA[i]
         J[self.i_constraint_energy,self.i_arhouA[i]] = self.df_energy_darhouA[i]
         J[self.i_constraint_energy,self.i_pJ]       += self.df_energy_dpJ[i]

@@ -17,7 +17,7 @@ def outputPrintDoFVectorToFile(path):
   dof_handler = factory.createObject("DoFHandler1Phase", {"meshes": [mesh], "ics": ics})
 
   # solution vector
-  U = range((n_cell + 1)*3)
+  U = list(range((n_cell + 1)*3))
 
   # capture the output
   captor = OutputCaptor()

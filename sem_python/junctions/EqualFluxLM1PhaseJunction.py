@@ -30,7 +30,7 @@ class EqualFluxLM1PhaseJunction(Junction1Phase):
     Junction1Phase.applyWeaklyToNonlinearSystem(self, U, U_old, r, J)
 
     # add contributions from Lagrange multipliers
-    for n in xrange(self.n_meshes):
+    for n in range(self.n_meshes):
       r[self.i_arhoA[n]] += U[self.i_constraint_momentum] * self.df_momentum_darhoA[n]
       r[self.i_arhoA[n]] += U[self.i_constraint_energy] * self.df_energy_darhoA[n]
       J[self.i_arhoA[n],self.i_constraint_momentum] += self.df_momentum_darhoA[n]
@@ -57,7 +57,7 @@ class EqualFluxLM1PhaseJunction(Junction1Phase):
     J[self.i_constraint_momentum,:] = 0
     J[self.i_constraint_energy,:] = 0
 
-    for n in xrange(self.n_meshes):
+    for n in range(self.n_meshes):
       J[self.i_constraint_mass,self.i_arhouA[n]] = self.df_mass_darhouA[n]
 
       J[self.i_constraint_momentum,self.i_arhoA[n]] = self.df_momentum_darhoA[n]

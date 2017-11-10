@@ -43,12 +43,12 @@ class AuxDerivativesTester(object):
       rel_diffs[x] = computeRelativeDifference(hand_der[test_var][x], fd_der[x])
 
     # print results
-    print "\nTest quantity:", test_var
+    print("\nTest quantity:", test_var)
     for x in root_vars:
-      print "\nDerivative:", x
-      print "  Hand-coded        =", hand_der[test_var][x]
-      print "  Finite difference =", fd_der[x]
-      print "  Rel. difference   =", rel_diffs[x]
+      print("\nDerivative:", x)
+      print("  Hand-coded        =", hand_der[test_var][x])
+      print("  Finite difference =", fd_der[x])
+      print("  Rel. difference   =", rel_diffs[x])
 
     # take the absolute value of the relative differences
     for x in rel_diffs:

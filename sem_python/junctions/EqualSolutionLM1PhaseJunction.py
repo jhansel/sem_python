@@ -21,15 +21,15 @@ class EqualSolutionLM1PhaseJunction(Junction1Phase):
     Junction1Phase.setDoFIndices(self)
 
     # create lists of DoF indices involved in constraints
-    self.i1 = [self.dof_handler.i(self.node_indices[0], m) for m in xrange(self.n_var)]
-    self.i2 = [self.dof_handler.i(self.node_indices[1], m) for m in xrange(self.n_var)]
+    self.i1 = [self.dof_handler.i(self.node_indices[0], m) for m in range(self.n_var)]
+    self.i2 = [self.dof_handler.i(self.node_indices[1], m) for m in range(self.n_var)]
 
   def applyWeaklyToNonlinearSystem(self, U, U_old, r, J):
     # add normal boundary fluxes
     Junction1Phase.applyWeaklyToNonlinearSystem(self, U, U_old, r, J)
 
     # add contributions from Lagrange multipliers
-    for m in xrange(self.n_var):
+    for m in range(self.n_var):
       r[self.i1[m]] += U[self.i_constraint[m]]
       J[self.i1[m]][self.i_constraint[m]] += 1
 
@@ -38,7 +38,7 @@ class EqualSolutionLM1PhaseJunction(Junction1Phase):
 
   def applyStronglyToNonlinearSystem(self, U, U_old, r, J):
     # apply constraints
-    for m in xrange(self.n_var):
+    for m in range(self.n_var):
       r[self.i_constraint[m]] = U[self.i1[m]] - U[self.i2[m]]
       J[self.i_constraint[m],self.i1[m]] = 1
       J[self.i_constraint[m],self.i2[m]] = -1

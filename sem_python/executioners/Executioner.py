@@ -136,7 +136,7 @@ class Executioner(object):
         initial_T = ic.T[phase]
 
       # compute IC
-      for k_mesh in xrange(mesh.n_node):
+      for k_mesh in range(mesh.n_node):
         k = self.dof_handler.k_from_k_mesh(k_mesh, i_mesh)
 
         x = self.dof_handler.x[k]
@@ -165,7 +165,7 @@ class Executioner(object):
       i_mesh = self.dof_handler.mesh_name_to_mesh_index[mesh_name]
       mesh = self.meshes[i_mesh]
 
-      for k_mesh in xrange(mesh.n_node):
+      for k_mesh in range(mesh.n_node):
         k = self.dof_handler.k_from_k_mesh(k_mesh, i_mesh)
         x = self.dof_handler.x[k]
         self.U[self.dof_handler.i(k, aA1_index)] = ic.vf1(x) * ic.A(x)
@@ -307,7 +307,7 @@ class Executioner(object):
     der = self.dof_handler.initializeDerivativeData(self.aux_names)
 
     data["phi"] = self.fe_values.get_phi()
-    for elem in xrange(self.dof_handler.n_cell):
+    for elem in range(self.dof_handler.n_cell):
       r_cell = np.zeros(self.dof_handler.n_dof_per_cell)
       J_cell = np.zeros(shape=(self.dof_handler.n_dof_per_cell, self.dof_handler.n_dof_per_cell))
 

@@ -33,7 +33,7 @@ def stringToFunction(s):
   return f
 
 def stringToStringList(s):
-  if isinstance(s, basestring):
+  if isinstance(s, str):
     return s.split()
   elif isinstance(s, list):
     return s
@@ -41,7 +41,7 @@ def stringToStringList(s):
     error("'" + s + "' is not a valid string list.")
 
 def stringToFloatList(s):
-  if isinstance(s, basestring):
+  if isinstance(s, str):
     string_list = s.split()
     return [stringToFloat(x) for x in string_list]
   elif isinstance(s, list):

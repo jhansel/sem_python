@@ -1,5 +1,5 @@
 import sys
-from cStringIO import StringIO
+from io import StringIO
 
 class OutputCaptor(object):
   def __init__(self):
@@ -23,11 +23,11 @@ class OutputCaptor(object):
 if __name__ == "__main__":
   captor = OutputCaptor()
   sys.stdout.write("This line should be third and uppercase\n")
-  print "This line should be fourth and uppercase"
+  print("This line should be fourth and uppercase")
   sys.stdout.write("This line should be fifth and uppercase\n")
 
   out = captor.getCapturedOutput()
   sys.stdout.write("This line should be first and lowercase\n")
-  print "This line should be second and lowercase"
+  print("This line should be second and lowercase")
 
-  print out.upper()
+  print(out.upper())

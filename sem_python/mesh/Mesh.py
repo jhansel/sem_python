@@ -10,8 +10,7 @@ class MeshParameters(Parameters):
     self.registerFloatListParameter("orientation", "3-D orientation vector of mesh", [1,0,0])
     self.registerFloatListParameter("start", "Position of start of domain", [0,0,0])
 
-class Mesh(object):
-  __metaclass__ = ABCMeta
+class Mesh(object, metaclass=ABCMeta):
   def __init__(self, params):
     self.name = params.get("name")
 

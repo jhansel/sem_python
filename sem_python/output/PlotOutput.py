@@ -169,7 +169,7 @@ class PlotOutput(Output):
         if self.plot_by_mesh:
           # plot each mesh separately
           data_by_mesh = self.dof_handler.separateNodalQuantityByMesh(data[name])
-          for i_mesh in xrange(self.dof_handler.n_meshes):
+          for i_mesh in range(self.dof_handler.n_meshes):
             modified_set_label = set_labels[i_name] + ", Mesh " + str(i_mesh+1)
             plotter.addSet(x[i_mesh], data_by_mesh[i_mesh], modified_set_label,
               color=i_mesh+1, marker=i_mesh+1, linetype=i_name, scale=scaling_factor)

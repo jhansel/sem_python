@@ -22,10 +22,10 @@ class CSVTester(object):
     gold_data = readCSVData(gold_file)
 
     # exit if keys are not equal
-    if test_data.keys() != gold_data.keys():
-      print "\nDifferent keys found:"
-      print "Gold keys: ", gold_data.keys()
-      print "Test keys: ", test_data.keys()
+    if list(test_data.keys()) != list(gold_data.keys()):
+      print("\nDifferent keys found:")
+      print("Gold keys: ", list(gold_data.keys()))
+      print("Test keys: ", list(test_data.keys()))
       return False
 
     # loop over keys
@@ -37,16 +37,16 @@ class CSVTester(object):
 
       # exit if sizes are not equal
       if len(y_test) != len(y_gold):
-        print "\nDifferent sizes: gold size = " + len(y_gold) + ", test size = " + len(y_test)
+        print("\nDifferent sizes: gold size = " + len(y_gold) + ", test size = " + len(y_test))
         return False
 
       # loop over all values
       for i, value in enumerate(y_test):
         if abs(value - y_gold[i]) > self.abs_tol:
           if not first_diff_encountered:
-            print "" # print newline for formatting in test suite
+            print("") # print newline for formatting in test suite
             first_diff_encountered = True
-          print "Diff: %s[%i]: gold = %13.6e, test = %13.6e, diff = %13.6e" % (key, i, y_gold[i], value, y_gold[i] - value)
+          print("Diff: %s[%i]: gold = %13.6e, test = %13.6e, diff = %13.6e" % (key, i, y_gold[i], value, y_gold[i] - value))
           files_are_equal = False
 
     return files_are_equal

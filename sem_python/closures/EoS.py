@@ -7,8 +7,7 @@ class EoSParameters(Parameters):
     Parameters.__init__(self)
 
 ## Abstract base class for equations of state
-class EoS(object):
-  __metaclass__ = ABCMeta
+class EoS(object, metaclass=ABCMeta):
   @abstractmethod
   def rho(self, p, T):
     pass
