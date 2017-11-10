@@ -2,3 +2,5 @@
 *.csv
 *.pdf
 *.txt
+
+!**/gold/*.csv
