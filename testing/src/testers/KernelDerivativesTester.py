@@ -7,7 +7,8 @@ from sem_python.base.Factory import Factory
 from sem_python.utilities.numeric_utilities import computeRelativeDifference
 
 class KernelDerivativesTester(object):
-  def checkDerivatives(self, kernel_name, model_type, phase, aux_dependencies, aux_gradients=list(), kernel_params=dict(), fd_eps=1e-8):
+  def checkDerivatives(self, kernel_name, model_type, phase, aux_dependencies, \
+                       aux_gradients=list(), kernel_params=dict(), fd_eps=1e-8):
     self.model_type = model_type
     self.phase = phase
 
@@ -77,6 +78,9 @@ class KernelDerivativesTester(object):
     data = dict()
     aux_names = [aux.name for aux in aux_list]
     der = dof_handler.initializeDerivativeData(aux_names)
+    for aux_name in aux_dependencies:
+      for dep in aux_dependencies[aux_name]:
+        der[aux_name][dep] = 0
     self.elem = 0
     i = 0
     j = 1
