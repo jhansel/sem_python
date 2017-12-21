@@ -14,7 +14,7 @@ class AuxDerivativesTester(object):
       data[x] = i + 2.0
 
     # initialize derivatives to zero
-    derivative_list = deepcopy(root_vars)
+    derivative_list = [x for x in data]
     if "aA1" not in derivative_list:
       derivative_list.append("aA1")
     der = dict()
