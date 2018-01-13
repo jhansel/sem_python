@@ -118,6 +118,9 @@ class Executioner(object):
     if not self.split_source:
       self.fem_kernels += self.source_kernels
 
+    # nonlinear solver; created in derived classes
+    self.nonlinear_solver = None
+
   def initializePhaseSolution(self, ics, phase):
     eos_phase = self.eos_list[phase]
     arhoA_index = self.dof_handler.variable_index[VariableName.ARhoA][phase]
@@ -234,7 +237,7 @@ class Executioner(object):
 
     # create the aux quantities for this phase
     aux_list = list()
-    for aux_name in aux_names_phase:
+    for aux_name in aux_names:
       params = {"phase": phase}
       if aux_name == "Pressure":
         params["p_function"] = self.eos_list[phase].p
@@ -306,7 +309,7 @@ class Executioner(object):
     return kernels
 
   # computes the steady-state residual and Jacobian without applying strong BC
-  def assembleSteadyStateSystemWithoutStrongConstraints(self, U):
+  def assembleSteadyStateSystemWithoutStrongConstraints(self, U, U_old):
     r = np.zeros(self.dof_handler.n_dof)
     J = np.zeros(shape=(self.dof_handler.n_dof, self.dof_handler.n_dof))
 
@@ -319,7 +322,7 @@ class Executioner(object):
 
     # junctions
     for junction in self.junctions:
-      junction.applyWeaklyToNonlinearSystem(U, self.U_old, r, J)
+      junction.applyWeaklyToNonlinearSystem(U, U_old, r, J)
 
     return (r, J)
 
@@ -327,14 +330,14 @@ class Executioner(object):
   # @param[in] U  implicit solution vector
   # @param[in] r  nonlinear system residual vector
   # @param[in] J  nonlinear system Jacobian matrix
-  def applyStrongConstraintsToNonlinearSystem(self, U, r, J):
+  def applyStrongConstraintsToNonlinearSystem(self, U, U_old, r, J):
     # BCs
     for bc in self.bcs:
       bc.applyStrongBCNonlinearSystem(U, r, J)
 
     # junctions
     for junction in self.junctions:
-      junction.applyStronglyToNonlinearSystem(U, self.U_old, r, J)
+      junction.applyStronglyToNonlinearSystem(U, U_old, r, J)
 
   ## Applies strong constraints to a linear system matrix.
   #

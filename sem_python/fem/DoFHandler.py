@@ -69,6 +69,11 @@ class DoFHandler(object, metaclass=ABCMeta):
         k = self.k_from_k_mesh(k_mesh, i_mesh)
         self.A[k] = A(mesh.x[k_mesh])
 
+    # data to be defined by derived classes
+    self.n_vf_equations = None
+    self.n_phases = None
+    self.model_type = None
+
   def updateWithJunctionConstraints(self, junctions):
     # add the number of constraints from each junction
     for junction in junctions:

@@ -26,8 +26,8 @@ class KernelDerivativesTester(object):
       ics = [factory.createObject("InitialConditions1Phase", ic_params)]
       dof_handler_class = "DoFHandler1Phase"
     else:
-      ic_params = {"mesh_name": meshes[0].name, "A": "2", "vf1": "0.3",
-        "rho1": "1", "u1": "1", "p1": "1", "rho2": "1", "u2": "1", "p2": "1"}
+      ic_params = {"mesh_name": meshes[0].name, "A": "2", "vf1": "0.3", "rho1": "1",
+                   "u1": "1", "p1": "1", "rho2": "1", "u2": "1", "p2": "1"}
       ics = [factory.createObject("InitialConditions2Phase", ic_params)]
       if self.model_type == ModelType.TwoPhaseNonInteracting:
         dof_handler_class = "DoFHandler2PhaseNonInteracting"
@@ -63,7 +63,7 @@ class KernelDerivativesTester(object):
         params.set("var", aux_name)
         params.set("other_vars", aux_dependencies[aux_name])
         coefs = list()
-        for d,dependency in enumerate(aux_dependencies[aux_name]):
+        for d, _ in enumerate(aux_dependencies[aux_name]):
           coefs.append(a + 2.0 + d * 0.5)
         params.set("coefs", coefs)
         params.set("b", 1.0)

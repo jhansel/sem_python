@@ -10,7 +10,6 @@ def stringToBool(s):
     return False
   else:
     error("'" + s + "' is not a valid boolean.")
-  return value
 
 def stringToInt(s):
   try:

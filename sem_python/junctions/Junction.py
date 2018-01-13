@@ -49,6 +49,8 @@ class Junction(object):
     # initialize number of constraints to zero
     self.n_constraints = 0
 
+    self.i_constraint = None
+
   def setConstraintDoFIndices(self, constraint_dof_indices):
     self.i_constraint = constraint_dof_indices
 

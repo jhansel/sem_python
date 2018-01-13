@@ -17,6 +17,10 @@ class EqualSolutionLM1PhaseJunction(Junction1Phase):
 
     self.initializeVariableVectors()
 
+    # lists of DoF indices of the 2 meshes
+    self.i1 = None
+    self.i2 = None
+
   def setDoFIndices(self):
     Junction1Phase.setDoFIndices(self)
 

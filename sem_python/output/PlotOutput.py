@@ -193,7 +193,7 @@ class PlotOutput(Output):
       if base_name_set in self.base_name_sets:
         y_label_base_name = self.base_name_to_y_label_base_name[base_names[0]]
       else:
-        error("The set ", base_name_set, " is not a valid set for a sub-plot")
+        error("The set " + base_name_set + " is not a valid set for a sub-plot")
     else:
       y_label_base_name = base_names[0]
 

@@ -99,7 +99,7 @@ class OutletBC(OnePhaseBC):
     arhouA = U_old[self.i_arhouA]
 
     u, du_darhoA, du_darhouA = computeVelocity(arhoA, arhouA)
-    rho, drho_dvf, drho_darhoA = computeDensity(vf, arhoA)
+    rho, drho_dvf, drho_darhoA, _ = computeDensity(vf, arhoA, A)
     v, dv_drho = computeSpecificVolume(rho)
     e, de_dv, _ = self.eos.e(v, self.p)
     arhoEA = arhoA * (e + 0.5 * u * u)

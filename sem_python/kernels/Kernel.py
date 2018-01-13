@@ -22,6 +22,9 @@ class Kernel(object, metaclass=ABCMeta):
       self.n = self.dof_handler.n_dof_per_cell_per_var
     self.zero = [0]
 
+    # list of variable indices corresponding to model type; set in derived classes
+    self.var_indices = None
+
   ## Adds this kernel's contribution to the local residual vector and Jacobian
   #
   # @param[in] data  variables and aux quantities

@@ -359,16 +359,16 @@ class CompressibleJunction(Junction1Phase):
     self.jacobian_entries.append((i6, self.i_arhoEAR, self.J_i6_arhoEAR))
 
     if self.model_type == ModelType.TwoPhase:
-      self.jacobian_entries.append((i1, self.i_vf1L, self.J_i1_vf1L))
-      self.jacobian_entries.append((i2, self.i_vf1R, self.J_i2_vf1R))
-      self.jacobian_entries.append((i3, self.i_vf1L, self.J_i3_vf1L))
-      self.jacobian_entries.append((i3, self.i_vf1R, self.J_i3_vf1R))
-      self.jacobian_entries.append((i4, self.i_vf1L, self.J_i4_vf1L))
-      self.jacobian_entries.append((i4, self.i_vf1R, self.J_i4_vf1R))
-      self.jacobian_entries.append((i5, self.i_vf1L, self.J_i5_vf1L))
-      self.jacobian_entries.append((i5, self.i_vf1R, self.J_i5_vf1R))
-      self.jacobian_entries.append((i6, self.i_vf1L, self.J_i6_vf1L))
-      self.jacobian_entries.append((i6, self.i_vf1R, self.J_i6_vf1R))
+      self.jacobian_entries.append((i1, self.i_aA1L, self.J_i1_vf1L))
+      self.jacobian_entries.append((i2, self.i_aA1R, self.J_i2_vf1R))
+      self.jacobian_entries.append((i3, self.i_aA1L, self.J_i3_vf1L))
+      self.jacobian_entries.append((i3, self.i_aA1R, self.J_i3_vf1R))
+      self.jacobian_entries.append((i4, self.i_aA1L, self.J_i4_vf1L))
+      self.jacobian_entries.append((i4, self.i_aA1R, self.J_i4_vf1R))
+      self.jacobian_entries.append((i5, self.i_aA1L, self.J_i5_vf1L))
+      self.jacobian_entries.append((i5, self.i_aA1R, self.J_i5_vf1R))
+      self.jacobian_entries.append((i6, self.i_aA1L, self.J_i6_vf1L))
+      self.jacobian_entries.append((i6, self.i_aA1R, self.J_i6_vf1R))
 
     # if using Lagrange multipliers, apply contributions to residual and Jacobian
     if self.use_lm:

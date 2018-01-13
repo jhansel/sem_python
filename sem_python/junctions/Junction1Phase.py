@@ -109,6 +109,8 @@ class Junction1Phase(Junction):
 
   def setDoFIndices(self):
     # indices for all meshes
+    if self.model_type == ModelType.TwoPhase:
+      self.i_aA1 = [self.dof_handler.i(k, self.aA1_index) for k in self.node_indices]
     self.i_arhoA = [self.dof_handler.i(k, self.arhoA_index) for k in self.node_indices]
     self.i_arhouA = [self.dof_handler.i(k, self.arhouA_index) for k in self.node_indices]
     self.i_arhoEA = [self.dof_handler.i(k, self.arhoEA_index) for k in self.node_indices]

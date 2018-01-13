@@ -2,6 +2,8 @@ import matplotlib.pyplot as plt
 from matplotlib.ticker import FormatStrFormatter
 import warnings
 
+from ..utilities.error_utilities import error
+
 colors = ['k','indianred','orange','lightgreen','cornflowerblue','slateblue','orchid','turquoise','peru']
 linetypes = ['-','--',':']
 markers = ["", ".", "x", "o", "s", "^", "D", "v", "*"]
@@ -167,17 +169,3 @@ class Plotter(object):
 
         # save the figure
         plt.savefig(outputfile, dpi=300)
-
-if (__name__ == '__main__'):
-    plotter = Plotter('x','y',2)
-    x = [1, 2, 3]
-    y1 = [1, 2, 3]
-    y2 = [2, 4, 6]
-    z1 = [2, 3, 5]
-    z2 = [0, 1, 4]
-    plotter.addSet(x,y1,'y1',color=1)
-    plotter.addSet(x,y2,'y2',color=2)
-    plotter.nextSubplot('z')
-    plotter.addSet(x,z1,'z1',color=3)
-    plotter.addSet(x,z2,'z2')
-    plotter.save('Plotter_test.pdf')

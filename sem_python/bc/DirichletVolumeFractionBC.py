@@ -1,4 +1,5 @@
 from .VolumeFractionBC import VolumeFractionBC, VolumeFractionBCParameters
+from ..closures.thermodynamic_functions import computeVolumeFraction
 
 class DirichletVolumeFractionBCParameters(VolumeFractionBCParameters):
   def __init__(self):
@@ -18,7 +19,7 @@ class DirichletVolumeFractionBC(VolumeFractionBC):
     A = self.dof_handler.A[self.k]
     aA1 = self.dof_handler.aA1(U, self.k)
 
-    vf1, dvf1_daA1 = computeVolumeFraction(aA1, A, self.phase, self.model_type)
+    vf1, dvf1_daA1 = computeVolumeFraction(aA1, A, 0, self.model_type)
 
     r[self.i_aA1] = vf1 - self.vf1
     J[self.i_aA1,:] = 0

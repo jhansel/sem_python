@@ -17,7 +17,7 @@ class ScreenOutput(Output):
 
   def run(self, data):
     # extract data to be printed
-    self.data_list = [self.data[name] for name in self.data_names]
+    self.data_list = [data[name] for name in self.data_names]
 
     n_node = self.dof_handler.n_node
 
