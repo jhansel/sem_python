@@ -86,6 +86,7 @@ from ..junctions.Junction1Phase import Junction1Phase, Junction1PhaseParameters
 from ..junctions.TestJunction import TestJunction, TestJunctionParameters
 
 # kernels
+from ..kernels.ArbitraryAuxKernel1Phase import ArbitraryAuxKernel1Phase, ArbitraryAuxKernel1PhaseParameters
 from ..kernels.DissipationAuxFlux import DissipationAuxFlux, DissipationAuxFluxParameters
 from ..kernels.DissipationVariableGradient import DissipationVariableGradient, DissipationVariableGradientParameters
 from ..kernels.VolumeFractionAdvection import VolumeFractionAdvection, VolumeFractionAdvectionParameters
