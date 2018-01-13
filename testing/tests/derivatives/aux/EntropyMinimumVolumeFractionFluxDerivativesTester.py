@@ -26,11 +26,16 @@ grad_vf_aux = TestAux(params)
 other_aux = [visccoef_aA1_aux, grad_vf_aux]
 root_vars = ["aA1", "arhoA1", "arhouA1", "arhoEA1", "arhoA2", "arhouA2", "arhoEA2", "grad_aA1"]
 
-class EntropyMinimumVolumeFractionFluxDerivativesTester(unittest.TestCase):
-  def setUp(self):
-    self.derivatives_tester = AuxDerivativesTester()
 
-  def test(self):
-    rel_diffs = self.derivatives_tester.checkDerivatives(test_aux, other_aux, root_vars, constant_data={"A": 0.3})
-    for key in rel_diffs:
-      self.assertLessEqual(rel_diffs[key], 5e-6)
+class EntropyMinimumVolumeFractionFluxDerivativesTester(unittest.TestCase):
+
+    def setUp(self):
+        self.derivatives_tester = AuxDerivativesTester()
+
+    def test(self):
+        rel_diffs = self.derivatives_tester.checkDerivatives(
+            test_aux, other_aux, root_vars, constant_data={
+                "A": 0.3
+            })
+        for key in rel_diffs:
+            self.assertLessEqual(rel_diffs[key], 5e-6)

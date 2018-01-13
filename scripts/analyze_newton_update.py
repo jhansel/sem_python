@@ -31,4 +31,4 @@ print("")
 print(("%4s: %12s %12s %12s" % ("i", "Jinv[i,j]", "-r[j]", "-Jinvr[i,j]")))
 print((44 * "="))
 for j in range(n):
-  print(("%4d: %12.2e %12.2e %12.2e" % (j, J_inv[i,j], -r[j], J_inv[i,j] * -r[j])))
+    print(("%4d: %12.2e %12.2e %12.2e" % (j, J_inv[i, j], -r[j], J_inv[i, j] * -r[j])))

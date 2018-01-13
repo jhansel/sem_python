@@ -48,16 +48,20 @@ root_vars = ["aA1", "arhoA1", "arhouA1", "arhoEA1", "arhoA2", "arhouA2", "arhoEA
 constant_data_positive = {"grad_aA1": 0.6}
 constant_data_negative = {"grad_aA1": -0.6}
 
+
 class BerryInterfacePressureDerivativesTester(unittest.TestCase):
-  def setUp(self):
-    self.derivatives_tester = AuxDerivativesTester()
 
-  def testPositiveGradient(self):
-    rel_diffs = self.derivatives_tester.checkDerivatives(test_aux, other_aux, root_vars, constant_data_positive)
-    for key in rel_diffs:
-      self.assertLessEqual(rel_diffs[key], 5e-6)
+    def setUp(self):
+        self.derivatives_tester = AuxDerivativesTester()
 
-  def testNegativeGradient(self):
-    rel_diffs = self.derivatives_tester.checkDerivatives(test_aux, other_aux, root_vars, constant_data_negative)
-    for key in rel_diffs:
-      self.assertLessEqual(rel_diffs[key], 5e-6)
+    def testPositiveGradient(self):
+        rel_diffs = self.derivatives_tester.checkDerivatives(
+            test_aux, other_aux, root_vars, constant_data_positive)
+        for key in rel_diffs:
+            self.assertLessEqual(rel_diffs[key], 5e-6)
+
+    def testNegativeGradient(self):
+        rel_diffs = self.derivatives_tester.checkDerivatives(
+            test_aux, other_aux, root_vars, constant_data_negative)
+        for key in rel_diffs:
+            self.assertLessEqual(rel_diffs[key], 5e-6)

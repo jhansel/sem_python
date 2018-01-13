@@ -29,18 +29,20 @@ other_aux_positive = [uI_positive_aux]
 other_aux_negative = [uI_negative_aux]
 root_vars = ["aA1", "arhoA1", "arhouA1", "arhoEA1", "arhoA2", "arhouA2", "arhoEA2"]
 
+
 class LaxFriedrichsCoefficientVolumeFractionDerivativesTester(unittest.TestCase):
-  def setUp(self):
-    self.derivatives_tester = AuxDerivativesTester()
 
-  def testPositiveVelocity(self):
-    rel_diffs = self.derivatives_tester.checkDerivatives(
-      test_aux, other_aux_positive, root_vars, constant_data)
-    for key in rel_diffs:
-      self.assertLessEqual(rel_diffs[key], 1e-6)
+    def setUp(self):
+        self.derivatives_tester = AuxDerivativesTester()
 
-  def testNegativeVelocity(self):
-    rel_diffs = self.derivatives_tester.checkDerivatives(
-      test_aux, other_aux_negative, root_vars, constant_data)
-    for key in rel_diffs:
-      self.assertLessEqual(rel_diffs[key], 1e-6)
+    def testPositiveVelocity(self):
+        rel_diffs = self.derivatives_tester.checkDerivatives(
+            test_aux, other_aux_positive, root_vars, constant_data)
+        for key in rel_diffs:
+            self.assertLessEqual(rel_diffs[key], 1e-6)
+
+    def testNegativeVelocity(self):
+        rel_diffs = self.derivatives_tester.checkDerivatives(
+            test_aux, other_aux_negative, root_vars, constant_data)
+        for key in rel_diffs:
+            self.assertLessEqual(rel_diffs[key], 1e-6)

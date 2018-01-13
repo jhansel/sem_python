@@ -32,11 +32,13 @@ beta_aux = TestAux(params)
 other_aux = [u1_aux, u2_aux, beta_aux]
 root_vars = ["arhoA1", "arhouA1", "arhoA2", "arhouA2"]
 
-class AmbrosoInterfaceVelocityDerivativesTester(unittest.TestCase):
-  def setUp(self):
-    self.derivatives_tester = AuxDerivativesTester()
 
-  def test(self):
-    rel_diffs = self.derivatives_tester.checkDerivatives(test_aux, other_aux, root_vars)
-    for key in rel_diffs:
-      self.assertLessEqual(rel_diffs[key], 5e-6)
+class AmbrosoInterfaceVelocityDerivativesTester(unittest.TestCase):
+
+    def setUp(self):
+        self.derivatives_tester = AuxDerivativesTester()
+
+    def test(self):
+        rel_diffs = self.derivatives_tester.checkDerivatives(test_aux, other_aux, root_vars)
+        for key in rel_diffs:
+            self.assertLessEqual(rel_diffs[key], 5e-6)

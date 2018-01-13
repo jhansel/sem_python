@@ -39,11 +39,13 @@ z2_aux = TestAux(params)
 other_aux = [p1_aux, p2_aux, z1_aux, z2_aux]
 root_vars = ["aA1", "arhoA1", "arhouA1", "arhoEA1", "arhoA2", "arhouA2", "arhoEA2"]
 
-class BerryInterfacePressureBarDerivativesTester(unittest.TestCase):
-  def setUp(self):
-    self.derivatives_tester = AuxDerivativesTester()
 
-  def test(self):
-    rel_diffs = self.derivatives_tester.checkDerivatives(test_aux, other_aux, root_vars)
-    for key in rel_diffs:
-      self.assertLessEqual(rel_diffs[key], 5e-5)
+class BerryInterfacePressureBarDerivativesTester(unittest.TestCase):
+
+    def setUp(self):
+        self.derivatives_tester = AuxDerivativesTester()
+
+    def test(self):
+        rel_diffs = self.derivatives_tester.checkDerivatives(test_aux, other_aux, root_vars)
+        for key in rel_diffs:
+            self.assertLessEqual(rel_diffs[key], 5e-5)

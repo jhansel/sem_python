@@ -1,35 +1,39 @@
 from .VolumeFractionBC import VolumeFractionBC, VolumeFractionBCParameters
 from ..closures.thermodynamic_functions import computeVolumeFraction
 
+
 class DirichletVolumeFractionBCParameters(VolumeFractionBCParameters):
-  def __init__(self):
-    VolumeFractionBCParameters.__init__(self)
-    self.registerFloatParameter("vf1", "Specified volume fraction of first phase")
+
+    def __init__(self):
+        VolumeFractionBCParameters.__init__(self)
+        self.registerFloatParameter("vf1", "Specified volume fraction of first phase")
+
 
 class DirichletVolumeFractionBC(VolumeFractionBC):
-  def __init__(self, params):
-    VolumeFractionBC.__init__(self, params)
 
-    self.vf1 = params.get("vf1")
+    def __init__(self, params):
+        VolumeFractionBC.__init__(self, params)
 
-  def applyWeakBC(self, U, r, J):
-    pass
+        self.vf1 = params.get("vf1")
 
-  def applyStrongBCNonlinearSystem(self, U, r, J):
-    A = self.dof_handler.A[self.k]
-    aA1 = self.dof_handler.aA1(U, self.k)
+    def applyWeakBC(self, U, r, J):
+        pass
 
-    vf1, dvf1_daA1 = computeVolumeFraction(aA1, A, 0, self.model_type)
+    def applyStrongBCNonlinearSystem(self, U, r, J):
+        A = self.dof_handler.A[self.k]
+        aA1 = self.dof_handler.aA1(U, self.k)
 
-    r[self.i_aA1] = vf1 - self.vf1
-    J[self.i_aA1,:] = 0
-    J[self.i_aA1,self.i_aA1] = dvf1_daA1
+        vf1, dvf1_daA1 = computeVolumeFraction(aA1, A, 0, self.model_type)
 
-  def applyStrongBCLinearSystemMatrix(self, A):
-    A[self.i_aA1,:] = 0
-    A[self.i_aA1,self.i_aA1] = 1
+        r[self.i_aA1] = vf1 - self.vf1
+        J[self.i_aA1, :] = 0
+        J[self.i_aA1, self.i_aA1] = dvf1_daA1
 
-  def applyStrongBCLinearSystemRHSVector(self, U_old, b):
-    A = self.dof_handler.A[self.k]
+    def applyStrongBCLinearSystemMatrix(self, A):
+        A[self.i_aA1, :] = 0
+        A[self.i_aA1, self.i_aA1] = 1
 
-    b[self.i_aA1] = self.vf1 * A
+    def applyStrongBCLinearSystemRHSVector(self, U_old, b):
+        A = self.dof_handler.A[self.k]
+
+        b[self.i_aA1] = self.vf1 * A

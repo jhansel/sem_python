@@ -15,11 +15,16 @@ vf_aux = VolumeFractionPhase1(params)
 other_aux = [vf_aux]
 root_vars = ["aA1", "arhoA1"]
 
-class DensityDerivativesTester(unittest.TestCase):
-  def setUp(self):
-    self.derivatives_tester = AuxDerivativesTester()
 
-  def test(self):
-    rel_diffs = self.derivatives_tester.checkDerivatives(test_aux, other_aux, root_vars, constant_data={"A": 0.3})
-    for key in rel_diffs:
-      self.assertLessEqual(rel_diffs[key], 1e-6)
+class DensityDerivativesTester(unittest.TestCase):
+
+    def setUp(self):
+        self.derivatives_tester = AuxDerivativesTester()
+
+    def test(self):
+        rel_diffs = self.derivatives_tester.checkDerivatives(
+            test_aux, other_aux, root_vars, constant_data={
+                "A": 0.3
+            })
+        for key in rel_diffs:
+            self.assertLessEqual(rel_diffs[key], 1e-6)

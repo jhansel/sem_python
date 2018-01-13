@@ -2,9 +2,12 @@ import numpy as np
 
 from .AuxQuantity1Phase import AuxQuantity1Phase, AuxQuantity1PhaseParameters
 
+
 class EntropyMinimumEnergyFluxParameters(AuxQuantity1PhaseParameters):
-  def __init__(self):
-    AuxQuantity1PhaseParameters.__init__(self)
+
+    def __init__(self):
+        AuxQuantity1PhaseParameters.__init__(self)
+
 
 ## Entropy minimum viscous flux for the energy equation
 #
@@ -18,69 +21,71 @@ class EntropyMinimumEnergyFluxParameters(AuxQuantity1PhaseParameters):
 # and \f$\nu_k\f$ is the viscous coefficient.
 #
 class EntropyMinimumEnergyFlux(AuxQuantity1Phase):
-  def __init__(self, params):
-    AuxQuantity1Phase.__init__(self, params)
-    self.name = self.viscflux_arhoEA
 
-  def compute(self, data, der):
-    h = data[self.vf] * data[self.visccoef_arhoEA] * data["A"] * data[self.grad_rhoe] \
-      + data[self.rhoe] * data[self.viscflux_aA] \
-      - 0.5 * data[self.u] ** 2 * data[self.viscflux_arhoA] \
-      + data[self.u] * data[self.viscflux_arhouA]
+    def __init__(self, params):
+        AuxQuantity1Phase.__init__(self, params)
+        self.name = self.viscflux_arhoEA
 
-    dh_daA1 = (der[self.vf]["aA1"] * data[self.visccoef_arhoEA] \
-      + data[self.vf] * der[self.visccoef_arhoEA]["aA1"]) * data["A"] * data[self.grad_rhoe] \
-      + der[self.rhoe]["aA1"] * data[self.viscflux_aA] + data[self.rhoe] * der[self.viscflux_aA]["aA1"] \
-      - 0.5 * data[self.u] ** 2 * der[self.viscflux_arhoA]["aA1"] \
-      + data[self.u] * der[self.viscflux_arhouA]["aA1"]
-    dh_darhoA1 = data[self.vf] * der[self.visccoef_arhoEA]["arhoA1"] * data["A"] * data[self.grad_rhoe] \
-      + der[self.rhoe]["arhoA1"] * data[self.viscflux_aA] + data[self.rhoe] * der[self.viscflux_aA]["arhoA1"] \
-      - data[self.u] * der[self.u]["arhoA1"] * data[self.viscflux_arhoA] \
-      - 0.5 * data[self.u] ** 2 * der[self.viscflux_arhoA]["arhoA1"] \
-      + der[self.u]["arhoA1"] * data[self.viscflux_arhouA] + data[self.u] * der[self.viscflux_arhouA]["arhoA1"]
-    dh_darhouA1 = data[self.vf] * der[self.visccoef_arhoEA]["arhouA1"] * data["A"] * data[self.grad_rhoe] \
-      + der[self.rhoe]["arhouA1"] * data[self.viscflux_aA] + data[self.rhoe] * der[self.viscflux_aA]["arhouA1"] \
-      - data[self.u] * der[self.u]["arhouA1"] * data[self.viscflux_arhoA] \
-      - 0.5 * data[self.u] ** 2 * der[self.viscflux_arhoA]["arhouA1"] \
-      + der[self.u]["arhouA1"] * data[self.viscflux_arhouA] + data[self.u] * der[self.viscflux_arhouA]["arhouA1"]
-    dh_darhoEA1 = data[self.vf] * der[self.visccoef_arhoEA]["arhoEA1"] * data["A"] * data[self.grad_rhoe] \
-      + der[self.rhoe]["arhoEA1"] * data[self.viscflux_aA] + data[self.rhoe] * der[self.viscflux_aA]["arhoEA1"] \
-      - 0.5 * data[self.u] ** 2 * der[self.viscflux_arhoA]["arhoEA1"] \
-      + data[self.u] * der[self.viscflux_arhouA]["arhoEA1"]
-    dh_darhoA2 = data[self.vf] * der[self.visccoef_arhoEA]["arhoA2"] * data["A"] * data[self.grad_rhoe] \
-      + der[self.rhoe]["arhoA2"] * data[self.viscflux_aA] + data[self.rhoe] * der[self.viscflux_aA]["arhoA2"] \
-      - data[self.u] * der[self.u]["arhoA2"] * data[self.viscflux_arhoA] \
-      - 0.5 * data[self.u] ** 2 * der[self.viscflux_arhoA]["arhoA2"] \
-      + der[self.u]["arhoA2"] * data[self.viscflux_arhouA] + data[self.u] * der[self.viscflux_arhouA]["arhoA2"]
-    dh_darhouA2 = data[self.vf] * der[self.visccoef_arhoEA]["arhouA2"] * data["A"] * data[self.grad_rhoe] \
-      + der[self.rhoe]["arhouA2"] * data[self.viscflux_aA] + data[self.rhoe] * der[self.viscflux_aA]["arhouA2"] \
-      - data[self.u] * der[self.u]["arhouA2"] * data[self.viscflux_arhoA] \
-      - 0.5 * data[self.u] ** 2 * der[self.viscflux_arhoA]["arhouA2"] \
-      + der[self.u]["arhouA2"] * data[self.viscflux_arhouA] + data[self.u] * der[self.viscflux_arhouA]["arhouA2"]
-    dh_darhoEA2 = data[self.vf] * der[self.visccoef_arhoEA]["arhoEA2"] * data["A"] * data[self.grad_rhoe] \
-      + der[self.rhoe]["arhoEA2"] * data[self.viscflux_aA] + data[self.rhoe] * der[self.viscflux_aA]["arhoEA2"] \
-      - 0.5 * data[self.u] ** 2 * der[self.viscflux_arhoA]["arhoEA2"] \
-      + data[self.u] * der[self.viscflux_arhouA]["arhoEA2"]
-    dh_dgrad_aA1 = data[self.vf] * data[self.visccoef_arhoEA] * data["A"] * der[self.grad_rhoe]["grad_aA1"] \
-      + data[self.rhoe] * der[self.viscflux_aA]["grad_aA1"] \
-      - 0.5 * data[self.u] ** 2 * der[self.viscflux_arhoA]["grad_aA1"] \
-      + data[self.u] * der[self.viscflux_arhouA]["grad_aA1"]
-    dh_dgrad_arhoA = data[self.vf] * data[self.visccoef_arhoEA] * data["A"] * der[self.grad_rhoe][self.grad_arhoA] \
-      - 0.5 * data[self.u] ** 2 * der[self.viscflux_arhoA][self.grad_arhoA] \
-      + data[self.u] * der[self.viscflux_arhouA][self.grad_arhoA]
-    dh_dgrad_arhouA = data[self.vf] * data[self.visccoef_arhoEA] * data["A"] * der[self.grad_rhoe][self.grad_arhouA] \
-      + data[self.u] * der[self.viscflux_arhouA][self.grad_arhouA]
-    dh_dgrad_arhoEA = data[self.vf] * data[self.visccoef_arhoEA] * data["A"] * der[self.grad_rhoe][self.grad_arhoEA]
+    def compute(self, data, der):
+        h = data[self.vf] * data[self.visccoef_arhoEA] * data["A"] * data[self.grad_rhoe] \
+          + data[self.rhoe] * data[self.viscflux_aA] \
+          - 0.5 * data[self.u] ** 2 * data[self.viscflux_arhoA] \
+          + data[self.u] * data[self.viscflux_arhouA]
 
-    data[self.name] = h
-    der[self.name]["aA1"] = dh_daA1
-    der[self.name]["arhoA1"] = dh_darhoA1
-    der[self.name]["arhouA1"] = dh_darhouA1
-    der[self.name]["arhoEA1"] = dh_darhoEA1
-    der[self.name]["arhoA2"] = dh_darhoA2
-    der[self.name]["arhouA2"] = dh_darhouA2
-    der[self.name]["arhoEA2"] = dh_darhoEA2
-    der[self.name]["grad_aA1"] = dh_dgrad_aA1
-    der[self.name][self.grad_arhoA] = dh_dgrad_arhoA
-    der[self.name][self.grad_arhouA] = dh_dgrad_arhouA
-    der[self.name][self.grad_arhoEA] = dh_dgrad_arhoEA
+        dh_daA1 = (der[self.vf]["aA1"] * data[self.visccoef_arhoEA] \
+          + data[self.vf] * der[self.visccoef_arhoEA]["aA1"]) * data["A"] * data[self.grad_rhoe] \
+          + der[self.rhoe]["aA1"] * data[self.viscflux_aA] + data[self.rhoe] * der[self.viscflux_aA]["aA1"] \
+          - 0.5 * data[self.u] ** 2 * der[self.viscflux_arhoA]["aA1"] \
+          + data[self.u] * der[self.viscflux_arhouA]["aA1"]
+        dh_darhoA1 = data[self.vf] * der[self.visccoef_arhoEA]["arhoA1"] * data["A"] * data[self.grad_rhoe] \
+          + der[self.rhoe]["arhoA1"] * data[self.viscflux_aA] + data[self.rhoe] * der[self.viscflux_aA]["arhoA1"] \
+          - data[self.u] * der[self.u]["arhoA1"] * data[self.viscflux_arhoA] \
+          - 0.5 * data[self.u] ** 2 * der[self.viscflux_arhoA]["arhoA1"] \
+          + der[self.u]["arhoA1"] * data[self.viscflux_arhouA] + data[self.u] * der[self.viscflux_arhouA]["arhoA1"]
+        dh_darhouA1 = data[self.vf] * der[self.visccoef_arhoEA]["arhouA1"] * data["A"] * data[self.grad_rhoe] \
+          + der[self.rhoe]["arhouA1"] * data[self.viscflux_aA] + data[self.rhoe] * der[self.viscflux_aA]["arhouA1"] \
+          - data[self.u] * der[self.u]["arhouA1"] * data[self.viscflux_arhoA] \
+          - 0.5 * data[self.u] ** 2 * der[self.viscflux_arhoA]["arhouA1"] \
+          + der[self.u]["arhouA1"] * data[self.viscflux_arhouA] + data[self.u] * der[self.viscflux_arhouA]["arhouA1"]
+        dh_darhoEA1 = data[self.vf] * der[self.visccoef_arhoEA]["arhoEA1"] * data["A"] * data[self.grad_rhoe] \
+          + der[self.rhoe]["arhoEA1"] * data[self.viscflux_aA] + data[self.rhoe] * der[self.viscflux_aA]["arhoEA1"] \
+          - 0.5 * data[self.u] ** 2 * der[self.viscflux_arhoA]["arhoEA1"] \
+          + data[self.u] * der[self.viscflux_arhouA]["arhoEA1"]
+        dh_darhoA2 = data[self.vf] * der[self.visccoef_arhoEA]["arhoA2"] * data["A"] * data[self.grad_rhoe] \
+          + der[self.rhoe]["arhoA2"] * data[self.viscflux_aA] + data[self.rhoe] * der[self.viscflux_aA]["arhoA2"] \
+          - data[self.u] * der[self.u]["arhoA2"] * data[self.viscflux_arhoA] \
+          - 0.5 * data[self.u] ** 2 * der[self.viscflux_arhoA]["arhoA2"] \
+          + der[self.u]["arhoA2"] * data[self.viscflux_arhouA] + data[self.u] * der[self.viscflux_arhouA]["arhoA2"]
+        dh_darhouA2 = data[self.vf] * der[self.visccoef_arhoEA]["arhouA2"] * data["A"] * data[self.grad_rhoe] \
+          + der[self.rhoe]["arhouA2"] * data[self.viscflux_aA] + data[self.rhoe] * der[self.viscflux_aA]["arhouA2"] \
+          - data[self.u] * der[self.u]["arhouA2"] * data[self.viscflux_arhoA] \
+          - 0.5 * data[self.u] ** 2 * der[self.viscflux_arhoA]["arhouA2"] \
+          + der[self.u]["arhouA2"] * data[self.viscflux_arhouA] + data[self.u] * der[self.viscflux_arhouA]["arhouA2"]
+        dh_darhoEA2 = data[self.vf] * der[self.visccoef_arhoEA]["arhoEA2"] * data["A"] * data[self.grad_rhoe] \
+          + der[self.rhoe]["arhoEA2"] * data[self.viscflux_aA] + data[self.rhoe] * der[self.viscflux_aA]["arhoEA2"] \
+          - 0.5 * data[self.u] ** 2 * der[self.viscflux_arhoA]["arhoEA2"] \
+          + data[self.u] * der[self.viscflux_arhouA]["arhoEA2"]
+        dh_dgrad_aA1 = data[self.vf] * data[self.visccoef_arhoEA] * data["A"] * der[self.grad_rhoe]["grad_aA1"] \
+          + data[self.rhoe] * der[self.viscflux_aA]["grad_aA1"] \
+          - 0.5 * data[self.u] ** 2 * der[self.viscflux_arhoA]["grad_aA1"] \
+          + data[self.u] * der[self.viscflux_arhouA]["grad_aA1"]
+        dh_dgrad_arhoA = data[self.vf] * data[self.visccoef_arhoEA] * data["A"] * der[self.grad_rhoe][self.grad_arhoA] \
+          - 0.5 * data[self.u] ** 2 * der[self.viscflux_arhoA][self.grad_arhoA] \
+          + data[self.u] * der[self.viscflux_arhouA][self.grad_arhoA]
+        dh_dgrad_arhouA = data[self.vf] * data[self.visccoef_arhoEA] * data["A"] * der[self.grad_rhoe][self.grad_arhouA] \
+          + data[self.u] * der[self.viscflux_arhouA][self.grad_arhouA]
+        dh_dgrad_arhoEA = data[self.vf] * data[self.visccoef_arhoEA] * data["A"] * der[
+            self.grad_rhoe][self.grad_arhoEA]
+
+        data[self.name] = h
+        der[self.name]["aA1"] = dh_daA1
+        der[self.name]["arhoA1"] = dh_darhoA1
+        der[self.name]["arhouA1"] = dh_darhouA1
+        der[self.name]["arhoEA1"] = dh_darhoEA1
+        der[self.name]["arhoA2"] = dh_darhoA2
+        der[self.name]["arhouA2"] = dh_darhouA2
+        der[self.name]["arhoEA2"] = dh_darhoEA2
+        der[self.name]["grad_aA1"] = dh_dgrad_aA1
+        der[self.name][self.grad_arhoA] = dh_dgrad_arhoA
+        der[self.name][self.grad_arhouA] = dh_dgrad_arhouA
+        der[self.name][self.grad_arhoEA] = dh_dgrad_arhoEA

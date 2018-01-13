@@ -53,26 +53,44 @@ u_aux = TestAux(params)
 # mass viscous flux aux
 params = TestAuxParameters()
 params.set("var", "viscflux_arhoA1")
-params.set("other_vars", ["aA1", "arhoA1", "arhouA1", "arhoEA1", "arhoA2", "arhouA2", "arhoEA2", "grad_aA1", "grad_arhoA1"])
+params.set(
+    "other_vars", [
+        "aA1", "arhoA1", "arhouA1", "arhoEA1", "arhoA2", "arhouA2", "arhoEA2", "grad_aA1",
+        "grad_arhoA1"
+    ])
 params.set("coefs", [1.2, 2.5, 3.0, 4.1, 3.9, 2.5, 1.4, 1.3, 1.8])
 viscflux_arho_aux = TestAux(params)
 
 # momentum viscous flux aux
 params = TestAuxParameters()
 params.set("var", "viscflux_arhouA1")
-params.set("other_vars", ["aA1", "arhoA1", "arhouA1", "arhoEA1", "arhoA2", "arhouA2", "arhoEA2", "grad_aA1", "grad_arhoA1", "grad_arhouA1"])
+params.set(
+    "other_vars", [
+        "aA1", "arhoA1", "arhouA1", "arhoEA1", "arhoA2", "arhouA2", "arhoEA2", "grad_aA1",
+        "grad_arhoA1", "grad_arhouA1"
+    ])
 params.set("coefs", [1.1, 2.2, 3.8, 4.0, 3.7, 2.3, 1.2, 2.1, 1.5, 1.4])
 viscflux_arhouA_aux = TestAux(params)
 
-other_aux = [vf_aux, visccoef_arhoEA_aux, grad_rhoe_aux, rhoe_aux,
-             viscflux_aA_aux, u_aux, viscflux_arho_aux, viscflux_arhouA_aux]
-root_vars = ["aA1", "arhoA1", "arhouA1", "arhoEA1", "arhoA2", "arhouA2", "arhoEA2", "grad_aA1", "grad_arhoA1", "grad_arhouA1", "grad_arhoEA1"]
+other_aux = [
+    vf_aux, visccoef_arhoEA_aux, grad_rhoe_aux, rhoe_aux, viscflux_aA_aux, u_aux, viscflux_arho_aux,
+    viscflux_arhouA_aux
+]
+root_vars = [
+    "aA1", "arhoA1", "arhouA1", "arhoEA1", "arhoA2", "arhouA2", "arhoEA2", "grad_aA1",
+    "grad_arhoA1", "grad_arhouA1", "grad_arhoEA1"
+]
+
 
 class EntropyMinimumEnergyFluxDerivativesTester(unittest.TestCase):
-  def setUp(self):
-    self.derivatives_tester = AuxDerivativesTester()
 
-  def test(self):
-    rel_diffs = self.derivatives_tester.checkDerivatives(test_aux, other_aux, root_vars, constant_data={"A": 0.3})
-    for key in rel_diffs:
-      self.assertLessEqual(rel_diffs[key], 1e-5)
+    def setUp(self):
+        self.derivatives_tester = AuxDerivativesTester()
+
+    def test(self):
+        rel_diffs = self.derivatives_tester.checkDerivatives(
+            test_aux, other_aux, root_vars, constant_data={
+                "A": 0.3
+            })
+        for key in rel_diffs:
+            self.assertLessEqual(rel_diffs[key], 1e-5)

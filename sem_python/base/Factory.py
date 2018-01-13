@@ -120,49 +120,50 @@ from ..stabilization.LaxFriedrichsStabilization import LaxFriedrichsStabilizatio
 # utilities
 from ..utilities.error_utilities import error
 
+
 ## Class for creating objects
 class Factory(object):
-  ## Creates a parameters object
-  # @param object_class  class of object for which to create parameters object
-  # @param params  dictionary of parameter names to their values as strings
-  def createParametersObject(self, object_class, params=None):
-    # parameters classes are always named as the object class plus "Parameters"
-    parameters_class = object_class + "Parameters"
+    ## Creates a parameters object
+    # @param object_class  class of object for which to create parameters object
+    # @param params  dictionary of parameter names to their values as strings
+    def createParametersObject(self, object_class, params=None):
+        # parameters classes are always named as the object class plus "Parameters"
+        parameters_class = object_class + "Parameters"
 
-    # parameters classes should have no arguments to their constructors
-    if parameters_class in globals():
-      constructor = globals()[parameters_class]
-    else:
-      error("'" + parameters_class + "' is not a valid object type.")
-    parameters_object = constructor()
+        # parameters classes should have no arguments to their constructors
+        if parameters_class in globals():
+            constructor = globals()[parameters_class]
+        else:
+            error("'" + parameters_class + "' is not a valid object type.")
+        parameters_object = constructor()
 
-    # set each of the parameters
-    if params:
-      for param in params:
-        if param != "type":
-          parameters_object.set(param, params[param])
+        # set each of the parameters
+        if params:
+            for param in params:
+                if param != "type":
+                    parameters_object.set(param, params[param])
 
-    return parameters_object
+        return parameters_object
 
-  ## Creates an object from its parameters object instead of a parameters dictionary
-  # @param object_class  class of object to create
-  # @param parameters_object  parameters object
-  def createObjectFromParametersObject(self, object_class, parameters_object):
-    # create the object
-    if object_class in globals():
-      constructor = globals()[object_class]
-    else:
-      error("'" + object_class + "' is not a valid object type.")
+    ## Creates an object from its parameters object instead of a parameters dictionary
+    # @param object_class  class of object to create
+    # @param parameters_object  parameters object
+    def createObjectFromParametersObject(self, object_class, parameters_object):
+        # create the object
+        if object_class in globals():
+            constructor = globals()[object_class]
+        else:
+            error("'" + object_class + "' is not a valid object type.")
 
-    the_object = constructor(parameters_object)
+        the_object = constructor(parameters_object)
 
-    return the_object
+        return the_object
 
-  ## Creates an object
-  # @param object_class  class of object to create
-  # @param params  dictionary of parameter names to their values as strings
-  def createObject(self, object_class, params):
-    # create the object's parameters object first
-    parameters_object = self.createParametersObject(object_class, params)
+    ## Creates an object
+    # @param object_class  class of object to create
+    # @param params  dictionary of parameter names to their values as strings
+    def createObject(self, object_class, params):
+        # create the object's parameters object first
+        parameters_object = self.createParametersObject(object_class, params)
 
-    return self.createObjectFromParametersObject(object_class, parameters_object)
+        return self.createObjectFromParametersObject(object_class, parameters_object)

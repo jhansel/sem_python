@@ -20,11 +20,13 @@ test_aux = IdenticalAux(params)
 other_aux = [original_aux]
 root_vars = ["var1", "var2"]
 
-class IdenticalAuxDerivativesTester(unittest.TestCase):
-  def setUp(self):
-    self.derivatives_tester = AuxDerivativesTester()
 
-  def test(self):
-    rel_diffs = self.derivatives_tester.checkDerivatives(test_aux, other_aux, root_vars)
-    for key in rel_diffs:
-      self.assertLessEqual(rel_diffs[key], 1e-6)
+class IdenticalAuxDerivativesTester(unittest.TestCase):
+
+    def setUp(self):
+        self.derivatives_tester = AuxDerivativesTester()
+
+    def test(self):
+        rel_diffs = self.derivatives_tester.checkDerivatives(test_aux, other_aux, root_vars)
+        for key in rel_diffs:
+            self.assertLessEqual(rel_diffs[key], 1e-6)

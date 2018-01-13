@@ -21,11 +21,14 @@ other_aux = [aux]
 root_vars = ["grad_var1", "grad_var2"]
 constant_data = {"var1": 1.2, "var2": 1.4}
 
-class AuxGradientDerivativesTester(unittest.TestCase):
-  def setUp(self):
-    self.derivatives_tester = AuxDerivativesTester()
 
-  def test(self):
-    rel_diffs = self.derivatives_tester.checkDerivatives(test_aux, other_aux, root_vars, constant_data)
-    for key in rel_diffs:
-      self.assertLessEqual(rel_diffs[key], 1e-6)
+class AuxGradientDerivativesTester(unittest.TestCase):
+
+    def setUp(self):
+        self.derivatives_tester = AuxDerivativesTester()
+
+    def test(self):
+        rel_diffs = self.derivatives_tester.checkDerivatives(
+            test_aux, other_aux, root_vars, constant_data)
+        for key in rel_diffs:
+            self.assertLessEqual(rel_diffs[key], 1e-6)
