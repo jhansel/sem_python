@@ -47,6 +47,13 @@ class FEValues(object):
         A[q] += self.dof_handler.A[k] * self.phi[k_local, q]
     return A
 
+  def getLocalNodalArea(self, e):
+    A = np.zeros(self.dof_handler.n_dof_per_cell_per_var)
+    for k_local in range(self.dof_handler.n_dof_per_cell_per_var):
+      k = self.dof_handler.k(e, k_local)
+      A[k_local] = self.dof_handler.A[k]
+    return A
+
   def computeLocalAreaGradient(self, e):
     grad_A = np.zeros(self.quadrature.n_q)
     Jac = self.quadrature.Jac_divided_by_h * self.dof_handler.h[e]
@@ -63,6 +70,13 @@ class FEValues(object):
         k = self.dof_handler.k(e, k_local)
         aA1_k = self.dof_handler.aA1(U, k)
         aA1[q] += aA1_k * self.phi[k_local, q]
+    return aA1
+
+  def computeLocalNodalVolumeFractionSolution(self, U, e):
+    aA1 = np.zeros(self.dof_handler.n_dof_per_cell_per_var)
+    for k_local in range(self.dof_handler.n_dof_per_cell_per_var):
+      k = self.dof_handler.k(e, k_local)
+      aA1[k_local] =  self.dof_handler.aA1(U, k)
     return aA1
 
   def computeLocalVolumeFractionSolutionGradient(self, U, e):
@@ -83,6 +97,15 @@ class FEValues(object):
         k = self.dof_handler.k(e, k_local)
         i = self.dof_handler.i(k, var_index)
         solution[q] += U[i] * self.phi[k_local, q]
+    return solution
+
+  def computeLocalNodalSolution(self, U, variable_name, phase, e):
+    var_index = self.dof_handler.variable_index[variable_name][phase]
+    solution = np.zeros(self.dof_handler.n_dof_per_cell_per_var)
+    for k_local in range(self.dof_handler.n_dof_per_cell_per_var):
+      k = self.dof_handler.k(e, k_local)
+      i = self.dof_handler.i(k, var_index)
+      solution[k_local] = U[i]
     return solution
 
   def computeLocalSolutionGradient(self, U, variable_name, phase, e):

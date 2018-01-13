@@ -23,6 +23,7 @@ class ExecutionerParameters(Parameters):
     self.registerParameter("stabilization", "Stabilization")
     self.registerParameter("factory", "Factory")
     self.registerBoolParameter("split_source", "Use source-splitting?", False)
+    self.registerBoolParameter("group_fem", "Use group FEM?", False)
     self.registerBoolParameter("verbose", "Print execution information?", True)
 
 class Executioner(object):
@@ -42,6 +43,7 @@ class Executioner(object):
     self.factory = params.get("factory")
     stabilization = params.get("stabilization")
     self.split_source = params.get("split_source")
+    self.group_fem = params.get("group_fem")
     self.verbose = params.get("verbose")
     self.need_solution_gradients = stabilization.needSolutionGradients()
 
@@ -69,9 +71,11 @@ class Executioner(object):
     if self.model_type == ModelType.OnePhase:
       self.computeLocalCellSolution = self.computeLocalCellSolutionOnePhase
       self.computeLocalNodeSolution = self.computeLocalNodeSolutionOnePhase
+      self.getLocalNodalSolution = self.getLocalNodalSolutionOnePhase
     else:
       self.computeLocalCellSolution = self.computeLocalCellSolutionTwoPhase
       self.computeLocalNodeSolution = self.computeLocalNodeSolutionTwoPhase
+      self.getLocalNodalSolution = self.getLocalNodalSolutionTwoPhase
 
     # create aux quantities
     self.aux_list = self.createIndependentPhaseAuxQuantities(0)
@@ -83,6 +87,18 @@ class Executioner(object):
 
     # get list of aux quantities
     self.aux_names = [aux.name for aux in self.aux_list]
+
+    # create nodal aux quantities if needed by group FEM
+    if self.group_fem:
+      self.nodal_aux_list = self.createNodalAuxQuantities(0)
+      if self.model_type != ModelType.OnePhase:
+        self.nodal_aux_list = self.createNodalAuxQuantities(1)
+
+      self.group_fem_interp_aux_list = self.createInterpolatedAux(0)
+      if self.model_type != ModelType.OnePhase:
+        self.group_fem_interp_aux_list = self.createInterpolatedAux(1)
+    else:
+      self.nodal_aux_list = list()
 
     # create list of source kernels
     self.source_kernels = self.createIndependentPhaseSourceKernels(0)
@@ -204,6 +220,53 @@ class Executioner(object):
 
     return aux_list
 
+  def createNodalAuxQuantities(self, phase):
+    # create list of aux quantities to create
+    aux_names = list()
+    if phase == 0:
+      if self.model_type == ModelType.OnePhase:
+        aux_names.append("VolumeFraction1Phase")
+      else:
+        aux_names.append("VolumeFractionPhase1")
+    else:
+      aux_names.append("VolumeFractionPhase2")
+    aux_names += ["Velocity", "Density", "SpecificVolume", "SpecificTotalEnergy", "SpecificInternalEnergy", "Pressure"]
+
+    # create the aux quantities for this phase
+    aux_list = list()
+    for aux_name in aux_names_phase:
+      params = {"phase": phase}
+      if aux_name == "Pressure":
+        params["p_function"] = self.eos_list[phase].p
+      aux_list.append(self.factory.createObject(aux_name, params))
+
+    return aux_list
+
+  def createInterpolatedAux(self, phase):
+    aux_list = list()
+
+    phase_str = str(phase + 1)
+    arhoA = "arhoA" + phase_str
+    arhouA = "arhouA" + phase_str
+    arhoEA = "arhoEA" + phase_str
+
+    # mass
+    var = "inviscflux_arhoA" + phase_str
+    params = {"phase": phase, "variable": var, "dependencies": [arhouA]}
+    aux_list.append(self.factory.createObject(var, params))
+
+    # momentum
+    var = "inviscflux_arhouA" + phase_str
+    params = {"phase": phase, "variable": var, "dependencies": ["aA1", arhoA, arhouA, arhoEA]}
+    aux_list.append(self.factory.createObject(var, params))
+
+    # energy
+    var = "inviscflux_arhoEA" + phase_str
+    params = {"phase": phase, "variable": var, "dependencies": ["aA1", arhoA, arhouA, arhoEA]}
+    aux_list.append(self.factory.createObject(var, params))
+
+    return aux_list
+
   def createIndependentPhaseAdvectionKernels(self, phase):
     kernels = list()
     params = {"phase": phase, "dof_handler": self.dof_handler}
@@ -305,6 +368,8 @@ class Executioner(object):
   def addSteadyStateSystem(self, U, r, J):
     data = dict()
     der = self.dof_handler.initializeDerivativeData(self.aux_names)
+    nodal_data = dict()
+    nodal_der = self.dof_handler.initializeDerivativeData(self.aux_names)
 
     data["phi"] = self.fe_values.get_phi()
     for elem in range(self.dof_handler.n_cell):
@@ -321,10 +386,25 @@ class Executioner(object):
       data["htc_wall"] = self.ht_data[i_mesh].htc_wall
       data["P_heat"] = self.ht_data[i_mesh].P_heat
 
-      # compute solution
+      # group FEM
+      if self.group_fem:
+        # compute nodal solution on element
+        self.getLocalNodalSolution(U, elem, nodal_data)
+
+        # compute nodal aux on element
+        # NOTE: It would be approximately half as expensive (but more memory intensive)
+        # to compute the nodal auxes as a global vector.
+        for aux in self.nodal_aux_list:
+          aux.compute(nodal_data, nodal_der)
+
+        # compute flux auxes for group fem
+        for aux in self.group_fem_interp_aux_list:
+          aux.compute(nodal_data, nodal_der, data, der)
+
+      # compute elemental solution
       self.computeLocalCellSolution(U, elem, data)
 
-      # compute auxiliary quantities
+      # compute elemental auxiliary quantities
       for aux in self.aux_list:
         aux.compute(data, der)
 
@@ -397,6 +477,22 @@ class Executioner(object):
     data["arhoA2"] = U[self.dof_handler.i(k, arhoA2_index)]
     data["arhouA2"] = U[self.dof_handler.i(k, arhouA2_index)]
     data["arhoEA2"] = U[self.dof_handler.i(k, arhoEA2_index)]
+
+  def getLocalNodalSolutionOnePhase(self, U, elem, data):
+    data["A"] = self.fe_values.getLocalNodalArea(elem)
+    data["arhoA1"] = self.fe_values.getLocalNodalSolution(U, VariableName.ARhoA, 0, elem)
+    data["arhouA1"] = self.fe_values.getLocalNodalSolution(U, VariableName.ARhoUA, 0, elem)
+    data["arhoEA1"] = self.fe_values.getLocalNodalSolution(U, VariableName.ARhoEA, 0, elem)
+
+  def getLocalNodalSolutionTwoPhase(self, U, elem, data):
+    data["A"] = self.fe_values.getLocalNodalArea(elem)
+    data["aA1"] = self.fe_values.getLocalNodalVolumeFractionSolution(U, elem)
+    data["arhoA1"] = self.fe_values.getLocalNodalSolution(U, VariableName.ARhoA, 0, elem)
+    data["arhouA1"] = self.fe_values.getLocalNodalSolution(U, VariableName.ARhoUA, 0, elem)
+    data["arhoEA1"] = self.fe_values.getLocalNodalSolution(U, VariableName.ARhoEA, 0, elem)
+    data["arhoA2"] = self.fe_values.getLocalNodalSolution(U, VariableName.ARhoA, 1, elem)
+    data["arhouA2"] = self.fe_values.getLocalNodalSolution(U, VariableName.ARhoUA, 1, elem)
+    data["arhoEA2"] = self.fe_values.getLocalNodalSolution(U, VariableName.ARhoEA, 1, elem)
 
   def solve(self):
     self.nonlinear_solver.solve(self.U)
