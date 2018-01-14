@@ -39,8 +39,8 @@ file is `.pylintrc`. To lint a single file and save in a file `pylint_report`,
 pylint3 /path/to/file.py > pylint_report
 ```
 
-To apply it to the entire code base,
+To apply it to the entire code base, you can use the provided script:
 
 ```
-pylint3 sem_python > pylint_report
+./linter.sh
 ```

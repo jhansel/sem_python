@@ -1,6 +1,6 @@
 *.pyc
 *.csv
 *.pdf
-
 testing/**/*.txt
 !**/gold/*.csv
+linter_output
