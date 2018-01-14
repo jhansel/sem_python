@@ -61,7 +61,7 @@ class KernelDerivativesTester(object):
 
         # aux
         aux_list = list()
-        for a, aux_name in enumerate(aux_dependencies):
+        for a, aux_name in enumerate(sorted(aux_dependencies.keys())):
             # "vf1" is a special case of aux because its name is also the name of
             # a solution variable (in 2-phase); therefore one needs to make sure that
             # it uses its own "identity" aux instead of the generic test aux
