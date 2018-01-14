@@ -276,15 +276,3 @@ class DoFHandler(object, metaclass=ABCMeta):
             scaling_m = scaling[variable_m][phase_m]
             for k in range(self.n_node):
                 r[self.i(k, m)] *= scaling_m
-
-    ## Initializes derivative data to zero for each solution variable
-    # @param[in] names  list of aux quantity names
-    def initializeDerivativeData(self, names):
-        variable_names = ["aA1", "arhoA1", "arhouA1", "arhoEA1", "arhoA2", "arhouA2", "arhoEA2"]
-        der = dict()
-        for name in names:
-            der[name] = dict()
-            for var in variable_names:
-                der[name][var] = 0
-                der[name]["grad_" + var] = 0
-        return der

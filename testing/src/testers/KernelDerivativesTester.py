@@ -4,6 +4,7 @@ import numpy as np
 from sem_python.aux.TestAux import TestAux, TestAuxParameters
 from sem_python.base.enums import ModelType, VariableName
 from sem_python.base.Factory import Factory
+from sem_python.utilities.assembly_utilities import initializeDerivativeData
 from sem_python.utilities.numeric_utilities import computeRelativeDifference
 
 
@@ -47,6 +48,7 @@ class KernelDerivativesTester(object):
         dof_handler = factory.createObject(dof_handler_class, dof_handler_params)
 
         # quadrature
+        n_q_points = 2
         quadrature_params = {}
         quadrature = factory.createObject("Quadrature", quadrature_params)
 
@@ -66,7 +68,7 @@ class KernelDerivativesTester(object):
             # a solution variable (in 2-phase); therefore one needs to make sure that
             # it uses its own "identity" aux instead of the generic test aux
             if aux_name == "vf1":
-                params = {"phase": 0}
+                params = {"phase": 0, "size": n_q_points}
                 aux_list.append(factory.createObject("VolumeFractionPhase1", params))
             else:
                 params = TestAuxParameters()
@@ -77,20 +79,21 @@ class KernelDerivativesTester(object):
                     coefs.append(a + 2.0 + d * 0.5)
                 params.set("coefs", coefs)
                 params.set("b", 1.0)
+                params.set("size", n_q_points)
                 aux_list.append(TestAux(params))
 
         # add the aux derivatives
         for aux_name in aux_gradients:
-            params = {"aux": aux_name, "variable_names": aux_dependencies[aux_name]}
+            params = {"aux": aux_name, "variable_names": aux_dependencies[aux_name], "size": n_q_points}
             aux_list.append(factory.createObject("AuxGradient", params))
 
         # data
         data = dict()
         aux_names = [aux.name for aux in aux_list]
-        der = dof_handler.initializeDerivativeData(aux_names)
+        der = initializeDerivativeData(aux_names, n_q_points)
         for aux_name in aux_dependencies:
             for dep in aux_dependencies[aux_name]:
-                der[aux_name][dep] = 0
+                der[aux_name][dep] = np.zeros(n_q_points)
         self.elem = 0
         i = 0
         j = 1

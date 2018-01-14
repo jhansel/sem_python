@@ -23,14 +23,14 @@ class AmbrosoInterfaceClosures(InterfaceClosures):
         ]
         interaction_aux = list()
         for aux_name in interaction_aux_names:
-            params = dict()
+            params = {"size": self.n_q}
             if aux_name == "AmbrosoBeta":
                 params["chi"] = self.chi
             elif aux_name == "AmbrosoPressureRelaxationCoef":
                 params["pressure_relaxation_time"] = self.pressure_relaxation_time
             interaction_aux.append(self.factory.createObject(aux_name, params))
 
-        params = {"original_aux": "pI", "copy_aux": "pI_bar"}
+        params = {"original_aux": "pI", "copy_aux": "pI_bar", "size": self.n_q}
         interaction_aux.append(self.factory.createObject("IdenticalAux", params))
 
         return interaction_aux

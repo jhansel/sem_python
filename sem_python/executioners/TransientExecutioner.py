@@ -5,6 +5,7 @@ from termcolor import colored
 from ..base.enums import ModelType, VariableName
 from .Executioner import Executioner, ExecutionerParameters
 from ..utilities.error_utilities import error
+from ..utilities.assembly_utilities import initializeDerivativeData
 
 
 class TransientExecutionerParameters(ExecutionerParameters):
@@ -130,7 +131,7 @@ class TransientExecutioner(Executioner):
     ## Integrates the source terms when source-splitting is used
     def takeSourceStep(self, U, dt):
         data = dict()
-        der = self.dof_handler.initializeDerivativeData(self.aux_names)
+        der = initializeDerivativeData(self.aux_names, 1)
 
         data["phi"] = np.zeros(shape=(self.dof_handler.n_dof_per_cell_per_var, 1))
         data["grad_phi"] = np.zeros(shape=(self.dof_handler.n_dof_per_cell_per_var, 1))
@@ -200,7 +201,7 @@ class TransientExecutioner(Executioner):
 
         # determine maximum wave speed
         data = dict()
-        der = self.dof_handler.initializeDerivativeData(self.cfl_aux_names)
+        der = initializeDerivativeData(self.cfl_aux_names, self.quadrature.n_q)
 
         for phase in range(self.n_phases):
             phase_str = str(phase + 1)

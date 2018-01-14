@@ -107,7 +107,7 @@ class FEValues(object):
                 solution[q] += U[i] * self.phi[k_local, q]
         return solution
 
-    def computeLocalNodalSolution(self, U, variable_name, phase, e):
+    def getLocalNodalSolution(self, U, variable_name, phase, e):
         var_index = self.dof_handler.variable_index[variable_name][phase]
         solution = np.zeros(self.dof_handler.n_dof_per_cell_per_var)
         for k_local in range(self.dof_handler.n_dof_per_cell_per_var):

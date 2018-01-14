@@ -1,3 +1,5 @@
+import numpy as np
+
 from .AuxQuantity1Phase import AuxQuantity1Phase, AuxQuantity1PhaseParameters
 
 
@@ -14,7 +16,7 @@ class VolumeFraction1Phase(AuxQuantity1Phase):
         self.name = self.vf
 
     def compute(self, data, der):
-        data[self.name] = 1
+        data[self.name] = np.ones(self.size)
 
-        der[self.name]["A"] = 0
-        der[self.name]["aA1"] = 0
+        der[self.name]["A"] = np.zeros(self.size)
+        der[self.name]["aA1"] = np.zeros(self.size)

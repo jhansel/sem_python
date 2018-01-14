@@ -10,6 +10,7 @@ from ..aux.BerryPressureRelaxationCoef import BerryPressureRelaxationCoef, Berry
 from ..aux.BerryVelocityRelaxationCoef import BerryVelocityRelaxationCoef, BerryVelocityRelaxationCoefParameters
 from ..aux.ConstantAux import ConstantAux, ConstantAuxParameters
 from ..aux.Density import Density, DensityParameters
+from ..aux.EnergyFlux import EnergyFlux, EnergyFluxParameters
 from ..aux.LaxFriedrichsCoefficient import LaxFriedrichsCoefficient, LaxFriedrichsCoefficientParameters
 from ..aux.LaxFriedrichsCoefficientVolumeFraction import LaxFriedrichsCoefficientVolumeFraction, LaxFriedrichsCoefficientVolumeFractionParameters
 from ..aux.EntropyMinimumMassFlux import EntropyMinimumMassFlux, EntropyMinimumMassFluxParameters
@@ -18,6 +19,9 @@ from ..aux.EntropyMinimumEnergyFlux import EntropyMinimumEnergyFlux, EntropyMini
 from ..aux.EntropyMinimumVolumeFractionFlux import EntropyMinimumVolumeFractionFlux, EntropyMinimumVolumeFractionFluxParameters
 from ..aux.IdenticalAux import IdenticalAux, IdenticalAuxParameters
 from ..aux.InternalEnergyDensity import InternalEnergyDensity, InternalEnergyDensityParameters
+from ..aux.InterpolatedAux import InterpolatedAux, InterpolatedAuxParameters
+from ..aux.MassFlux import MassFlux, MassFluxParameters
+from ..aux.MomentumFlux import MomentumFlux, MomentumFluxParameters
 from ..aux.Pressure import Pressure, PressureParameters
 from ..aux.Temperature import Temperature, TemperatureParameters
 from ..aux.SoundSpeed import SoundSpeed, SoundSpeedParameters
@@ -86,7 +90,7 @@ from ..junctions.Junction1Phase import Junction1Phase, Junction1PhaseParameters
 from ..junctions.TestJunction import TestJunction, TestJunctionParameters
 
 # kernels
-from ..kernels.ArbitraryAuxKernel1Phase import ArbitraryAuxKernel1Phase, ArbitraryAuxKernel1PhaseParameters
+from ..kernels.InterpolatedAdvection import InterpolatedAdvection, InterpolatedAdvectionParameters
 from ..kernels.DissipationAuxFlux import DissipationAuxFlux, DissipationAuxFluxParameters
 from ..kernels.DissipationVariableGradient import DissipationVariableGradient, DissipationVariableGradientParameters
 from ..kernels.VolumeFractionAdvection import VolumeFractionAdvection, VolumeFractionAdvectionParameters

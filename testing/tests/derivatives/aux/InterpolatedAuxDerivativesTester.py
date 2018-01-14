@@ -12,7 +12,7 @@ test_var = "testvar"
 params.set("variable", test_var)
 params.set("dependencies", ["dep1", "dep2"])
 n_dof_per_cell_per_var = 2
-params.set("n_dof_per_cell_per_var", n_dof_per_cell_per_var)
+params.set("size", n_dof_per_cell_per_var)
 test_aux = InterpolatedAux(params)
 
 # nodal test aux
@@ -20,7 +20,7 @@ params = TestAuxParameters()
 params.set("var", test_var)
 params.set("other_vars", ["dep1", "dep2"])
 params.set("coefs", [2.0, 3.0])
-params.set("data_size", 2)
+params.set("size", 2)
 nodal_test_aux = TestAux(params)
 
 

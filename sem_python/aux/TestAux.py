@@ -13,7 +13,6 @@ class TestAuxParameters(AuxQuantityParameters):
         self.registerParameter("other_vars", "Variable names this quantity depends upon")
         self.registerParameter("coefs", "Proportionality coefficients for each quantity")
         self.registerFloatParameter("b", "Constant shift", 1.0)
-        self.registerIntParameter("data_size", "Length of data arrays", 1)
 
 
 class TestAux(AuxQuantity):
@@ -24,8 +23,6 @@ class TestAux(AuxQuantity):
         self.other_vars = params.get("other_vars")
         self.coefs = params.get("coefs")
         self.b = params.get("b")
-        data_size = params.get("data_size")
-        self.ones = np.ones(data_size)
         if len(self.other_vars) != len(self.coefs):
             error("'other_vars' and 'coefs' list parameters must have same length.")
         self.n = len(self.other_vars)
@@ -34,4 +31,4 @@ class TestAux(AuxQuantity):
         data[self.name] = self.b
         for i in range(self.n):
             data[self.name] += self.coefs[i] * data[self.other_vars[i]]
-            der[self.name][self.other_vars[i]] = self.coefs[i] * self.ones
+            der[self.name][self.other_vars[i]] = self.coefs[i] * np.ones(self.size)

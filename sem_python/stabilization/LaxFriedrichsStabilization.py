@@ -28,16 +28,16 @@ class LaxFriedrichsStabilization(Stabilization):
 
         # add the viscous coefficients
         for var in var_list:
-            params = {"phase": phase, "var": var, "mult": self.mult}
+            params = {"phase": phase, "var": var, "mult": self.mult, "size": self.n_q}
             aux_list.append(self.factory.createObject("LaxFriedrichsCoefficient", params))
 
         if not self.use_simple_dissipation:
             # internal energy density
-            params = {"phase": phase}
+            params = {"phase": phase, "size": self.n_q}
             aux_list.append(self.factory.createObject("InternalEnergyDensity", params))
 
             # volume fraction gradient
-            params = {"aux": "vf" + str(phase + 1), "variable_names": ["A", "aA1"]}
+            params = {"aux": "vf" + str(phase + 1), "variable_names": ["A", "aA1"], "size": self.n_q}
             aux_list.append(self.factory.createObject("AuxGradient", params))
 
             # other gradients
@@ -49,7 +49,7 @@ class LaxFriedrichsStabilization(Stabilization):
             for aux_gradient_name in aux_gradient_names:
                 params = {
                     "aux": aux_gradient_name + str(phase + 1),
-                    "variable_names": variable_names
+                    "variable_names": variable_names, "size": self.n_q
                 }
                 aux_list.append(self.factory.createObject("AuxGradient", params))
 
@@ -58,7 +58,7 @@ class LaxFriedrichsStabilization(Stabilization):
                 "EntropyMinimumVolumeFractionFlux", "EntropyMinimumMassFlux",
                 "EntropyMinimumMomentumFlux", "EntropyMinimumEnergyFlux"
             ]
-            params = {"phase": phase}
+            params = {"phase": phase, "size": self.n_q}
             for flux_class in flux_classes:
                 aux_list.append(self.factory.createObject(flux_class, params))
 
@@ -68,12 +68,12 @@ class LaxFriedrichsStabilization(Stabilization):
         aux_list = list()
 
         if self.model_type == ModelType.TwoPhase:
-            params = {"mult": self.mult}
+            params = {"mult": self.mult, "size": self.n_q}
             aux_list.append(
                 self.factory.createObject("LaxFriedrichsCoefficientVolumeFraction", params))
         else:
             # create zero coefficient for volume fraction equation
-            params = {"name": "visccoef_aA1", "value": 0}
+            params = {"name": "visccoef_aA1", "value": 0, "size": self.n_q}
             aux_list.append(self.factory.createObject("ConstantAux", params))
 
         aux_list += self.createIndependentPhaseAuxQuantities(0)

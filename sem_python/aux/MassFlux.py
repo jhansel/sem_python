@@ -1,3 +1,5 @@
+import numpy as np
+
 from .AuxQuantity1Phase import AuxQuantity1Phase, AuxQuantity1PhaseParameters
 
 
@@ -15,4 +17,4 @@ class MassFlux(AuxQuantity1Phase):
 
     def compute(self, data, der):
         data[self.name] = data[self.arhouA]
-        der[self.name][self.arhouA] = 1.0
+        der[self.name][self.arhouA] = np.ones(self.size)

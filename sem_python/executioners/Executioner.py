@@ -5,6 +5,7 @@ from ..closures.thermodynamic_functions import computeVelocity, \
   computeSpecificVolume, computeSpecificTotalEnergy, \
   computeSpecificInternalEnergy
 from ..input.Parameters import Parameters
+from ..utilities.assembly_utilities import initializeDerivativeData
 
 
 class ExecutionerParameters(Parameters):
@@ -102,12 +103,17 @@ class Executioner(object):
             self.nodal_aux_list = self.createNodalAuxQuantities(0)
             if self.model_type != ModelType.OnePhase:
                 self.nodal_aux_list = self.createNodalAuxQuantities(1)
+            self.nodal_aux_names = [aux.name for aux in self.nodal_aux_list]
 
             self.group_fem_interp_aux_list = self.createInterpolatedAux(0)
             if self.model_type != ModelType.OnePhase:
-                self.group_fem_interp_aux_list = self.createInterpolatedAux(1)
+                self.group_fem_interp_aux_list += self.createInterpolatedAux(1)
+            self.group_fem_aux_names = [aux.name for aux in self.group_fem_interp_aux_list]
         else:
             self.nodal_aux_list = list()
+            self.nodal_aux_names = list()
+            self.group_fem_interp_aux_list = list()
+            self.group_fem_aux_names = list()
 
         # create list of source kernels
         self.source_kernels = self.createIndependentPhaseSourceKernels(0)
@@ -219,7 +225,7 @@ class Executioner(object):
         # create the aux quantities for this phase
         aux_list = list()
         for aux_name in aux_names_phase:
-            params = {"phase": phase}
+            params = {"phase": phase, "size": self.quadrature.n_q}
             if aux_name == "Pressure":
                 params["p_function"] = self.eos_list[phase].p
             elif aux_name == "Temperature":
@@ -232,7 +238,7 @@ class Executioner(object):
 
     def createPhaseInteractionAuxQuantities(self):
         aux_list = list()
-        params = {"aux": "vf1", "variable_names": ["aA1", "A"]}
+        params = {"aux": "vf1", "variable_names": ["aA1", "A"], "size": self.quadrature.n_q}
         aux_list.append(self.factory.createObject("AuxGradient", params))
 
         return aux_list
@@ -249,13 +255,13 @@ class Executioner(object):
             aux_names.append("VolumeFractionPhase2")
         aux_names += [
             "Velocity", "Density", "SpecificVolume", "SpecificTotalEnergy",
-            "SpecificInternalEnergy", "Pressure"
+            "SpecificInternalEnergy", "Pressure", "MassFlux", "MomentumFlux", "EnergyFlux"
         ]
 
         # create the aux quantities for this phase
         aux_list = list()
         for aux_name in aux_names:
-            params = {"phase": phase}
+            params = {"phase": phase, "size": self.dof_handler.n_dof_per_cell_per_var}
             if aux_name == "Pressure":
                 params["p_function"] = self.eos_list[phase].p
             aux_list.append(self.factory.createObject(aux_name, params))
@@ -272,29 +278,37 @@ class Executioner(object):
 
         # mass
         var = "inviscflux_arhoA" + phase_str
-        params = {"phase": phase, "variable": var, "dependencies": [arhouA]}
-        aux_list.append(self.factory.createObject(var, params))
+        params = {"variable": var, "dependencies": [arhouA], "size": self.dof_handler.n_dof_per_cell_per_var}
+        aux_list.append(self.factory.createObject("InterpolatedAux", params))
 
         # momentum
         var = "inviscflux_arhouA" + phase_str
-        params = {"phase": phase, "variable": var, "dependencies": ["aA1", arhoA, arhouA, arhoEA]}
-        aux_list.append(self.factory.createObject(var, params))
+        params = {"variable": var, "dependencies": ["aA1", arhoA, arhouA, arhoEA], "size": self.dof_handler.n_dof_per_cell_per_var}
+        aux_list.append(self.factory.createObject("InterpolatedAux", params))
 
         # energy
         var = "inviscflux_arhoEA" + phase_str
-        params = {"phase": phase, "variable": var, "dependencies": ["aA1", arhoA, arhouA, arhoEA]}
-        aux_list.append(self.factory.createObject(var, params))
+        params = {"variable": var, "dependencies": ["aA1", arhoA, arhouA, arhoEA], "size": self.dof_handler.n_dof_per_cell_per_var}
+        aux_list.append(self.factory.createObject("InterpolatedAux", params))
 
         return aux_list
 
     def createIndependentPhaseAdvectionKernels(self, phase):
         kernels = list()
-        params = {"phase": phase, "dof_handler": self.dof_handler}
-        kernel_name_list = [
-            "MassAdvection", "MomentumAdvection", "MomentumAreaGradient", "EnergyAdvection"
-        ]
-        for kernel_name in kernel_name_list:
-            kernels.append(self.factory.createObject(kernel_name, params))
+        if self.group_fem:
+            phase_str = str(phase + 1)
+            var_enums = [VariableName.ARhoA, VariableName.ARhoUA, VariableName.ARhoEA]
+            aux_vars = ["inviscflux_arhoA" + phase_str, "inviscflux_arhouA" + phase_str, "inviscflux_arhoEA" + phase_str]
+            for var_enum, aux_var in zip(var_enums, aux_vars):
+                params = {"var_enum": var_enum, "aux_name": aux_var, "phase": phase, "dof_handler": self.dof_handler}
+                kernels.append(self.factory.createObject("InterpolatedAdvection", params))
+        else:
+            params = {"phase": phase, "dof_handler": self.dof_handler}
+            kernel_name_list = [
+                "MassAdvection", "MomentumAdvection", "MomentumAreaGradient", "EnergyAdvection"
+            ]
+            for kernel_name in kernel_name_list:
+                kernels.append(self.factory.createObject(kernel_name, params))
         return kernels
 
     def createIndependentPhaseSourceKernels(self, phase):
@@ -389,9 +403,9 @@ class Executioner(object):
     ## Computes the steady-state residual and Jacobian
     def addSteadyStateSystem(self, U, r, J):
         data = dict()
-        der = self.dof_handler.initializeDerivativeData(self.aux_names)
+        der = initializeDerivativeData(self.aux_names + self.group_fem_aux_names, self.quadrature.n_q)
         nodal_data = dict()
-        nodal_der = self.dof_handler.initializeDerivativeData(self.aux_names)
+        nodal_der = initializeDerivativeData(self.nodal_aux_names, self.dof_handler.n_dof_per_cell_per_var)
 
         data["phi"] = self.fe_values.get_phi()
         for elem in range(self.dof_handler.n_cell):
