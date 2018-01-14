@@ -28,9 +28,9 @@ class VolumeFractionPressureRelaxation(Kernel2Phase):
         elif var_index == self.arhouA1_index:
             return -(data["p_relax"] * der["p1"]["arhouA1"] + \
               der["p_relax"]["arhouA1"] * (data["p1"] - data["p2"])) * data["A"] * data["phi"][j] * data["phi"][i] * data["JxW"]
-        elif var_index == self.arhoEA1_index:            \
-                  return -(data["p_relax"] * der["p1"]["arhoEA1"] + \
-                    der["p_relax"]["arhoEA1"] * (data["p1"] - data["p2"])) * data["A"] * data["phi"][j] * data["phi"][i] * data["JxW"]
+        elif var_index == self.arhoEA1_index:                                                            \
+                                                                  return -(data["p_relax"] * der["p1"]["arhoEA1"] + \
+                                                                    der["p_relax"]["arhoEA1"] * (data["p1"] - data["p2"])) * data["A"] * data["phi"][j] * data["phi"][i] * data["JxW"]
         elif var_index == self.arhoA2_index:
             return -(-data["p_relax"] * der["p2"]["arhoA2"] + \
               der["p_relax"]["arhoA2"] * (data["p1"] - data["p2"])) * data["A"] * data["phi"][j] * data["phi"][i] * data["JxW"]

@@ -278,17 +278,29 @@ class Executioner(object):
 
         # mass
         var = "inviscflux_arhoA" + phase_str
-        params = {"variable": var, "dependencies": [arhouA], "size": self.dof_handler.n_dof_per_cell_per_var}
+        params = {
+            "variable": var,
+            "dependencies": [arhouA],
+            "size": self.dof_handler.n_dof_per_cell_per_var
+        }
         aux_list.append(self.factory.createObject("InterpolatedAux", params))
 
         # momentum
         var = "inviscflux_arhouA" + phase_str
-        params = {"variable": var, "dependencies": ["aA1", arhoA, arhouA, arhoEA], "size": self.dof_handler.n_dof_per_cell_per_var}
+        params = {
+            "variable": var,
+            "dependencies": ["aA1", arhoA, arhouA, arhoEA],
+            "size": self.dof_handler.n_dof_per_cell_per_var
+        }
         aux_list.append(self.factory.createObject("InterpolatedAux", params))
 
         # energy
         var = "inviscflux_arhoEA" + phase_str
-        params = {"variable": var, "dependencies": ["aA1", arhoA, arhouA, arhoEA], "size": self.dof_handler.n_dof_per_cell_per_var}
+        params = {
+            "variable": var,
+            "dependencies": ["aA1", arhoA, arhouA, arhoEA],
+            "size": self.dof_handler.n_dof_per_cell_per_var
+        }
         aux_list.append(self.factory.createObject("InterpolatedAux", params))
 
         return aux_list
@@ -298,9 +310,17 @@ class Executioner(object):
         if self.group_fem:
             phase_str = str(phase + 1)
             var_enums = [VariableName.ARhoA, VariableName.ARhoUA, VariableName.ARhoEA]
-            aux_vars = ["inviscflux_arhoA" + phase_str, "inviscflux_arhouA" + phase_str, "inviscflux_arhoEA" + phase_str]
+            aux_vars = [
+                "inviscflux_arhoA" + phase_str, "inviscflux_arhouA" + phase_str,
+                "inviscflux_arhoEA" + phase_str
+            ]
             for var_enum, aux_var in zip(var_enums, aux_vars):
-                params = {"var_enum": var_enum, "aux_name": aux_var, "phase": phase, "dof_handler": self.dof_handler}
+                params = {
+                    "var_enum": var_enum,
+                    "aux_name": aux_var,
+                    "phase": phase,
+                    "dof_handler": self.dof_handler
+                }
                 kernels.append(self.factory.createObject("InterpolatedAdvection", params))
         else:
             params = {"phase": phase, "dof_handler": self.dof_handler}
@@ -403,9 +423,11 @@ class Executioner(object):
     ## Computes the steady-state residual and Jacobian
     def addSteadyStateSystem(self, U, r, J):
         data = dict()
-        der = initializeDerivativeData(self.aux_names + self.group_fem_aux_names, self.quadrature.n_q)
+        der = initializeDerivativeData(
+            self.aux_names + self.group_fem_aux_names, self.quadrature.n_q)
         nodal_data = dict()
-        nodal_der = initializeDerivativeData(self.nodal_aux_names, self.dof_handler.n_dof_per_cell_per_var)
+        nodal_der = initializeDerivativeData(
+            self.nodal_aux_names, self.dof_handler.n_dof_per_cell_per_var)
 
         data["phi"] = self.fe_values.get_phi()
         for elem in range(self.dof_handler.n_cell):

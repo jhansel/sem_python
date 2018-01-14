@@ -21,10 +21,13 @@ class InterpolatedAdvection(Kernel1Phase):
         if var_index == self.aA1_index:
             return -der[self.aux_name]["aA1"] * data["phi"][j] * data["grad_phi"][i] * data["JxW"]
         elif var_index == self.arhoA_index:
-            return -der[self.aux_name][self.arhoA] * data["phi"][j] * data["grad_phi"][i] * data["JxW"]
+            return -der[self.aux_name][self.arhoA] * data["phi"][j] * data["grad_phi"][i] * data[
+                "JxW"]
         elif var_index == self.arhouA_index:
-            return -der[self.aux_name][self.arhouA] * data["phi"][j] * data["grad_phi"][i] * data["JxW"]
+            return -der[self.aux_name][self.arhouA] * data["phi"][j] * data["grad_phi"][i] * data[
+                "JxW"]
         elif var_index == self.arhoEA_index:
-            return -der[self.aux_name][self.arhoEA] * data["phi"][j] * data["grad_phi"][i] * data["JxW"]
+            return -der[self.aux_name][self.arhoEA] * data["phi"][j] * data["grad_phi"][i] * data[
+                "JxW"]
         else:
             return self.zero

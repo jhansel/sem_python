@@ -37,7 +37,11 @@ class LaxFriedrichsStabilization(Stabilization):
             aux_list.append(self.factory.createObject("InternalEnergyDensity", params))
 
             # volume fraction gradient
-            params = {"aux": "vf" + str(phase + 1), "variable_names": ["A", "aA1"], "size": self.n_q}
+            params = {
+                "aux": "vf" + str(phase + 1),
+                "variable_names": ["A", "aA1"],
+                "size": self.n_q
+            }
             aux_list.append(self.factory.createObject("AuxGradient", params))
 
             # other gradients
@@ -49,7 +53,8 @@ class LaxFriedrichsStabilization(Stabilization):
             for aux_gradient_name in aux_gradient_names:
                 params = {
                     "aux": aux_gradient_name + str(phase + 1),
-                    "variable_names": variable_names, "size": self.n_q
+                    "variable_names": variable_names,
+                    "size": self.n_q
                 }
                 aux_list.append(self.factory.createObject("AuxGradient", params))
 

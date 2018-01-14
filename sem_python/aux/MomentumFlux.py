@@ -19,21 +19,8 @@ class MomentumFlux(AuxQuantity1Phase):
 
         der[self.name]["aA1"] = (
             der[self.vf]["aA1"] * data[self.p] + data[self.vf] * der[self.p]["aA1"]) * data["A"]
-        der[self.name][
-            self.
-            arhoA] = data[self.arhouA] * der[self.u][self.
-                                                     arhoA] + data[self.
-                                                                   vf] * der[self.
-                                                                             p][self.
-                                                                                arhoA] * data["A"]
-        der[self.name][
-            self.
-            arhouA] = data[self.
-                           u] + data[self.
-                                     arhouA] * der[self.
-                                                   u][self.
-                                                      arhouA] + data[self.
-                                                                     vf] * der[self.
-                                                                               p][self.
-                                                                                  arhouA] * data["A"]
+        der[self.name][self.arhoA] = data[self.arhouA] * der[self.u][self.arhoA] + data[self.vf] \
+            * der[self.p][self.arhoA] * data["A"]
+        der[self.name][self.arhouA] = data[self.u] + data[self.arhouA] * der[self.u][self.arhouA] \
+            + data[self.vf] * der[self.p][self.arhouA] * data["A"]
         der[self.name][self.arhoEA] = data[self.vf] * der[self.p][self.arhoEA] * data["A"]

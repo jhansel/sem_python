@@ -84,7 +84,11 @@ class KernelDerivativesTester(object):
 
         # add the aux derivatives
         for aux_name in aux_gradients:
-            params = {"aux": aux_name, "variable_names": aux_dependencies[aux_name], "size": n_q_points}
+            params = {
+                "aux": aux_name,
+                "variable_names": aux_dependencies[aux_name],
+                "size": n_q_points
+            }
             aux_list.append(factory.createObject("AuxGradient", params))
 
         # data
