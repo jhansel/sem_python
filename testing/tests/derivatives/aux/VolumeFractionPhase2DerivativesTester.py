@@ -1,11 +1,10 @@
 import unittest
 
-from sem_python.aux.VolumeFractionPhase2 import VolumeFractionPhase2, VolumeFractionPhase2Parameters
+from sem_python.base.Factory import Factory
 from ....src.testers.AuxDerivativesTester import AuxDerivativesTester
 
-params = VolumeFractionPhase2Parameters()
-params.set("phase", 1)
-test_aux = VolumeFractionPhase2(params)
+factory = Factory()
+test_aux = factory.createObject("VolumeFractionPhase2", {"phase": 1})
 
 other_aux = list()
 root_vars = ["aA1"]

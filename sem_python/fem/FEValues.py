@@ -5,8 +5,8 @@ from ..input.Parameters import Parameters
 
 class FEValuesParameters(Parameters):
 
-    def __init__(self):
-        Parameters.__init__(self)
+    def __init__(self, factory):
+        Parameters.__init__(self, factory)
         self.registerParameter("quadrature", "Quadrature")
         self.registerParameter("dof_handler", "Degree of freedom handler")
         self.registerParameter("meshes", "List of meshes")

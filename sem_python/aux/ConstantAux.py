@@ -3,8 +3,8 @@ from .AuxQuantity import AuxQuantity, AuxQuantityParameters
 
 class ConstantAuxParameters(AuxQuantityParameters):
 
-    def __init__(self):
-        AuxQuantityParameters.__init__(self)
+    def __init__(self, factory):
+        AuxQuantityParameters.__init__(self, factory)
         self.registerStringParameter("name", "Name of aux quantity")
         self.registerFloatParameter("value", "Constant value of aux quantity")
 

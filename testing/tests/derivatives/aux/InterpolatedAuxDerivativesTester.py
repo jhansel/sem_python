@@ -2,26 +2,27 @@ from copy import deepcopy
 import numpy as np
 import unittest
 
-from sem_python.aux.InterpolatedAux import InterpolatedAux, InterpolatedAuxParameters
-from sem_python.aux.TestAux import TestAux, TestAuxParameters
+from sem_python.base.Factory import Factory
 from sem_python.utilities.numeric_utilities import computeRelativeDifference
 
+factory = Factory()
+
 # test aux
-params = InterpolatedAuxParameters()
+params = dict()
 test_var = "testvar"
-params.set("variable", test_var)
-params.set("dependencies", ["dep1", "dep2"])
+params["variable"] = test_var
+params["dependencies"] = ["dep1", "dep2"]
 n_dof_per_cell_per_var = 2
-params.set("size", n_dof_per_cell_per_var)
-test_aux = InterpolatedAux(params)
+params["size"] = n_dof_per_cell_per_var
+test_aux = factory.createObject("InterpolatedAux", params)
 
 # nodal test aux
-params = TestAuxParameters()
-params.set("var", test_var)
-params.set("other_vars", ["dep1", "dep2"])
-params.set("coefs", [2.0, 3.0])
-params.set("size", 2)
-nodal_test_aux = TestAux(params)
+params = dict()
+params["var"] = test_var
+params["other_vars"] = ["dep1", "dep2"]
+params["coefs"] = [2.0, 3.0]
+params["size"] = 2
+nodal_test_aux = factory.createObject("TestAux", params)
 
 
 class InterpolatedAuxDerivativesTester(unittest.TestCase):

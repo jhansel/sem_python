@@ -5,8 +5,8 @@ from ..input.Parameters import Parameters
 
 class InterfaceClosuresParameters(Parameters):
 
-    def __init__(self):
-        Parameters.__init__(self)
+    def __init__(self, factory):
+        Parameters.__init__(self, factory)
         self.registerParameter("factory", "Factory")
         self.registerIntParameter("n_q", "Number of quadrature points per cell")
 

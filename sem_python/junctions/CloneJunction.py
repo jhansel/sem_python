@@ -4,8 +4,8 @@ from ..utilities.error_utilities import error
 
 class CloneJunctionParameters(JunctionParameters):
 
-    def __init__(self):
-        JunctionParameters.__init__(self)
+    def __init__(self, factory):
+        JunctionParameters.__init__(self, factory)
 
 
 ## Junction that clones the master node solution values to the slave node solution values

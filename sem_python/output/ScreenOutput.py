@@ -3,8 +3,8 @@ from .Output import Output, OutputParameters
 
 class ScreenOutputParameters(OutputParameters):
 
-    def __init__(self):
-        OutputParameters.__init__(self)
+    def __init__(self, factory):
+        OutputParameters.__init__(self, factory)
         self.registerStringListParameter("data_names", "List of names of quantities to print")
 
 

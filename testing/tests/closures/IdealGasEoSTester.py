@@ -1,17 +1,18 @@
 import unittest
 
+from sem_python.base.Factory import Factory
 from ...src.testers.EoSConsistencyTester import EoSConsistencyTester
 from ...src.testers.FunctionDerivativesTester import FunctionDerivativesTester
-from sem_python.closures.IdealGasEoS import IdealGasEoS, IdealGasEoSParameters
 
 
 class IdealGasEoSTester(unittest.TestCase):
 
     def setUp(self):
-        params = IdealGasEoSParameters()
-        params.set("gamma", 1.4)
-        params.set("R", 290.0)
-        self.eos = IdealGasEoS(params)
+        factory = Factory()
+        params = dict()
+        params["gamma"] = 1.4
+        params["R"] = 290.0
+        self.eos = factory.createObject("IdealGasEoS", params)
         self.derivative_tester = FunctionDerivativesTester()
 
     def testDensityDerivatives(self):

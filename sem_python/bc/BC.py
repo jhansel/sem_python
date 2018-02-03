@@ -3,8 +3,8 @@ from ..input.Parameters import Parameters
 
 class BCParameters(Parameters):
 
-    def __init__(self):
-        Parameters.__init__(self)
+    def __init__(self, factory):
+        Parameters.__init__(self, factory)
         self.registerStringParameter("mesh_name", "Name of the mesh for which this BC applies")
         self.registerStringSelectionParameter(
             "boundary", ["left", "right"], "Which boundary to apply boundary condition on")

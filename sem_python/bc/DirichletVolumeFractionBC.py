@@ -4,8 +4,8 @@ from ..closures.thermodynamic_functions import computeVolumeFraction
 
 class DirichletVolumeFractionBCParameters(VolumeFractionBCParameters):
 
-    def __init__(self):
-        VolumeFractionBCParameters.__init__(self)
+    def __init__(self, factory):
+        VolumeFractionBCParameters.__init__(self, factory)
         self.registerFloatParameter("vf1", "Specified volume fraction of first phase")
 
 

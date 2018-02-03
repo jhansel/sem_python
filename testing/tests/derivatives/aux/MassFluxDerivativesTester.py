@@ -1,11 +1,11 @@
 import unittest
 
-from sem_python.aux.MassFlux import MassFlux, MassFluxParameters
+from sem_python.base.Factory import Factory
 from ....src.testers.AuxDerivativesTester import AuxDerivativesTester
 
-params = MassFluxParameters()
-params.set("phase", 0)
-test_aux = MassFlux(params)
+factory = Factory()
+
+test_aux = factory.createObject("MassFlux", {"phase": 0})
 
 other_aux = list()
 root_vars = ["arhouA1"]

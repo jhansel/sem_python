@@ -5,8 +5,8 @@ from ..input.Parameters import Parameters
 
 class StabilizationParameters(Parameters):
 
-    def __init__(self):
-        Parameters.__init__(self)
+    def __init__(self, factory):
+        Parameters.__init__(self, factory)
         self.registerParameter("factory", "Factory")
         self.registerParameter("dof_handler", "Degree of freedom handler")
         self.registerParameter("model_type", "Model type")

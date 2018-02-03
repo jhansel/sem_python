@@ -4,8 +4,8 @@ from ..utilities.error_utilities import error
 
 class JunctionParameters(Parameters):
 
-    def __init__(self):
-        Parameters.__init__(self)
+    def __init__(self, factory):
+        Parameters.__init__(self, factory)
         self.registerStringListParameter(
             "mesh_names", "List of names of the meshes to be connected")
         self.registerStringListParameter(

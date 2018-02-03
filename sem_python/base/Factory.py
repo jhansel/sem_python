@@ -28,6 +28,7 @@ from ..aux.SoundSpeed import SoundSpeed, SoundSpeedParameters
 from ..aux.SpecificInternalEnergy import SpecificInternalEnergy, SpecificInternalEnergyParameters
 from ..aux.SpecificTotalEnergy import SpecificTotalEnergy, SpecificTotalEnergyParameters
 from ..aux.SpecificVolume import SpecificVolume, SpecificVolumeParameters
+from ..aux.TestAux import TestAux, TestAuxParameters
 from ..aux.Velocity import Velocity, VelocityParameters
 from ..aux.VolumeFraction1Phase import VolumeFraction1Phase, VolumeFraction1PhaseParameters
 from ..aux.VolumeFractionPhase1 import VolumeFractionPhase1, VolumeFractionPhase1Parameters
@@ -139,7 +140,7 @@ class Factory(object):
             constructor = globals()[parameters_class]
         else:
             error("'" + parameters_class + "' is not a valid object type.")
-        parameters_object = constructor()
+        parameters_object = constructor(self)
 
         # set each of the parameters
         if params:

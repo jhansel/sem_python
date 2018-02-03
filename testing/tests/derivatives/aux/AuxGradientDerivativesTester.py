@@ -1,21 +1,22 @@
 import unittest
 
-from sem_python.aux.AuxGradient import AuxGradient, AuxGradientParameters
-from sem_python.aux.TestAux import TestAux, TestAuxParameters
+from sem_python.base.Factory import Factory
 from ....src.testers.AuxDerivativesTester import AuxDerivativesTester
 
+factory = Factory()
+
 # gradient of test aux
-params = AuxGradientParameters()
-params.set("aux", "testaux")
-params.set("variable_names", ["var1", "var2"])
-test_aux = AuxGradient(params)
+params = dict()
+params["aux"] = "testaux"
+params["variable_names"] = ["var1", "var2"]
+test_aux = factory.createObject("AuxGradient", params)
 
 # test aux
-params = TestAuxParameters()
-params.set("var", "testaux")
-params.set("other_vars", ["var1", "var2"])
-params.set("coefs", [1.5, 2.5])
-aux = TestAux(params)
+params = dict()
+params["var"] = "testaux"
+params["other_vars"] = ["var1", "var2"]
+params["coefs"] = [1.5, 2.5]
+aux = factory.createObject("TestAux", params)
 
 other_aux = [aux]
 root_vars = ["grad_var1", "grad_var2"]

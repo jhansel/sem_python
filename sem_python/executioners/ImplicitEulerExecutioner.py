@@ -5,8 +5,8 @@ from .TransientExecutioner import TransientExecutioner, TransientExecutionerPara
 
 class ImplicitEulerExecutionerParameters(TransientExecutionerParameters):
 
-    def __init__(self):
-        TransientExecutionerParameters.__init__(self)
+    def __init__(self, factory):
+        TransientExecutionerParameters.__init__(self, factory)
 
 
 class ImplicitEulerExecutioner(TransientExecutioner):

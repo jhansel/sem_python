@@ -1,27 +1,26 @@
 import unittest
 
-from sem_python.aux.AcousticImpedance import AcousticImpedance, AcousticImpedanceParameters
-from sem_python.aux.TestAux import TestAux, TestAuxParameters
+from sem_python.base.Factory import Factory
 from ....src.testers.AuxDerivativesTester import AuxDerivativesTester
 
+factory = Factory()
+
 # test aux
-params = AcousticImpedanceParameters()
-params.set("phase", 0)
-test_aux = AcousticImpedance(params)
+test_aux = factory.createObject("AcousticImpedance", {"phase": 0})
 
 # density aux
-params = TestAuxParameters()
-params.set("var", "rho1")
-params.set("other_vars", ["aA1", "arhoA1"])
-params.set("coefs", [1.4, 2.5])
-rho_aux = TestAux(params)
+params = dict()
+params["var"] = "rho1"
+params["other_vars"] = ["aA1", "arhoA1"]
+params["coefs"] = [1.4, 2.5]
+rho_aux = factory.createObject("TestAux", params)
 
 # sound speed aux
-params = TestAuxParameters()
-params.set("var", "c1")
-params.set("other_vars", ["aA1", "arhoA1", "arhouA1", "arhoEA1"])
-params.set("coefs", [1.2, 2.2, 3.2, 4.2])
-c_aux = TestAux(params)
+params = dict()
+params["var"] = "c1"
+params["other_vars"] = ["aA1", "arhoA1", "arhouA1", "arhoEA1"]
+params["coefs"] = [1.2, 2.2, 3.2, 4.2]
+c_aux = factory.createObject("TestAux", params)
 
 other_aux = [rho_aux, c_aux]
 root_vars = ["aA1", "arhoA1", "arhouA1", "arhoEA1"]

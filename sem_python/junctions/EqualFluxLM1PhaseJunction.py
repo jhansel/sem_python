@@ -4,8 +4,8 @@ from ..base.enums import ModelType
 
 class EqualFluxLM1PhaseJunctionParameters(Junction1PhaseParameters):
 
-    def __init__(self):
-        Junction1PhaseParameters.__init__(self)
+    def __init__(self, factory):
+        Junction1PhaseParameters.__init__(self, factory)
 
 
 ## Junction that enforces that the fluxes are equal at the junction

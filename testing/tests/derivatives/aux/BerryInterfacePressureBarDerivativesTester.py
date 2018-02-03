@@ -1,40 +1,40 @@
 import unittest
 
-from sem_python.aux.BerryInterfacePressureBar import BerryInterfacePressureBar, BerryInterfacePressureBarParameters
-from sem_python.aux.TestAux import TestAux, TestAuxParameters
+from sem_python.base.Factory import Factory
 from ....src.testers.AuxDerivativesTester import AuxDerivativesTester
 
+factory = Factory()
+
 # test aux
-params = BerryInterfacePressureBarParameters()
-test_aux = BerryInterfacePressureBar(params)
+test_aux = factory.createObject("BerryInterfacePressureBar", {})
 
 # phase-1 pressure
-params = TestAuxParameters()
-params.set("var", "p1")
-params.set("other_vars", ["aA1", "arhoA1", "arhouA1", "arhoEA1"])
-params.set("coefs", [1.1, 1.2, 1.3, 1.4])
-p1_aux = TestAux(params)
+params = dict()
+params["var"] = "p1"
+params["other_vars"] = ["aA1", "arhoA1", "arhouA1", "arhoEA1"]
+params["coefs"] = [1.1, 1.2, 1.3, 1.4]
+p1_aux = factory.createObject("TestAux", params)
 
 # phase-2 pressure
-params = TestAuxParameters()
-params.set("var", "p2")
-params.set("other_vars", ["aA1", "arhoA2", "arhouA2", "arhoEA2"])
-params.set("coefs", [1.7, 1.9, 2.3, 1.6])
-p2_aux = TestAux(params)
+params = dict()
+params["var"] = "p2"
+params["other_vars"] = ["aA1", "arhoA2", "arhouA2", "arhoEA2"]
+params["coefs"] = [1.7, 1.9, 2.3, 1.6]
+p2_aux = factory.createObject("TestAux", params)
 
 # phase-1 acoustic impedance aux
-params = TestAuxParameters()
-params.set("var", "z1")
-params.set("other_vars", ["aA1", "arhoA1", "arhouA1", "arhoEA1"])
-params.set("coefs", [2.1, 2.3, 3.4, 4.5])
-z1_aux = TestAux(params)
+params = dict()
+params["var"] = "z1"
+params["other_vars"] = ["aA1", "arhoA1", "arhouA1", "arhoEA1"]
+params["coefs"] = [2.1, 2.3, 3.4, 4.5]
+z1_aux = factory.createObject("TestAux", params)
 
 # phase-2 acoustic impedance aux
-params = TestAuxParameters()
-params.set("var", "z2")
-params.set("other_vars", ["aA1", "arhoA2", "arhouA2", "arhoEA2"])
-params.set("coefs", [2.4, 2.2, 3.3, 4.4])
-z2_aux = TestAux(params)
+params = dict()
+params["var"] = "z2"
+params["other_vars"] = ["aA1", "arhoA2", "arhouA2", "arhoEA2"]
+params["coefs"] = [2.4, 2.2, 3.3, 4.4]
+z2_aux = factory.createObject("TestAux", params)
 
 other_aux = [p1_aux, p2_aux, z1_aux, z2_aux]
 root_vars = ["aA1", "arhoA1", "arhouA1", "arhoEA1", "arhoA2", "arhouA2", "arhoEA2"]

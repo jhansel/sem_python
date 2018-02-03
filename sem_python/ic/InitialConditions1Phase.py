@@ -4,8 +4,8 @@ from ..utilities.error_utilities import error
 
 class InitialConditions1PhaseParameters(Parameters):
 
-    def __init__(self):
-        Parameters.__init__(self)
+    def __init__(self, factory):
+        Parameters.__init__(self, factory)
 
         def one(x):
             return 1

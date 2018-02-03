@@ -8,8 +8,8 @@ from ..closures.thermodynamic_functions import computeVolumeFraction, computeDen
 
 class NewerCompressibleJunctionParameters(Junction1PhaseParameters):
 
-    def __init__(self):
-        Junction1PhaseParameters.__init__(self)
+    def __init__(self, factory):
+        Junction1PhaseParameters.__init__(self, factory)
         self.registerFloatListParameter(
             "loss_coefficients", "List of loss coefficients for each mesh")
 

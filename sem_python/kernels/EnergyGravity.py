@@ -4,8 +4,8 @@ from ..base.enums import VariableName
 
 class EnergyGravityParameters(Kernel1PhaseParameters):
 
-    def __init__(self):
-        Kernel1PhaseParameters.__init__(self)
+    def __init__(self, factory):
+        Kernel1PhaseParameters.__init__(self, factory)
 
 
 class EnergyGravity(Kernel1Phase):

@@ -13,8 +13,8 @@ from ..utilities.error_utilities import errorNoTraceback
 
 class NonlinearSolverParameters(Parameters):
 
-    def __init__(self):
-        Parameters.__init__(self)
+    def __init__(self, factory):
+        Parameters.__init__(self, factory)
         self.registerFloatParameter(
             "absolute_tolerance", "Absolute tolerance for nonlinear solve", 1e-6)
         self.registerFloatParameter(

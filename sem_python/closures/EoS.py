@@ -5,8 +5,8 @@ from ..input.Parameters import Parameters
 
 class EoSParameters(Parameters):
 
-    def __init__(self):
-        Parameters.__init__(self)
+    def __init__(self, factory):
+        Parameters.__init__(self, factory)
 
 
 ## Abstract base class for equations of state

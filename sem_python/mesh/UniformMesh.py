@@ -5,8 +5,8 @@ from .Mesh import Mesh, MeshParameters
 
 class UniformMeshParameters(MeshParameters):
 
-    def __init__(self):
-        MeshParameters.__init__(self)
+    def __init__(self, factory):
+        MeshParameters.__init__(self, factory)
         self.registerIntParameter("n_cell", "Number of cells in the mesh")
         self.registerFloatParameter("length", "Length of the spatial domain", 1.0)
 

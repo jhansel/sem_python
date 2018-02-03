@@ -3,8 +3,8 @@ from .InterfaceClosures import InterfaceClosures, InterfaceClosuresParameters
 
 class AmbrosoInterfaceClosuresParameters(InterfaceClosuresParameters):
 
-    def __init__(self):
-        InterfaceClosuresParameters.__init__(self)
+    def __init__(self, factory):
+        InterfaceClosuresParameters.__init__(self, factory)
         self.registerFloatParameter("chi", "Weight fraction for phase 1", 0.5)
         self.registerFloatParameter("pressure_relaxation_time", "Relaxation time for pressures")
 

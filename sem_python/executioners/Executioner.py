@@ -10,8 +10,8 @@ from ..utilities.assembly_utilities import initializeDerivativeData
 
 class ExecutionerParameters(Parameters):
 
-    def __init__(self):
-        Parameters.__init__(self)
+    def __init__(self, factory):
+        Parameters.__init__(self, factory)
         self.registerParameter("model", "Model")
         self.registerParameter("ics", "Initial conditions")
         self.registerParameter("bcs", "Boundary conditions")

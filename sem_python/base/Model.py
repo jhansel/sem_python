@@ -4,8 +4,8 @@ from ..input.Parameters import Parameters
 
 class ModelParameters(Parameters):
 
-    def __init__(self):
-        Parameters.__init__(self)
+    def __init__(self, factory):
+        Parameters.__init__(self, factory)
         self.registerStringSelectionParameter(
             "model", ["1phase", "2phase_noninteracting", "2phase"], "Identifier for the model")
         self.registerBoolParameter(

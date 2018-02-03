@@ -6,8 +6,8 @@ from .DoFHandler import DoFHandler, DoFHandlerParameters
 
 class DoFHandler2PhaseParameters(DoFHandlerParameters):
 
-    def __init__(self):
-        DoFHandlerParameters.__init__(self)
+    def __init__(self, factory):
+        DoFHandlerParameters.__init__(self, factory)
 
 
 class DoFHandler2Phase(DoFHandler):

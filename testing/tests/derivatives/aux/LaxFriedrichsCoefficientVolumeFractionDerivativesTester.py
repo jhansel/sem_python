@@ -1,29 +1,29 @@
 import unittest
 
-from sem_python.aux.LaxFriedrichsCoefficientVolumeFraction import LaxFriedrichsCoefficientVolumeFraction, LaxFriedrichsCoefficientVolumeFractionParameters
-from sem_python.aux.TestAux import TestAux, TestAuxParameters
+from sem_python.base.Factory import Factory
 from ....src.testers.AuxDerivativesTester import AuxDerivativesTester
 
+factory = Factory()
+
 # Lax-Friedrichs coefficient aux
-params = LaxFriedrichsCoefficientVolumeFractionParameters()
-test_aux = LaxFriedrichsCoefficientVolumeFraction(params)
+test_aux = factory.createObject("LaxFriedrichsCoefficientVolumeFraction", {})
 
 # constant data
 constant_data = {"dx": 0.5}
 
 # positive interfacial velocity aux
-params = TestAuxParameters()
-params.set("var", "uI")
-params.set("other_vars", ["aA1", "arhoA1", "arhouA1", "arhoEA1", "arhoA2", "arhouA2", "arhoEA2"])
-params.set("coefs", [1.3, 1.5, 1.7, 1.9, 2.1, 2.3, 2.5])
-uI_positive_aux = TestAux(params)
+params = dict()
+params["var"] = "uI"
+params["other_vars"] = ["aA1", "arhoA1", "arhouA1", "arhoEA1", "arhoA2", "arhouA2", "arhoEA2"]
+params["coefs"] = [1.3, 1.5, 1.7, 1.9, 2.1, 2.3, 2.5]
+uI_positive_aux = factory.createObject("TestAux", params)
 
 # negative interfacial velocity aux
-params = TestAuxParameters()
-params.set("var", "uI")
-params.set("other_vars", ["aA1", "arhoA1", "arhouA1", "arhoEA1", "arhoA2", "arhouA2", "arhoEA2"])
-params.set("coefs", [-1.3, -1.5, -1.7, -1.9, -2.1, -2.3, -2.5])
-uI_negative_aux = TestAux(params)
+params = dict()
+params["var"] = "uI"
+params["other_vars"] = ["aA1", "arhoA1", "arhouA1", "arhoEA1", "arhoA2", "arhouA2", "arhoEA2"]
+params["coefs"] = [-1.3, -1.5, -1.7, -1.9, -2.1, -2.3, -2.5]
+uI_negative_aux = factory.createObject("TestAux", params)
 
 other_aux_positive = [uI_positive_aux]
 other_aux_negative = [uI_negative_aux]

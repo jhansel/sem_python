@@ -6,8 +6,8 @@ from ..input.Parameters import Parameters
 
 class InterpolatedAuxParameters(AuxQuantityParameters):
 
-    def __init__(self):
-        AuxQuantityParameters.__init__(self)
+    def __init__(self, factory):
+        AuxQuantityParameters.__init__(self, factory)
         self.registerParameter("variable", "Name of the variable to interpolate")
         self.registerParameter(
             "dependencies", "List of names of solution variables that this aux may depend upon")

@@ -7,8 +7,8 @@ from ..closures.thermodynamic_functions import computeVolumeFraction, computeDen
 
 class Junction1PhaseParameters(JunctionParameters):
 
-    def __init__(self):
-        JunctionParameters.__init__(self)
+    def __init__(self, factory):
+        JunctionParameters.__init__(self, factory)
         self.registerIntParameter("phase", "Index of phase to which BC is applied")
 
 

@@ -5,8 +5,8 @@ from .AuxQuantity1Phase import AuxQuantity1Phase, AuxQuantity1PhaseParameters
 
 class LaxFriedrichsCoefficientParameters(AuxQuantity1PhaseParameters):
 
-    def __init__(self):
-        AuxQuantity1PhaseParameters.__init__(self)
+    def __init__(self, factory):
+        AuxQuantity1PhaseParameters.__init__(self, factory)
         self.registerStringParameter("var", "Solution variable name corresponding to the " \
           + "equation to which the coefficient applies, not including the phase index")
         self.registerFloatParameter("mult", "Multiplier factor for the viscous coefficient", 1.0)

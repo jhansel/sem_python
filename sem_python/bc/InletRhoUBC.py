@@ -6,8 +6,8 @@ from ..closures.thermodynamic_functions import computeVolumeFraction, computeSpe
 
 class InletRhoUBCParameters(OnePhaseBCParameters):
 
-    def __init__(self):
-        OnePhaseBCParameters.__init__(self)
+    def __init__(self, factory):
+        OnePhaseBCParameters.__init__(self, factory)
         self.registerFloatParameter("rho", "Specified density")
         self.registerFloatParameter("u", "Specified velocity")
 

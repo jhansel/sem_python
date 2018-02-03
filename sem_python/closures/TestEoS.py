@@ -3,8 +3,8 @@ from .EoS import EoS, EoSParameters
 
 class TestEoSParameters(EoSParameters):
 
-    def __init__(self):
-        EoSParameters.__init__(self)
+    def __init__(self, factory):
+        EoSParameters.__init__(self, factory)
         self.registerFloatParameter("slope_initial", "First slope in sequence", 1.0)
         self.registerFloatParameter("slope_increment", "Increment in slope in sequence", 0.1)
 

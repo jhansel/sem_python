@@ -1,14 +1,15 @@
 import unittest
 
-from sem_python.aux.ConstantAux import ConstantAux, ConstantAuxParameters
-from sem_python.aux.TestAux import TestAux, TestAuxParameters
+from sem_python.base.Factory import Factory
 from ....src.testers.AuxDerivativesTester import AuxDerivativesTester
 
+factory = Factory()
+
 # test aux
-params = ConstantAuxParameters()
-params.set("name", "test_aux")
-params.set("value", 6.0)
-test_aux = ConstantAux(params)
+params = dict()
+params["name"] = "test_aux"
+params["value"] = 6.0
+test_aux = factory.createObject("ConstantAux", params)
 
 other_aux = list()
 root_vars = ["aA1", "arhoA1", "arhouA1", "arhoEA1", "arhoA2", "arhouA2", "arhoEA2"]

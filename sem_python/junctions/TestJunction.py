@@ -3,8 +3,8 @@ from .Junction import Junction, JunctionParameters
 
 class TestJunctionParameters(JunctionParameters):
 
-    def __init__(self):
-        JunctionParameters.__init__(self)
+    def __init__(self, factory):
+        JunctionParameters.__init__(self, factory)
         self.registerIntParameter(
             "n_constraints", "Number of constraints to add for this test junction")
 

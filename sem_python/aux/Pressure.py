@@ -16,8 +16,8 @@ assertNonNegativePressure = vectorize(assertNonNegativePressureSingle)
 
 class PressureParameters(AuxQuantity1PhaseParameters):
 
-    def __init__(self):
-        AuxQuantity1PhaseParameters.__init__(self)
+    def __init__(self, factory):
+        AuxQuantity1PhaseParameters.__init__(self, factory)
         self.registerFunctionParameter("p_function", "Pressure function from EOS")
 
 

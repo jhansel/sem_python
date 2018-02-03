@@ -16,8 +16,8 @@ assertNonNegativeSoundSpeedArg = vectorize(assertNonNegativeSoundSpeedArgSingle)
 
 class IdealGasEoSParameters(EoSParameters):
 
-    def __init__(self):
-        EoSParameters.__init__(self)
+    def __init__(self, factory):
+        EoSParameters.__init__(self, factory)
         self.registerFloatParameter("gamma", "Ratio of specific heats")
         self.registerFloatParameter("R", "Specific gas constant")
 

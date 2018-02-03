@@ -7,8 +7,8 @@ from ..closures.thermodynamic_functions import computeVolumeFraction, computeDen
 
 class FreeBCParameters(OnePhaseBCParameters):
 
-    def __init__(self):
-        OnePhaseBCParameters.__init__(self)
+    def __init__(self, factory):
+        OnePhaseBCParameters.__init__(self, factory)
 
 
 class FreeBC(OnePhaseBC):

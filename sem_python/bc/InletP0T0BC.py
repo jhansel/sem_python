@@ -6,8 +6,8 @@ from ..closures.thermodynamic_functions import computeVolumeFraction, computeSpe
 
 class InletP0T0BCParameters(OnePhaseBCParameters):
 
-    def __init__(self):
-        OnePhaseBCParameters.__init__(self)
+    def __init__(self, factory):
+        OnePhaseBCParameters.__init__(self, factory)
         self.registerFloatParameter("p0", "Specified stagnation pressure")
         self.registerFloatParameter("T0", "Specified stagnation temperature")
         self.registerBoolParameter("strongly_enforce_mass", "Strongly enforce mass?", True)

@@ -3,8 +3,8 @@ from .InterfaceClosures import InterfaceClosures, InterfaceClosuresParameters
 
 class BerryInterfaceClosuresParameters(InterfaceClosuresParameters):
 
-    def __init__(self):
-        InterfaceClosuresParameters.__init__(self)
+    def __init__(self, factory):
+        InterfaceClosuresParameters.__init__(self, factory)
         self.registerFloatParameter("a_int_min", "Minimum interfacial area density", 0)
         self.registerFloatParameter("a_int_max", "Maximum interfacial area density")
 

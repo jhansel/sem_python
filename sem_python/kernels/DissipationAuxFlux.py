@@ -3,8 +3,8 @@ from .Kernel1Phase import Kernel1Phase, Kernel1PhaseParameters
 
 class DissipationAuxFluxParameters(Kernel1PhaseParameters):
 
-    def __init__(self):
-        Kernel1PhaseParameters.__init__(self)
+    def __init__(self, factory):
+        Kernel1PhaseParameters.__init__(self, factory)
         self.registerStringParameter("flux_name", "Name of flux aux")
 
 

@@ -1,13 +1,12 @@
 import unittest
 
-from sem_python.aux.AmbrosoBeta import AmbrosoBeta, AmbrosoBetaParameters
-from sem_python.aux.TestAux import TestAux, TestAuxParameters
+from sem_python.base.Factory import Factory
 from ....src.testers.AuxDerivativesTester import AuxDerivativesTester
 
+factory = Factory()
+
 # beta aux
-params = AmbrosoBetaParameters()
-params.set("chi", 0.5)
-test_aux = AmbrosoBeta(params)
+test_aux = factory.createObject("AmbrosoBeta", {"chi": 0.5})
 
 other_aux = []
 root_vars = ["arhoA1", "arhoA2"]

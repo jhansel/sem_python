@@ -4,8 +4,8 @@ from ..solvers.NonlinearSolver import NonlinearSolver
 
 class SteadyStateExecutionerParameters(ExecutionerParameters):
 
-    def __init__(self):
-        ExecutionerParameters.__init__(self)
+    def __init__(self, factory):
+        ExecutionerParameters.__init__(self, factory)
 
 
 class SteadyStateExecutioner(Executioner):

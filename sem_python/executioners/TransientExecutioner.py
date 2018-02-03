@@ -10,8 +10,8 @@ from ..utilities.assembly_utilities import initializeDerivativeData
 
 class TransientExecutionerParameters(ExecutionerParameters):
 
-    def __init__(self):
-        ExecutionerParameters.__init__(self)
+    def __init__(self, factory):
+        ExecutionerParameters.__init__(self, factory)
         self.registerFloatParameter("dt", "Nominal time step size")
         self.registerFloatParameter("cfl", "CFL number to compute time step size")
         self.registerFloatParameter("end_time", "End time")

@@ -4,8 +4,8 @@ from .Stabilization import Stabilization, StabilizationParameters
 
 class LaxFriedrichsStabilizationParameters(StabilizationParameters):
 
-    def __init__(self):
-        StabilizationParameters.__init__(self)
+    def __init__(self, factory):
+        StabilizationParameters.__init__(self, factory)
         self.registerFloatParameter("mult", "Multiplier for the viscous coefficient", 1.0)
         self.registerBoolParameter(
             "use_simple_dissipation", "Use simple form of dissipation", False)

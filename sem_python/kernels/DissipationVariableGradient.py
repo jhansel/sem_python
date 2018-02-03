@@ -3,8 +3,8 @@ from .Kernel1Phase import Kernel1Phase, Kernel1PhaseParameters
 
 class DissipationVariableGradientParameters(Kernel1PhaseParameters):
 
-    def __init__(self):
-        Kernel1PhaseParameters.__init__(self)
+    def __init__(self, factory):
+        Kernel1PhaseParameters.__init__(self, factory)
 
 
 ## Dissipation from a solution variable gradient.

@@ -8,8 +8,8 @@ from ..closures.thermodynamic_functions import computeVolumeFraction, computeDen
 
 class CompressibleJunctionParameters(Junction1PhaseParameters):
 
-    def __init__(self):
-        Junction1PhaseParameters.__init__(self)
+    def __init__(self, factory):
+        Junction1PhaseParameters.__init__(self, factory)
         self.registerBoolParameter(
             "use_momentum_flux_balance", "Flag to use a momentum flux balance for last equation",
             False)

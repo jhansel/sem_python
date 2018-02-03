@@ -9,8 +9,8 @@ from ..input.Parameters import Parameters
 
 class DoFHandlerParameters(Parameters):
 
-    def __init__(self):
-        Parameters.__init__(self)
+    def __init__(self, factory):
+        Parameters.__init__(self, factory)
         self.registerParameter("meshes", "List of meshes")
         self.registerParameter("ics", "List of initial conditions")
 

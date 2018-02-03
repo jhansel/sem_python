@@ -1,14 +1,14 @@
 import unittest
 
+from sem_python.base.Factory import Factory
 from ...src.testers.FunctionDerivativesTester import FunctionDerivativesTester
-from sem_python.closures.TestEoS import TestEoS, TestEoSParameters
 
 
 class TestEoSTester(unittest.TestCase):
 
     def setUp(self):
-        params = TestEoSParameters()
-        self.eos = TestEoS(params)
+        factory = Factory()
+        self.eos = factory.createObject("TestEoS", {})
         self.derivative_tester = FunctionDerivativesTester()
 
     def testSpecificInternalEnergyDerivatives(self):

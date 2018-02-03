@@ -3,8 +3,8 @@ from .Parameters import Parameters
 
 class HeatTransferDataParameters(Parameters):
 
-    def __init__(self):
-        Parameters.__init__(self)
+    def __init__(self, factory):
+        Parameters.__init__(self, factory)
         self.registerFloatParameter("htc_wall", "Wall heat transfer coefficient")
         self.registerFloatParameter("T_wall", "Wall temperature")
         self.registerFloatParameter("P_heat", "Heated perimeter")

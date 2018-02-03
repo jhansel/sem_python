@@ -4,8 +4,8 @@ from .Kernel import Kernel, KernelParameters
 
 class Kernel1PhaseParameters(KernelParameters):
 
-    def __init__(self):
-        KernelParameters.__init__(self)
+    def __init__(self, factory):
+        KernelParameters.__init__(self, factory)
         self.registerIntParameter("phase", "Phase index (0 or 1)")
         self.registerParameter("var_enum", "Variable enumeration")
 

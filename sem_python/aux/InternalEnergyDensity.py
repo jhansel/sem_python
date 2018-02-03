@@ -3,8 +3,8 @@ from .AuxQuantity1Phase import AuxQuantity1Phase, AuxQuantity1PhaseParameters
 
 class InternalEnergyDensityParameters(AuxQuantity1PhaseParameters):
 
-    def __init__(self):
-        AuxQuantity1PhaseParameters.__init__(self)
+    def __init__(self, factory):
+        AuxQuantity1PhaseParameters.__init__(self, factory)
 
 
 ## Density multiplied by specific internal energy: \f$\rho e\f$

@@ -1,21 +1,22 @@
 import unittest
 
-from sem_python.aux.IdenticalAux import IdenticalAux, IdenticalAuxParameters
-from sem_python.aux.TestAux import TestAux, TestAuxParameters
+from sem_python.base.Factory import Factory
 from ....src.testers.AuxDerivativesTester import AuxDerivativesTester
 
+factory = Factory()
+
 # original aux
-params = TestAuxParameters()
-params.set("var", "aux_original")
-params.set("other_vars", ["var1", "var2"])
-params.set("coefs", [1.5, 2.5])
-original_aux = TestAux(params)
+params = dict()
+params["var"] = "aux_original"
+params["other_vars"] = ["var1", "var2"]
+params["coefs"] = [1.5, 2.5]
+original_aux = factory.createObject("TestAux", params)
 
 # copy aux
-params = IdenticalAuxParameters()
-params.set("original_aux", "aux_original")
-params.set("copy_aux", "aux_copy")
-test_aux = IdenticalAux(params)
+params = dict()
+params["original_aux"] = "aux_original"
+params["copy_aux"] = "aux_copy"
+test_aux = factory.createObject("IdenticalAux", params)
 
 other_aux = [original_aux]
 root_vars = ["var1", "var2"]

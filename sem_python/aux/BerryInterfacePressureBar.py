@@ -3,8 +3,8 @@ from .AuxQuantity2Phase import AuxQuantity2Phase, AuxQuantity2PhaseParameters
 
 class BerryInterfacePressureBarParameters(AuxQuantity2PhaseParameters):
 
-    def __init__(self):
-        AuxQuantity2PhaseParameters.__init__(self)
+    def __init__(self, factory):
+        AuxQuantity2PhaseParameters.__init__(self, factory)
 
 
 class BerryInterfacePressureBar(AuxQuantity2Phase):

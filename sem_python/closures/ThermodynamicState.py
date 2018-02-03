@@ -6,8 +6,8 @@ from ..utilities.error_utilities import error
 
 class ThermodynamicStateParameters(Parameters):
 
-    def __init__(self):
-        Parameters.__init__(self)
+    def __init__(self, factory):
+        Parameters.__init__(self, factory)
         self.registerFloatParameter("rho", "Density value")
         self.registerFloatParameter("p", "Pressure value")
         self.registerFloatParameter("T", "Temperature value")

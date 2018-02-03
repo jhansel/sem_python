@@ -1,12 +1,11 @@
 import unittest
 
-from sem_python.aux.SpecificTotalEnergy import SpecificTotalEnergy, SpecificTotalEnergyParameters
-from sem_python.aux.TestAux import TestAux, TestAuxParameters
+from sem_python.base.Factory import Factory
 from ....src.testers.AuxDerivativesTester import AuxDerivativesTester
 
-params = SpecificTotalEnergyParameters()
-params.set("phase", 0)
-test_aux = SpecificTotalEnergy(params)
+factory = Factory()
+
+test_aux = factory.createObject("SpecificTotalEnergy", {"phase": 0})
 
 other_aux = list()
 root_vars = ["arhoA1", "arhoEA1"]

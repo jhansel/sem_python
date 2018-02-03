@@ -1,49 +1,43 @@
 import unittest
 
-from sem_python.aux.EntropyMinimumMassFlux import EntropyMinimumMassFlux, EntropyMinimumMassFluxParameters
-from sem_python.aux.TestAux import TestAux, TestAuxParameters
-from sem_python.aux.VolumeFractionPhase1 import VolumeFractionPhase1, VolumeFractionPhase1Parameters
+from sem_python.base.Factory import Factory
 from ....src.testers.AuxDerivativesTester import AuxDerivativesTester
 
+factory = Factory()
+
 # viscous flux aux
-params = EntropyMinimumMassFluxParameters()
-params.set("phase", 0)
-test_aux = EntropyMinimumMassFlux(params)
+test_aux = factory.createObject("EntropyMinimumMassFlux", {"phase": 0})
 
 # volume fraction aux
-params = VolumeFractionPhase1Parameters()
-params.set("phase", 0)
-vf_aux = VolumeFractionPhase1(params)
+vf_aux = factory.createObject("VolumeFractionPhase1", {"phase": 0})
 
 # viscous coefficient aux
-params = TestAuxParameters()
-params.set("var", "visccoef_arhoA1")
-params.set("other_vars", ["aA1", "arhoA1", "arhouA1", "arhoEA1", "arhoA2", "arhouA2", "arhoEA2"])
-params.set("coefs", [1.5, 2.5, 3.5, 4.5, 1.1, 1.7, 2.1])
-visccoef_arho_aux = TestAux(params)
+params = dict()
+params["var"] = "visccoef_arhoA1"
+params["other_vars"] = ["aA1", "arhoA1", "arhouA1", "arhoEA1", "arhoA2", "arhouA2", "arhoEA2"]
+params["coefs"] = [1.5, 2.5, 3.5, 4.5, 1.1, 1.7, 2.1]
+visccoef_arho_aux = factory.createObject("TestAux", params)
 
 # density gradient aux
-params = TestAuxParameters()
-params.set("var", "grad_rho1")
-params.set("other_vars", ["grad_aA1", "grad_arhoA1"])
-params.set("coefs", [1.2, 2.4])
-grad_rho_aux = TestAux(params)
+params = dict()
+params["var"] = "grad_rho1"
+params["other_vars"] = ["grad_aA1", "grad_arhoA1"]
+params["coefs"] = [1.2, 2.4]
+grad_rho_aux = factory.createObject("TestAux", params)
 
 # density aux
-params = TestAuxParameters()
-params.set("var", "rho1")
-params.set("other_vars", ["aA1", "arhoA1"])
-params.set("coefs", [1.4, 2.3])
-rho_aux = TestAux(params)
+params = dict()
+params["var"] = "rho1"
+params["other_vars"] = ["aA1", "arhoA1"]
+params["coefs"] = [1.4, 2.3]
+rho_aux = factory.createObject("TestAux", params)
 
 # viscous flux aux
-params = TestAuxParameters()
-params.set("var", "viscflux_aA1")
-params.set(
-    "other_vars",
-    ["aA1", "arhoA1", "arhouA1", "arhoEA1", "arhoA2", "arhouA2", "arhoEA2", "grad_aA1"])
-params.set("coefs", [1.3, 2.6, 3.1, 1.7, 2.1, 1.1, 4.2, 4.0])
-viscflux_aA1_aux = TestAux(params)
+params = dict()
+params["var"] = "viscflux_aA1"
+params["other_vars"] = ["aA1", "arhoA1", "arhouA1", "arhoEA1", "arhoA2", "arhouA2", "arhoEA2", "grad_aA1"]
+params["coefs"] = [1.3, 2.6, 3.1, 1.7, 2.1, 1.1, 4.2, 4.0]
+viscflux_aA1_aux = factory.createObject("TestAux", params)
 
 other_aux = [vf_aux, visccoef_arho_aux, rho_aux, grad_rho_aux, viscflux_aA1_aux]
 root_vars = [

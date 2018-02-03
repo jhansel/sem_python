@@ -3,8 +3,8 @@ from .Stabilization import Stabilization, StabilizationParameters
 
 class NoStabilizationParameters(StabilizationParameters):
 
-    def __init__(self):
-        StabilizationParameters.__init__(self)
+    def __init__(self, factory):
+        StabilizationParameters.__init__(self, factory)
 
 
 ## No stabilization

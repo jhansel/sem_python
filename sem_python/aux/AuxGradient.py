@@ -5,8 +5,8 @@ from .AuxQuantity import AuxQuantity, AuxQuantityParameters
 
 class AuxGradientParameters(AuxQuantityParameters):
 
-    def __init__(self):
-        AuxQuantityParameters.__init__(self)
+    def __init__(self, factory):
+        AuxQuantityParameters.__init__(self, factory)
         self.registerStringParameter("aux", "Name of aux for which the gradient should be computed")
         self.registerParameter(
             "variable_names", "List of names of solution variables that this aux may depend upon")

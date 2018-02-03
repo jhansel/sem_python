@@ -5,8 +5,8 @@ from ..utilities.error_utilities import error
 
 class PlotOutputParameters(OutputParameters):
 
-    def __init__(self):
-        OutputParameters.__init__(self)
+    def __init__(self, factory):
+        OutputParameters.__init__(self, factory)
         self.registerStringParameter("file_name", "Name of solution output file", "solution.pdf")
         self.registerStringListParameter("plot_sets", "List of data to plot")
         self.registerBoolParameter(

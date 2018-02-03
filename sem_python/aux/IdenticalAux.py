@@ -3,8 +3,8 @@ from .AuxQuantity import AuxQuantity, AuxQuantityParameters
 
 class IdenticalAuxParameters(AuxQuantityParameters):
 
-    def __init__(self):
-        AuxQuantityParameters.__init__(self)
+    def __init__(self, factory):
+        AuxQuantityParameters.__init__(self, factory)
         self.registerStringParameter("original_aux", "Name of original aux quantity")
         self.registerStringParameter("copy_aux", "Name of copy aux quantity")
 

@@ -7,8 +7,8 @@ from ..utilities.string_utilities import stripStringFromRight
 
 class CSVOutputParameters(OutputParameters):
 
-    def __init__(self):
-        OutputParameters.__init__(self)
+    def __init__(self, factory):
+        OutputParameters.__init__(self, factory)
         self.registerStringParameter("file_name", "Name of solution output file", "solution.csv")
         self.registerStringListParameter("names", "List of names of quantities to save")
         self.registerIntParameter("output_precision", "Precision used in solution output file", 5)

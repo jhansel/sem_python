@@ -5,7 +5,9 @@ from ..utilities.error_utilities import error
 ## Class for declaring and retrieving input parameters
 class Parameters(object):
 
-    def __init__(self):
+    def __init__(self, factory):
+        self.factory = factory
+
         self.descriptions = dict()
         self.values = dict()
         self.types = dict()

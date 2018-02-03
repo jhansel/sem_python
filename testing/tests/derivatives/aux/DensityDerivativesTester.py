@@ -1,16 +1,13 @@
 import unittest
 
-from sem_python.aux.Density import Density, DensityParameters
-from sem_python.aux.VolumeFractionPhase1 import VolumeFractionPhase1, VolumeFractionPhase1Parameters
+from sem_python.base.Factory import Factory
 from ....src.testers.AuxDerivativesTester import AuxDerivativesTester
 
-params = DensityParameters()
-params.set("phase", 0)
-test_aux = Density(params)
+factory = Factory()
 
-params = VolumeFractionPhase1Parameters()
-params.set("phase", 0)
-vf_aux = VolumeFractionPhase1(params)
+test_aux = factory.createObject("Density", {"phase": 0})
+
+vf_aux = factory.createObject("VolumeFractionPhase1", {"phase": 0})
 
 other_aux = [vf_aux]
 root_vars = ["aA1", "arhoA1"]

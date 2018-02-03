@@ -4,8 +4,8 @@ from ..utilities.error_utilities import error
 
 class EqualSolutionLM1PhaseJunctionParameters(Junction1PhaseParameters):
 
-    def __init__(self):
-        Junction1PhaseParameters.__init__(self)
+    def __init__(self, factory):
+        Junction1PhaseParameters.__init__(self, factory)
 
 
 ## Junction that uses Lagrange multipliers to enforce solution equality between 2 meshes

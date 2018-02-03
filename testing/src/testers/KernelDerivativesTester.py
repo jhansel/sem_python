@@ -71,7 +71,7 @@ class KernelDerivativesTester(object):
                 params = {"phase": 0, "size": n_q_points}
                 aux_list.append(factory.createObject("VolumeFractionPhase1", params))
             else:
-                params = TestAuxParameters()
+                params = TestAuxParameters(factory)
                 params.set("var", aux_name)
                 params.set("other_vars", aux_dependencies[aux_name])
                 coefs = list()

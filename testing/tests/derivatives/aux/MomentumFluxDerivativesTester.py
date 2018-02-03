@@ -1,33 +1,29 @@
 import unittest
 
-from sem_python.aux.MomentumFlux import MomentumFlux, MomentumFluxParameters
-from sem_python.aux.TestAux import TestAux, TestAuxParameters
-from sem_python.aux.VolumeFractionPhase1 import VolumeFractionPhase1, VolumeFractionPhase1Parameters
+from sem_python.base.Factory import Factory
 from ....src.testers.AuxDerivativesTester import AuxDerivativesTester
 
+factory = Factory()
+
 # test aux
-params = MomentumFluxParameters()
-params.set("phase", 0)
-test_aux = MomentumFlux(params)
+test_aux = factory.createObject("MomentumFlux", {"phase": 0})
 
 # volume fraction aux
-params = VolumeFractionPhase1Parameters()
-params.set("phase", 0)
-vf_aux = VolumeFractionPhase1(params)
+vf_aux = factory.createObject("VolumeFractionPhase1", {"phase": 0})
 
 # velocity aux
-params = TestAuxParameters()
-params.set("var", "u1")
-params.set("other_vars", ["arhoA1", "arhouA1"])
-params.set("coefs", [1.3, 2.2])
-u_aux = TestAux(params)
+params = dict()
+params["var"] = "u1"
+params["other_vars"] = ["arhoA1", "arhouA1"]
+params["coefs"] = [1.3, 2.2]
+u_aux = factory.createObject("TestAux", params)
 
 # pressure aux
-params = TestAuxParameters()
-params.set("var", "p1")
-params.set("other_vars", ["aA1", "arhoA1", "arhouA1", "arhoEA1"])
-params.set("coefs", [1.4, 2.3, 2.1, 1.2])
-p_aux = TestAux(params)
+params = dict()
+params["var"] = "p1"
+params["other_vars"] = ["aA1", "arhoA1", "arhouA1", "arhoEA1"]
+params["coefs"] = [1.4, 2.3, 2.1, 1.2]
+p_aux = factory.createObject("TestAux", params)
 
 other_aux = [vf_aux, u_aux, p_aux]
 root_vars = ["aA1", "arhoA1", "arhouA1", "arhoEA1"]

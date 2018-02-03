@@ -1,34 +1,33 @@
 import unittest
 
-from sem_python.aux.AmbrosoPressureRelaxationCoef import AmbrosoPressureRelaxationCoef, AmbrosoPressureRelaxationCoefParameters
-from sem_python.aux.TestAux import TestAux, TestAuxParameters
+from sem_python.base.Factory import Factory
 from ....src.testers.AuxDerivativesTester import AuxDerivativesTester
 
+factory = Factory()
+
 # pressure relaxation aux
-params = AmbrosoPressureRelaxationCoefParameters()
-params.set("pressure_relaxation_time", 2.0)
-test_aux = AmbrosoPressureRelaxationCoef(params)
+test_aux = factory.createObject("AmbrosoPressureRelaxationCoef", {"pressure_relaxation_time": 2.0})
 
 # phase-1 volume fraction aux
-params = TestAuxParameters()
-params.set("var", "vf1")
-params.set("other_vars", ["aA1"])
-params.set("coefs", [1.3])
-vf1_aux = TestAux(params)
+params = dict()
+params["var"] = "vf1"
+params["other_vars"] = ["aA1"]
+params["coefs"] = [1.3]
+vf1_aux = factory.createObject("TestAux", params)
 
 # phase-1 pressure aux
-params = TestAuxParameters()
-params.set("var", "p1")
-params.set("other_vars", ["aA1", "arhoA1", "arhouA1", "arhoEA1"])
-params.set("coefs", [1.2, 2.2, 3.2, 4.2])
-p1_aux = TestAux(params)
+params = dict()
+params["var"] = "p1"
+params["other_vars"] = ["aA1", "arhoA1", "arhouA1", "arhoEA1"]
+params["coefs"] = [1.2, 2.2, 3.2, 4.2]
+p1_aux = factory.createObject("TestAux", params)
 
 # phase-2 pressure aux
-params = TestAuxParameters()
-params.set("var", "p2")
-params.set("other_vars", ["aA1", "arhoA2", "arhouA2", "arhoEA2"])
-params.set("coefs", [1.5, 2.5, 3.5, 4.5])
-p2_aux = TestAux(params)
+params = dict()
+params["var"] = "p2"
+params["other_vars"] = ["aA1", "arhoA2", "arhouA2", "arhoEA2"]
+params["coefs"] = [1.5, 2.5, 3.5, 4.5]
+p2_aux = factory.createObject("TestAux", params)
 
 other_aux = [vf1_aux, p1_aux, p2_aux]
 root_vars = ["aA1", "arhoA1", "arhouA1", "arhoEA1", "arhoA2", "arhouA2", "arhoEA2"]

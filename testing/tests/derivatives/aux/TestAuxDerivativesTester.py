@@ -1,13 +1,14 @@
 import unittest
 
-from sem_python.aux.TestAux import TestAux, TestAuxParameters
+from sem_python.base.Factory import Factory
 from ....src.testers.AuxDerivativesTester import AuxDerivativesTester
 
-params = TestAuxParameters()
-params.set("var", "test")
-params.set("other_vars", ["A", "B", "C"])
-params.set("coefs", [2.0, 3.0, 4.0])
-test_aux = TestAux(params)
+factory = Factory()
+params = dict()
+params["var"] = "test"
+params["other_vars"] = ["A", "B", "C"]
+params["coefs"] = [2.0, 3.0, 4.0]
+test_aux = factory.createObject("TestAux", params)
 
 other_aux = list()
 root_vars = ["A", "B", "C"]

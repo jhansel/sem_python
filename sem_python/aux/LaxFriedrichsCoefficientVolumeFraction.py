@@ -5,8 +5,8 @@ from .AuxQuantity2Phase import AuxQuantity2Phase, AuxQuantity2PhaseParameters
 
 class LaxFriedrichsCoefficientVolumeFractionParameters(AuxQuantity2PhaseParameters):
 
-    def __init__(self):
-        AuxQuantity2PhaseParameters.__init__(self)
+    def __init__(self, factory):
+        AuxQuantity2PhaseParameters.__init__(self, factory)
         self.registerFloatParameter("mult", "Multiplier factor for the viscous coefficient", 1.0)
 
 

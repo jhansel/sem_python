@@ -7,8 +7,8 @@ from ..utilities.error_utilities import error
 
 class MeshParameters(Parameters):
 
-    def __init__(self):
-        Parameters.__init__(self)
+    def __init__(self, factory):
+        Parameters.__init__(self, factory)
         self.registerStringParameter("name", "Name to assign to mesh", "Mesh")
         self.registerFloatListParameter("orientation", "3-D orientation vector of mesh", [1, 0, 0])
         self.registerFloatListParameter("start", "Position of start of domain", [0, 0, 0])

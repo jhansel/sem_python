@@ -1,20 +1,21 @@
 import unittest
 
+from sem_python.base.Factory import Factory
 from ...src.testers.EoSConsistencyTester import EoSConsistencyTester
 from ...src.testers.FunctionDerivativesTester import FunctionDerivativesTester
-from sem_python.closures.StiffenedGasEoS import StiffenedGasEoS, StiffenedGasEoSParameters
 
 
 class StiffenedGasEoSTester(unittest.TestCase):
 
     def setUp(self):
-        params = StiffenedGasEoSParameters()
-        params.set("gamma", 1.4)
-        params.set("cv", 2.0)
-        params.set("q", -5.0)
-        params.set("p_inf", 0.75)
-        params.set("q_prime", 6.0)
-        self.eos = StiffenedGasEoS(params)
+        factory = Factory()
+        params = dict()
+        params["gamma"] = 1.4
+        params["cv"] = 2.0
+        params["q"] = -5.0
+        params["p_inf"] = 0.75
+        params["q_prime"] = 6.0
+        self.eos = factory.createObject("StiffenedGasEoS", params)
         self.derivative_tester = FunctionDerivativesTester()
 
     def testDensityDerivatives(self):

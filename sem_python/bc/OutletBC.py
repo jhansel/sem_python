@@ -7,8 +7,8 @@ from ..closures.thermodynamic_functions import computeVolumeFraction, computeDen
 ## Parameters class for OutletBC
 class OutletBCParameters(OnePhaseBCParameters):
 
-    def __init__(self):
-        OnePhaseBCParameters.__init__(self)
+    def __init__(self, factory):
+        OnePhaseBCParameters.__init__(self, factory)
         self.registerFloatParameter("p", "specified outlet pressure")
         self.registerBoolParameter("strongly_enforce_energy", "Strongly enforce energy?", True)
 

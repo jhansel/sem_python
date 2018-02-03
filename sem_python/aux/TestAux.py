@@ -7,8 +7,8 @@ from ..utilities.error_utilities import error
 
 class TestAuxParameters(AuxQuantityParameters):
 
-    def __init__(self):
-        AuxQuantityParameters.__init__(self)
+    def __init__(self, factory):
+        AuxQuantityParameters.__init__(self, factory)
         self.registerStringParameter("var", "Name of this variable")
         self.registerParameter("other_vars", "Variable names this quantity depends upon")
         self.registerParameter("coefs", "Proportionality coefficients for each quantity")

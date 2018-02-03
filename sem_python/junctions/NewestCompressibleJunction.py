@@ -9,8 +9,8 @@ from ..closures.thermodynamic_functions import computeVolumeFraction, computeDen
 
 class NewestCompressibleJunctionParameters(Junction1PhaseParameters):
 
-    def __init__(self):
-        Junction1PhaseParameters.__init__(self)
+    def __init__(self, factory):
+        Junction1PhaseParameters.__init__(self, factory)
 
 
 ## Junction that uses compressible flow assumption

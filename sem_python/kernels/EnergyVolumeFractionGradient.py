@@ -4,8 +4,8 @@ from ..base.enums import VariableName
 
 class EnergyVolumeFractionGradientParameters(Kernel2PhaseParameters):
 
-    def __init__(self):
-        Kernel2PhaseParameters.__init__(self)
+    def __init__(self, factory):
+        Kernel2PhaseParameters.__init__(self, factory)
 
 
 class EnergyVolumeFractionGradient(Kernel2Phase):

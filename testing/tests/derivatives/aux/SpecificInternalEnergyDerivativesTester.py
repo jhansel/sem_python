@@ -1,27 +1,26 @@
 import unittest
 
-from sem_python.aux.SpecificInternalEnergy import SpecificInternalEnergy, SpecificInternalEnergyParameters
-from sem_python.aux.TestAux import TestAux, TestAuxParameters
+from sem_python.base.Factory import Factory
 from ....src.testers.AuxDerivativesTester import AuxDerivativesTester
 
+factory = Factory()
+
 # specific internal energy aux
-params = SpecificInternalEnergyParameters()
-params.set("phase", 0)
-test_aux = SpecificInternalEnergy(params)
+test_aux = factory.createObject("SpecificInternalEnergy", {"phase": 0})
 
 # velocity aux
-params = TestAuxParameters()
-params.set("var", "u1")
-params.set("other_vars", ["arhoA1", "arhouA1"])
-params.set("coefs", [1.1, 1.2])
-u_aux = TestAux(params)
+params = dict()
+params["var"] = "u1"
+params["other_vars"] = ["arhoA1", "arhouA1"]
+params["coefs"] = [1.1, 1.2]
+u_aux = factory.createObject("TestAux", params)
 
 # specific total energy aux
-params = TestAuxParameters()
-params.set("var", "E1")
-params.set("other_vars", ["arhoA1", "arhoEA1"])
-params.set("coefs", [3.3, 3.9])
-E_aux = TestAux(params)
+params = dict()
+params["var"] = "E1"
+params["other_vars"] = ["arhoA1", "arhoEA1"]
+params["coefs"] = [3.3, 3.9]
+E_aux = factory.createObject("TestAux", params)
 
 other_aux = [u_aux, E_aux]
 root_vars = ["arhoA1", "arhouA1", "arhoEA1"]

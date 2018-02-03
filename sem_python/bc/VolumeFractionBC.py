@@ -4,8 +4,8 @@ from .BC import BC, BCParameters
 
 class VolumeFractionBCParameters(BCParameters):
 
-    def __init__(self):
-        BCParameters.__init__(self)
+    def __init__(self, factory):
+        BCParameters.__init__(self, factory)
 
 
 class VolumeFractionBC(BC):

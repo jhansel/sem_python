@@ -5,8 +5,8 @@ from ..input.Parameters import Parameters
 
 class QuadratureParameters(Parameters):
 
-    def __init__(self):
-        Parameters.__init__(self)
+    def __init__(self, factory):
+        Parameters.__init__(self, factory)
 
 
 class Quadrature(object):
