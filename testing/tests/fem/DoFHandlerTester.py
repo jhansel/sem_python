@@ -54,7 +54,7 @@ class DoFHandlerTester(unittest.TestCase):
         dof_handler = factory.createObject("DoFHandler1Phase", params)
 
         # create an EoS
-        eos_list = [factory.createObject("TestEoS", {})]
+        eos_list = [factory.createObject("TestEoS")]
 
         # create the junctions
         n_constraints_list = [2, 6, 3, 1]

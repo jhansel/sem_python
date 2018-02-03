@@ -8,7 +8,7 @@ class TestEoSTester(unittest.TestCase):
 
     def setUp(self):
         factory = Factory()
-        self.eos = factory.createObject("TestEoS", {})
+        self.eos = factory.createObject("TestEoS")
         self.derivative_tester = FunctionDerivativesTester()
 
     def testSpecificInternalEnergyDerivatives(self):

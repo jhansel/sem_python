@@ -6,7 +6,7 @@ from ....src.testers.AuxDerivativesTester import AuxDerivativesTester
 factory = Factory()
 
 # Lax-Friedrichs coefficient aux
-test_aux = factory.createObject("LaxFriedrichsCoefficientVolumeFraction", {})
+test_aux = factory.createObject("LaxFriedrichsCoefficientVolumeFraction")
 
 # constant data
 constant_data = {"dx": 0.5}

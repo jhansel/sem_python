@@ -6,7 +6,7 @@ from ....src.testers.AuxDerivativesTester import AuxDerivativesTester
 factory = Factory()
 
 # interface velocity aux
-test_aux = factory.createObject("AmbrosoInterfaceVelocity", {})
+test_aux = factory.createObject("AmbrosoInterfaceVelocity")
 
 # phase-1 velocity aux
 params = dict()

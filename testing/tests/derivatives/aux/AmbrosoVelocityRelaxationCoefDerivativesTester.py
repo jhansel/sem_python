@@ -6,7 +6,7 @@ from ....src.testers.AuxDerivativesTester import AuxDerivativesTester
 factory = Factory()
 
 # interface pressure aux
-test_aux = factory.createObject("AmbrosoVelocityRelaxationCoef", {})
+test_aux = factory.createObject("AmbrosoVelocityRelaxationCoef")
 
 # phase-1 temperature aux
 params = dict()

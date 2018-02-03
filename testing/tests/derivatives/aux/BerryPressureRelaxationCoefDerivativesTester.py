@@ -6,7 +6,7 @@ from ....src.testers.AuxDerivativesTester import AuxDerivativesTester
 factory = Factory()
 
 # test aux
-test_aux = factory.createObject("BerryPressureRelaxationCoef", {})
+test_aux = factory.createObject("BerryPressureRelaxationCoef")
 
 # interfacial area density aux
 params = dict()

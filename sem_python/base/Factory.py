@@ -167,7 +167,7 @@ class Factory(object):
     ## Creates an object
     # @param object_class  class of object to create
     # @param params  dictionary of parameter names to their values as strings
-    def createObject(self, object_class, params):
+    def createObject(self, object_class, params=None):
         # create the object's parameters object first
         parameters_object = self.createParametersObject(object_class, params)
 

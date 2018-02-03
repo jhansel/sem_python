@@ -6,7 +6,7 @@ from ....src.testers.AuxDerivativesTester import AuxDerivativesTester
 factory = Factory()
 
 # test aux
-test_aux = factory.createObject("BerryInterfacePressure", {})
+test_aux = factory.createObject("BerryInterfacePressure")
 
 # bar interface pressure aux
 params = dict()
