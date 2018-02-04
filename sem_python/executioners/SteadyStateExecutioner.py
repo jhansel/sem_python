@@ -19,10 +19,6 @@ class SteadyStateExecutioner(Executioner):
         return (r, J)
 
     def run(self):
-        self.nonlinear_solver_params["assemble_system_function"] = self.assembleSystem
-        self.nonlinear_solver_params["dof_handler"] = self.dof_handler
-        nonlinear_solver = self.factory.createObject(
-            "NonlinearSolver", self.nonlinear_solver_params)
-        nonlinear_solver.solve(self.U)
+        self.nonlinear_solver.solve(self.assembleSystem, self.U)
 
         return self.U

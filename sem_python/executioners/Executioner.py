@@ -23,7 +23,7 @@ class ExecutionerParameters(Parameters):
         self.registerParameter("dof_handler", "Degree of freedom handler")
         self.registerParameter("quadrature", "Quadrature")
         self.registerParameter("meshes", "List of meshes")
-        self.registerParameter("nonlinear_solver_params", "Nonlinear solver parameters")
+        self.registerParameter("nonlinear_solver", "Nonlinear solver")
         self.registerParameter("stabilization", "Stabilization")
         self.registerParameter("factory", "Factory")
         self.registerBoolParameter("split_source", "Use source-splitting?", False)
@@ -46,7 +46,7 @@ class Executioner(object):
         self.dof_handler = params.get("dof_handler")
         self.quadrature = params.get("quadrature")
         self.meshes = params.get("meshes")
-        self.nonlinear_solver_params = params.get("nonlinear_solver_params")
+        self.nonlinear_solver = params.get("nonlinear_solver")
         self.factory = params.get("factory")
         stabilization = params.get("stabilization")
         self.split_source = params.get("split_source")
@@ -133,9 +133,6 @@ class Executioner(object):
         # add source kernels to kernel lists if not using source-splitting
         if not self.split_source:
             self.fem_kernels += self.source_kernels
-
-        # nonlinear solver; created in derived classes
-        self.nonlinear_solver = None
 
     def initializePhaseSolution(self, ics, phase):
         eos_phase = self.eos_list[phase]
@@ -559,6 +556,3 @@ class Executioner(object):
         data["arhoA2"] = self.fe_values.getLocalNodalSolution(U, VariableName.ARhoA, 1, elem)
         data["arhouA2"] = self.fe_values.getLocalNodalSolution(U, VariableName.ARhoUA, 1, elem)
         data["arhoEA2"] = self.fe_values.getLocalNodalSolution(U, VariableName.ARhoEA, 1, elem)
-
-    def solve(self):
-        self.nonlinear_solver.solve(self.U)

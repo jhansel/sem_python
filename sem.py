@@ -215,6 +215,8 @@ def run(input_file, input_file_modifier=InputFileModifier()):
 
     # nonlinear solver options
     nonlinear_solver_params = input_file_parser.getBlockData("NonlinearSolver")
+    nonlinear_solver = factory.createObject("NonlinearSolver", nonlinear_solver_params)
+    factory.storeObject(nonlinear_solver, "nonlinear_solver")
 
     # stabilization
     if input_file_parser.blockExists("Stabilization"):
@@ -235,7 +237,6 @@ def run(input_file, input_file_modifier=InputFileModifier()):
     executioner_param_data["gravity"] = gravity
     executioner_param_data["ht_data"] = ht_data
     executioner_param_data["meshes"] = meshes
-    executioner_param_data["nonlinear_solver_params"] = nonlinear_solver_params
     executioner_param_data["stabilization"] = stabilization
     executioner = factory.createObjectOfType(executioner_param_data)
     U = executioner.run()

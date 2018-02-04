@@ -50,14 +50,12 @@ class NonlinearSolverParameters(Parameters):
         self.registerFloatParameter("scaling_arhouA2", "Scaling factor for arhouA2", 1)
         self.registerFloatParameter("scaling_arhoEA2", "Scaling factor for arhoEA2", 1)
 
-        self.registerParameter("assemble_system_function", "System assembly function")
         self.registerParameter("dof_handler", "Degree of freedom handler")
 
 
 class NonlinearSolver(object):
 
     def __init__(self, params):
-        self.assembleSystem = params.get("assemble_system_function")
         self.dof_handler = params.get("dof_handler")
 
         self.max_iterations = params.get("max_iterations")
@@ -91,14 +89,21 @@ class NonlinearSolver(object):
             params.get("scaling_arhoEA2")
         ]
 
-    def solve(self, U):
+    ##
+    # Solves a nonlinear system f(U) = 0
+    #
+    # @param[in] f   nonlinear residual function
+    # @param[in] U   initial guess solution
+    # @returns solution of the nonlinear system
+    #
+    def solve(self, f, U):
         # begin Newton solve
         it = 1
         converged = False
         r_norm_abs_old = 1e15
         while it <= self.max_iterations:
             # compute the residual and Jacobian
-            r, J = self.assembleSystem(U)
+            r, J = f(U)
 
             # print eigenvalues
             if self.print_eigenvalues:
@@ -127,7 +132,7 @@ class NonlinearSolver(object):
                     U_forward = deepcopy(U)
                     U_eps = max(self.fd_eps, abs(U[j] * self.fd_eps))
                     U_forward[j] += U_eps
-                    r_forward, J_unused = self.assembleSystem(U_forward)
+                    r_forward, J_unused = f(U_forward)
                     J_fd[:, j] = (r_forward - r) / U_eps
 
                 # print the matrices
