@@ -128,6 +128,27 @@ from ..utilities.error_utilities import error
 
 ## Class for creating objects
 class Factory(object):
+    def __init__(self):
+        self.stored_objects = {"factory": self}
+
+    ##
+    # Checks whether a parameter exists in factory warehouse
+    #
+    # @param[in] param   parameter to check
+    # @returns true if parameter exists in factory warehouse
+    #
+    def hasParameter(self, param):
+        return param in self.stored_objects
+
+    ##
+    # Gets a parameter from factory warehouse
+    #
+    # @param[in] param   parameter to get
+    # @returns parameter from factory warehouse
+    #
+    def getParameter(self, param):
+        return self.stored_objects[param]
+
     ## Creates a parameters object
     # @param object_class  class of object for which to create parameters object
     # @param params  dictionary of parameter names to their values as strings
@@ -164,11 +185,36 @@ class Factory(object):
 
         return the_object
 
-    ## Creates an object
-    # @param object_class  class of object to create
-    # @param params  dictionary of parameter names to their values as strings
+    ##
+    # Creates an object, with class given as a parameter
+    #
+    # @param[in] object_class   class of object to create
+    # @param[in] params   dictionary of parameter names to their values as strings
+    # @returns created object
+    #
     def createObject(self, object_class, params=None):
         # create the object's parameters object first
         parameters_object = self.createParametersObject(object_class, params)
 
         return self.createObjectFromParametersObject(object_class, parameters_object)
+
+    ##
+    # Creates an object, with class given by key "type"
+    #
+    # @param[in] params   dictionary of parameter names to their values as strings
+    # @returns created object
+    #
+    def createObjectOfType(self, params):
+        object_class = params["type"]
+        return self.createObject(object_class, params)
+
+    ## Creates and stores an object
+    #
+    # @param[in] the_object   the object to store
+    # @param[in] object_name   string by which to identify the object in the warehouse
+    #
+    def storeObject(self, the_object, object_name):
+        if object_name in self.stored_objects:
+            error("There is already an object '" + object_name + "' stored in the factory")
+        else:
+            self.stored_objects[object_name] = the_object

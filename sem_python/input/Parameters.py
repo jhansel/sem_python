@@ -17,11 +17,17 @@ class Parameters(object):
     # @param name  the name of the input parameter to retrieve
     # @return the value of the parameter
     def get(self, name):
+        # first check if parameter was manually set for this object
         if name in self.values:
             return self.values[name]
         else:
+            # check if parameter was registered
             if name in self.descriptions:
-                error("The parameter '" + name + "' was not set and does not have a default.")
+                # check if parameter exists in factory
+                if self.factory.hasParameter(name):
+                    return self.factory.getParameter(name)
+                else:
+                    error("The parameter '" + name + "' was not set and does not have a default.")
             else:
                 error("'" + name + "' is not a registered parameter.")
 

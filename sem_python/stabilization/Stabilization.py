@@ -10,7 +10,7 @@ class StabilizationParameters(Parameters):
         self.registerParameter("factory", "Factory")
         self.registerParameter("dof_handler", "Degree of freedom handler")
         self.registerParameter("model_type", "Model type")
-        self.registerIntParameter("n_q", "Number of quadrature points per cell")
+        self.registerParameter("quadrature", "Quadrature")
 
 
 ## Abstract base class for stabilization
@@ -20,7 +20,7 @@ class Stabilization(object, metaclass=ABCMeta):
         self.factory = params.get("factory")
         self.dof_handler = params.get("dof_handler")
         self.model_type = params.get("model_type")
-        self.n_q = params.get("n_q")
+        self.n_q = params.get("quadrature").n_q
 
     @abstractmethod
     def needSolutionGradients(self):

@@ -66,23 +66,23 @@ def run(input_file, input_file_modifier=InputFileModifier()):
     model_param_data = input_file_parser.getBlockData("Model")
     model = factory.createObject("Model", model_param_data)
     model_type = model.model_type
+    factory.storeObject(model, "model")
+    factory.storeObject(model_type, "model_type")
 
     # mesh(es)
     mesh_subblocks = input_file_parser.getSubblockNames("Mesh")
     if len(mesh_subblocks) == 0:
         # single mesh; no subblock is required
         mesh_param_data = input_file_parser.getBlockData("Mesh")
-        mesh_class = mesh_param_data["type"]
-        mesh = factory.createObject(mesh_class, mesh_param_data)
+        mesh = factory.createObjectOfType(mesh_param_data)
         meshes = [mesh]
     else:
         # multiple meshes; subblocks are required
         meshes = list()
         for mesh_subblock in mesh_subblocks:
             mesh_param_data = input_file_parser.getSubblockData("Mesh", mesh_subblock)
-            mesh_class = mesh_param_data["type"]
             mesh_param_data["name"] = mesh_subblock
-            mesh = factory.createObject(mesh_class, mesh_param_data)
+            mesh = factory.createObjectOfType(mesh_param_data)
             meshes.append(mesh)
     # check that no meshes have the same name
     mesh_names = list()
@@ -105,8 +105,7 @@ def run(input_file, input_file_modifier=InputFileModifier()):
     for k, eos_subblock in enumerate(eos_subblocks):
         phase_name_to_index[eos_subblock] = k
         eos_param_data = input_file_parser.getSubblockData("EoS", eos_subblock)
-        eos_class = eos_param_data["type"]
-        eos_list.append(factory.createObject(eos_class, eos_param_data))
+        eos_list.append(factory.createObjectOfType(eos_param_data))
 
     # initial conditions / initial guess
     ic_subblocks = input_file_parser.getSubblockNames("IC")
@@ -133,6 +132,7 @@ def run(input_file, input_file_modifier=InputFileModifier()):
 
     # quadrature
     quadrature = factory.createObject("Quadrature", {"n_q_points": 2})
+    factory.storeObject(quadrature, "quadrature")
 
     # DoF handler
     dof_handler_params = {"meshes": meshes, "ics": ics}
@@ -143,6 +143,7 @@ def run(input_file, input_file_modifier=InputFileModifier()):
     elif model_type == ModelType.TwoPhase:
         dof_handler_class = "DoFHandler2Phase"
     dof_handler = factory.createObject(dof_handler_class, dof_handler_params)
+    factory.storeObject(dof_handler, "dof_handler")
 
     # junctions
     junctions = list()
@@ -150,13 +151,11 @@ def run(input_file, input_file_modifier=InputFileModifier()):
         junction_subblocks = input_file_parser.getSubblockNames("Junctions")
         for junction_subblock in junction_subblocks:
             junction_param_data = input_file_parser.getSubblockData("Junctions", junction_subblock)
-            junction_class = junction_param_data["type"]
             if "phase" in junction_param_data:
                 junction_param_data["phase"] = phase_name_to_index[junction_param_data["phase"]]
-            junction_param_data["dof_handler"] = dof_handler
             junction_param_data["eos_list"] = eos_list
 
-            junction = factory.createObject(junction_class, junction_param_data)
+            junction = factory.createObjectOfType(junction_param_data)
             junctions.append(junction)
 
     # update DoF handler with junction constraints
@@ -167,7 +166,6 @@ def run(input_file, input_file_modifier=InputFileModifier()):
     bc_subblocks = input_file_parser.getSubblockNames("BC")
     for bc_subblock in bc_subblocks:
         bc_param_data = input_file_parser.getSubblockData("BC", bc_subblock)
-        bc_class = bc_param_data["type"]
 
         # if there is only 1 mesh, add the mesh parameter if not supplied already
         if len(meshes) == 1:
@@ -176,20 +174,15 @@ def run(input_file, input_file_modifier=InputFileModifier()):
 
         if "phase" in bc_param_data:
             bc_param_data["phase"] = phase_name_to_index[bc_param_data["phase"]]
-        bc_param_data["dof_handler"] = dof_handler
         bc_param_data["eos_list"] = eos_list
 
-        bc = factory.createObject(bc_class, bc_param_data)
+        bc = factory.createObjectOfType(bc_param_data)
         bcs.append(bc)
 
     # interface closures
     if model_type == ModelType.TwoPhase:
         interface_closures_params = input_file_parser.getBlockData("InterfaceClosures")
-        interface_closures_params["factory"] = factory
-        interface_closures_params["n_q"] = quadrature.n_q
-        interface_closures_class = interface_closures_params["type"]
-        interface_closures = factory.createObject(
-            interface_closures_class, interface_closures_params)
+        interface_closures = factory.createObjectOfType(interface_closures_params)
     else:
         interface_closures = None
 
@@ -226,25 +219,14 @@ def run(input_file, input_file_modifier=InputFileModifier()):
     # stabilization
     if input_file_parser.blockExists("Stabilization"):
         stabilization_param_data = input_file_parser.getBlockData("Stabilization")
-        stabilization_param_data["factory"] = factory
-        stabilization_param_data["dof_handler"] = dof_handler
-        stabilization_param_data["model_type"] = model_type
-        stabilization_param_data["n_q"] = quadrature.n_q
         stabilization_class = stabilization_param_data["type"]
     else:
-        stabilization_param_data = {
-            "factory": factory,
-            "dof_handler": dof_handler,
-            "model_type": model_type,
-            "n_q": quadrature.n_q
-        }
+        stabilization_param_data = {}
         stabilization_class = "NoStabilization"
     stabilization = factory.createObject(stabilization_class, stabilization_param_data)
 
     # create and run the executioner
     executioner_param_data = input_file_parser.getBlockData("Executioner")
-    executioner_type = executioner_param_data["type"]
-    executioner_param_data["model"] = model
     executioner_param_data["ics"] = ics
     executioner_param_data["bcs"] = bcs
     executioner_param_data["junctions"] = junctions
@@ -252,13 +234,10 @@ def run(input_file, input_file_modifier=InputFileModifier()):
     executioner_param_data["interface_closures"] = interface_closures
     executioner_param_data["gravity"] = gravity
     executioner_param_data["ht_data"] = ht_data
-    executioner_param_data["dof_handler"] = dof_handler
-    executioner_param_data["quadrature"] = quadrature
     executioner_param_data["meshes"] = meshes
     executioner_param_data["nonlinear_solver_params"] = nonlinear_solver_params
     executioner_param_data["stabilization"] = stabilization
-    executioner_param_data["factory"] = factory
-    executioner = factory.createObject(executioner_type, executioner_param_data)
+    executioner = factory.createObjectOfType(executioner_param_data)
     U = executioner.run()
 
     # perform post-processing
