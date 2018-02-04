@@ -21,6 +21,7 @@ class ExecutionerParameters(Parameters):
         self.registerFloatListParameter("gravity", "3-D gravitational acceleration vector")
         self.registerParameter("ht_data", "List of HeatTransferData objects")
         self.registerParameter("dof_handler", "Degree of freedom handler")
+        self.registerParameter("quadrature", "Quadrature")
         self.registerParameter("meshes", "List of meshes")
         self.registerParameter("nonlinear_solver_params", "Nonlinear solver parameters")
         self.registerParameter("stabilization", "Stabilization")
@@ -43,6 +44,7 @@ class Executioner(object):
         self.gravity = params.get("gravity")
         self.ht_data = params.get("ht_data")
         self.dof_handler = params.get("dof_handler")
+        self.quadrature = params.get("quadrature")
         self.meshes = params.get("meshes")
         self.nonlinear_solver_params = params.get("nonlinear_solver_params")
         self.factory = params.get("factory")
@@ -51,10 +53,6 @@ class Executioner(object):
         self.group_fem = params.get("group_fem")
         self.verbose = params.get("verbose")
         self.need_solution_gradients = stabilization.needSolutionGradients()
-
-        # quadrature
-        quadrature_params = {}
-        self.quadrature = self.factory.createObject("Quadrature", quadrature_params)
 
         # FE values
         fe_values_params = {

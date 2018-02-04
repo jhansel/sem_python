@@ -131,8 +131,8 @@ def run(input_file, input_file_modifier=InputFileModifier()):
             else:
                 ics.append(factory.createObject("InitialConditions2Phase", ic_param_data))
 
-    # number of quadrature points per cell
-    n_q_points = 2
+    # quadrature
+    quadrature = factory.createObject("Quadrature", {"n_q_points": 2})
 
     # DoF handler
     dof_handler_params = {"meshes": meshes, "ics": ics}
@@ -186,7 +186,7 @@ def run(input_file, input_file_modifier=InputFileModifier()):
     if model_type == ModelType.TwoPhase:
         interface_closures_params = input_file_parser.getBlockData("InterfaceClosures")
         interface_closures_params["factory"] = factory
-        interface_closures_params["n_q"] = n_q_points
+        interface_closures_params["n_q"] = quadrature.n_q
         interface_closures_class = interface_closures_params["type"]
         interface_closures = factory.createObject(
             interface_closures_class, interface_closures_params)
@@ -229,14 +229,14 @@ def run(input_file, input_file_modifier=InputFileModifier()):
         stabilization_param_data["factory"] = factory
         stabilization_param_data["dof_handler"] = dof_handler
         stabilization_param_data["model_type"] = model_type
-        stabilization_param_data["n_q"] = n_q_points
+        stabilization_param_data["n_q"] = quadrature.n_q
         stabilization_class = stabilization_param_data["type"]
     else:
         stabilization_param_data = {
             "factory": factory,
             "dof_handler": dof_handler,
             "model_type": model_type,
-            "n_q": n_q_points
+            "n_q": quadrature.n_q
         }
         stabilization_class = "NoStabilization"
     stabilization = factory.createObject(stabilization_class, stabilization_param_data)
@@ -253,6 +253,7 @@ def run(input_file, input_file_modifier=InputFileModifier()):
     executioner_param_data["gravity"] = gravity
     executioner_param_data["ht_data"] = ht_data
     executioner_param_data["dof_handler"] = dof_handler
+    executioner_param_data["quadrature"] = quadrature
     executioner_param_data["meshes"] = meshes
     executioner_param_data["nonlinear_solver_params"] = nonlinear_solver_params
     executioner_param_data["stabilization"] = stabilization

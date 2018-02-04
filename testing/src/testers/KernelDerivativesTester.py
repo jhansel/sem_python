@@ -49,7 +49,7 @@ class KernelDerivativesTester(object):
 
         # quadrature
         n_q_points = 2
-        quadrature_params = {}
+        quadrature_params = {"n_q_points": n_q_points}
         quadrature = factory.createObject("Quadrature", quadrature_params)
 
         # FE values
