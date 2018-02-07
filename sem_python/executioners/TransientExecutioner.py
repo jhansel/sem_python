@@ -12,9 +12,7 @@ class TransientExecutionerParameters(ExecutionerParameters):
 
     def __init__(self, factory):
         ExecutionerParameters.__init__(self, factory)
-        self.registerFloatParameter("dt", "Nominal time step size")
-        self.registerFloatParameter("cfl", "CFL number to compute time step size")
-        self.registerFloatParameter("end_time", "End time")
+        self.registerParameter("time_step_sizer", "Time step sizer")
         self.registerBoolParameter("lump_mass_matrix", "Lump the mass matrix?", False)
         self.registerBoolParameter("multiply_by_dt", "Multiply the nonlinear system by dt?", True)
         self.registerFloatParameter("ss_tol", "Tolerance for steady-state check")
@@ -25,21 +23,7 @@ class TransientExecutioner(Executioner):
     def __init__(self, params):
         Executioner.__init__(self, params)
 
-        # determine how time step size is determined
-        if params.has("dt") and params.has("cfl"):
-            error("The parameters 'dt' and 'cfl' cannot both be provided.")
-        elif params.has("dt"):
-            self.dt_nominal = params.get("dt")
-            self.use_cfl_dt = False
-        elif params.has("cfl"):
-            self.cfl = params.get("cfl")
-            self.use_cfl_dt = True
-            self.cfl_dt_aux_list = self.createCFLAuxQuantities()
-            self.cfl_aux_names = [aux.name for aux in self.cfl_dt_aux_list]
-        else:
-            error("Either parameter 'dt' or 'cfl' must be provided.")
-
-        self.end_time = params.get("end_time")
+        self.time_step_sizer = params.get("time_step_sizer")
         self.lump_mass_matrix = params.get("lump_mass_matrix")
         self.multiply_by_dt = params.get("multiply_by_dt")
 
@@ -48,9 +32,6 @@ class TransientExecutioner(Executioner):
             self.ss_tol = params.get("ss_tol")
         else:
             self.check_ss = False
-
-        # tolerance to prevent small final time steps due to floating point precision error
-        self.end_tolerance = 1e-12
 
         self.U_old = deepcopy(self.U)
 
@@ -167,92 +148,12 @@ class TransientExecutioner(Executioner):
             # add integrated source (recall kernels assume LHS)
             self.dof_handler.aggregateLocalNodeVector(U, -dt * r_node, k)
 
-    def createCFLAuxQuantities(self):
-        aux_list = list()
-
-        if self.model_type == ModelType.OnePhase:
-            vf_classes = ["VolumeFraction1Phase"]
-            self.n_phases = 1
-        else:
-            vf_classes = ["VolumeFractionPhase1", "VolumeFractionPhase2"]
-            self.n_phases = 2
-
-        for phase in range(self.n_phases):
-            names = [vf_classes[phase]] + [
-                "Density", "SpecificVolume", "Velocity", "SpecificTotalEnergy",
-                "SpecificInternalEnergy", "Pressure", "SoundSpeed"
-            ]
-            for name in names:
-                if name == "Pressure":
-                    params = {"phase": phase, "p_function": self.eos_list[phase].p}
-                elif name == "SoundSpeed":
-                    params = {"phase": phase, "c_function": self.eos_list[phase].c}
-                else:
-                    params = {"phase": phase}
-                aux_list.append(self.factory.createObject(name, params))
-
-        return aux_list
-
-    def computeTimeStepSizeFromCFL(self):
-        # determine minimum cell width
-        dx_min = self.meshes[0].getMinimumCellWidth()
-        for mesh in self.meshes:
-            dx_min = min(dx_min, mesh.getMinimumCellWidth())
-
-        # determine maximum wave speed
-        data = dict()
-        der = initializeDerivativeData(self.cfl_aux_names, self.quadrature.n_q)
-
-        for phase in range(self.n_phases):
-            phase_str = str(phase + 1)
-            vf = "vf" + phase_str
-            arhoA = "arhoA" + phase_str
-            arhouA = "arhouA" + phase_str
-            arhoEA = "arhoEA" + phase_str
-            data[vf], data[arhoA], data[arhouA], data[arhoEA] = self.dof_handler.getPhaseSolution(
-                self.U_old, phase)
-
-        for aux in self.cfl_dt_aux_list:
-            aux.compute(data, der)
-
-        wave_speed_max = 0
-        for phase in range(self.n_phases):
-            phase_str = str(phase + 1)
-            u = "u" + phase_str
-            c = "c" + phase_str
-            wave_speed = "wave_speed" + phase_str
-
-            data[wave_speed] = abs(data[u]) + data[c]
-            wave_speed_max = max(wave_speed_max, max(data[wave_speed]))
-
-        # compute CFL time step size
-        dt_CFL = dx_min / wave_speed_max
-
-        return self.cfl * dt_CFL
-
     def run(self):
-        transient_incomplete = True
-        t = 0.0
-        time_step = 1
-        while (transient_incomplete):
+        while (self.time_step_sizer.transientIncomplete()):
             # compute time step size
-            if self.use_cfl_dt:
-                dt = self.computeTimeStepSizeFromCFL()
-            else:
-                dt = self.dt_nominal
-
-            # shorten time step if at end of transient
-            if (t + dt + self.end_tolerance >= self.end_time):
-                transient_incomplete = False
-                self.dt = self.end_time - t
-            else:
-                self.dt = dt
-
-            # update time
-            t += self.dt
-
+            self.dt = self.time_step_sizer.getTimeStepSize(self.U)
             if self.verbose:
-                print("\nTime step %i: t = %g, dt = %g" % (time_step, t, self.dt))
+                self.time_step_sizer.printTimeStepInfo()
 
             # solve the time step
             self.solve()
@@ -274,12 +175,8 @@ class TransientExecutioner(Executioner):
                         print(colored("\nConverged to steady-state!\n", "green"))
                     return self.U
 
-            # store the old solution
-            self.U_old = deepcopy(self.U)
-
             # save old solution and increment time step index
             self.U_old = deepcopy(self.U)
-            time_step += 1
 
         if self.verbose:
             print("")

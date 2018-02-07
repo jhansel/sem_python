@@ -62,8 +62,12 @@
 
 [Executioner]
   type = ImplicitEulerExecutioner
-  dt = 0.01
-  end_time = 0.15
+
+  [TimeStepSizer]
+    type = ConstantTimeStepSizer
+    dt = 0.01
+    end_time = 0.15
+  []
 []
 
 [NonlinearSolver]

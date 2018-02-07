@@ -14,7 +14,7 @@ class EqualSolutionLM1PhaseJunctionTester(unittest.TestCase):
         input_file_modifier = InputFileModifier()
         input_file_modifier.modifySubblockParam(
             "Junctions", "junction1", "type", "EqualSolutionLM1PhaseJunction")
-        input_file_modifier.modifyBlockParam("Executioner", "end_time", 0.05)
+        input_file_modifier.modifySubblockParam("Executioner", "TimeStepSizer", "end_time", 0.05)
 
         solution_tester = SolutionTester(test_dir, input_file, input_file_modifier)
         self.assertTrue(solution_tester.solutionsAreEqual())

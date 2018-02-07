@@ -122,6 +122,10 @@ from ..solvers.NonlinearSolver import NonlinearSolver, NonlinearSolverParameters
 from ..stabilization.NoStabilization import NoStabilization, NoStabilizationParameters
 from ..stabilization.LaxFriedrichsStabilization import LaxFriedrichsStabilization, LaxFriedrichsStabilizationParameters
 
+# time step sizers
+from ..time_step_sizers.ConstantTimeStepSizer import ConstantTimeStepSizer, ConstantTimeStepSizerParameters
+from ..time_step_sizers.CFLTimeStepSizer import CFLTimeStepSizer, CFLTimeStepSizerParameters
+
 # utilities
 from ..utilities.error_utilities import error
 

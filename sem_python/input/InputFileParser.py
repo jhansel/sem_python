@@ -270,6 +270,13 @@ class InputFileParser(object):
     def blockExists(self, block):
         return block in self.block_data
 
+    ## Checks if a sub-block exists
+    # @param[in] block  name of block
+    # @param[in] subblock  name of sub-block
+    def subblockExists(self, block, subblock):
+        self.assertBlockExists(block)
+        return subblock in self.subblock_list[block]
+
     ## Asserts that a block exists
     # @param block  block for which to assert existence
     def assertBlockExists(self, block):

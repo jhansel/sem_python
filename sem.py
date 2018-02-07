@@ -71,14 +71,14 @@ def run(input_file, input_file_modifier=InputFileModifier()):
 
     # mesh(es)
     mesh_subblocks = input_file_parser.getSubblockNames("Mesh")
+    meshes = list()
     if len(mesh_subblocks) == 0:
         # single mesh; no subblock is required
         mesh_param_data = input_file_parser.getBlockData("Mesh")
         mesh = factory.createObjectOfType(mesh_param_data)
-        meshes = [mesh]
+        meshes.append(mesh)
     else:
         # multiple meshes; subblocks are required
-        meshes = list()
         for mesh_subblock in mesh_subblocks:
             mesh_param_data = input_file_parser.getSubblockData("Mesh", mesh_subblock)
             mesh_param_data["name"] = mesh_subblock
@@ -91,6 +91,8 @@ def run(input_file, input_file_modifier=InputFileModifier()):
             error("Multiple meshes with the name '" + mesh.name + "'.")
         else:
             mesh_names.append(mesh.name)
+    # store meshes in factory
+    factory.storeObject(meshes, "meshes")
 
     # equations of state
     eos_subblocks = input_file_parser.getSubblockNames("EoS")
@@ -106,6 +108,7 @@ def run(input_file, input_file_modifier=InputFileModifier()):
         phase_name_to_index[eos_subblock] = k
         eos_param_data = input_file_parser.getSubblockData("EoS", eos_subblock)
         eos_list.append(factory.createObjectOfType(eos_param_data))
+    factory.storeObject(eos_list, "eos_list")
 
     # initial conditions / initial guess
     ic_subblocks = input_file_parser.getSubblockNames("IC")
@@ -135,7 +138,7 @@ def run(input_file, input_file_modifier=InputFileModifier()):
     factory.storeObject(quadrature, "quadrature")
 
     # DoF handler
-    dof_handler_params = {"meshes": meshes, "ics": ics}
+    dof_handler_params = {"ics": ics}
     if model_type == ModelType.OnePhase:
         dof_handler_class = "DoFHandler1Phase"
     elif model_type == ModelType.TwoPhaseNonInteracting:
@@ -153,7 +156,6 @@ def run(input_file, input_file_modifier=InputFileModifier()):
             junction_param_data = input_file_parser.getSubblockData("Junctions", junction_subblock)
             if "phase" in junction_param_data:
                 junction_param_data["phase"] = phase_name_to_index[junction_param_data["phase"]]
-            junction_param_data["eos_list"] = eos_list
 
             junction = factory.createObjectOfType(junction_param_data)
             junctions.append(junction)
@@ -174,7 +176,6 @@ def run(input_file, input_file_modifier=InputFileModifier()):
 
         if "phase" in bc_param_data:
             bc_param_data["phase"] = phase_name_to_index[bc_param_data["phase"]]
-        bc_param_data["eos_list"] = eos_list
 
         bc = factory.createObjectOfType(bc_param_data)
         bcs.append(bc)
@@ -229,14 +230,24 @@ def run(input_file, input_file_modifier=InputFileModifier()):
 
     # create and run the executioner
     executioner_param_data = input_file_parser.getBlockData("Executioner")
+    executioner_type = executioner_param_data["type"]
+
+    # add transient executioner objects
+    if executioner_type in ["ImplicitEulerExecutioner", "ExplicitEulerExecutioner"]:
+        # create and add time step sizer to executioner params
+        if input_file_parser.subblockExists("Executioner", "TimeStepSizer"):
+            time_step_sizer_params = input_file_parser.getSubblockData("Executioner", "TimeStepSizer")
+            time_step_sizer = factory.createObjectOfType(time_step_sizer_params)
+            executioner_param_data["time_step_sizer"] = time_step_sizer
+        else:
+            error("If using TransientExecutioner, the TimeStepSizer block must be provided")
+
     executioner_param_data["ics"] = ics
     executioner_param_data["bcs"] = bcs
     executioner_param_data["junctions"] = junctions
-    executioner_param_data["eos_list"] = eos_list
     executioner_param_data["interface_closures"] = interface_closures
     executioner_param_data["gravity"] = gravity
     executioner_param_data["ht_data"] = ht_data
-    executioner_param_data["meshes"] = meshes
     executioner_param_data["stabilization"] = stabilization
     executioner = factory.createObjectOfType(executioner_param_data)
     U = executioner.run()

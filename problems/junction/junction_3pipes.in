@@ -43,7 +43,9 @@
 []
 
 [Executioner]
-  end_time = 1.5
+  [TimeStepSizer]
+    end_time = 1.5
+  []
 []
 
 [Output]

@@ -48,9 +48,13 @@
 []
 
 [Executioner]
-  dt = 1
-  end_time = 50
   ss_tol = 1e-8
+
+  [TimeStepSizer]
+    type = ConstantTimeStepSizer
+    dt = 1
+    end_time = 50
+  []
 []
 
 [Output]
