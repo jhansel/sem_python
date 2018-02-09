@@ -231,17 +231,6 @@ def run(input_file, input_file_modifier=InputFileModifier()):
     # create and run the executioner
     executioner_param_data = input_file_parser.getBlockData("Executioner")
     executioner_type = executioner_param_data["type"]
-
-    # add transient executioner objects
-    if executioner_type in ["ImplicitEulerExecutioner", "ExplicitEulerExecutioner"]:
-        # create and add time step sizer to executioner params
-        if input_file_parser.subblockExists("Executioner", "TimeStepSizer"):
-            time_step_sizer_params = input_file_parser.getSubblockData("Executioner", "TimeStepSizer")
-            time_step_sizer = factory.createObjectOfType(time_step_sizer_params)
-            executioner_param_data["time_step_sizer"] = time_step_sizer
-        else:
-            error("If using TransientExecutioner, the TimeStepSizer block must be provided")
-
     executioner_param_data["ics"] = ics
     executioner_param_data["bcs"] = bcs
     executioner_param_data["junctions"] = junctions

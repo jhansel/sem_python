@@ -12,6 +12,7 @@ class Parameters(object):
         self.values = dict()
         self.types = dict()
         self.string_selections = dict()
+        self.named_subblocks = list()
 
     ## Retrieves an input parameter
     # @param name  the name of the input parameter to retrieve
@@ -82,6 +83,8 @@ class Parameters(object):
                     error(
                         "The parameter '" + name + "' must take one of the following values:" +
                         selection_list_string)
+        elif name in self.named_subblocks:
+            self.values[name] = value
         else:
             error("The parameter '" + name + "' is not registered.")
 
@@ -132,3 +135,12 @@ class Parameters(object):
     def registerStringSelectionParameter(self, name, selection, description, default=None):
         self.registerParameterInternal(name, "StringSelection", description, default)
         self.string_selections[name] = selection
+
+    ##
+    # Registers a named sub-block within the object's parameters that is used
+    # to create another object
+    #
+    # @param[in] name   name of sub-block to register
+    #
+    def registerNamedSubblock(self, name):
+        self.named_subblocks.append(name)

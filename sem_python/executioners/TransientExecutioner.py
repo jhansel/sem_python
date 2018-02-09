@@ -12,7 +12,7 @@ class TransientExecutionerParameters(ExecutionerParameters):
 
     def __init__(self, factory):
         ExecutionerParameters.__init__(self, factory)
-        self.registerParameter("time_step_sizer", "Time step sizer")
+        self.registerNamedSubblock("TimeStepSizer")
         self.registerBoolParameter("lump_mass_matrix", "Lump the mass matrix?", False)
         self.registerBoolParameter("multiply_by_dt", "Multiply the nonlinear system by dt?", True)
         self.registerFloatParameter("ss_tol", "Tolerance for steady-state check")
@@ -23,7 +23,7 @@ class TransientExecutioner(Executioner):
     def __init__(self, params):
         Executioner.__init__(self, params)
 
-        self.time_step_sizer = params.get("time_step_sizer")
+        self.time_step_sizer = self.factory.createObjectOfType(params.get("TimeStepSizer"))
         self.lump_mass_matrix = params.get("lump_mass_matrix")
         self.multiply_by_dt = params.get("multiply_by_dt")
 

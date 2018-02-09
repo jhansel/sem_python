@@ -1,3 +1,4 @@
+from copy import deepcopy
 import re
 
 from ..utilities.conversion_utilities import stringToInt, stringToFloat
@@ -246,11 +247,22 @@ class InputFileParser(object):
                         parameter] = input_file_parser_diff.subblock_data[block][subblock][
                             parameter]
 
-    ## Gets dictionary of a block's data
-    # @param block  block from which to take data
+    ##
+    # Gets dictionary of a block's data, including any sub-blocks it might have
+    #
+    # @param block[in]   block from which to take data
+    #
     def getBlockData(self, block):
         self.assertBlockExists(block)
-        return self.block_data[block]
+
+        # add sub-block data, if there is any
+        if len(self.subblock_list[block]) > 0:
+            block_data = deepcopy(self.block_data[block])
+            for subblock in self.subblock_list[block]:
+                block_data[subblock] = self.subblock_data[block][subblock]
+            return block_data
+        else:
+            return self.block_data[block]
 
     ## Gets dictionary of a sub-block's data
     # @param block  block to which sub-block belongs
