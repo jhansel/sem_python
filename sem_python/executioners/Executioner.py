@@ -354,7 +354,7 @@ class Executioner(object):
         return kernels
 
     # computes the steady-state residual and Jacobian without applying strong BC
-    def assembleSteadyStateSystemWithoutStrongConstraints(self, U):
+    def assembleSteadyStateSystemWithoutConstraints(self, U):
         r = np.zeros(self.dof_handler.n_dof)
         J = np.zeros(shape=(self.dof_handler.n_dof, self.dof_handler.n_dof))
 
@@ -371,11 +371,11 @@ class Executioner(object):
 
         return (r, J)
 
-    ## Applies strong constraints to a nonlinear system solved with Newton's method
+    ## Applies constraints to a nonlinear system solved with Newton's method
     # @param[in] U  implicit solution vector
     # @param[in] r  nonlinear system residual vector
     # @param[in] J  nonlinear system Jacobian matrix
-    def applyStrongConstraintsToNonlinearSystem(self, U, r, J):
+    def applyConstraintsToNonlinearSystem(self, U, r, J):
         # BCs
         for bc in self.bcs:
             bc.applyStrongBCNonlinearSystem(U, r, J)
@@ -384,14 +384,14 @@ class Executioner(object):
         for junction in self.junctions:
             junction.applyStronglyToNonlinearSystem(U, r, J)
 
-    ## Applies strong constraints to a linear system matrix.
+    ## Applies constraints to a linear system matrix.
     #
     # This is separated from the corresponding RHS vector modification function
     # because the matrix needs to be modified only once; the RHS vector might
     # depend on time or the solution vector.
     #
     # @param[in] A      linear system matrix
-    def applyStrongConstraintsToLinearSystemMatrix(self, A):
+    def applyConstraintsToLinearSystemMatrix(self, A):
         # BCs
         for bc in self.bcs:
             bc.applyStrongBCLinearSystemMatrix(A)
@@ -403,7 +403,7 @@ class Executioner(object):
     ## Applies strong constraints to a linear system RHS vector.
     # @param[in] U   solution, needed if Dirichlet values are solution-dependent
     # @param[in] b   linear system RHS vector
-    def applyStrongConstraintsToLinearSystemRHSVector(self, U, b):
+    def applyConstraintsToLinearSystemRHSVector(self, U, b):
         # BCs
         for bc in self.bcs:
             bc.applyStrongBCLinearSystemRHSVector(U, b)

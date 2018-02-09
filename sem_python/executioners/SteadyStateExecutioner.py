@@ -14,8 +14,8 @@ class SteadyStateExecutioner(Executioner):
         Executioner.__init__(self, params)
 
     def assembleSystem(self, U):
-        r, J = self.assembleSteadyStateSystemWithoutStrongConstraints(U)
-        self.applyStrongConstraintsToNonlinearSystem(U, r, J)
+        r, J = self.assembleSteadyStateSystemWithoutConstraints(U)
+        self.applyConstraintsToNonlinearSystem(U, r, J)
         return (r, J)
 
     def run(self):
