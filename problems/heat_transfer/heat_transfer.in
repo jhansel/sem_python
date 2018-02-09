@@ -53,6 +53,10 @@
   P_heat = 0.5
 []
 
+[SpatialDiscretization]
+  type = FiniteElementMethod
+[]
+
 [Executioner]
   type = ImplicitEulerExecutioner
 

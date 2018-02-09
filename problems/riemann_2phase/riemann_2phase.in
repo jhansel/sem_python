@@ -93,8 +93,12 @@
   []
 []
 
-[Stabilization]
-  type = LaxFriedrichsStabilization
+[SpatialDiscretization]
+  type = FiniteElementMethod
+
+  [Stabilization]
+    type = LaxFriedrichsStabilization
+  []
 []
 
 [Executioner]

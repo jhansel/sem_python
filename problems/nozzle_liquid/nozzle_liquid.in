@@ -45,6 +45,10 @@
   []
 []
 
+[SpatialDiscretization]
+  type = FiniteElementMethod
+[]
+
 [Executioner]
   type = ImplicitEulerExecutioner
 

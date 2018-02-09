@@ -117,6 +117,9 @@ from ..output.ScreenOutput import ScreenOutput, ScreenOutputParameters
 # solvers
 from ..solvers.NonlinearSolver import NonlinearSolver, NonlinearSolverParameters
 
+# spatial discretizations
+from ..spatial_discretizations.FiniteElementMethod import FiniteElementMethod, FiniteElementMethodParameters
+
 # stabilization
 from ..stabilization.NoStabilization import NoStabilization, NoStabilizationParameters
 from ..stabilization.LaxFriedrichsStabilization import LaxFriedrichsStabilization, LaxFriedrichsStabilizationParameters

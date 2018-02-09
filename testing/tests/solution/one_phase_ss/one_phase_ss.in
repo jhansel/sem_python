@@ -43,6 +43,10 @@
   []
 []
 
+[SpatialDiscretization]
+  type = FiniteElementMethod
+[]
+
 [Executioner]
   type = SteadyStateExecutioner
 []

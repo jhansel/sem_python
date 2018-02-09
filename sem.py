@@ -219,14 +219,9 @@ def run(input_file, input_file_modifier=InputFileModifier()):
     nonlinear_solver = factory.createObject("NonlinearSolver", nonlinear_solver_params)
     factory.storeObject(nonlinear_solver, "nonlinear_solver")
 
-    # stabilization
-    if input_file_parser.blockExists("Stabilization"):
-        stabilization_param_data = input_file_parser.getBlockData("Stabilization")
-        stabilization_class = stabilization_param_data["type"]
-    else:
-        stabilization_param_data = {}
-        stabilization_class = "NoStabilization"
-    stabilization = factory.createObject(stabilization_class, stabilization_param_data)
+    # spatial discretization
+    spatial_discretization_params = input_file_parser.getBlockData("SpatialDiscretization")
+    spatial_discretization = factory.createObjectOfType(spatial_discretization_params)
 
     # create and run the executioner
     executioner_param_data = input_file_parser.getBlockData("Executioner")
@@ -237,7 +232,6 @@ def run(input_file, input_file_modifier=InputFileModifier()):
     executioner_param_data["interface_closures"] = interface_closures
     executioner_param_data["gravity"] = gravity
     executioner_param_data["ht_data"] = ht_data
-    executioner_param_data["stabilization"] = stabilization
     executioner = factory.createObjectOfType(executioner_param_data)
     U = executioner.run()
 

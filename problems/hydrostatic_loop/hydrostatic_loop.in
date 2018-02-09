@@ -133,8 +133,8 @@
   []
 []
 
-[Stabilization]
-  type = NoStabilization
+[SpatialDiscretization]
+  type = FiniteElementMethod
 []
 
 [Executioner]
