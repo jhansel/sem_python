@@ -127,7 +127,7 @@ class InletP0T0BC(OnePhaseBC):
     def applyStrongBCLinearSystemMatrix(self, A):
         pass
 
-    def applyStrongBCLinearSystemRHSVector(self, U_old, b):
+    def applyStrongBCLinearSystemRHSVector(self, U, b):
         pass
 
     ## Computes rho, u, p, and E, which are needed by the fluxes

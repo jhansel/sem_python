@@ -39,5 +39,5 @@ class BC(object):
     def applyStrongBCLinearSystemMatrix(self, A):
         pass
 
-    def applyStrongBCLinearSystemRHSVector(self, U_old, b):
+    def applyStrongBCLinearSystemRHSVector(self, U, b):
         pass

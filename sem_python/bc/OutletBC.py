@@ -98,12 +98,12 @@ class OutletBC(OnePhaseBC):
         A[self.i_arhoEA, :] = 0
         A[self.i_arhoEA, self.i_arhoEA] = 1
 
-    def applyStrongBCLinearSystemRHSVector(self, U_old, b):
+    def applyStrongBCLinearSystemRHSVector(self, U, b):
         A = self.dof_handler.A[self.k]
-        aA1 = self.dof_handler.aA1(U_old, self.k)
+        aA1 = self.dof_handler.aA1(U, self.k)
         vf, dvf_daA1 = computeVolumeFraction(aA1, A, self.phase, self.model_type)
-        arhoA = U_old[self.i_arhoA]
-        arhouA = U_old[self.i_arhouA]
+        arhoA = U[self.i_arhoA]
+        arhouA = U[self.i_arhouA]
 
         u, du_darhoA, du_darhouA = computeVelocity(arhoA, arhouA)
         rho, drho_dvf, drho_darhoA, _ = computeDensity(vf, arhoA, A)

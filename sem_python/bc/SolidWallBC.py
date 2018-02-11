@@ -26,5 +26,5 @@ class SolidWallBC(OnePhaseBC):
         A[self.i_arhouA, :] = 0
         A[self.i_arhouA, self.i_arhouA] = 1
 
-    def applyStrongBCLinearSystemRHSVector(self, U_old, b):
+    def applyStrongBCLinearSystemRHSVector(self, U, b):
         b[self.i_arhouA] = 0

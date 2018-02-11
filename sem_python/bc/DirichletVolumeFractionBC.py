@@ -33,7 +33,7 @@ class DirichletVolumeFractionBC(VolumeFractionBC):
         A[self.i_aA1, :] = 0
         A[self.i_aA1, self.i_aA1] = 1
 
-    def applyStrongBCLinearSystemRHSVector(self, U_old, b):
+    def applyStrongBCLinearSystemRHSVector(self, U, b):
         A = self.dof_handler.A[self.k]
 
         b[self.i_aA1] = self.vf1 * A
