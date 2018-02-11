@@ -65,12 +65,12 @@ class NewCompressibleJunction(Junction1Phase):
         U[self.i_h0_junction] = h0_junction
         U[self.i_s_junction] = s_junction
 
-    def applyWeaklyToNonlinearSystem(self, U_new, U_old, r, J):
-        self.computeFlowQuantities(U_new)
-        self.computeFluxes(U_new)
+    def applyWeaklyToNonlinearSystem(self, U, r, J):
+        self.computeFlowQuantities(U)
+        self.computeFluxes(U)
 
         # get the junction entropy
-        s_junction = U_new[self.i_s_junction]
+        s_junction = U[self.i_s_junction]
 
         at_least_one_inlet = False
         at_least_one_outlet = False
@@ -82,14 +82,14 @@ class NewCompressibleJunction(Junction1Phase):
 
                 # use the entropy from the solution
                 self.addFluxes(
-                    U_new, r, J, i, self.s[i], 0, self.ds_daA1[i], self.ds_darhoA[i],
+                    U, r, J, i, self.s[i], 0, self.ds_daA1[i], self.ds_darhoA[i],
                     self.ds_darhouA[i], self.ds_darhoEA[i])
             else:
                 # flag that at least one outlet was found
                 at_least_one_outlet = True
 
                 # use the entropy from the junction
-                self.addFluxes(U_new, r, J, i, s_junction, 1, 0, 0, 0, 0)
+                self.addFluxes(U, r, J, i, s_junction, 1, 0, 0, 0, 0)
 
     def addFluxes(self, U, r, J, i, s, ds_ds_junction, ds_daA1, ds_darhoA, ds_darhouA, ds_darhoEA):
         # get the junction stagnation enthalpy
@@ -148,7 +148,7 @@ class NewCompressibleJunction(Junction1Phase):
             (arhoEA + vf * p * A) * self.du_darhouA[i] + vf * dp_darhouA * A * u) * nx
         J[i_energy][i_energy] += (1 + vf * dp_darhoEA * A) * u * nx
 
-    def applyStronglyToNonlinearSystem(self, U, U_old, r, J):
+    def applyStronglyToNonlinearSystem(self, U, r, J):
         r[self.i_constraint_mass] = sum(self.f_mass)
         r[self.i_constraint_momentum] = sum(self.f_momentum)
 
@@ -168,5 +168,5 @@ class NewCompressibleJunction(Junction1Phase):
     def applyStronglyToLinearSystemMatrix(self, A):
         pass
 
-    def applyStronglyToLinearSystemRHSVector(self, U_old, b):
+    def applyStronglyToLinearSystemRHSVector(self, U, b):
         pass

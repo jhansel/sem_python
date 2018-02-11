@@ -16,14 +16,14 @@ class ImplicitEulerExecutioner(TransientExecutioner):
 
     def assembleSystem(self, U):
         r_tr, J_tr = self.assembleTransientSystem(U)
-        r_ss, J_ss = self.assembleSteadyStateSystemWithoutStrongConstraints(U, self.U_old)
+        r_ss, J_ss = self.assembleSteadyStateSystemWithoutStrongConstraints(U)
         if self.multiply_by_dt:
             r = r_tr + self.dt * r_ss
             J = J_tr + self.dt * J_ss
         else:
             r = r_tr / self.dt + r_ss
             J = J_tr / self.dt + J_ss
-        self.applyStrongConstraintsToNonlinearSystem(U, self.U_old, r, J)
+        self.applyStrongConstraintsToNonlinearSystem(U, r, J)
         return (r, J)
 
     def solve(self):

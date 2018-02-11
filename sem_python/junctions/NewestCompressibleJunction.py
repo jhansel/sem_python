@@ -340,15 +340,15 @@ class NewestCompressibleJunction(Junction1Phase):
         self.H_avg /= self.n_meshes
         self.s_avg /= self.n_meshes
 
-    def applyWeaklyToNonlinearSystem(self, U_new, U_old, r, J):
+    def applyWeaklyToNonlinearSystem(self, U, r, J):
         # add the boundary fluxes; characteristic theory is used to decide how
         # many pieces of information are supplied to inlets vs. outlets
         self.total_mass_flux = 0
         for i in range(self.n_meshes):
             A = self.A[i]
-            aA1 = self.dof_handler.aA1(U_old, self.node_indices[i])
-            arhoA = U_old[self.i_arhoA[i]]
-            arhouA = U_old[self.i_arhouA[i]]
+            aA1 = self.dof_handler.aA1(U, self.node_indices[i])
+            arhoA = U[self.i_arhoA[i]]
+            arhouA = U[self.i_arhouA[i]]
 
             u = arhouA / arhoA
             vf, _ = computeVolumeFraction(aA1, A, self.phase, self.model_type)
@@ -357,11 +357,11 @@ class NewestCompressibleJunction(Junction1Phase):
             self.total_mass_flux += abs(vf * rho * u * A)
 
             if u * self.nx[i] >= 0:
-                self.addJunctionInletFlux(i, U_new, r, J)
+                self.addJunctionInletFlux(i, U, r, J)
             else:
-                self.addJunctionOutletFlux(i, U_new, r, J)
+                self.addJunctionOutletFlux(i, U, r, J)
 
-    def applyStronglyToNonlinearSystem(self, U, U_old, r, J):
+    def applyStronglyToNonlinearSystem(self, U, r, J):
         HJ = U[self.i_HJ]
         sJ = U[self.i_sJ]
 
@@ -411,5 +411,5 @@ class NewestCompressibleJunction(Junction1Phase):
     def applyStronglyToLinearSystemMatrix(self, A):
         pass
 
-    def applyStronglyToLinearSystemRHSVector(self, U_old, b):
+    def applyStronglyToLinearSystemRHSVector(self, U, b):
         pass

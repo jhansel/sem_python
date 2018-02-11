@@ -220,7 +220,7 @@ class Junction1Phase(Junction):
                 (arhoEA + vf * p * A) * self.du_darhouA[i] + vf * self.dp_darhouA[i] * A * u) * nx
             self.df_energy_darhoEA[i] = (1 + vf * self.dp_darhoEA[i] * A) * u * nx
 
-    def applyWeaklyToNonlinearSystem(self, U, U_old, r, J):
+    def applyWeaklyToNonlinearSystem(self, U, r, J):
         self.computeFlowQuantities(U)
         self.computeFluxes(U)
         for m in range(self.n_meshes):

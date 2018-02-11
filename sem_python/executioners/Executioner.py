@@ -357,7 +357,7 @@ class Executioner(object):
         return kernels
 
     # computes the steady-state residual and Jacobian without applying strong BC
-    def assembleSteadyStateSystemWithoutStrongConstraints(self, U, U_old):
+    def assembleSteadyStateSystemWithoutStrongConstraints(self, U):
         r = np.zeros(self.dof_handler.n_dof)
         J = np.zeros(shape=(self.dof_handler.n_dof, self.dof_handler.n_dof))
 
@@ -370,7 +370,7 @@ class Executioner(object):
 
         # junctions
         for junction in self.junctions:
-            junction.applyWeaklyToNonlinearSystem(U, U_old, r, J)
+            junction.applyWeaklyToNonlinearSystem(U, r, J)
 
         return (r, J)
 
@@ -378,14 +378,14 @@ class Executioner(object):
     # @param[in] U  implicit solution vector
     # @param[in] r  nonlinear system residual vector
     # @param[in] J  nonlinear system Jacobian matrix
-    def applyStrongConstraintsToNonlinearSystem(self, U, U_old, r, J):
+    def applyStrongConstraintsToNonlinearSystem(self, U, r, J):
         # BCs
         for bc in self.bcs:
             bc.applyStrongBCNonlinearSystem(U, r, J)
 
         # junctions
         for junction in self.junctions:
-            junction.applyStronglyToNonlinearSystem(U, U_old, r, J)
+            junction.applyStronglyToNonlinearSystem(U, r, J)
 
     ## Applies strong constraints to a linear system matrix.
     #
@@ -404,16 +404,16 @@ class Executioner(object):
             junction.applyStronglyToLinearSystemMatrix(A)
 
     ## Applies strong constraints to a linear system RHS vector.
-    # @param[in] U_old  old solution, needed if Dirichlet values are solution-dependent
-    # @param[in] b      linear system RHS vector
-    def applyStrongConstraintsToLinearSystemRHSVector(self, U_old, b):
+    # @param[in] U   solution, needed if Dirichlet values are solution-dependent
+    # @param[in] b   linear system RHS vector
+    def applyStrongConstraintsToLinearSystemRHSVector(self, U, b):
         # BCs
         for bc in self.bcs:
-            bc.applyStrongBCLinearSystemRHSVector(U_old, b)
+            bc.applyStrongBCLinearSystemRHSVector(U, b)
 
         # junctions
         for junction in self.junctions:
-            junction.applyStronglyToLinearSystemRHSVector(U_old, b)
+            junction.applyStronglyToLinearSystemRHSVector(U, b)
 
     ## Computes the steady-state residual and Jacobian
     def addSteadyStateSystem(self, U, r, J):

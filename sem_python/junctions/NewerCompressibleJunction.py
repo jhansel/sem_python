@@ -63,21 +63,21 @@ class NewerCompressibleJunction(Junction1Phase):
 
         U[self.i_sJ] = s_sum / self.n_meshes
 
-    def applyWeaklyToNonlinearSystem(self, U_new, U_old, r, J):
-        self.computeFlowQuantities(U_new)
+    def applyWeaklyToNonlinearSystem(self, U, r, J):
+        self.computeFlowQuantities(U)
         self.computeJunctionStagnationEnthalpy()
 
         # add the boundary fluxes; characteristic theory is used to decide how
         # many pieces of information are supplied to inlets vs. outlets
         for i in range(self.n_meshes):
             if self.u[i] * self.nx[i] > 0:  # inlets to the junction; outlet BC
-                self.addJunctionInletFlux(i, U_new, r, J)
+                self.addJunctionInletFlux(i, U, r, J)
             else:  # outlets from the junction; inlet BC
-                self.addJunctionOutletFlux(i, U_new, r, J)
+                self.addJunctionOutletFlux(i, U, r, J)
 
         # the normal boundary fluxes are computed only because the mass fluxes are
         # needed by the mass flux balance constraint
-        self.computeFluxes(U_new)
+        self.computeFluxes(U)
 
     ## Computes junction stagnation enthalpy and its derivatives
     def computeJunctionStagnationEnthalpy(self):
@@ -363,7 +363,7 @@ class NewerCompressibleJunction(Junction1Phase):
                 J[i_energy][j_momentum] += vf * u * (rho * dE_darhouAj + dp_darhouAj) * A * nx
                 J[i_energy][j_energy] += vf * u * (rho * dE_darhoEAj + dp_darhoEAj) * A * nx
 
-    def applyStronglyToNonlinearSystem(self, U, U_old, r, J):
+    def applyStronglyToNonlinearSystem(self, U, r, J):
         r[self.i_constraint_mass] = sum(self.f_mass)
         J[self.i_constraint_mass, :] = 0
         for n in range(self.n_meshes):
@@ -372,5 +372,5 @@ class NewerCompressibleJunction(Junction1Phase):
     def applyStronglyToLinearSystemMatrix(self, A):
         pass
 
-    def applyStronglyToLinearSystemRHSVector(self, U_old, b):
+    def applyStronglyToLinearSystemRHSVector(self, U, b):
         pass

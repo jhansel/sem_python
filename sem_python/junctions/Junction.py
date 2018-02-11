@@ -73,14 +73,14 @@ class Junction(object):
     def initializeConstraintVariables(self, U):
         pass
 
-    def applyWeaklyToNonlinearSystem(self, U, U_old, r, J):
+    def applyWeaklyToNonlinearSystem(self, U, r, J):
         pass
 
-    def applyStronglyToNonlinearSystem(self, U, U_old, r, J):
+    def applyStronglyToNonlinearSystem(self, U, r, J):
         pass
 
     def applyStronglyToLinearSystemMatrix(self, A):
         pass
 
-    def applyStronglyToLinearSystemRHSVector(self, U_old, b):
+    def applyStronglyToLinearSystemRHSVector(self, U, b):
         pass

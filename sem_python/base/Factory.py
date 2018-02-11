@@ -80,7 +80,6 @@ from ..input.PhysicsParameters import PhysicsParameters
 
 # junctions
 from ..junctions.CloneJunction import CloneJunction, CloneJunctionParameters
-from ..junctions.CompressibleJunction import CompressibleJunction, CompressibleJunctionParameters
 from ..junctions.NewCompressibleJunction import NewCompressibleJunction, NewCompressibleJunctionParameters
 from ..junctions.NewerCompressibleJunction import NewerCompressibleJunction, NewerCompressibleJunctionParameters
 from ..junctions.NewestCompressibleJunction import NewestCompressibleJunction, NewestCompressibleJunctionParameters
