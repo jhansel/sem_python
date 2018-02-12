@@ -42,7 +42,6 @@
 
 [Executioner]
   type = ImplicitEulerExecutioner
-  split_source = True
 
   [TimeStepSizer]
     type = ConstantTimeStepSizer

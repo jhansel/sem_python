@@ -26,7 +26,6 @@ class ExecutionerParameters(Parameters):
         self.registerParameter("nonlinear_solver", "Nonlinear solver")
         self.registerParameter("stabilization", "Stabilization")
         self.registerParameter("factory", "Factory")
-        self.registerBoolParameter("split_source", "Use source-splitting?", False)
         self.registerBoolParameter("group_fem", "Use group FEM?", False)
         self.registerBoolParameter("verbose", "Print execution information?", True)
 
@@ -49,7 +48,6 @@ class Executioner(object):
         self.nonlinear_solver = params.get("nonlinear_solver")
         self.factory = params.get("factory")
         stabilization = params.get("stabilization")
-        self.split_source = params.get("split_source")
         self.group_fem = params.get("group_fem")
         self.verbose = params.get("verbose")
         self.need_solution_gradients = stabilization.needSolutionGradients()
@@ -130,9 +128,8 @@ class Executioner(object):
             self.fem_kernels += self.createPhaseInteractionAdvectionKernels(
             ) + stabilization.createPhaseInteractionKernels()
 
-        # add source kernels to kernel lists if not using source-splitting
-        if not self.split_source:
-            self.fem_kernels += self.source_kernels
+        # add source kernels to kernel lists
+        self.fem_kernels += self.source_kernels
 
     def initializePhaseSolution(self, ics, phase):
         eos_phase = self.eos_list[phase]
@@ -327,7 +324,7 @@ class Executioner(object):
         return kernels
 
     def createIndependentPhaseSourceKernels(self, phase):
-        params = {"phase": phase, "dof_handler": self.dof_handler, "is_nodal": self.split_source}
+        params = {"phase": phase, "dof_handler": self.dof_handler}
         kernel_names = ["MomentumGravity", "EnergyGravity", "EnergyHeatTransfer"]
         kernels = [self.factory.createObject(kernel_name, params) for kernel_name in kernel_names]
         return kernels
@@ -346,8 +343,8 @@ class Executioner(object):
         return kernels
 
     def createPhaseInteractionSourceKernels(self):
-        params1 = {"phase": 0, "dof_handler": self.dof_handler, "is_nodal": self.split_source}
-        params2 = {"phase": 1, "dof_handler": self.dof_handler, "is_nodal": self.split_source}
+        params1 = {"phase": 0, "dof_handler": self.dof_handler}
+        params2 = {"phase": 1, "dof_handler": self.dof_handler}
 
         kernels = list()
         kernels.append(self.factory.createObject("VolumeFractionPressureRelaxation", params1))

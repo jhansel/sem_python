@@ -109,45 +109,6 @@ class TransientExecutioner(Executioner):
         M_dU = np.matmul(self.M, U - self.U_old)
         return (M_dU, self.M)
 
-    ## Integrates the source terms when source-splitting is used
-    def takeSourceStep(self, U, dt):
-        data = dict()
-        der = initializeDerivativeData(self.aux_names, 1)
-
-        data["phi"] = np.zeros(shape=(self.dof_handler.n_dof_per_cell_per_var, 1))
-        data["grad_phi"] = np.zeros(shape=(self.dof_handler.n_dof_per_cell_per_var, 1))
-        data["phi"].fill(1.0)
-        data["grad_phi"].fill(float("NaN"))
-        data["JxW"] = 1.0
-
-        n_var = self.dof_handler.n_var
-
-        # loop over nodes
-        for k in range(self.dof_handler.n_node):
-            r_node = np.zeros(n_var)
-            J_node = np.zeros(shape=(n_var, n_var))
-
-            i_mesh = self.dof_handler.node_to_mesh_index[k]
-
-            data["g"] = np.dot(self.meshes[i_mesh].orientation, self.gravity)
-            data["T_wall"] = self.ht_data[i_mesh].T_wall
-            data["htc_wall"] = self.ht_data[i_mesh].htc_wall
-            data["P_heat"] = self.ht_data[i_mesh].P_heat
-
-            # compute solution
-            self.computeLocalNodeSolution(U, k, data)
-
-            # compute auxiliary quantities
-            for aux in self.aux_list:
-                aux.compute(data, der)
-
-            # compute the local residual and Jacobian
-            for kernel in self.source_kernels:
-                kernel.apply(data, der, r_node, J_node)
-
-            # add integrated source (recall kernels assume LHS)
-            self.dof_handler.aggregateLocalNodeVector(U, -dt * r_node, k)
-
     def run(self):
         while (self.time_step_sizer.transientIncomplete()):
             # compute time step size
@@ -157,10 +118,6 @@ class TransientExecutioner(Executioner):
 
             # solve the time step
             self.solve()
-
-            # perform source term integration
-            if self.split_source:
-                self.takeSourceStep(self.U, self.dt)
 
             # check for steady-state
             if self.check_ss:
