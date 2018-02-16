@@ -61,14 +61,16 @@ from ..closures.AmbrosoInterfaceClosures import AmbrosoInterfaceClosures, Ambros
 from ..closures.BerryInterfaceClosures import BerryInterfaceClosures, BerryInterfaceClosuresParameters
 from ..closures.ThermodynamicState import ThermodynamicState, ThermodynamicStateParameters
 
+# DoF handlers
+from ..dof_handlers.DoFHandler1Phase import DoFHandler1Phase, DoFHandler1PhaseParameters
+from ..dof_handlers.DoFHandler2PhaseNonInteracting import DoFHandler2PhaseNonInteracting, DoFHandler2PhaseNonInteractingParameters
+from ..dof_handlers.DoFHandler2Phase import DoFHandler2Phase, DoFHandler2PhaseParameters
+
 # executioners
 from ..executioners.SteadyStateExecutioner import SteadyStateExecutioner, SteadyStateExecutionerParameters
 from ..executioners.TransientExecutioner import TransientExecutioner, TransientExecutionerParameters
 
 # fem
-from ..fem.DoFHandler1Phase import DoFHandler1Phase, DoFHandler1PhaseParameters
-from ..fem.DoFHandler2PhaseNonInteracting import DoFHandler2PhaseNonInteracting, DoFHandler2PhaseNonInteractingParameters
-from ..fem.DoFHandler2Phase import DoFHandler2Phase, DoFHandler2PhaseParameters
 from ..fem.FEValues import FEValues, FEValuesParameters
 from ..fem.Quadrature import Quadrature, QuadratureParameters
 
