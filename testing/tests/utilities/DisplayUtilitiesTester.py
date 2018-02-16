@@ -23,7 +23,7 @@ def outputPrintDoFVectorToFile(path):
                 "p": "1"
             })
     ]
-    dof_handler = factory.createObject("DoFHandler1Phase", {"meshes": [mesh], "ics": ics})
+    dof_handler = factory.createObject("FEMDoFHandler1Phase", {"meshes": [mesh], "ics": ics})
 
     # solution vector
     U = list(range((n_cell + 1) * 3))

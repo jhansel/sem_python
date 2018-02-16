@@ -1,19 +1,19 @@
 import numpy as np
 
 from ..base.enums import ModelType
-from .DoFHandler import DoFHandler, DoFHandlerParameters
+from .FEMDoFHandler import FEMDoFHandler, FEMDoFHandlerParameters
 
 
-class DoFHandler2PhaseNonInteractingParameters(DoFHandlerParameters):
+class FEMDoFHandler2PhaseNonInteractingParameters(FEMDoFHandlerParameters):
 
     def __init__(self, factory):
-        DoFHandlerParameters.__init__(self, factory)
+        FEMDoFHandlerParameters.__init__(self, factory)
 
 
-class DoFHandler2PhaseNonInteracting(DoFHandler):
+class FEMDoFHandler2PhaseNonInteracting(FEMDoFHandler):
 
     def __init__(self, params):
-        DoFHandler.__init__(self, params)
+        FEMDoFHandler.__init__(self, params)
         self.model_type = ModelType.TwoPhaseNonInteracting
         self.n_phases = 2
         self.n_vf_equations = 0

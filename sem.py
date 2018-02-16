@@ -140,11 +140,11 @@ def run(input_file, input_file_modifier=InputFileModifier()):
 
     # DoF handler
     if model_type == ModelType.OnePhase:
-        dof_handler_class = "DoFHandler1Phase"
+        dof_handler_class = "FEMDoFHandler1Phase"
     elif model_type == ModelType.TwoPhaseNonInteracting:
-        dof_handler_class = "DoFHandler2PhaseNonInteracting"
+        dof_handler_class = "FEMDoFHandler2PhaseNonInteracting"
     elif model_type == ModelType.TwoPhase:
-        dof_handler_class = "DoFHandler2Phase"
+        dof_handler_class = "FEMDoFHandler2Phase"
     dof_handler = factory.createObject(dof_handler_class)
     factory.storeObject(dof_handler, "dof_handler")
 

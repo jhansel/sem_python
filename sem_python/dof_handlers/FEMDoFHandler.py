@@ -7,7 +7,7 @@ from ..closures.thermodynamic_functions import computeVolumeFraction
 from ..input.Parameters import Parameters
 
 
-class DoFHandlerParameters(Parameters):
+class FEMDoFHandlerParameters(Parameters):
 
     def __init__(self, factory):
         Parameters.__init__(self, factory)
@@ -15,7 +15,7 @@ class DoFHandlerParameters(Parameters):
         self.registerParameter("ics", "List of initial conditions")
 
 
-class DoFHandler(object, metaclass=ABCMeta):
+class FEMDoFHandler(object, metaclass=ABCMeta):
 
     def __init__(self, params):
         self.meshes = params.get("meshes")

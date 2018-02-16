@@ -3,7 +3,7 @@ import unittest
 from sem_python.base.Factory import Factory
 
 
-class DoFHandlerTester(unittest.TestCase):
+class FEMDoFHandlerTester(unittest.TestCase):
     ## Tests the DoF indices assigned to junction constraints
     #
     # 1-phase: 3 variables
@@ -51,7 +51,7 @@ class DoFHandlerTester(unittest.TestCase):
 
         # create the DoF handler
         params = {"meshes": meshes, "ics": ics}
-        dof_handler = factory.createObject("DoFHandler1Phase", params)
+        dof_handler = factory.createObject("FEMDoFHandler1Phase", params)
 
         # create an EoS
         eos_list = [factory.createObject("TestEoS")]

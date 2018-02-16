@@ -42,7 +42,7 @@ class JunctionTester(object):
             ics = list()
             ics.append(factory.createObject("InitialConditions1Phase", ic_params1))
             ics.append(factory.createObject("InitialConditions1Phase", ic_params2))
-            dof_handler_class = "DoFHandler1Phase"
+            dof_handler_class = "FEMDoFHandler1Phase"
         else:
             ic_params1 = {
                 "mesh_name": meshes[0].name,
@@ -70,9 +70,9 @@ class JunctionTester(object):
             ics.append(factory.createObject("InitialConditions2Phase", ic_params1))
             ics.append(factory.createObject("InitialConditions2Phase", ic_params2))
             if model_type == ModelType.TwoPhaseNonInteracting:
-                dof_handler_class = "DoFHandler2PhaseNonInteracting"
+                dof_handler_class = "FEMDoFHandler2PhaseNonInteracting"
             elif model_type == ModelType.TwoPhase:
-                dof_handler_class = "DoFHandler2Phase"
+                dof_handler_class = "FEMDoFHandler2Phase"
         dof_handler_params["ics"] = ics
         dof_handler = factory.createObject(dof_handler_class, dof_handler_params)
 
