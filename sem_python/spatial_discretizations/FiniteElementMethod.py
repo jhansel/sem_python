@@ -1,3 +1,4 @@
+from ..base.enums import ModelType
 from .SpatialDiscretization import SpatialDiscretization, SpatialDiscretizationParameters
 
 
@@ -14,15 +15,33 @@ class FiniteElementMethod(SpatialDiscretization):
     def __init__(self, params):
         SpatialDiscretization.__init__(self, params)
 
-        # create stabilization, if any
-        stabilization = None
         if params.has("Stabilization"):
-            stabilization = self.factory.createObjectOfType(params.get("Stabilization"))
+            self.has_stabilization = True
+            self.stabilization_parameters = params.get("Stabilization")
+        else:
+            self.has_stabilization = False
+
+        self.lump_mass_matrix = params.get("lump_mass_matrix")
+
+    def createDoFHandler(self):
+        if self.model_type == ModelType.OnePhase:
+            dof_handler_class = "FEMDoFHandler1Phase"
+        elif self.model_type == ModelType.TwoPhaseNonInteracting:
+            dof_handler_class = "FEMDoFHandler2PhaseNonInteracting"
+        elif self.model_type == ModelType.TwoPhase:
+            dof_handler_class = "FEMDoFHandler2Phase"
+        dof_handler = self.factory.createObject(dof_handler_class)
+        self.factory.storeObject(dof_handler, "dof_handler")
+
+    def createAssemblyObjects(self):
+        # create stabilization, if any
+        if self.has_stabilization:
+            stabilization = self.factory.createObjectOfType(self.stabilization_parameters)
         else:
             stabilization = self.factory.createObject("NoStabilization")
         self.factory.storeObject(stabilization, "stabilization")
 
         # create assembly
-        assembly_params = {"lump_mass_matrix": params.get("lump_mass_matrix")}
+        assembly_params = {"lump_mass_matrix": self.lump_mass_matrix}
         assembly = self.factory.createObject("FEMAssembly", assembly_params)
         self.factory.storeObject(assembly, "assembly")

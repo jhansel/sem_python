@@ -134,19 +134,14 @@ def run(input_file, input_file_modifier=InputFileModifier()):
                 ics.append(factory.createObject("InitialConditions2Phase", ic_param_data))
     factory.storeObject(ics, "ics")
 
+    # spatial discretization and DoF handler
+    spatial_discretization_params = input_file_parser.getBlockData("SpatialDiscretization")
+    spatial_discretization = factory.createObjectOfType(spatial_discretization_params)
+    dof_handler = factory.getParameter("dof_handler")
+
     # quadrature
     quadrature = factory.createObject("Quadrature", {"n_q_points": 2})
     factory.storeObject(quadrature, "quadrature")
-
-    # DoF handler
-    if model_type == ModelType.OnePhase:
-        dof_handler_class = "FEMDoFHandler1Phase"
-    elif model_type == ModelType.TwoPhaseNonInteracting:
-        dof_handler_class = "FEMDoFHandler2PhaseNonInteracting"
-    elif model_type == ModelType.TwoPhase:
-        dof_handler_class = "FEMDoFHandler2Phase"
-    dof_handler = factory.createObject(dof_handler_class)
-    factory.storeObject(dof_handler, "dof_handler")
 
     # junctions
     junctions = list()
@@ -224,9 +219,8 @@ def run(input_file, input_file_modifier=InputFileModifier()):
     nonlinear_solver = factory.createObject("NonlinearSolver", nonlinear_solver_params)
     factory.storeObject(nonlinear_solver, "nonlinear_solver")
 
-    # spatial discretization
-    spatial_discretization_params = input_file_parser.getBlockData("SpatialDiscretization")
-    spatial_discretization = factory.createObjectOfType(spatial_discretization_params)
+    # create assembly objects
+    spatial_discretization.createAssemblyObjects()
 
     # create and run the executioner
     executioner_param_data = input_file_parser.getBlockData("Executioner")
