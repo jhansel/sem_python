@@ -18,7 +18,7 @@ class BerryInterfaceClosures(InterfaceClosures):
 
     def createIndependentPhaseAuxQuantities(self, phase):
         aux_list = list()
-        params = {"phase": phase, "size": self.n_q}
+        params = {"phase": phase}
         aux_list.append(self.factory.createObject("AcousticImpedance", params))
         return aux_list
 
@@ -31,7 +31,7 @@ class BerryInterfaceClosures(InterfaceClosures):
             "BerryInterfacePressure", "BerryInterfaceVelocity"
         ]
         for aux_name in aux_names:
-            params = {"size": self.n_q}
+            params = dict()
             if aux_name == "BerryInterfacialAreaDensity":
                 params["a_int_min"] = self.a_int_min
                 params["a_int_max"] = self.a_int_max
