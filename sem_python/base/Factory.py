@@ -1,3 +1,6 @@
+# assembly
+from ..assembly.FEMAssembly import FEMAssembly, FEMAssemblyParameters
+
 # aux
 from ..aux.AcousticImpedance import AcousticImpedance, AcousticImpedanceParameters
 from ..aux.AuxGradient import AuxGradient, AuxGradientParameters

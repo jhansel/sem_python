@@ -1,3 +1,4 @@
+from abc import abstractmethod
 from copy import deepcopy
 import numpy as np
 from termcolor import colored
@@ -12,8 +13,8 @@ class TransientExecutionerParameters(ExecutionerParameters):
 
     def __init__(self, factory):
         ExecutionerParameters.__init__(self, factory)
+        self.registerParameter("factory", "Factory")
         self.registerNamedSubblock("TimeStepSizer")
-        self.registerBoolParameter("lump_mass_matrix", "Lump the mass matrix?", False)
         self.registerBoolParameter("multiply_by_dt", "Multiply the nonlinear system by dt?", True)
         self.registerFloatParameter("ss_tol", "Tolerance for steady-state check")
 
@@ -23,8 +24,8 @@ class TransientExecutioner(Executioner):
     def __init__(self, params):
         Executioner.__init__(self, params)
 
+        self.factory = params.get("factory")
         self.time_step_sizer = self.factory.createObjectOfType(params.get("TimeStepSizer"))
-        self.lump_mass_matrix = params.get("lump_mass_matrix")
         self.multiply_by_dt = params.get("multiply_by_dt")
 
         if params.has("ss_tol"):
@@ -35,79 +36,12 @@ class TransientExecutioner(Executioner):
 
         self.U_old = deepcopy(self.U)
 
-        self.M = self.computeMassMatrix()
+        # perform any setup particular to transient, such as assembling mass matrix
+        self.assembly.performTransientSetup()
 
-    def computeMassMatrix(self):
-        M = np.zeros(shape=(self.dof_handler.n_dof, self.dof_handler.n_dof))
-
-        self.addMassMatrixPhase(M, 0)
-        if (self.model_type != ModelType.OnePhase):
-            self.addMassMatrixPhase(M, 1)
-        if (self.model_type == ModelType.TwoPhase):
-            self.addMassMatrixVolumeFraction(M)
-
-        return M
-
-    def addMassMatrixPhase(self, M, phase):
-        phi = self.fe_values.get_phi()
-
-        arhoA_index = self.dof_handler.variable_index[VariableName.ARhoA][phase]
-        arhouA_index = self.dof_handler.variable_index[VariableName.ARhoUA][phase]
-        arhoEA_index = self.dof_handler.variable_index[VariableName.ARhoEA][phase]
-
-        for e in range(self.dof_handler.n_cell):
-            M_cell = np.zeros(
-                shape=(self.dof_handler.n_dof_per_cell, self.dof_handler.n_dof_per_cell))
-
-            JxW = self.fe_values.get_JxW(e)
-            for q in range(self.quadrature.n_q):
-                for k_local in range(self.dof_handler.n_dof_per_cell_per_var):
-                    i_arhoA = self.dof_handler.i(k_local, arhoA_index)
-                    i_arhouA = self.dof_handler.i(k_local, arhouA_index)
-                    i_arhoEA = self.dof_handler.i(k_local, arhoEA_index)
-                    for l_local in range(self.dof_handler.n_dof_per_cell_per_var):
-                        if self.lump_mass_matrix:
-                            M_cell[i_arhoA, i_arhoA] += phi[k_local, q] * phi[l_local, q] * JxW[q]
-                            M_cell[i_arhouA, i_arhouA] += phi[k_local, q] * phi[l_local, q] * JxW[q]
-                            M_cell[i_arhoEA, i_arhoEA] += phi[k_local, q] * phi[l_local, q] * JxW[q]
-                        else:
-                            j_arhoA = self.dof_handler.i(l_local, arhoA_index)
-                            j_arhouA = self.dof_handler.i(l_local, arhouA_index)
-                            j_arhoEA = self.dof_handler.i(l_local, arhoEA_index)
-
-                            M_cell[i_arhoA, j_arhoA] += phi[k_local, q] * phi[l_local, q] * JxW[q]
-                            M_cell[i_arhouA, j_arhouA] += phi[k_local, q] * phi[l_local, q] * JxW[q]
-                            M_cell[i_arhoEA, j_arhoEA] += phi[k_local, q] * phi[l_local, q] * JxW[q]
-
-            # aggregate cell matrix into global matrix
-            self.dof_handler.aggregateLocalCellMatrix(M, M_cell, e)
-
-    def addMassMatrixVolumeFraction(self, M):
-        phi = self.fe_values.get_phi()
-
-        aA1_index = self.dof_handler.variable_index[VariableName.AA1][0]
-
-        for e in range(self.dof_handler.n_cell):
-            M_cell = np.zeros(
-                shape=(self.dof_handler.n_dof_per_cell, self.dof_handler.n_dof_per_cell))
-
-            JxW = self.fe_values.get_JxW(e)
-            for q in range(self.quadrature.n_q):
-                for k_local in range(self.dof_handler.n_dof_per_cell_per_var):
-                    i_aA1 = self.dof_handler.i(k_local, aA1_index)
-                    for l_local in range(self.dof_handler.n_dof_per_cell_per_var):
-                        if self.lump_mass_matrix:
-                            M_cell[i_aA1, i_aA1] += phi[k_local, q] * phi[l_local, q] * JxW[q]
-                        else:
-                            j_vf1 = self.dof_handler.i(l_local, aA1_index)
-                            M_cell[i_aA1, j_vf1] += phi[k_local, q] * phi[l_local, q] * JxW[q]
-
-            # aggregate cell matrix into global matrix
-            self.dof_handler.aggregateLocalCellMatrix(M, M_cell, e)
-
-    def assembleTransientSystem(self, U):
-        M_dU = np.matmul(self.M, U - self.U_old)
-        return (M_dU, self.M)
+    @abstractmethod
+    def solve(self):
+        pass
 
     def run(self):
         while (self.time_step_sizer.transientIncomplete()):
@@ -139,6 +73,3 @@ class TransientExecutioner(Executioner):
             print("")
 
         return self.U
-
-    def solve(self):
-        self.nonlinear_solver.solve(self.U)

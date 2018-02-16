@@ -1,21 +1,22 @@
 from .Executioner import Executioner, ExecutionerParameters
-from ..solvers.NonlinearSolver import NonlinearSolver
 
 
 class SteadyStateExecutionerParameters(ExecutionerParameters):
 
     def __init__(self, factory):
         ExecutionerParameters.__init__(self, factory)
+        self.registerParameter("nonlinear_solver", "Nonlinear solver")
 
 
 class SteadyStateExecutioner(Executioner):
 
     def __init__(self, params):
         Executioner.__init__(self, params)
+        self.nonlinear_solver = params.get("nonlinear_solver")
 
     def assembleSystem(self, U):
-        r, J = self.assembleSteadyStateSystemWithoutConstraints(U)
-        self.applyConstraintsToNonlinearSystem(U, r, J)
+        r, J = self.assembly.assembleSteadyStateSystemWithoutConstraints(U)
+        self.assembly.applyConstraintsToNonlinearSystem(U, r, J)
         return (r, J)
 
     def run(self):

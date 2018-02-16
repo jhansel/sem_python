@@ -132,20 +132,20 @@ def run(input_file, input_file_modifier=InputFileModifier()):
                 ics.append(factory.createObject("InitialConditions1Phase", ic_param_data))
             else:
                 ics.append(factory.createObject("InitialConditions2Phase", ic_param_data))
+    factory.storeObject(ics, "ics")
 
     # quadrature
     quadrature = factory.createObject("Quadrature", {"n_q_points": 2})
     factory.storeObject(quadrature, "quadrature")
 
     # DoF handler
-    dof_handler_params = {"ics": ics}
     if model_type == ModelType.OnePhase:
         dof_handler_class = "DoFHandler1Phase"
     elif model_type == ModelType.TwoPhaseNonInteracting:
         dof_handler_class = "DoFHandler2PhaseNonInteracting"
     elif model_type == ModelType.TwoPhase:
         dof_handler_class = "DoFHandler2Phase"
-    dof_handler = factory.createObject(dof_handler_class, dof_handler_params)
+    dof_handler = factory.createObject(dof_handler_class)
     factory.storeObject(dof_handler, "dof_handler")
 
     # junctions
@@ -159,6 +159,7 @@ def run(input_file, input_file_modifier=InputFileModifier()):
 
             junction = factory.createObjectOfType(junction_param_data)
             junctions.append(junction)
+    factory.storeObject(junctions, "junctions")
 
     # update DoF handler with junction constraints
     dof_handler.updateWithJunctionConstraints(junctions)
@@ -179,6 +180,7 @@ def run(input_file, input_file_modifier=InputFileModifier()):
 
         bc = factory.createObjectOfType(bc_param_data)
         bcs.append(bc)
+    factory.storeObject(bcs, "bcs")
 
     # interface closures
     if model_type == ModelType.TwoPhase:
@@ -186,6 +188,7 @@ def run(input_file, input_file_modifier=InputFileModifier()):
         interface_closures = factory.createObjectOfType(interface_closures_params)
     else:
         interface_closures = None
+    factory.storeObject(interface_closures, "interface_closures")
 
     # gravity
     physics_param_data = input_file_parser.getBlockData("Physics")
@@ -193,6 +196,7 @@ def run(input_file, input_file_modifier=InputFileModifier()):
     gravity = physics_params.get("gravity")
     if len(gravity) != 3:
         error("Gravity vector must have 3 elements")
+    factory.storeObject(gravity, "gravity")
 
     # heat transfer data
     # initialize heat transfer data such that no heat transfer occurs
@@ -213,6 +217,7 @@ def run(input_file, input_file_modifier=InputFileModifier()):
                 i_mesh = dof_handler.mesh_name_to_mesh_index[mesh_name]
                 ht_data_mesh = input_file_parser.getSubblockData("HeatTransfer", subblock)
                 ht_data[i_mesh] = factory.createObject("HeatTransferData", ht_data_mesh)
+    factory.storeObject(ht_data, "ht_data")
 
     # nonlinear solver options
     nonlinear_solver_params = input_file_parser.getBlockData("NonlinearSolver")
@@ -225,13 +230,6 @@ def run(input_file, input_file_modifier=InputFileModifier()):
 
     # create and run the executioner
     executioner_param_data = input_file_parser.getBlockData("Executioner")
-    executioner_type = executioner_param_data["type"]
-    executioner_param_data["ics"] = ics
-    executioner_param_data["bcs"] = bcs
-    executioner_param_data["junctions"] = junctions
-    executioner_param_data["interface_closures"] = interface_closures
-    executioner_param_data["gravity"] = gravity
-    executioner_param_data["ht_data"] = ht_data
     executioner = factory.createObjectOfType(executioner_param_data)
     U = executioner.run()
 

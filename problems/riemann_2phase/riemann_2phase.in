@@ -103,7 +103,6 @@
 
 [Executioner]
   type = ImplicitEulerExecutioner
-  lump_mass_matrix = False
 
   [TimeStepSizer]
     type = ConstantTimeStepSizer

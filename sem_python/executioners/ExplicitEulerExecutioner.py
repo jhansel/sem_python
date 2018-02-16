@@ -16,20 +16,20 @@ class ExplicitEulerExecutioner(TransientExecutioner):
         TransientExecutioner.__init__(self, params)
         # create a mass matrix modified for strong constraints
         self.M_modified = deepcopy(self.M)
-        self.applyConstraintsToLinearSystemMatrix(self.M_modified)
+        self.assembly.applyConstraintsToLinearSystemMatrix(self.M_modified)
 
         # invert mass matrix only once and keep it
         self.M_inv = np.linalg.inv(self.M_modified)
 
     def solve(self):
         # compute steady-state residual vector (as it would be on LHS)
-        r_ss, J_ss = self.assembleSteadyStateSystemWithoutConstraints(self.U_old)
+        r_ss, J_ss = self.assembly.assembleSteadyStateSystemWithoutConstraints(self.U_old)
 
         # compute linear system RHS vector
         b = np.matmul(self.M, self.U_old) - self.dt * r_ss
 
         # modify RHS for strong constraints
-        self.applyConstraintsToLinearSystemRHSVector(self.U_old, b)
+        self.assembly.applyConstraintsToLinearSystemRHSVector(self.U_old, b)
 
         # compute the update
         self.U = np.matmul(self.M_inv, b)
