@@ -20,6 +20,7 @@ class SteadyStateExecutioner(Executioner):
         return (r, J)
 
     def run(self):
-        self.nonlinear_solver.solve(self.assembleSystem, self.U)
+        U = self.computeInitialSolution()
+        self.nonlinear_solver.solve(self.assembleSystem, U)
 
-        return self.U
+        return U

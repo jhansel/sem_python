@@ -82,9 +82,12 @@
 []
 
 [Executioner]
-  type = ImplicitEulerExecutioner
+  type = TransientExecutioner
   verbose = False
 
+  [TimeIntegrator]
+    type = ImplicitEuler
+  []
   [TimeStepSizer]
     type = ConstantTimeStepSizer
     dt = 0.01

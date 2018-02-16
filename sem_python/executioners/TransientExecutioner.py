@@ -1,12 +1,6 @@
-from abc import abstractmethod
-from copy import deepcopy
-import numpy as np
 from termcolor import colored
 
-from ..base.enums import ModelType, VariableName
 from .Executioner import Executioner, ExecutionerParameters
-from ..utilities.error_utilities import error
-from ..utilities.assembly_utilities import initializeDerivativeData
 
 
 class TransientExecutionerParameters(ExecutionerParameters):
@@ -15,7 +9,7 @@ class TransientExecutionerParameters(ExecutionerParameters):
         ExecutionerParameters.__init__(self, factory)
         self.registerParameter("factory", "Factory")
         self.registerNamedSubblock("TimeStepSizer")
-        self.registerBoolParameter("multiply_by_dt", "Multiply the nonlinear system by dt?", True)
+        self.registerNamedSubblock("TimeIntegrator")
         self.registerFloatParameter("ss_tol", "Tolerance for steady-state check")
 
 
@@ -26,7 +20,7 @@ class TransientExecutioner(Executioner):
 
         self.factory = params.get("factory")
         self.time_step_sizer = self.factory.createObjectOfType(params.get("TimeStepSizer"))
-        self.multiply_by_dt = params.get("multiply_by_dt")
+        self.time_integrator = self.factory.createObjectOfType(params.get("TimeIntegrator"))
 
         if params.has("ss_tol"):
             self.check_ss = True
@@ -34,42 +28,32 @@ class TransientExecutioner(Executioner):
         else:
             self.check_ss = False
 
-        self.U_old = deepcopy(self.U)
-
         # perform any setup particular to transient, such as assembling mass matrix
         self.assembly.performTransientSetup()
 
-    @abstractmethod
-    def solve(self):
-        pass
-
     def run(self):
+        U = self.computeInitialSolution()
+
         while (self.time_step_sizer.transientIncomplete()):
             # compute time step size
-            self.dt = self.time_step_sizer.getTimeStepSize(self.U)
+            self.dt = self.time_step_sizer.getTimeStepSize(U)
             if self.verbose:
                 self.time_step_sizer.printTimeStepInfo()
 
             # solve the time step
-            self.solve()
+            self.time_integrator.takeTimeStep(U, self.dt)
 
             # check for steady-state
             if self.check_ss:
-                dU_dt = (self.U - self.U_old) / self.dt
-                dU_dt_norm = np.linalg.norm(dU_dt, 2)
-                U_old_norm = np.linalg.norm(self.U_old, 2)
-                U_change_norm = dU_dt_norm / U_old_norm
+                U_change_norm = self.time_integrator.computeSteadyStateNorm(U)
                 if self.verbose:
                     print("Relative solution change: %e" % (U_change_norm))
                 if U_change_norm < self.ss_tol:
                     if self.verbose:
                         print(colored("\nConverged to steady-state!\n", "green"))
-                    return self.U
-
-            # save old solution and increment time step index
-            self.U_old = deepcopy(self.U)
+                    return U
 
         if self.verbose:
             print("")
 
-        return self.U
+        return U

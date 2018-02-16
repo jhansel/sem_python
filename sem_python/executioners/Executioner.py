@@ -24,7 +24,7 @@ class Executioner(object, metaclass=ABCMeta):
     def __init__(self, params):
         self.assembly = params.get("assembly")
         self.model = params.get("model")
-        ics = params.get("ics")
+        self.ics = params.get("ics")
         self.model_type = self.model.model_type
         self.junctions = params.get("junctions")
         self.eos_list = params.get("eos_list")
@@ -32,29 +32,32 @@ class Executioner(object, metaclass=ABCMeta):
         self.meshes = params.get("meshes")
         self.verbose = params.get("verbose")
 
-        # initialize the solution
-        self.U = np.zeros(self.dof_handler.n_dof)
-        self.initializePhaseSolution(ics, 0)
-        if self.model_type != ModelType.OnePhase:
-            self.initializePhaseSolution(ics, 1)
-        if self.model_type == ModelType.TwoPhase:
-            self.initializeVolumeFractionSolution(ics)
-
-        # initialize the junction constraint variables
-        for junction in self.junctions:
-            junction.initializeConstraintVariables(self.U)
-
     @abstractmethod
     def run(self):
         pass
 
-    def initializePhaseSolution(self, ics, phase):
+    def computeInitialSolution(self):
+        # initialize the solution
+        U = np.zeros(self.dof_handler.n_dof)
+        self.initializePhaseSolution(0, U)
+        if self.model_type != ModelType.OnePhase:
+            self.initializePhaseSolution(1, U)
+        if self.model_type == ModelType.TwoPhase:
+            self.initializeVolumeFractionSolution(U)
+
+        # initialize the junction constraint variables
+        for junction in self.junctions:
+            junction.initializeConstraintVariables(U)
+
+        return U
+
+    def initializePhaseSolution(self, phase, U):
         eos_phase = self.eos_list[phase]
         arhoA_index = self.dof_handler.variable_index[VariableName.ARhoA][phase]
         arhouA_index = self.dof_handler.variable_index[VariableName.ARhoUA][phase]
         arhoEA_index = self.dof_handler.variable_index[VariableName.ARhoEA][phase]
 
-        for ic in ics:
+        for ic in self.ics:
             # get corresponding mesh
             mesh_name = ic.mesh_name
             i_mesh = self.dof_handler.mesh_name_to_mesh_index[mesh_name]
@@ -100,14 +103,14 @@ class Executioner(object, metaclass=ABCMeta):
                     rho, _, _ = eos_phase.rho(p, T)
                 e = eos_phase.e(1.0 / rho, p)[0]
                 E = e + 0.5 * u * u
-                self.U[self.dof_handler.i(k, arhoA_index)] = vf * rho * A
-                self.U[self.dof_handler.i(k, arhouA_index)] = vf * rho * u * A
-                self.U[self.dof_handler.i(k, arhoEA_index)] = vf * rho * E * A
+                U[self.dof_handler.i(k, arhoA_index)] = vf * rho * A
+                U[self.dof_handler.i(k, arhouA_index)] = vf * rho * u * A
+                U[self.dof_handler.i(k, arhoEA_index)] = vf * rho * E * A
 
-    def initializeVolumeFractionSolution(self, ics):
+    def initializeVolumeFractionSolution(self, U):
         aA1_index = self.dof_handler.variable_index[VariableName.AA1][0]
 
-        for ic in ics:
+        for ic in self.ics:
             # get corresponding mesh
             mesh_name = ic.mesh_name
             i_mesh = self.dof_handler.mesh_name_to_mesh_index[mesh_name]
@@ -116,4 +119,4 @@ class Executioner(object, metaclass=ABCMeta):
             for k_mesh in range(mesh.n_node):
                 k = self.dof_handler.k_from_k_mesh(k_mesh, i_mesh)
                 x = self.dof_handler.x[k]
-                self.U[self.dof_handler.i(k, aA1_index)] = ic.vf1(x) * ic.A(x)
+                U[self.dof_handler.i(k, aA1_index)] = ic.vf1(x) * ic.A(x)

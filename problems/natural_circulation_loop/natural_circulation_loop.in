@@ -159,9 +159,12 @@
 []
 
 [Executioner]
-  type = ImplicitEulerExecutioner
+  type = TransientExecutioner
   ss_tol = 1e-6
 
+  [TimeIntegrator]
+    type = ImplicitEuler
+  []
   [TimeStepSizer]
     type = ConstantTimeStepSizer
     dt = 1.0
