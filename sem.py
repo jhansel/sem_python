@@ -139,10 +139,6 @@ def run(input_file, input_file_modifier=InputFileModifier()):
     spatial_discretization = factory.createObjectOfType(spatial_discretization_params)
     dof_handler = factory.getParameter("dof_handler")
 
-    # quadrature
-    quadrature = factory.createObject("Quadrature", {"n_q_points": 2})
-    factory.storeObject(quadrature, "quadrature")
-
     # junctions
     junctions = list()
     if input_file_parser.blockExists("Junctions"):

@@ -34,6 +34,10 @@ class FiniteElementMethod(SpatialDiscretization):
         self.factory.storeObject(dof_handler, "dof_handler")
 
     def createAssemblyObjects(self):
+        # quadrature
+        quadrature = self.factory.createObject("Quadrature", {"n_q_points": 2})
+        self.factory.storeObject(quadrature, "quadrature")
+
         # create stabilization, if any
         if self.has_stabilization:
             stabilization = self.factory.createObjectOfType(self.stabilization_parameters)
