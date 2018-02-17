@@ -87,7 +87,8 @@ class Executioner(object, metaclass=ABCMeta):
                 initial_T = ic.T[phase]
 
             # compute IC
-            for k_mesh in range(mesh.n_node):
+            mesh_n_nodes = self.dof_handler.computeNumberOfNodesInMesh(mesh.n_cell)
+            for k_mesh in range(mesh_n_nodes):
                 k = self.dof_handler.k_from_k_mesh(k_mesh, i_mesh)
 
                 x = self.dof_handler.x[k]
@@ -116,7 +117,8 @@ class Executioner(object, metaclass=ABCMeta):
             i_mesh = self.dof_handler.mesh_name_to_mesh_index[mesh_name]
             mesh = self.meshes[i_mesh]
 
-            for k_mesh in range(mesh.n_node):
+            mesh_n_nodes = self.dof_handler.computeNumberOfNodesInMesh(mesh.n_cell)
+            for k_mesh in range(mesh_n_nodes):
                 k = self.dof_handler.k_from_k_mesh(k_mesh, i_mesh)
                 x = self.dof_handler.x[k]
                 U[self.dof_handler.i(k, aA1_index)] = ic.vf1(x) * ic.A(x)

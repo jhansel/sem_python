@@ -29,9 +29,10 @@ class FEMDoFHandler2PhaseNonInteracting(FEMDoFHandler):
 
             # compute volume fraction for each node on mesh
             vf1 = ic.vf1
-            for k_mesh in range(mesh.n_node):
+            mesh_n_node = self.computeNumberOfNodesInMesh(mesh.n_cell)
+            for k_mesh in range(mesh_n_node):
                 k = self.k_from_k_mesh(k_mesh, i_mesh)
-                self.vf1[k] = vf1(mesh.x[k_mesh])
+                self.vf1[k] = vf1(self.x[k])
 
     def aA1(self, U, k):
         return self.vf1[k] * self.A[k]

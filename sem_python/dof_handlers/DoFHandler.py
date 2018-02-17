@@ -69,7 +69,8 @@ class DoFHandler(object, metaclass=ABCMeta):
 
             # compute area for each node on mesh
             A = ic.A
-            for k_mesh in range(mesh.n_node):
+            mesh_n_node = self.computeNumberOfNodesInMesh(mesh.n_cell)
+            for k_mesh in range(mesh_n_node):
                 k = self.k_from_k_mesh(k_mesh, i_mesh)
                 self.A[k] = A(self.x[k])
 

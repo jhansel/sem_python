@@ -16,7 +16,7 @@ class FEMDoFHandler(DoFHandler):
         return n_cells + 1
 
     def getNodalPositionsFromMesh(self, mesh):
-        return mesh.x
+        return mesh.x_vertices
 
     def getNumberOfDoFsPerCellPerVariable(self):
         return 2
