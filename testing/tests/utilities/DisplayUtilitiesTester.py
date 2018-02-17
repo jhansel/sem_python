@@ -3,6 +3,7 @@ import sys
 import unittest
 
 from sem_python.utilities.display_utilities import printDoFVector
+from sem_python.base.enums import ModelType
 from sem_python.base.Factory import Factory
 from ...src.utilities.OutputCaptor import OutputCaptor
 
@@ -23,7 +24,8 @@ def outputPrintDoFVectorToFile(path):
                 "p": "1"
             })
     ]
-    dof_handler = factory.createObject("FEMDoFHandler1Phase", {"meshes": [mesh], "ics": ics})
+    dof_handler_params = {"meshes": [mesh], "ics": ics, "model_type": ModelType.OnePhase}
+    dof_handler = factory.createObject("FEMDoFHandler", dof_handler_params)
 
     # solution vector
     U = list(range((n_cell + 1) * 3))

@@ -1,5 +1,6 @@
 import unittest
 
+from sem_python.base.enums import ModelType
 from sem_python.base.Factory import Factory
 
 
@@ -50,8 +51,8 @@ class FEMDoFHandlerTester(unittest.TestCase):
         ]
 
         # create the DoF handler
-        params = {"meshes": meshes, "ics": ics}
-        dof_handler = factory.createObject("FEMDoFHandler1Phase", params)
+        params = {"meshes": meshes, "ics": ics, "model_type": ModelType.OnePhase}
+        dof_handler = factory.createObject("FEMDoFHandler", params)
 
         # create an EoS
         eos_list = [factory.createObject("TestEoS")]

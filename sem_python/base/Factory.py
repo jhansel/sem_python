@@ -62,9 +62,7 @@ from ..closures.BerryInterfaceClosures import BerryInterfaceClosures, BerryInter
 from ..closures.ThermodynamicState import ThermodynamicState, ThermodynamicStateParameters
 
 # DoF handlers
-from ..dof_handlers.FEMDoFHandler1Phase import FEMDoFHandler1Phase, FEMDoFHandler1PhaseParameters
-from ..dof_handlers.FEMDoFHandler2PhaseNonInteracting import FEMDoFHandler2PhaseNonInteracting, FEMDoFHandler2PhaseNonInteractingParameters
-from ..dof_handlers.FEMDoFHandler2Phase import FEMDoFHandler2Phase, FEMDoFHandler2PhaseParameters
+from ..dof_handlers.FEMDoFHandler import FEMDoFHandler, FEMDoFHandlerParameters
 
 # executioners
 from ..executioners.SteadyStateExecutioner import SteadyStateExecutioner, SteadyStateExecutionerParameters

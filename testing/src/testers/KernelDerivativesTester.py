@@ -22,11 +22,10 @@ class KernelDerivativesTester(object):
         meshes = [factory.createObject("UniformMesh", params)]
 
         # DoF handler
-        dof_handler_params = {"meshes": meshes}
+        dof_handler_params = {"meshes": meshes, "model_type": self.model_type}
         if self.model_type == ModelType.OnePhase:
             ic_params = {"mesh_name": meshes[0].name, "A": "2", "rho": "1", "u": "1", "p": "1"}
             ics = [factory.createObject("InitialConditions1Phase", ic_params)]
-            dof_handler_class = "FEMDoFHandler1Phase"
         else:
             ic_params = {
                 "mesh_name": meshes[0].name,
@@ -40,12 +39,8 @@ class KernelDerivativesTester(object):
                 "p2": "1"
             }
             ics = [factory.createObject("InitialConditions2Phase", ic_params)]
-            if self.model_type == ModelType.TwoPhaseNonInteracting:
-                dof_handler_class = "FEMDoFHandler2PhaseNonInteracting"
-            elif self.model_type == ModelType.TwoPhase:
-                dof_handler_class = "FEMDoFHandler2Phase"
         dof_handler_params["ics"] = ics
-        dof_handler = factory.createObject(dof_handler_class, dof_handler_params)
+        dof_handler = factory.createObject("FEMDoFHandler", dof_handler_params)
 
         # quadrature
         n_q_points = 2

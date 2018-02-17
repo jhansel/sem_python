@@ -13,6 +13,7 @@ class DoFHandlerParameters(Parameters):
         Parameters.__init__(self, factory)
         self.registerParameter("meshes", "List of meshes")
         self.registerParameter("ics", "List of initial conditions")
+        self.registerParameter("model_type", "Model type")
 
 
 class DoFHandler(object, metaclass=ABCMeta):
@@ -20,6 +21,7 @@ class DoFHandler(object, metaclass=ABCMeta):
     def __init__(self, params):
         self.meshes = params.get("meshes")
         self.ics = params.get("ics")
+        self.model_type = params.get("model_type")
 
         # number of cells and DoF nodes
         self.n_cell = 0
@@ -74,10 +76,42 @@ class DoFHandler(object, metaclass=ABCMeta):
                 k = self.k_from_k_mesh(k_mesh, i_mesh)
                 self.A[k] = A(self.x[k])
 
-        # data to be defined by derived classes
-        self.n_vf_equations = None
-        self.n_phases = None
-        self.model_type = None
+        # set model-dependent data
+        if self.model_type == ModelType.OnePhase:
+            self.n_phases = 1
+            self.n_vf_equations = 0
+
+            self.aA1 = self.aA1_1phase
+
+        elif self.model_type == ModelType.TwoPhaseNonInteracting:
+            self.n_phases = 2
+            self.n_vf_equations = 0
+
+            # create array for volume fraction
+            self.vf1 = np.zeros(self.n_node)
+            for ic in self.ics:
+                # get corresponding mesh
+                mesh_name = ic.mesh_name
+                i_mesh = self.mesh_name_to_mesh_index[mesh_name]
+                mesh = self.meshes[i_mesh]
+
+                # compute volume fraction for each node on mesh
+                vf1 = ic.vf1
+                mesh_n_node = self.computeNumberOfNodesInMesh(mesh.n_cell)
+                for k_mesh in range(mesh_n_node):
+                    k = self.k_from_k_mesh(k_mesh, i_mesh)
+                    self.vf1[k] = vf1(self.x[k])
+
+            self.aA1 = self.aA1_2phase_noninteracting
+
+        elif self.model_type == ModelType.TwoPhase:
+            self.n_phases = 2
+            self.n_vf_equations = 1
+
+            self.aA1 = self.aA1_2phase
+
+        # perform model-dependent setup
+        self.setup()
 
     ##
     # Computes the number of nodes for a mesh from its number of cells
@@ -107,6 +141,15 @@ class DoFHandler(object, metaclass=ABCMeta):
     @abstractmethod
     def getNumberOfDoFsPerCellPerVariable(self):
         pass
+
+    def aA1_1phase(self, U, k):
+        return self.A[k]
+
+    def aA1_2phase_noninteracting(self, U, k):
+        return self.vf1[k] * self.A[k]
+
+    def aA1_2phase(self, U, k):
+        return U[self.i(k, self.aA1_index[0])]
 
     def updateWithJunctionConstraints(self, junctions):
         # add the number of constraints from each junction
@@ -241,10 +284,6 @@ class DoFHandler(object, metaclass=ABCMeta):
     def variableEnumToName(self, var, phase):
         index = self.variable_index[var][phase]
         return self.variable_names[index]
-
-    @abstractmethod
-    def aA1(self, U, k):
-        pass
 
     def getSolution(self, U, variable_name, phase):
         var_index = self.variable_index[variable_name][phase]

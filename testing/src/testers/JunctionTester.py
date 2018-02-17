@@ -35,14 +35,13 @@ class JunctionTester(object):
         ]
 
         # DoF handler
-        dof_handler_params = {"meshes": meshes}
+        dof_handler_params = {"meshes": meshes, "model_type": model_type}
         if model_type == ModelType.OnePhase:
             ic_params1 = {"mesh_name": meshes[0].name, "A": "0.2", "rho": "1", "u": "1", "p": "1"}
             ic_params2 = {"mesh_name": meshes[1].name, "A": "0.2", "rho": "1", "u": "1", "p": "1"}
             ics = list()
             ics.append(factory.createObject("InitialConditions1Phase", ic_params1))
             ics.append(factory.createObject("InitialConditions1Phase", ic_params2))
-            dof_handler_class = "FEMDoFHandler1Phase"
         else:
             ic_params1 = {
                 "mesh_name": meshes[0].name,
@@ -69,12 +68,8 @@ class JunctionTester(object):
             ics = list()
             ics.append(factory.createObject("InitialConditions2Phase", ic_params1))
             ics.append(factory.createObject("InitialConditions2Phase", ic_params2))
-            if model_type == ModelType.TwoPhaseNonInteracting:
-                dof_handler_class = "FEMDoFHandler2PhaseNonInteracting"
-            elif model_type == ModelType.TwoPhase:
-                dof_handler_class = "FEMDoFHandler2Phase"
         dof_handler_params["ics"] = ics
-        dof_handler = factory.createObject(dof_handler_class, dof_handler_params)
+        dof_handler = factory.createObject("FEMDoFHandler", dof_handler_params)
 
         # get indices of arhouA DoFs
         if model_type == ModelType.OnePhase:

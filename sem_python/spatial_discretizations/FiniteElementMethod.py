@@ -24,13 +24,7 @@ class FiniteElementMethod(SpatialDiscretization):
         self.lump_mass_matrix = params.get("lump_mass_matrix")
 
     def createDoFHandler(self):
-        if self.model_type == ModelType.OnePhase:
-            dof_handler_class = "FEMDoFHandler1Phase"
-        elif self.model_type == ModelType.TwoPhaseNonInteracting:
-            dof_handler_class = "FEMDoFHandler2PhaseNonInteracting"
-        elif self.model_type == ModelType.TwoPhase:
-            dof_handler_class = "FEMDoFHandler2Phase"
-        dof_handler = self.factory.createObject(dof_handler_class)
+        dof_handler = self.factory.createObject("FEMDoFHandler")
         self.factory.storeObject(dof_handler, "dof_handler")
 
     def createAssemblyObjects(self):
