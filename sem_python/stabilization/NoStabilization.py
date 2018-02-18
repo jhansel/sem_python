@@ -19,8 +19,5 @@ class NoStabilization(Stabilization):
     def createAuxQuantities(self):
         return []
 
-    def createIndependentPhaseKernels(self, phase):
-        return []
-
-    def createPhaseInteractionKernels(self):
+    def createKernels(self):
         return []

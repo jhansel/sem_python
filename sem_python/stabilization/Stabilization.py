@@ -9,7 +9,7 @@ class StabilizationParameters(Parameters):
         Parameters.__init__(self, factory)
         self.registerParameter("factory", "Factory")
         self.registerParameter("dof_handler", "Degree of freedom handler")
-        self.registerParameter("model_type", "Model type")
+        self.registerParameter("model", "Model")
         self.registerParameter("quadrature", "Quadrature")
 
 
@@ -19,7 +19,7 @@ class Stabilization(object, metaclass=ABCMeta):
     def __init__(self, params):
         self.factory = params.get("factory")
         self.dof_handler = params.get("dof_handler")
-        self.model_type = params.get("model_type")
+        self.model = params.get("model")
         self.n_q = params.get("quadrature").n_q
 
     @abstractmethod
@@ -31,9 +31,5 @@ class Stabilization(object, metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def createIndependentPhaseKernels(self, phase):
-        pass
-
-    @abstractmethod
-    def createPhaseInteractionKernels(self):
+    def createKernels(self):
         pass

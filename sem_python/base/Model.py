@@ -28,3 +28,14 @@ class Model(object):
         self.use_volume_fraction_pressure_relaxation = params.get(
             "use_volume_fraction_pressure_relaxation")
         self.use_energy_pressure_relaxation = params.get("use_energy_pressure_relaxation")
+
+        if self.model_type == ModelType.OnePhase:
+            self.phases = [0]
+        else:
+            self.phases = [0, 1]
+        self.n_phases = len(self.phases)
+
+        if self.model_type == ModelType.TwoPhase:
+            self.phase_interaction = True
+        else:
+            self.phase_interaction = False

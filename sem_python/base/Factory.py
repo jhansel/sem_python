@@ -1,5 +1,6 @@
 # assembly
 from ..assembly.FEMAssembly import FEMAssembly, FEMAssemblyParameters
+from ..assembly.FVMAssembly import FVMAssembly, FVMAssemblyParameters
 
 # aux
 from ..aux.AcousticImpedance import AcousticImpedance, AcousticImpedanceParameters
@@ -121,6 +122,7 @@ from ..solvers.NonlinearSolver import NonlinearSolver, NonlinearSolverParameters
 
 # spatial discretizations
 from ..spatial_discretizations.FiniteElementMethod import FiniteElementMethod, FiniteElementMethodParameters
+from ..spatial_discretizations.FiniteVolumeMethod import FiniteVolumeMethod, FiniteVolumeMethodParameters
 
 # stabilization
 from ..stabilization.NoStabilization import NoStabilization, NoStabilizationParameters
