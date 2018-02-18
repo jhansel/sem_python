@@ -7,13 +7,12 @@ class AuxQuantityParameters(Parameters):
 
     def __init__(self, factory):
         Parameters.__init__(self, factory)
-        self.registerIntParameter("size", "Number of data values computed", 1)
 
 
 class AuxQuantity(object, metaclass=ABCMeta):
 
     def __init__(self, params):
-        self.size = params.get("size")
+        pass
 
     @abstractmethod
     def compute(self, data, der):

@@ -31,4 +31,4 @@ class TestAux(AuxQuantity):
         data[self.name] = self.b
         for i in range(self.n):
             data[self.name] += self.coefs[i] * data[self.other_vars[i]]
-            der[self.name][self.other_vars[i]] = self.coefs[i] * np.ones(self.size)
+            der[self.name][self.other_vars[i]] = 0 * data[self.name] + self.coefs[i]

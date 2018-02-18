@@ -35,7 +35,7 @@ class AuxGradient(AuxQuantity):
     def compute(self, data, der):
         der_aux = der[self.aux]
 
-        grad_aux = np.zeros(self.size)
+        grad_aux = 0
         grad_aux_der = dict()
         for var in self.variable_names:
             grad_aux += der_aux[var] * data["grad_" + var]

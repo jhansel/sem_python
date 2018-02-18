@@ -13,7 +13,7 @@ test_var = "testvar"
 params["variable"] = test_var
 params["dependencies"] = ["dep1", "dep2"]
 n_dof_per_cell_per_var = 2
-params["size"] = n_dof_per_cell_per_var
+params["n_test_functions"] = n_dof_per_cell_per_var
 test_aux = factory.createObject("InterpolatedAux", params)
 
 # nodal test aux
@@ -21,7 +21,6 @@ params = dict()
 params["var"] = test_var
 params["other_vars"] = ["dep1", "dep2"]
 params["coefs"] = [2.0, 3.0]
-params["size"] = 2
 nodal_test_aux = factory.createObject("TestAux", params)
 
 

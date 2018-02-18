@@ -17,4 +17,4 @@ class MassFlux(AuxQuantity1Phase):
 
     def compute(self, data, der):
         data[self.name] = data[self.arhouA]
-        der[self.name][self.arhouA] = np.ones(self.size)
+        der[self.name][self.arhouA] = 0 * data[self.name] + 1

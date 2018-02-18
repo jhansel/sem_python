@@ -63,7 +63,7 @@ class KernelDerivativesTester(object):
             # a solution variable (in 2-phase); therefore one needs to make sure that
             # it uses its own "identity" aux instead of the generic test aux
             if aux_name == "vf1":
-                params = {"phase": 0, "size": n_q_points}
+                params = {"phase": 0}
                 aux_list.append(factory.createObject("VolumeFractionPhase1", params))
             else:
                 params = TestAuxParameters(factory)
@@ -74,7 +74,6 @@ class KernelDerivativesTester(object):
                     coefs.append(a + 2.0 + d * 0.5)
                 params.set("coefs", coefs)
                 params.set("b", 1.0)
-                params.set("size", n_q_points)
                 aux_list.append(TestAux(params))
 
         # add the aux derivatives
@@ -82,7 +81,6 @@ class KernelDerivativesTester(object):
             params = {
                 "aux": aux_name,
                 "variable_names": aux_dependencies[aux_name],
-                "size": n_q_points
             }
             aux_list.append(factory.createObject("AuxGradient", params))
 

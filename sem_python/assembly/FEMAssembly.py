@@ -130,7 +130,7 @@ class FEMAssembly(Assembly):
         # create the aux quantities for this phase
         aux_list = list()
         for aux_name in aux_names_phase:
-            params = {"phase": phase, "size": self.quadrature.n_q}
+            params = {"phase": phase}
             if aux_name == "Pressure":
                 params["p_function"] = self.eos_list[phase].p
             elif aux_name == "Temperature":
@@ -143,7 +143,7 @@ class FEMAssembly(Assembly):
 
     def createPhaseInteractionAuxQuantities(self):
         aux_list = list()
-        params = {"aux": "vf1", "variable_names": ["aA1", "A"], "size": self.quadrature.n_q}
+        params = {"aux": "vf1", "variable_names": ["aA1", "A"]}
         aux_list.append(self.factory.createObject("AuxGradient", params))
 
         return aux_list
@@ -166,7 +166,7 @@ class FEMAssembly(Assembly):
         # create the aux quantities for this phase
         aux_list = list()
         for aux_name in aux_names:
-            params = {"phase": phase, "size": self.dof_handler.n_dof_per_cell_per_var}
+            params = {"phase": phase}
             if aux_name == "Pressure":
                 params["p_function"] = self.eos_list[phase].p
             aux_list.append(self.factory.createObject(aux_name, params))
@@ -186,7 +186,7 @@ class FEMAssembly(Assembly):
         params = {
             "variable": var,
             "dependencies": [arhouA],
-            "size": self.dof_handler.n_dof_per_cell_per_var
+            "n_test_functions": self.dof_handler.n_dof_per_cell_per_var
         }
         aux_list.append(self.factory.createObject("InterpolatedAux", params))
 
@@ -195,7 +195,7 @@ class FEMAssembly(Assembly):
         params = {
             "variable": var,
             "dependencies": ["aA1", arhoA, arhouA, arhoEA],
-            "size": self.dof_handler.n_dof_per_cell_per_var
+            "n_test_functions": self.dof_handler.n_dof_per_cell_per_var
         }
         aux_list.append(self.factory.createObject("InterpolatedAux", params))
 
@@ -204,7 +204,7 @@ class FEMAssembly(Assembly):
         params = {
             "variable": var,
             "dependencies": ["aA1", arhoA, arhouA, arhoEA],
-            "size": self.dof_handler.n_dof_per_cell_per_var
+            "n_test_functions": self.dof_handler.n_dof_per_cell_per_var
         }
         aux_list.append(self.factory.createObject("InterpolatedAux", params))
 
